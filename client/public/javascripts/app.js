@@ -105,6 +105,29 @@ module.exports = {
 
 });
 
+;require.register("collections/doctype_collection", function(exports, require, module) {
+var DoctypesCollection, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+module.exports = DoctypesCollection = (function(_super) {
+  __extends(DoctypesCollection, _super);
+
+  function DoctypesCollection() {
+    _ref = DoctypesCollection.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  DoctypesCollection.prototype.model = require('../models/doctype_model');
+
+  DoctypesCollection.prototype.url = 'doctypes';
+
+  return DoctypesCollection;
+
+})(Backbone.Collection);
+
+});
+
 ;require.register("initialize", function(exports, require, module) {
 var app;
 
@@ -295,6 +318,27 @@ module.exports = ViewCollection = (function(_super) {
 
 });
 
+;require.register("models/doctype_model", function(exports, require, module) {
+var DoctypeModel, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+module.exports = DoctypeModel = (function(_super) {
+  __extends(DoctypeModel, _super);
+
+  function DoctypeModel() {
+    _ref = DoctypeModel.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  DoctypeModel.prototype.rootUrl = "/doctypes";
+
+  return DoctypeModel;
+
+})(Backbone.Model);
+
+});
+
 ;require.register("router", function(exports, require, module) {
 var AppView, DoctypesView, Router, _ref,
   __hasProp = {}.hasOwnProperty,
@@ -383,6 +427,22 @@ module.exports = DoctypesView = (function(_super) {
 
   DoctypesView.prototype.template = require('./templates/doctypes');
 
+  DoctypesView.prototype.render = function() {
+    var DoctypesCollection, dc;
+    DoctypesCollection = require('/collections/doctype_collection');
+    dc = new DoctypesCollection;
+    console.log(dc);
+    return dc.fetch({
+      body: "body"
+    }, {
+      success: function(model, response) {
+        return console.log(response)({
+          error: function(model, response) {}
+        });
+      }
+    });
+  };
+
   return DoctypesView;
 
 })(BaseView);
@@ -395,7 +455,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div>doctypes !!!</div>');
+buf.push('<div id="content"><h1>Doctypes list</h1><hr/><div class="container"></div></div>');
 }
 return buf.join("");
 };

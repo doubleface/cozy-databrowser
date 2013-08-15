@@ -13,11 +13,3 @@ if not module.parent
         console.log(
             "Compound server listening on %s:%d within %s environment",
             host, port, server.set('env'))
-
-    #---------begin noesis tests
-    noesis = 
-        DataSystem : require('./db/DataSystem')
-
-    myDataSystem = new noesis.DataSystem
-    myDataSystem.getDoctypes()
-    #---------end noesis tests

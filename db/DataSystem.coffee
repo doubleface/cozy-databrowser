@@ -54,13 +54,13 @@ class DataSystem
     # create : -> 
     #     console.log(@sParam)
 
-    getDoctypes : -> 
-        this.doRequest @DS_URL, @DS_PORT, "get", @PATH.doctypes
+    reqDoctypes : (response) -> 
+        this.getData @DS_URL, @DS_PORT, "get", @PATH.doctypes, response
 
-    doRequest : (url, port, method, path)->
+    getData : (url, port, method, path, response)->
     	client = new @jsonClient url +  ':'  + port
     	client[method] path, (err, res, body) ->
-    	 	console.log body
+    	 	response.send body        
 #********************************************************
 
 
