@@ -1,7 +1,3 @@
-#Namespace for noesis contribution
-noesis = noesis || {}
-
-
 #********************************************************
 #******************** CLASS DataSystem *********************
 #********************************************************
@@ -10,8 +6,8 @@ noesis = noesis || {}
 #@noesis requirement :      none
 #@patches requirement :     none
 #@constructor :             Use "new" for create an instance of a DataSystem
-#TIPS :                     With ubuntu sublime, Use alt + F3 on "DataSystem" to replace all occurence
-class DataSystem 
+  
+module.exports = class DataSystem 
 	#------------------ CONTRUCTOR CONSTANTS ----------------
     @CLASS_NAME : "DataSystem"
     @CLASS_COUNT : 0
@@ -21,6 +17,7 @@ class DataSystem
     DS_PORT : 9101
     PATH : 
     	doctypes : "/doctypes"
+
          
     #------------- CLASS DIRECT PROCESS ----------------
 
@@ -54,18 +51,16 @@ class DataSystem
     # create : -> 
     #     console.log(@sParam)
 
-    reqDoctypes : (response) -> 
-        this.getData @DS_URL, @DS_PORT, "get", @PATH.doctypes, response
+    reqDoctypes : (callback) -> 
+        this.getData @DS_URL, @DS_PORT, @PATH.doctypes, callback
 
-    getData : (url, port, method, path, response)->
-    	client = new @jsonClient url +  ':'  + port
-    	client[method] path, (err, res, body) ->
-    	 	response.send body        
+    getData : (url, port,  path, callback)->
+        client = new @jsonClient url +  ':'  + port
+        client.get path, (error, response, body) ->
+            if error 
+                console.log error
+                callback true
+                return
+            jsonRes = body
+            callback false, jsonRes          
 #********************************************************
-
-
-#As a server or client module ?
-if module?	
-    module.exports = DataSystem
-else
-	noesis.DataSystem = DataSystem

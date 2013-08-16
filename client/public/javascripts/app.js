@@ -106,23 +106,23 @@ module.exports = {
 });
 
 ;require.register("collections/doctype_collection", function(exports, require, module) {
-var DoctypesCollection, _ref,
+var DoctypeCollection, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-module.exports = DoctypesCollection = (function(_super) {
-  __extends(DoctypesCollection, _super);
+module.exports = DoctypeCollection = (function(_super) {
+  __extends(DoctypeCollection, _super);
 
-  function DoctypesCollection() {
-    _ref = DoctypesCollection.__super__.constructor.apply(this, arguments);
+  function DoctypeCollection() {
+    _ref = DoctypeCollection.__super__.constructor.apply(this, arguments);
     return _ref;
   }
 
-  DoctypesCollection.prototype.model = require('../models/doctype_model');
+  DoctypeCollection.prototype.model = require('../models/doctype_model');
 
-  DoctypesCollection.prototype.url = 'doctypes';
+  DoctypeCollection.prototype.url = '/doctypes';
 
-  return DoctypesCollection;
+  return DoctypeCollection;
 
 })(Backbone.Collection);
 
@@ -428,17 +428,20 @@ module.exports = DoctypesView = (function(_super) {
   DoctypesView.prototype.template = require('./templates/doctypes');
 
   DoctypesView.prototype.render = function() {
-    var DoctypesCollection, dc;
-    DoctypesCollection = require('/collections/doctype_collection');
-    dc = new DoctypesCollection;
-    console.log(dc);
+    var DoctypeCollection, dc;
+    DoctypeCollection = require('/collections/doctype_collection');
+    dc = new DoctypeCollection;
     return dc.fetch({
-      body: "body"
-    }, {
       success: function(model, response) {
-        return console.log(response)({
-          error: function(model, response) {}
-        });
+        var data, eltDoctypeLi, _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = response.length; _i < _len; _i++) {
+          data = response[_i];
+          eltDoctypeLi = $(document.createElement('li'));
+          eltDoctypeLi.append($(document.createElement('a')).text(data).attr("href", "/#search"));
+          _results.push($('body.application').append(eltDoctypeLi));
+        }
+        return _results;
       }
     });
   };
@@ -455,7 +458,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content"><h1>Doctypes list</h1><hr/><div class="container"></div></div>');
+buf.push('<div id="content"><h1>Doctypes list</h1><hr/><ul id="doctype-list"></ul></div>');
 }
 return buf.join("");
 };
@@ -471,6 +474,75 @@ buf.push('<div id="content"><h1>Cozy template</h1><h2>Welcome</h2><ul><li> <a hr
 }
 return buf.join("");
 };
+});
+
+;require.register("views/updating_collection_view", function(exports, require, module) {
+var UpdatingCollectionView, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+module.exports = UpdatingCollectionView = (function(_super) {
+  __extends(UpdatingCollectionView, _super);
+
+  function UpdatingCollectionView() {
+    _ref = UpdatingCollectionView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  UpdatingCollectionView.prototype.initialize = function(options) {
+    _(this).bindAll('add', 'remove');
+    if (!options.childViewConstructor) {
+      throw "no child view constructor provided";
+    }
+    if (!options.childViewTagName) {
+      throw "no child view tag name provided";
+    }
+    this._childViewConstructor = options.childViewConstructor;
+    this._childViewTagName = options.childViewTagName;
+    this._childViews = [];
+    this.collection.each(this.add);
+    this.collection.bind('add', this.add);
+    return this.collection.bind('remove', this.remove);
+  };
+
+  UpdatingCollectionView.prototype.add = function(model) {
+    var childView;
+    childView = new this._childViewConstructor({
+      tagName: this._childViewTagName,
+      model: model
+    });
+    this._childViews.push(childView);
+    if (this._rendered) {
+      return $(this.el).append(childView.render().el);
+    }
+  };
+
+  UpdatingCollectionView.prototype.remove = function(model) {
+    var viewToRemove;
+    viewToRemove = _(this._childViews).select(function(cv) {
+      return cv.model === model;
+    })[0];
+    this._childViews = _(this._childViews).without(viewToRemove);
+    if (this._rendered) {
+      return $(viewToRemove.el).remove();
+    }
+  };
+
+  UpdatingCollectionView.prototype.render = function() {
+    var that;
+    that = this;
+    this._rendered = true;
+    $(this.el).empty();
+    _(this._childViews).each(function(childView) {
+      return $(that.el).append(childView.render().el);
+    });
+    return this;
+  };
+
+  return UpdatingCollectionView;
+
+})(Backbone.View);
+
 });
 
 ;

@@ -1,14 +1,14 @@
 load 'application'
 
-# action 'index', ->
-#     render
-#     	title: "Cozy Template"
+#instanciate DataSystem
+DataSystem = require('./db/DataSystem')
+ds = new DataSystem
 
-
+#doctypes
 action 'doctypes', ->
+	ds.reqDoctypes (error, jsonRes) -> 
+		if error 
+			res.send(500, 'Server Error : ')
+			return
+		res.send(jsonRes) 
 	
-	#instanciate DataSystem
-    DataSystem = require('./db/DataSystem')
-    ds1 = new DataSystem
-    ds1.reqDoctypes(res)
-    #---------end noesis tests

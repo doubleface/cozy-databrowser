@@ -1,3 +1,3 @@
-module.exports = class DoctypesCollection extends Backbone.Collection
+module.exports = class DoctypeCollection extends Backbone.Collection
 	model: require '../models/doctype_model'
-	url: 'doctypes'
+	url: '/doctypes'
