@@ -15,7 +15,7 @@ TODO: making the tool more generic (loading data fixtures from other files)
 
 # Agenda meta doctype document
 dataCollection.push
-    docType: "metaDoctype"
+    docType: "Metadoctype"
     related: "Alarm" # what doctype this document describes
     displayName: "Alarme"
     identificationField: "description"
@@ -55,7 +55,7 @@ dataCollection.push
 
 # Contact meta doctype document
 dataCollection.push
-    docType: "metaDoctype"
+    docType: "Metadoctype"
     related: "Contact" # what doctype this document describes
     displayName: "Contact"
     identificationField: "fn"
@@ -112,7 +112,7 @@ dataCollection.push
 
 # Task meta doctype document
 dataCollection.push
-    docType: "metaDoctype"
+    docType: "Metadoctype"
     related: "Task" # what doctype this document describes
     displayName: "Tâche"
     identificationField: "description"
@@ -182,7 +182,7 @@ dataCollection.push
 
 # Mail meta doctype document
 dataCollection.push
-    docType: "metaDoctype"
+    docType: "Metadoctype"
     related: "Mail" # what doctype this document describes
     displayName: "Mail"
     identificationField: "subject"
@@ -289,8 +289,12 @@ for doc in dataCollection
     requests.push requestFactory(doc)
 
 
-# We remove the old data
+# We remove the old data and create the reequest
 setupRequests = []
+map = (doc) -> emit doc.id, doc if doc.docType is "Metadoctype"
+all =
+    map: map.toString()
+
 setupRequests.push (callback) ->
     client.put 'request/alarm/all/destroy/', {}, (err, res, body) ->
         callback(err, body)
@@ -300,6 +304,22 @@ setupRequests.push (callback) ->
 setupRequests.push (callback) ->
     client.put 'request/task/all/destroy/', {}, (err, res, body) ->
         callback(err, body)
+setupRequests.push (callback) ->
+    client.put 'request/metadoctype/all/destroy/', {}, (err, res, body) ->
+        callback(err, body)
+setupRequests.push (callback) ->
+    client.put 'request/alarm/all/', all, (err, res, body) ->
+        callback(err, body)
+setupRequests.push (callback) ->
+    client.put 'request/contact/all/', all, (err, res, body) ->
+        callback(err, body)
+setupRequests.push (callback) ->
+    client.put 'request/task/all/', all, (err, res, body) ->
+        callback(err, body)
+setupRequests.push (callback) ->
+    client.put 'request/metadoctype/all/', all, (err, res, body) ->
+        callback(err, body)
+
 
 # We run the request with async (parallel execution, wait for all the callbacks)
 console.log "Cleaning the database..."

@@ -120,7 +120,7 @@ module.exports = DoctypeCollection = (function(_super) {
 
   DoctypeCollection.prototype.model = require('../models/doctype_model');
 
-  DoctypeCollection.prototype.url = '/doctypes';
+  DoctypeCollection.prototype.url = 'doctypes';
 
   return DoctypeCollection;
 
@@ -203,6 +203,49 @@ module.exports = BaseView = (function(_super) {
   };
 
   return BaseView;
+
+})(Backbone.View);
+
+});
+
+;require.register("lib/view", function(exports, require, module) {
+var View, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+module.exports = View = (function(_super) {
+  __extends(View, _super);
+
+  function View() {
+    _ref = View.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  View.prototype.template = function() {};
+
+  View.prototype.initialize = function() {};
+
+  View.prototype.render = function(templateOptions) {
+    var render;
+    this.beforeRender();
+    render = this.template().call(null, templateOptions);
+    this.$el.html(render);
+    this.afterRender();
+    return this;
+  };
+
+  View.prototype.beforeRender = function() {};
+
+  View.prototype.afterRender = function() {};
+
+  View.prototype.destroy = function() {
+    this.undelegateEvents();
+    this.$el.removeData().unbind();
+    this.remove();
+    return Backbone.View.prototype.remove.call(this);
+  };
+
+  return View;
 
 })(Backbone.View);
 
@@ -331,7 +374,7 @@ module.exports = DoctypeModel = (function(_super) {
     return _ref;
   }
 
-  DoctypeModel.prototype.rootUrl = "/doctypes";
+  DoctypeModel.prototype.rootUrl = "doctypes";
 
   return DoctypeModel;
 
@@ -340,13 +383,15 @@ module.exports = DoctypeModel = (function(_super) {
 });
 
 ;require.register("router", function(exports, require, module) {
-var AppView, DoctypesView, Router, _ref,
+var AppView, DoctypeCollectionView, DoctypesView, Router, dcView, doctypesView, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 AppView = require('views/app_view');
 
 DoctypesView = require('views/doctypes_view');
+
+DoctypeCollectionView = require('views/doctype_collection_view');
 
 module.exports = Router = (function(_super) {
   __extends(Router, _super);
@@ -367,15 +412,19 @@ module.exports = Router = (function(_super) {
     return mainView.render();
   };
 
-  Router.prototype.doctypes = function() {
-    var doctypesView;
-    doctypesView = new DoctypesView();
-    return doctypesView.render();
-  };
+  Router.prototype.doctypes = function() {};
 
   return Router;
 
 })(Backbone.Router);
+
+doctypesView = new DoctypesView();
+
+doctypesView.render();
+
+dcView = new DoctypeCollectionView();
+
+dcView.render();
 
 });
 
@@ -408,12 +457,86 @@ module.exports = AppView = (function(_super) {
 
 });
 
+;require.register("views/doctype_collection_view", function(exports, require, module) {
+var DoctypeCollection, DoctypeCollectionView, DoctypeView, ViewCollection, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+ViewCollection = require('../lib/view_collection');
+
+DoctypeCollection = require('../collections/doctype_collection');
+
+DoctypeView = require('./doctype_view');
+
+module.exports = DoctypeCollectionView = (function(_super) {
+  __extends(DoctypeCollectionView, _super);
+
+  function DoctypeCollectionView() {
+    _ref = DoctypeCollectionView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  DoctypeCollectionView.prototype.itemview = DoctypeView;
+
+  DoctypeCollectionView.prototype.collection = new DoctypeCollection();
+
+  DoctypeCollectionView.prototype.initialize = function() {
+    this.collectionEl = 'ul#doctypes-list';
+    DoctypeCollectionView.__super__.initialize.apply(this, arguments);
+    this.collection.fetch();
+    this.views = {};
+    return this.listenTo(this.collection, "reset", this.onReset);
+  };
+
+  return DoctypeCollectionView;
+
+})(ViewCollection);
+
+});
+
+;require.register("views/doctype_view", function(exports, require, module) {
+var DoctypeView, View, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+View = require('./../lib/view');
+
+module.exports = DoctypeView = (function(_super) {
+  __extends(DoctypeView, _super);
+
+  function DoctypeView() {
+    _ref = DoctypeView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  DoctypeView.prototype.tagName = 'li';
+
+  DoctypeView.prototype.className = 'doctype-list-item';
+
+  DoctypeView.prototype.render = function() {
+    return DoctypeView.__super__.render.call(this, {
+      name: this.model.get("name")
+    });
+  };
+
+  DoctypeView.prototype.template = function() {
+    return require('./templates/doctype');
+  };
+
+  return DoctypeView;
+
+})(View);
+
+});
+
 ;require.register("views/doctypes_view", function(exports, require, module) {
-var BaseView, DoctypesView, _ref,
+var BaseView, DoctypeCollectionView, DoctypesView, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 BaseView = require('../lib/base_view');
+
+DoctypeCollectionView = require('views/doctype_collection_view');
 
 module.exports = DoctypesView = (function(_super) {
   __extends(DoctypesView, _super);
@@ -427,29 +550,22 @@ module.exports = DoctypesView = (function(_super) {
 
   DoctypesView.prototype.template = require('./templates/doctypes');
 
-  DoctypesView.prototype.render = function() {
-    var DoctypeCollection, dc;
-    DoctypeCollection = require('/collections/doctype_collection');
-    dc = new DoctypeCollection;
-    return dc.fetch({
-      success: function(model, response) {
-        var data, eltDoctypeLi, _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = response.length; _i < _len; _i++) {
-          data = response[_i];
-          eltDoctypeLi = $(document.createElement('li'));
-          eltDoctypeLi.append($(document.createElement('a')).text(data).attr("href", "/#search"));
-          _results.push($('body.application').append(eltDoctypeLi));
-        }
-        return _results;
-      }
-    });
-  };
-
   return DoctypesView;
 
 })(BaseView);
 
+});
+
+;require.register("views/templates/doctype", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<a href="/#research">' + escape((interp = name) == null ? '' : interp) + '</a>');
+}
+return buf.join("");
+};
 });
 
 ;require.register("views/templates/doctypes", function(exports, require, module) {
@@ -458,7 +574,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content"><h1>Doctypes list</h1><hr/></div>');
+buf.push('<div id="content"><h1>Doctypes list</h1><hr/><ul id="doctypes-list"></ul></div>');
 }
 return buf.join("");
 };
@@ -474,75 +590,6 @@ buf.push('<div id="content"><h1>Cozy template</h1><h2>Welcome</h2><ul><li> <a hr
 }
 return buf.join("");
 };
-});
-
-;require.register("views/updating_collection_view", function(exports, require, module) {
-var UpdatingCollectionView, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-module.exports = UpdatingCollectionView = (function(_super) {
-  __extends(UpdatingCollectionView, _super);
-
-  function UpdatingCollectionView() {
-    _ref = UpdatingCollectionView.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  UpdatingCollectionView.prototype.initialize = function(options) {
-    _(this).bindAll('add', 'remove');
-    if (!options.childViewConstructor) {
-      throw "no child view constructor provided";
-    }
-    if (!options.childViewTagName) {
-      throw "no child view tag name provided";
-    }
-    this._childViewConstructor = options.childViewConstructor;
-    this._childViewTagName = options.childViewTagName;
-    this._childViews = [];
-    this.collection.each(this.add);
-    this.collection.bind('add', this.add);
-    return this.collection.bind('remove', this.remove);
-  };
-
-  UpdatingCollectionView.prototype.add = function(model) {
-    var childView;
-    childView = new this._childViewConstructor({
-      tagName: this._childViewTagName,
-      model: model
-    });
-    this._childViews.push(childView);
-    if (this._rendered) {
-      return $(this.el).append(childView.render().el);
-    }
-  };
-
-  UpdatingCollectionView.prototype.remove = function(model) {
-    var viewToRemove;
-    viewToRemove = _(this._childViews).select(function(cv) {
-      return cv.model === model;
-    })[0];
-    this._childViews = _(this._childViews).without(viewToRemove);
-    if (this._rendered) {
-      return $(viewToRemove.el).remove();
-    }
-  };
-
-  UpdatingCollectionView.prototype.render = function() {
-    var that;
-    that = this;
-    this._rendered = true;
-    $(this.el).empty();
-    _(this._childViews).each(function(childView) {
-      return $(that.el).append(childView.render().el);
-    });
-    return this;
-  };
-
-  return UpdatingCollectionView;
-
-})(Backbone.View);
-
 });
 
 ;
