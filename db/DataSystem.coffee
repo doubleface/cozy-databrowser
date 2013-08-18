@@ -1,5 +1,5 @@
 #********************************************************
-#******************** CLASS DataSystem *********************
+#******************** CLASS DataSystem ******************
 #********************************************************
 #@description :             DataSystem define....
 #@outside requirement : 	npm 'request-json'
@@ -8,7 +8,7 @@
 #@constructor :             Use "new" for create an instance of a DataSystem
   
 module.exports = class DataSystem 
-	#------------------ CONTRUCTOR CONSTANTS ----------------
+    #------------------ CONSTRUCTOR CONSTANTS ----------------
     @CLASS_NAME : "DataSystem"
     @CLASS_COUNT : 0
 
@@ -94,7 +94,7 @@ module.exports = class DataSystem
                         #add metadoctype
                         if metadoctypes? 
                             for md in metadoctypes    
-                                if (md.related is that.firstLetterUp(val))                                                
+                                if (md.related.toLowerCase() is val.toLowerCase())                                                
                                     newObj["metadoctype"] = md
 
                         jsonRes.push(newObj)
@@ -103,19 +103,20 @@ module.exports = class DataSystem
                 else  
                     jsonRes = body
 
+                #apply callback
                 callback false, jsonRes   
     
     getMetadoctypes : (callbackMD) ->
+        md = {}
         if @Metadoctype?
-            @Metadoctype.request "bydoctypename", (err, metadoctypes) ->
-                metadoc = {}
-                if metadoctypes?
+            @Metadoctype.request "bydoctypename", (err, metadoctypes) ->                
+                if err
+                    compound.logger.write "Request Metadoctype#All, cannot be created"
+                    compound.logger.write err
+                else if metadoctypes?
                     if metadoctypes.length > 0  
-                        metadoc = metadoctypes 
-                return callbackMD(metadoc) 
+                        md = metadoctypes 
+                return callbackMD(md) 
         else 
-            return callbackMD({}) 
-
-    firstLetterUp : (str) ->
-        return str.substr(0,1).toUpperCase() + str.substr(1, str.length)
+            return callbackMD(md) 
 #********************************************************

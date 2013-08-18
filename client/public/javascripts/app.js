@@ -546,7 +546,7 @@ module.exports = DoctypesView = (function(_super) {
     return _ref;
   }
 
-  DoctypesView.prototype.el = 'body.application';
+  DoctypesView.prototype.el = 'div#wrapper';
 
   DoctypesView.prototype.template = require('./templates/doctypes');
 
@@ -574,7 +574,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content"><h1>Doctypes list</h1><hr/><ul id="doctypes-list"></ul></div>');
+buf.push('<div id="content"><div class="container">	<h1>Doctypes list	</h1><hr/><div class="span7">	<ul id="doctypes-list">	</ul></div></div></div>');
 }
 return buf.join("");
 };

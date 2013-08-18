@@ -12,8 +12,6 @@ module.exports = (compound) ->
 
 
     bydoctypename = (doc) ->
-        newObj = {}
-        newObj[doc.related] = doc
         emit doc.related, doc 
 
     Metadoctype.defineRequest "bydoctypename", bydoctypename, (err) ->
