@@ -8,7 +8,7 @@ module.exports = class DoctypeCollectionView extends ViewCollection
 	collection: new DoctypeCollection()
 
 	initialize: ->
-		@collectionEl = 'ul#doctypes-list'
+		@collectionEl = '#doctypes-list'
 		super
 		@collection.fetch()		
 		@views = {}

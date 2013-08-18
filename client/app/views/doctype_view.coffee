@@ -2,7 +2,7 @@ View = require './../lib/view'
 
 module.exports = class DoctypeView extends View
 
-    tagName: 'li'
+    tagName: 'tr'
     className: 'doctype-list-item'
 
     render: ->

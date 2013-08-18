@@ -481,7 +481,7 @@ module.exports = DoctypeCollectionView = (function(_super) {
   DoctypeCollectionView.prototype.collection = new DoctypeCollection();
 
   DoctypeCollectionView.prototype.initialize = function() {
-    this.collectionEl = 'ul#doctypes-list';
+    this.collectionEl = '#doctypes-list';
     DoctypeCollectionView.__super__.initialize.apply(this, arguments);
     this.collection.fetch();
     this.views = {};
@@ -509,7 +509,7 @@ module.exports = DoctypeView = (function(_super) {
     return _ref;
   }
 
-  DoctypeView.prototype.tagName = 'li';
+  DoctypeView.prototype.tagName = 'tr';
 
   DoctypeView.prototype.className = 'doctype-list-item';
 
@@ -546,7 +546,7 @@ module.exports = DoctypesView = (function(_super) {
     return _ref;
   }
 
-  DoctypesView.prototype.el = 'div#wrapper';
+  DoctypesView.prototype.el = '#content';
 
   DoctypesView.prototype.template = require('./templates/doctypes');
 
@@ -562,7 +562,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<a href="/#research">' + escape((interp = name) == null ? '' : interp) + '</a>');
+buf.push('<td> <span class="label label-primary">more info</span></td><td class="full"><a href="/#research">' + escape((interp = name) == null ? '' : interp) + '</a></td><td>22</td>');
 }
 return buf.join("");
 };
@@ -574,7 +574,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content"><div class="container">	<h1>Doctypes list	</h1><hr/><div class="span7">	<ul id="doctypes-list">	</ul></div></div></div>');
+buf.push('<div class="container"><div class="row"><div class="span12"><h3 class="title">My current doctype list			</h3><div id="doctypes-container"><table class="table"><thead>						<th>description</th><th>Name</th><th>entry</th></thead><tbody id="doctypes-list"></tbody></table></div></div></div></div>');
 }
 return buf.join("");
 };

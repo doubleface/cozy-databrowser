@@ -3,7 +3,7 @@ DoctypeCollectionView = require 'views/doctype_collection_view'
 
 module.exports = class DoctypesView extends BaseView
 
-    el: 'div#wrapper'    
+    el: '#content'    
     template: require('./templates/doctypes')
 
     	
