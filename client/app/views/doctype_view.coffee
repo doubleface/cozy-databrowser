@@ -8,6 +8,8 @@ module.exports = class DoctypeView extends View
     render: ->
         super
             name: @model.get("name")
+            metadoctype : @model.get("metadoctype")
+            sum : @model.get("sum")
 
     template: ->
         require './templates/doctype'

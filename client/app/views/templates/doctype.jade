@@ -1,5 +1,10 @@
 td 
-	span.label.label-primary more info
+	- if (typeof(metadoctype) === 'object'){
+		span.label.label-primary more info
+	- }
 td.full
 	a(href='/#research') #{name}
-td 22
+td 
+	- if (typeof(sum) === 'number'){
+		span #{sum}
+	- }

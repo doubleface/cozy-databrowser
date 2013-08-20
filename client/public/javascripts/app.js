@@ -515,7 +515,9 @@ module.exports = DoctypeView = (function(_super) {
 
   DoctypeView.prototype.render = function() {
     return DoctypeView.__super__.render.call(this, {
-      name: this.model.get("name")
+      name: this.model.get("name"),
+      metadoctype: this.model.get("metadoctype"),
+      sum: this.model.get("sum")
     });
   };
 
@@ -562,7 +564,19 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<td> <span class="label label-primary">more info</span></td><td class="full"><a href="/#research">' + escape((interp = name) == null ? '' : interp) + '</a></td><td>22</td>');
+buf.push('<td> ');
+ if (typeof(metadoctype) === 'object'){
+{
+buf.push('<span class="label label-primary">more info</span>');
+}
+ }
+buf.push('</td><td class="full"><a href="/#research">' + escape((interp = name) == null ? '' : interp) + '</a></td><td> ');
+ if (typeof(metadoctype) === 'object'){
+{
+buf.push('<span>' + escape((interp = sum) == null ? '' : interp) + '</span>');
+}
+ }
+buf.push('</td>');
 }
 return buf.join("");
 };

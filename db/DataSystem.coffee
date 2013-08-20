@@ -23,7 +23,7 @@ module.exports = class DataSystem
 
      
     #----------------- OBJECT PARAMETERS ---------------
-    constructor : (@Metadoctype) ->
+    constructor : (@models) ->
         
         #------ DIRECT
         #setted by coffeescript contructor function 
@@ -51,23 +51,10 @@ module.exports = class DataSystem
     # create : -> 
     #     console.log(@sParam)
 
-    reqDoctypes : (callback, jsonForm, withMeta = false) -> 
+    reqDoctypes : (callback) -> 
+        this.getData @DS_URL, @DS_PORT, @PATH.doctypes, callback
 
-        #needed var
-        that = this
-
-        #waiting metadoctypes
-        if withMeta
-            this.getMetadoctypes((metadoctypes) ->
-                that.getData that.DS_URL, that.DS_PORT, that.PATH.doctypes, callback, jsonForm, metadoctypes
-            )
-
-        #direct call
-        else 
-            this.getData @DS_URL, @DS_PORT, @PATH.doctypes, callback, jsonForm
-
-    getData : (url, port,  path, callback, jsonForm, metadoctypes)->
-        that = this
+    getData : (url, port, path, callback)->
         client = new @jsonClient url +  ':'  + port
         client.get path, (error, response, body) ->
 
@@ -81,42 +68,20 @@ module.exports = class DataSystem
             
             #return result
             else  
-
-                #display and transform json
-                if jsonForm? && typeof jsonForm is "string"  
-       
-                    for val in body  
-                        newObj = {}
-
-                        #encapsulate val                      
-                        newObj[jsonForm] = val  
-
-                        #add metadoctype
-                        if metadoctypes? 
-                            for md in metadoctypes    
-                                if (md.related.toLowerCase() is val.toLowerCase())                                                
-                                    newObj["metadoctype"] = md
-
-                        jsonRes.push(newObj)
-
-                #display json
-                else  
-                    jsonRes = body
-
-                #apply callback
+                jsonRes = body
                 callback false, jsonRes   
     
-    getMetadoctypes : (callbackMD) ->
-        md = {}
-        if @Metadoctype?
-            @Metadoctype.request "bydoctypename", (err, metadoctypes) ->                
-                if err
-                    compound.logger.write "Request Metadoctype#All, cannot be created"
-                    compound.logger.write err
-                else if metadoctypes?
-                    if metadoctypes.length > 0  
-                        md = metadoctypes 
-                return callbackMD(md) 
+    applyModelRequest : (callback, modelName, requestName, requestParams) ->
+        requestParams = requestParams || {}
+        jsonRes = {}
+        error = true        
+        if @models[modelName]?
+            @models[modelName].request requestName, requestParams, (err, data) -> 
+                if data?                    
+                    if data.length > 0 
+                        error = false                         
+                        jsonRes = data
+                return callback(error, jsonRes) 
         else 
-            return callbackMD(md) 
+            return callback(error, jsonRes)
 #********************************************************
