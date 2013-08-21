@@ -43,3 +43,8 @@ action 'doctypes', ->
 				jsonRes.push(newObj)
 
 			res.send(jsonRes)
+
+#doctypes
+action 'search', ->
+
+	res.send([{ 'test' : 'search route is ok' }])

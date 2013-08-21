@@ -1,4 +1,5 @@
 exports.routes = (map) ->
-	#map.get 'index', 'templates#index'   
+	map.get '', 'template#index'	  
 	map.get 'doctypes', 'templates#doctypes' 
-	map.get '', 'template#index'	
+	map.get 'search', 'templates#search' 
+	

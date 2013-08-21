@@ -128,6 +128,29 @@ module.exports = DoctypeCollection = (function(_super) {
 
 });
 
+;require.register("collections/result_collection", function(exports, require, module) {
+var ResultCollection, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+module.exports = ResultCollection = (function(_super) {
+  __extends(ResultCollection, _super);
+
+  function ResultCollection() {
+    _ref = ResultCollection.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  ResultCollection.prototype.model = require('../models/result_model');
+
+  ResultCollection.prototype.url = 'search';
+
+  return ResultCollection;
+
+})(Backbone.Collection);
+
+});
+
 ;require.register("initialize", function(exports, require, module) {
 var app;
 
@@ -382,16 +405,39 @@ module.exports = DoctypeModel = (function(_super) {
 
 });
 
-;require.register("router", function(exports, require, module) {
-var AppView, DoctypeCollectionView, DoctypesView, Router, dcView, doctypesView, _ref,
+;require.register("models/result_model", function(exports, require, module) {
+var ResultModel, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-AppView = require('views/app_view');
+module.exports = ResultModel = (function(_super) {
+  __extends(ResultModel, _super);
+
+  function ResultModel() {
+    _ref = ResultModel.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  ResultModel.prototype.rootUrl = "search";
+
+  return ResultModel;
+
+})(Backbone.Model);
+
+});
+
+;require.register("router", function(exports, require, module) {
+var DoctypeCollectionView, DoctypesView, ResultCollectionView, Router, SearchView, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 DoctypesView = require('views/doctypes_view');
 
 DoctypeCollectionView = require('views/doctype_collection_view');
+
+SearchView = require('views/search_view');
+
+ResultCollectionView = require('views/result_collection_view');
 
 module.exports = Router = (function(_super) {
   __extends(Router, _super);
@@ -403,55 +449,33 @@ module.exports = Router = (function(_super) {
 
   Router.prototype.routes = {
     '': 'doctypes',
-    'doctypes': 'doctypes'
+    'doctypes': 'doctypes',
+    'search': 'search'
   };
 
   Router.prototype.redirectToDoctypes = function() {
     return this.navigate("/doctypes", true);
   };
 
-  Router.prototype.doctypes = function() {};
+  Router.prototype.doctypes = function() {
+    var dcView, doctypesView;
+    doctypesView = new DoctypesView();
+    doctypesView.render();
+    dcView = new DoctypeCollectionView();
+    return dcView.render();
+  };
+
+  Router.prototype.search = function() {
+    var rcView, searchView;
+    searchView = new SearchView();
+    searchView.render();
+    rcView = new ResultCollectionView();
+    return rcView.render();
+  };
 
   return Router;
 
 })(Backbone.Router);
-
-doctypesView = new DoctypesView();
-
-doctypesView.render();
-
-dcView = new DoctypeCollectionView();
-
-dcView.render();
-
-});
-
-;require.register("views/app_view", function(exports, require, module) {
-var AppView, BaseView, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-BaseView = require('../lib/base_view');
-
-module.exports = AppView = (function(_super) {
-  __extends(AppView, _super);
-
-  function AppView() {
-    _ref = AppView.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  AppView.prototype.el = 'body.application';
-
-  AppView.prototype.template = require('./templates/home');
-
-  AppView.prototype.afterRender = function() {
-    return console.log("write more code here !");
-  };
-
-  return AppView;
-
-})(BaseView);
 
 });
 
@@ -527,26 +551,22 @@ module.exports = DoctypeView = (function(_super) {
     'click .more-info': 'showDescription'
   };
 
+  DoctypeView.prototype.showDescription = function() {
+    return console.log('showDescription');
+  };
+
   return DoctypeView;
 
 })(View);
 
-({
-  showDescription: function() {
-    return console.log(event);
-  }
-});
-
 });
 
 ;require.register("views/doctypes_view", function(exports, require, module) {
-var BaseView, DoctypeCollectionView, DoctypesView, _ref,
+var BaseView, DoctypesView, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 BaseView = require('../lib/base_view');
-
-DoctypeCollectionView = require('views/doctype_collection_view');
 
 module.exports = DoctypesView = (function(_super) {
   __extends(DoctypesView, _super);
@@ -561,6 +581,103 @@ module.exports = DoctypesView = (function(_super) {
   DoctypesView.prototype.template = require('./templates/doctypes');
 
   return DoctypesView;
+
+})(BaseView);
+
+});
+
+;require.register("views/result_collection_view", function(exports, require, module) {
+var ResultCollection, ResultCollectionView, ResultView, ViewCollection, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+ViewCollection = require('../lib/view_collection');
+
+ResultCollection = require('../collections/result_collection');
+
+ResultView = require('./result_view');
+
+module.exports = ResultCollectionView = (function(_super) {
+  __extends(ResultCollectionView, _super);
+
+  function ResultCollectionView() {
+    _ref = ResultCollectionView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  ResultCollectionView.prototype.itemview = ResultView;
+
+  ResultCollectionView.prototype.collection = new ResultCollection();
+
+  ResultCollectionView.prototype.initialize = function() {
+    this.collectionEl = '#result-list';
+    ResultCollectionView.__super__.initialize.apply(this, arguments);
+    this.collection.fetch();
+    this.views = {};
+    return this.listenTo(this.collection, "reset", this.onReset);
+  };
+
+  return ResultCollectionView;
+
+})(ViewCollection);
+
+});
+
+;require.register("views/result_view", function(exports, require, module) {
+var ResultView, View, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+View = require('./../lib/view');
+
+module.exports = ResultView = (function(_super) {
+  __extends(ResultView, _super);
+
+  function ResultView() {
+    _ref = ResultView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  ResultView.prototype.tagName = 'div';
+
+  ResultView.prototype.className = 'result-list-item';
+
+  ResultView.prototype.render = function() {
+    return ResultView.__super__.render.call(this, {
+      test: this.model.get("test")
+    });
+  };
+
+  ResultView.prototype.template = function() {
+    return require('./templates/result');
+  };
+
+  return ResultView;
+
+})(View);
+
+});
+
+;require.register("views/search_view", function(exports, require, module) {
+var BaseView, SearchView, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+BaseView = require('../lib/base_view');
+
+module.exports = SearchView = (function(_super) {
+  __extends(SearchView, _super);
+
+  function SearchView() {
+    _ref = SearchView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  SearchView.prototype.el = '#content';
+
+  SearchView.prototype.template = require('./templates/search');
+
+  return SearchView;
 
 })(BaseView);
 
@@ -602,13 +719,25 @@ return buf.join("");
 };
 });
 
-;require.register("views/templates/home", function(exports, require, module) {
+;require.register("views/templates/result", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content"><h1>Cozy template</h1><h2>Welcome</h2><ul><li> <a href="https://github.com/mycozycloud/cozy-setup/wiki">Documentation</a></li><li> <a href="https://github.com/mycozycloud/cozy-setup/wiki/Getting-started">Getting Started</a></li><li> <a href="https://github.com/mycozycloud">Github</a></li></ul></div>');
+buf.push('<div>' + escape((interp = test) == null ? '' : interp) + '</div>');
+}
+return buf.join("");
+};
+});
+
+;require.register("views/templates/search", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<div class="container"><div class="row"><div class="span12"><div id="result-list"></div></div></div></div>');
 }
 return buf.join("");
 };

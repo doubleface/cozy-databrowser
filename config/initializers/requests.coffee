@@ -46,6 +46,15 @@ module.exports = (compound) ->
         if error
             console.log error
 
+    requests = []
+    requests.push (callback) -> #0 -> doctypes
+        ds.getDoctypes(callback)
+    async.parallel requests, (error, results) ->
+        if error
+            console.log error
+        else 
+            console.log(results[0])
+
             
     # All.defineFullRequest "getSumsByDoctype", getSumsByDoctype, (err) ->
     #     if err
