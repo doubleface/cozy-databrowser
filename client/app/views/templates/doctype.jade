@@ -1,3 +1,9 @@
+td.full
+	a(href='#search/all/#{name}') #{name}
+td 
+	- if (typeof(sum) === 'number'){
+		span #{sum}
+	- }
 td 
 	- if (typeof(metadoctype) === 'object'){
 	-	fields = metadoctype.fields[0]
@@ -8,6 +14,9 @@ td
 		span.label.label-primary.more-info  More info 
 			i.icon-plus-sign 
 		div.md-desc-wrapper
+			h5 
+				i.icon-question-sign 
+				|&nbsp;&nbsp;About #{name}
 			div.md-desc-container
 				strong General informations
 				br		
@@ -27,10 +36,4 @@ td
 							span #{fields[obj].displayName} : 
 								i #{fields[obj].description} 
 					- }
-	- }
-td.full
-	a(href='#search') #{name}
-td 
-	- if (typeof(sum) === 'number'){
-		span #{sum}
 	- }

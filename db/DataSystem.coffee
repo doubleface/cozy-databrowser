@@ -17,6 +17,8 @@ module.exports = class DataSystem
     DS_PORT : 9101
     PATH : {
         doctypes : '/doctypes'
+        request : '/request/'
+        all : '/all/'
         metadoctype_getallbyrelated : '/request/metadoctype/getallbyrelated/'
         metadoctype_getsumsbydoctype : '/request/metadoctype/getsumsbydoctype/'
     }

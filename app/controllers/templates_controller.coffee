@@ -46,5 +46,15 @@ action 'doctypes', ->
 
 #doctypes
 action 'search', ->
+	console.log(req.query)
+	if req.query? && req.query.range?
+		if req.query.range is 'all' and req.query.docType?
+			callback = (error, result) ->
+				if error					
+					res.send([{ 'no_result' : 'An error occurs during the search. Administrators was informed.' }])
+				else
+					res.send(result)
+			ds.getView(callback, DataSystem::PATH.request + req.query.docType + DataSystem::PATH.all)
 
-	res.send([{ 'test' : 'search route is ok' }])
+	else
+		res.send([{ 'no_result' : 'No result for now.' }])

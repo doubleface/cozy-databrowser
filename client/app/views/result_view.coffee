@@ -7,7 +7,8 @@ module.exports = class ResultView extends View
 
     render: ->
         super
-            test: @model.get("test")
+        	no_result : @model.get("no_result")
+        	value : @model.get("value")
 
     template: ->
         require './templates/result'

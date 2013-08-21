@@ -10,6 +10,6 @@ module.exports = class ResultCollectionView extends ViewCollection
 	initialize: ->		
 		@collectionEl = '#result-list'
 		super
-		@collection.fetch()		
+		@collection.fetch( {data: $.param(@options)})
 		@views = {}
 		@listenTo @collection, "reset",   @onReset

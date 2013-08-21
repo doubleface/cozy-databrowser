@@ -451,7 +451,7 @@ module.exports = Router = (function(_super) {
     '': 'doctypes',
     'doctypes': 'doctypes',
     'search': 'search',
-    'search/all/:doctype': 'search'
+    'search/all/:doctype': 'searchAllByDoctype'
   };
 
   Router.prototype.redirectToDoctypes = function() {
@@ -466,13 +466,24 @@ module.exports = Router = (function(_super) {
     return dcView.render();
   };
 
-  Router.prototype.search = function(doctype) {
+  Router.prototype.search = function() {
     var rcView, searchView;
     searchView = new SearchView();
     searchView.render();
-    rcView = new ResultCollectionView({
-      'arg': '1'
-    });
+    rcView = new ResultCollectionView();
+    return rcView.render();
+  };
+
+  Router.prototype.searchAllByDoctype = function(doctype) {
+    var options, rcView, searchView;
+    options = {};
+    if (doctype != null) {
+      options['range'] = 'all';
+      options['docType'] = doctype;
+    }
+    searchView = new SearchView();
+    searchView.render();
+    rcView = new ResultCollectionView(options);
     return rcView.render();
   };
 
@@ -630,7 +641,9 @@ module.exports = ResultCollectionView = (function(_super) {
   ResultCollectionView.prototype.initialize = function() {
     this.collectionEl = '#result-list';
     ResultCollectionView.__super__.initialize.apply(this, arguments);
-    this.collection.fetch();
+    this.collection.fetch({
+      data: $.param(this.options)
+    });
     this.views = {};
     return this.listenTo(this.collection, "reset", this.onReset);
   };
@@ -662,7 +675,8 @@ module.exports = ResultView = (function(_super) {
 
   ResultView.prototype.render = function() {
     return ResultView.__super__.render.call(this, {
-      test: this.model.get("test")
+      no_result: this.model.get("no_result"),
+      value: this.model.get("value")
     });
   };
 
@@ -707,7 +721,15 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<td> ');
+buf.push('<td class="full"><a');
+buf.push(attrs({ 'href':('#search/all/' + (name) + '') }, {"href":true}));
+buf.push('>' + escape((interp = name) == null ? '' : interp) + '</a></td><td> ');
+ if (typeof(sum) === 'number'){
+{
+buf.push('<span>' + escape((interp = sum) == null ? '' : interp) + '</span>');
+}
+ }
+buf.push('</td><td> ');
  if (typeof(metadoctype) === 'object'){
 	fields = metadoctype.fields[0]
 	nof = 0
@@ -715,19 +737,13 @@ buf.push('<td> ');
 		nof++;
 	}
 {
-buf.push('<span class="label label-primary more-info"> More info <i class="icon-plus-sign"> </i></span><div class="md-desc-wrapper"><div class="md-desc-container"><strong>General informations</strong><br/>Display Name : <i>' + escape((interp = metadoctype.displayName) == null ? '' : interp) + '</i><br/>Related doctype : <i>' + escape((interp = metadoctype.related) == null ? '' : interp) + '	</i></div><div class="md-desc-container"><strong>Fields informations</strong><br/>Number of fields : <i>' + escape((interp = nof) == null ? '' : interp) + '</i><ul>');
+buf.push('<span class="label label-primary more-info"> More info <i class="icon-plus-sign"> </i></span><div class="md-desc-wrapper"><h5> <i class="icon-question-sign"> </i>&nbsp;&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h5><div class="md-desc-container"><strong>General informations</strong><br/>Display Name : <i>' + escape((interp = metadoctype.displayName) == null ? '' : interp) + '</i><br/>Related doctype : <i>' + escape((interp = metadoctype.related) == null ? '' : interp) + '	</i></div><div class="md-desc-container"><strong>Fields informations</strong><br/>Number of fields : <i>' + escape((interp = nof) == null ? '' : interp) + '</i><ul>');
  for (var obj in fields) {
 {
 buf.push('<li><span>' + escape((interp = fields[obj].displayName) == null ? '' : interp) + ' : <i>' + escape((interp = fields[obj].description) == null ? '' : interp) + ' </i></span></li>');
 }
  }
 buf.push('</ul></div></div>');
-}
- }
-buf.push('</td><td class="full"><a href="#search">' + escape((interp = name) == null ? '' : interp) + '</a></td><td> ');
- if (typeof(sum) === 'number'){
-{
-buf.push('<span>' + escape((interp = sum) == null ? '' : interp) + '</span>');
 }
  }
 buf.push('</td>');
@@ -742,7 +758,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Doctypes</h2><p>Here you can find the full list of document types present on your cozy</p></div></div></div></div><div class="container"><div class="row"><div class="span12"><h3 class="title">My current doctype list			</h3><div id="doctypes-container"><table class="table"><thead>						<th>Description</th><th>Name</th><th>Number</th></thead><tbody id="doctypes-list"></tbody></table></div></div></div></div>');
+buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Doctypes</h2><p>Here you can find the full list of document types present on your cozy</p></div></div></div></div><div class="container"><div class="row"><div class="span12"><h3 class="title">My current doctype list	</h3></div><div class="span11 offset1">	<div id="doctypes-container"><table class="table"><thead>						<th>Name</th><th>Number</th><th>Description</th></thead><tbody id="doctypes-list"></tbody></table></div></div></div></div>');
 }
 return buf.join("");
 };
@@ -754,7 +770,16 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div>' + escape((interp = test) == null ? '' : interp) + '</div>');
+ if (no_result) {
+{
+buf.push('<div>' + escape((interp = no_result) == null ? '' : interp) + '</div>');
+}
+ }
+ else if (value) {
+{
+buf.push('<div>' + escape((interp = value) == null ? '' : interp) + '</div>');
+}
+ }
 }
 return buf.join("");
 };

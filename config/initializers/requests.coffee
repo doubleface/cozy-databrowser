@@ -15,7 +15,8 @@ module.exports = (compound) ->
     #     if err
     #         compound.logger.write "Request Metadoctype#All, cannot be created"
     #         compound.logger.write err
-    
+
+
     getAllByRelated = {
         map : (doc) ->
             if doc.docType is 'Metadoctype'
@@ -53,7 +54,24 @@ module.exports = (compound) ->
         if error
             console.log error
         else 
-            console.log(results[0])
+            setupRequestsAll = []
+            for dt in results[0]
+                mapAll =  {
+                    map : (doc) ->
+                        if doc.docType?
+                            if doc.docType.toLowerCase() is dt.toLowerCase()
+                                emit doc.id, doc 
+                }
+                pathAll = DataSystem::PATH.request + dt + DataSystem::PATH.all           
+                setupRequestsAll.push (callback) -> 
+                    ds.manageRequest(callback, pathAll, mapAll)
+            if setupRequestsAll.length > 0
+                async.parallel setupRequestsAll, (error, results) ->
+                    if error
+                        console.log error
+                    #else 
+                        #console.log(results.length + 'requests all added')
+
 
             
     # All.defineFullRequest "getSumsByDoctype", getSumsByDoctype, (err) ->
