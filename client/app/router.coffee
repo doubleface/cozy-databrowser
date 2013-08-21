@@ -9,6 +9,7 @@ module.exports = class Router extends Backbone.Router
         '': 'doctypes'
         'doctypes' : 'doctypes'
         'search' : 'search'
+        'search/all/:doctype' : 'search'
 
     redirectToDoctypes: ->
         this.navigate("/doctypes", true)
@@ -19,8 +20,8 @@ module.exports = class Router extends Backbone.Router
         dcView = new DoctypeCollectionView()
         dcView.render()
 
-    search: ->
+    search: (doctype) ->
         searchView = new SearchView()
         searchView.render()
-        rcView = new ResultCollectionView()
+        rcView = new ResultCollectionView({'arg' :'1'})
         rcView.render()

@@ -450,7 +450,8 @@ module.exports = Router = (function(_super) {
   Router.prototype.routes = {
     '': 'doctypes',
     'doctypes': 'doctypes',
-    'search': 'search'
+    'search': 'search',
+    'search/all/:doctype': 'search'
   };
 
   Router.prototype.redirectToDoctypes = function() {
@@ -465,11 +466,13 @@ module.exports = Router = (function(_super) {
     return dcView.render();
   };
 
-  Router.prototype.search = function() {
+  Router.prototype.search = function(doctype) {
     var rcView, searchView;
     searchView = new SearchView();
     searchView.render();
-    rcView = new ResultCollectionView();
+    rcView = new ResultCollectionView({
+      'arg': '1'
+    });
     return rcView.render();
   };
 
@@ -551,8 +554,23 @@ module.exports = DoctypeView = (function(_super) {
     'click .more-info': 'showDescription'
   };
 
-  DoctypeView.prototype.showDescription = function() {
-    return console.log('showDescription');
+  DoctypeView.prototype.showDescription = function(e) {
+    var descWrapper, jqObj, newTd, newTr;
+    jqObj = $(e.currentTarget);
+    if (jqObj.hasClass('label-primary')) {
+      descWrapper = jqObj.parent().children('.md-desc-wrapper');
+      newTd = $(document.createElement('td')).attr('colspan', '3');
+      newTr = $(document.createElement('tr')).addClass('bg-gray');
+      descWrapper.appendTo(newTd).show();
+      newTd.appendTo(newTr);
+      jqObj.closest("." + this.className).after(newTr);
+      return jqObj.removeClass('label-primary').addClass('label-danger').empty().append(' Hide info <i class="icon-minus-sign"></i> ');
+    } else {
+      descWrapper = jqObj.closest("." + this.className).next("tr").find('.md-desc-wrapper').hide();
+      jqObj.parent().append(descWrapper);
+      jqObj.closest("." + this.className).next("tr").remove();
+      return jqObj.removeClass('label-danger').addClass('label-primary').empty().append(' More info <i class="icon-plus-sign"></i> ');
+    }
   };
 
   return DoctypeView;
@@ -691,11 +709,22 @@ with (locals || {}) {
 var interp;
 buf.push('<td> ');
  if (typeof(metadoctype) === 'object'){
+	fields = metadoctype.fields[0]
+	nof = 0
+	for (var obj in fields) {
+		nof++;
+	}
 {
-buf.push('<span class="label label-primary more-info">more info</span>');
+buf.push('<span class="label label-primary more-info"> More info <i class="icon-plus-sign"> </i></span><div class="md-desc-wrapper"><div class="md-desc-container"><strong>General informations</strong><br/>Display Name : <i>' + escape((interp = metadoctype.displayName) == null ? '' : interp) + '</i><br/>Related doctype : <i>' + escape((interp = metadoctype.related) == null ? '' : interp) + '	</i></div><div class="md-desc-container"><strong>Fields informations</strong><br/>Number of fields : <i>' + escape((interp = nof) == null ? '' : interp) + '</i><ul>');
+ for (var obj in fields) {
+{
+buf.push('<li><span>' + escape((interp = fields[obj].displayName) == null ? '' : interp) + ' : <i>' + escape((interp = fields[obj].description) == null ? '' : interp) + ' </i></span></li>');
 }
  }
-buf.push('</td><td class="full"><a href="#research">' + escape((interp = name) == null ? '' : interp) + '</a></td><td> ');
+buf.push('</ul></div></div>');
+}
+ }
+buf.push('</td><td class="full"><a href="#search">' + escape((interp = name) == null ? '' : interp) + '</a></td><td> ');
  if (typeof(sum) === 'number'){
 {
 buf.push('<span>' + escape((interp = sum) == null ? '' : interp) + '</span>');
@@ -713,7 +742,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="container"><div class="row"><div class="span12"><h3 class="title">My current doctype list			</h3><div id="doctypes-container"><table class="table"><thead>						<th>Description</th><th>Name</th><th>Number</th></thead><tbody id="doctypes-list"></tbody></table></div></div></div></div>');
+buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Doctypes</h2><p>Here you can find the full list of document types present on your cozy</p></div></div></div></div><div class="container"><div class="row"><div class="span12"><h3 class="title">My current doctype list			</h3><div id="doctypes-container"><table class="table"><thead>						<th>Description</th><th>Name</th><th>Number</th></thead><tbody id="doctypes-list"></tbody></table></div></div></div></div>');
 }
 return buf.join("");
 };
@@ -737,7 +766,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="container"><div class="row"><div class="span12"><div id="result-list"></div></div></div></div>');
+buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div></div></div></div><div class="container"><div class="row"><div class="span12"><div id="result-list"></div></div></div></div>');
 }
 return buf.join("");
 };

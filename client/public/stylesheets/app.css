@@ -691,6 +691,20 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
 @import '_layout'
 @import '_responsive'
 */
+.bg-gray {
+  background-color: #ddd;
+}
+.md-desc-wrapper {
+  display: none;
+}
+.md-desc-container {
+  float: left;
+  margin: 0 0 0 30px;
+  padding: 2px 0;
+}
+.more-info {
+  cursor: pointer;
+}
 
 .chromeframe { margin: 0.2em 0; background: #ccc; color: #000; padding: 0.2em 0; }
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; *line-height: 0; }

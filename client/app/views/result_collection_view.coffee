@@ -7,7 +7,7 @@ module.exports = class ResultCollectionView extends ViewCollection
 	itemview: ResultView
 	collection: new ResultCollection()
 
-	initialize: ->
+	initialize: ->		
 		@collectionEl = '#result-list'
 		super
 		@collection.fetch()		

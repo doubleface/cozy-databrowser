@@ -1,9 +1,35 @@
 td 
 	- if (typeof(metadoctype) === 'object'){
-		span.label.label-primary.more-info more info
+	-	fields = metadoctype.fields[0]
+	-	nof = 0
+	-	for (var obj in fields) {
+	-		nof++;
+	-	}
+		span.label.label-primary.more-info  More info 
+			i.icon-plus-sign 
+		div.md-desc-wrapper
+			div.md-desc-container
+				strong General informations
+				br		
+				|Display Name : 
+				i #{metadoctype.displayName}
+				br
+				|Related doctype : 
+				i #{metadoctype.related}	
+			div.md-desc-container
+				strong Fields informations
+				br 
+				|Number of fields : 
+				i #{nof}
+				ul
+					- for (var obj in fields) {
+						li
+							span #{fields[obj].displayName} : 
+								i #{fields[obj].description} 
+					- }
 	- }
 td.full
-	a(href='#research') #{name}
+	a(href='#search') #{name}
 td 
 	- if (typeof(sum) === 'number'){
 		span #{sum}
