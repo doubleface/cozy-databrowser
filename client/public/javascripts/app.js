@@ -525,9 +525,19 @@ module.exports = DoctypeView = (function(_super) {
     return require('./templates/doctype');
   };
 
+  DoctypeView.prototype.events = {
+    'click .more-info': 'showDescription'
+  };
+
   return DoctypeView;
 
 })(View);
+
+({
+  showDescription: function() {
+    return console.log(event);
+  }
+});
 
 });
 
@@ -567,11 +577,11 @@ var interp;
 buf.push('<td> ');
  if (typeof(metadoctype) === 'object'){
 {
-buf.push('<span class="label label-primary">more info</span>');
+buf.push('<span class="label label-primary more-info">more info</span>');
 }
  }
 buf.push('</td><td class="full"><a href="/#research">' + escape((interp = name) == null ? '' : interp) + '</a></td><td> ');
- if (typeof(metadoctype) === 'object'){
+ if (typeof(sum) === 'number'){
 {
 buf.push('<span>' + escape((interp = sum) == null ? '' : interp) + '</span>');
 }
@@ -588,7 +598,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="container"><div class="row"><div class="span12"><h3 class="title">My current doctype list			</h3><div id="doctypes-container"><table class="table"><thead>						<th>description</th><th>Name</th><th>entry</th></thead><tbody id="doctypes-list"></tbody></table></div></div></div></div>');
+buf.push('<div class="container"><div class="row"><div class="span12"><h3 class="title">My current doctype list			</h3><div id="doctypes-container"><table class="table"><thead>						<th>Description</th><th>Name</th><th>Number</th></thead><tbody id="doctypes-list"></tbody></table></div></div></div></div>');
 }
 return buf.join("");
 };

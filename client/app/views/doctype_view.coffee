@@ -13,3 +13,11 @@ module.exports = class DoctypeView extends View
 
     template: ->
         require './templates/doctype'
+
+    events : {
+    	'click .more-info' : 'showDescription'
+    }
+
+	showDescription: () ->
+		console.log(event)
+		#jqObj.closest("." + @className).after('<tr><td colspan="3">test</td></tr>')
