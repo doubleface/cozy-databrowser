@@ -5,12 +5,11 @@ DoctypeCollectionView = require 'views/doctype_collection_view'
 module.exports = class Router extends Backbone.Router
 
     routes:
-        '': 'main'
+        '': 'doctypes'
         'doctypes' : 'doctypes'
 
-    main: ->
-        mainView = new AppView()
-        mainView.render()
+    redirectToDoctypes: ->
+        this.navigate("/doctypes", true)
 
     doctypes: ->
 		doctypesView = new DoctypesView()

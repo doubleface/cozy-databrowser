@@ -402,14 +402,12 @@ module.exports = Router = (function(_super) {
   }
 
   Router.prototype.routes = {
-    '': 'main',
+    '': 'doctypes',
     'doctypes': 'doctypes'
   };
 
-  Router.prototype.main = function() {
-    var mainView;
-    mainView = new AppView();
-    return mainView.render();
+  Router.prototype.redirectToDoctypes = function() {
+    return this.navigate("/doctypes", true);
   };
 
   Router.prototype.doctypes = function() {};
@@ -580,7 +578,7 @@ buf.push('<td> ');
 buf.push('<span class="label label-primary more-info">more info</span>');
 }
  }
-buf.push('</td><td class="full"><a href="/#research">' + escape((interp = name) == null ? '' : interp) + '</a></td><td> ');
+buf.push('</td><td class="full"><a href="#research">' + escape((interp = name) == null ? '' : interp) + '</a></td><td> ');
  if (typeof(sum) === 'number'){
 {
 buf.push('<span>' + escape((interp = sum) == null ? '' : interp) + '</span>');

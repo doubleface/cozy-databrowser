@@ -15,8 +15,11 @@ module.exports = class DataSystem
     #------------------ PROTOTYPE CONSTANTS ----------------
     DS_URL : "http://127.0.0.1"
     DS_PORT : 9101
-    PATH : 
-    	doctypes : "/doctypes"
+    PATH : {
+        doctypes : '/doctypes'
+        metadoctype_getallbyrelated : '/request/metadoctype/getallbyrelated/'
+        metadoctype_getsumsbydoctype : '/request/metadoctype/getsumsbydoctype/'
+    }
 
          
     #------------- CLASS DIRECT PROCESS ----------------
@@ -29,7 +32,7 @@ module.exports = class DataSystem
         #setted by coffeescript contructor function 
         
         #------ REQUIRED   
-        this.jsonClient = require('request-json').JsonClient     
+        this.jsonClient = require('request-json').JsonClient           
         
         #------ SETTED
         #this.bParamSetted = false
@@ -51,15 +54,33 @@ module.exports = class DataSystem
     # create : -> 
     #     console.log(@sParam)
 
-    reqDoctypes : (callback) -> 
-        this.getData @DS_URL, @DS_PORT, @PATH.doctypes, callback
+    manageRequest : (callback, path, viewFunctions =  {}) ->
+        for key, func of viewFunctions
+            viewFunctions[key] = func.toString()
+        this.putData callback, @DS_URL, @DS_PORT, path, viewFunctions
 
-    getData : (url, port, path, callback)->
+    getView : (callback, path, params = {}) ->
+        this.postData callback, @DS_URL, @DS_PORT, path, params
+
+    getDoctypes : (callback) -> 
+        this.getData callback, @DS_URL, @DS_PORT, @PATH.doctypes
+
+    putData : (callback, url, port, path, params = {})->
         client = new @jsonClient url +  ':'  + port
-        client.get path, (error, response, body) ->
+        client.put path, params, (error, response, body) ->
 
-            #needed var
-            jsonRes = []            
+            #return error     
+            if error
+                console.log error
+                callback true
+
+            #return result
+            else  
+                callback false, body
+
+    getData : (callback, url, port, path)->
+        client = new @jsonClient url +  ':'  + port
+        client.get path, (error, response, body) ->         
 
             #return and log error
             if error
@@ -68,8 +89,20 @@ module.exports = class DataSystem
             
             #return result
             else  
-                jsonRes = body
-                callback false, jsonRes   
+                callback false, body  
+
+    postData : (callback, url, port, path, params = {})->
+        client = new @jsonClient url +  ':'  + port
+        client.post path, params, (error, response, body) ->
+
+            #return error     
+            if error
+                console.log error
+                callback true
+
+            #return result
+            else  
+                callback false, body
     
     applyModelRequest : (callback, modelName, requestName, requestParams) ->
         requestParams = requestParams || {}

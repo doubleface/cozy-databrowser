@@ -5,17 +5,22 @@ DataSystem = require('./db/DataSystem')
 ds = new DataSystem(compound.models)
 async = require('async')
 
+action 'index', ->
+	redirect('doctypes')
+
 #doctypes
 action 'doctypes', ->
 
 #prepare request
 	requests = []
 	requests.push (callback) -> #0 -> doctypes
-		ds.reqDoctypes(callback)
+		ds.getDoctypes(callback)
 	requests.push (callback) -> #1 -> metadoctypes
-		ds.applyModelRequest(callback, 'Metadoctype', 'getAllByRelated')
+		ds.getView(callback, DataSystem::PATH.metadoctype_getallbyrelated)
+		#ds.applyModelRequest(callback, 'Metadoctype', 'getAllByRelated')
 	requests.push (callback) -> #2 -> sums
-		ds.applyModelRequest(callback, 'All', 'getSumsByDoctype', {group : true})
+		ds.getView(callback, DataSystem::PATH.metadoctype_getsumsbydoctype, {group : true})
+		#ds.applyModelRequest(callback, 'All', 'getSumsByDoctype', {group : true})
 	
 	#agregate callback 
 	async.parallel requests, (error, results) ->
@@ -29,12 +34,12 @@ action 'doctypes', ->
 				newObj['name'] = name
 				
 				for metadoctype in results[1]
-					if metadoctype.related.toLowerCase() is name
-						newObj['metadoctype'] = metadoctype
+					if metadoctype.key? && metadoctype.key.toLowerCase() is name
+						newObj['metadoctype'] = metadoctype.value
 				
 				for info in results[2]
-					if info.docType.toLowerCase() is name
-						newObj['sum'] = info.sum
+					if info.key? && info.key.toLowerCase() is name
+						newObj['sum'] = info.value
 				jsonRes.push(newObj)
 
 			res.send(jsonRes)
