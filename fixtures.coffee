@@ -308,6 +308,9 @@ setupRequests.push (callback) ->
     client.put 'request/metadoctype/all/destroy/', {}, (err, res, body) ->
         callback(err, body)
 setupRequests.push (callback) ->
+    client.put 'request/mail/all/destroy/', {}, (err, res, body) ->
+        callback(err, body)
+setupRequests.push (callback) ->
     client.put 'request/alarm/all/', all, (err, res, body) ->
         callback(err, body)
 setupRequests.push (callback) ->
@@ -319,6 +322,13 @@ setupRequests.push (callback) ->
 setupRequests.push (callback) ->
     client.put 'request/metadoctype/all/', all, (err, res, body) ->
         callback(err, body)
+setupRequests.push (callback) ->
+    client.put 'request/task/all/', all, (err, res, body) ->
+        callback(err, body)
+setupRequests.push (callback) ->
+    client.put 'request/mail/all/', all, (err, res, body) ->
+        callback(err, body)
+
 
 
 # We run the request with async (parallel execution, wait for all the callbacks)

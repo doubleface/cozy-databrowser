@@ -50,16 +50,20 @@ module.exports = class DataSystem
         
     #-------------- OBJECT METHODS ----------------------
     #------CONSTANT GETTERS
-    #use coffeescript :: (ex : DataSystem::CLASS_COUNT)
+    #use coffeescript :: (ex : DataSystem::DS_URL)
     
     #------METHODS
-    # create : -> 
-    #     console.log(@sParam)
+    manageRequest : (callback, path, viewFunctions =  {}, pattern = '') ->
+        that = this
 
-    manageRequest : (callback, path, viewFunctions =  {}) ->
+        # convert map/reduce to string and replace optional pattern
         for key, func of viewFunctions
             viewFunctions[key] = func.toString()
-        this.putData callback, @DS_URL, @DS_PORT, path, viewFunctions
+            if pattern isnt ''
+                viewFunctions[key] = viewFunctions[key].replace '__pattern__', pattern        
+        
+        #create request
+        that.putData callback, that.DS_URL, that.DS_PORT, path, viewFunctions
 
     getView : (callback, path, params = {}) ->
         this.postData callback, @DS_URL, @DS_PORT, path, params
@@ -67,6 +71,7 @@ module.exports = class DataSystem
     getDoctypes : (callback) -> 
         this.getData callback, @DS_URL, @DS_PORT, @PATH.doctypes
 
+    
     putData : (callback, url, port, path, params = {})->
         client = new @jsonClient url +  ':'  + port
         client.put path, params, (error, response, body) ->

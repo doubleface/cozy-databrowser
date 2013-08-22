@@ -54,51 +54,32 @@ module.exports = (compound) ->
         if error
             console.log error
         else 
+
+            #needed var
             setupRequestsAll = []
-            for dt in results[0]
-                mapAll =  {
+            globalCount = 0
+            pathAll = []
+            patternAll = [] 
+            mapAll =  [] 
+
+            #prepare parameters
+            for dt, index in results[0]
+                pathAll[index] = DataSystem::PATH.request + dt.toLowerCase() + DataSystem::PATH.all           
+                patternAll[index] = dt.toLowerCase() 
+                mapAll[index] =  {
                     map : (doc) ->
                         if doc.docType?
-                            if doc.docType.toLowerCase() is dt.toLowerCase()
-                                emit doc.id, doc 
+                            if doc.docType.toLowerCase() is '__pattern__'
+                                emit doc._id, doc 
                 }
-                pathAll = DataSystem::PATH.request + dt + DataSystem::PATH.all           
-                setupRequestsAll.push (callback) -> 
-                    ds.manageRequest(callback, pathAll, mapAll)
+
+                #prepare request        
+                setupRequestsAll.push (callback) ->                     
+                    ds.manageRequest(callback, pathAll[globalCount], mapAll[globalCount], patternAll[globalCount])
+                    globalCount++
+
+            #agregate callback
             if setupRequestsAll.length > 0
                 async.parallel setupRequestsAll, (error, results) ->
                     if error
-                        console.log error
-                    #else 
-                        #console.log(results.length + 'requests all added')
-
-
-            
-    # All.defineFullRequest "getSumsByDoctype", getSumsByDoctype, (err) ->
-    #     if err
-    #         compound.logger.write "Request All#getSumsByDoctype, cannot be created"
-    #         compound.logger.write err
-
-    
-    # Metadoctype.defineRequest "getAllByRelated", getAllByRelated, (err) ->
-    #     if err
-    #         compound.logger.write "Request Metadoctype#getAllByRelated, cannot be created"
-    #         compound.logger.write err
-
-    # Metadoctype.request "bydoctypename", null, (err) ->
-    #     if err
-    #         compound.logger.write "Request Metadoctype#bydoctypename, cannot be created"
-    #         compound.logger.write err
-
-# var sums = {};
-# function (doc) {
-#   sums[doc.docType.toLowerCase()] = sums[doc.docType.toLowerCase()] || 0;
-#   sums[doc.docType.toLowerCase()]++;
-
-#   if (doc.docType === "Metadoctype") {
-#     filter = function (doc) {
-#       return emit (doc.related.toLowerCase(), [doc, sums[doc.related.toLowerCase()]]);
-#     };
-#     filter(doc);
-#   }
-# }
+                        console.log error               
