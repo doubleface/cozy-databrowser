@@ -1,9 +1,10 @@
 load 'application'
 
 #instanciate DataSystem
-DataSystem = require('./db/DataSystem')
-ds = new DataSystem(compound.models)
-async = require('async')
+DataSystem = require './db/DataSystem'
+ds = new DataSystem compound.models
+oObjectHelper = require './noesis-tools/oObjectHelper'
+async = require 'async'
 
 #doctypes
 action 'doctypes', ->
@@ -13,12 +14,14 @@ action 'doctypes', ->
 	requests.push (callback) -> #0 -> doctypes
 		ds.getDoctypes(callback)
 	requests.push (callback) -> #1 -> metadoctypes
-		ds.getView(callback, DataSystem::PATH.metadoctype_getallbyrelated)
+		ds.getView(callback, DataSystem::PATH.metadoctype.getallbyrelated)
 		#ds.applyModelRequest(callback, 'Metadoctype', 'getAllByRelated')
 	requests.push (callback) -> #2 -> sums
-		ds.getView(callback, DataSystem::PATH.metadoctype_getsumsbydoctype, {group : true})
+		ds.getView(callback, DataSystem::PATH.common.getsumsbydoctype, {group : true})
 		#ds.applyModelRequest(callback, 'All', 'getSumsByDoctype', {group : true})
-	
+	requests.push (callback) -> #3 -> permissions
+		ds.getView(callback, DataSystem::PATH.application.getpermissions)
+
 	#agregate callback 
 	async.parallel requests, (error, results) ->
 		jsonRes = []
@@ -27,11 +30,14 @@ action 'doctypes', ->
 			console.log error
 		else
 			for name in results[0]
-				newObj = {}
 
-				#add name
-				newObj['name'] = name
-				
+				#prepare json object
+				newObj = {
+					'name' : name
+					'sum' : 0
+					'app' : []
+				}
+			
 				#add metadoctypes
 				for metadoctype in results[1]
 					if metadoctype.key? && metadoctype.key.toLowerCase() is name.toLowerCase()
@@ -40,10 +46,15 @@ action 'doctypes', ->
 				#add sums
 				for info in results[2]					
 					if info.key? and info.key.toLowerCase() is name.toLowerCase()
-						newObj['sum'] = info.value
-				if not newObj['sum']
-					newObj['sum'] = 0
+						newObj['sum'] = info.value					
+
+				#add permissions
+				for permissions in results[3]
+					permissions = oObjectHelper.convertIndexesToLowerCase permissions 
+					if permissions.value? and permissions.value[name]?
+						newObj['app'].push(permissions.key)
 				jsonRes.push(newObj)
+
 
 			#send json
 			res.send(jsonRes)

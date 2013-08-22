@@ -19,8 +19,12 @@ module.exports = class DataSystem
         doctypes : '/doctypes'
         request : '/request/'
         all : '/all/'
-        metadoctype_getallbyrelated : '/request/metadoctype/getallbyrelated/'
-        metadoctype_getsumsbydoctype : '/request/metadoctype/getsumsbydoctype/'
+        common :
+            getsumsbydoctype : '/request/common/getsumsbydoctype/'
+        metadoctype :
+            getallbyrelated : '/request/metadoctype/getallbyrelated/'  
+        application :
+            getpermissions : '/request/application/getpermissions/'   
     }
 
          

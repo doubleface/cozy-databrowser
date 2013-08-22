@@ -427,9 +427,11 @@ module.exports = ResultModel = (function(_super) {
 });
 
 ;require.register("router", function(exports, require, module) {
-var DoctypeCollectionView, DoctypesView, ResultCollectionView, Router, SearchView, _ref,
+var DoctypeCollectionView, DoctypesView, NavView, ResultCollectionView, Router, SearchView, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+NavView = require('views/nav_view');
 
 DoctypesView = require('views/doctypes_view');
 
@@ -459,7 +461,8 @@ module.exports = Router = (function(_super) {
   };
 
   Router.prototype.doctypes = function() {
-    var dcView, doctypesView;
+    var dcView, doctypesView, navView;
+    navView = new NavView();
     doctypesView = new DoctypesView();
     doctypesView.render();
     dcView = new DoctypeCollectionView();
@@ -467,7 +470,8 @@ module.exports = Router = (function(_super) {
   };
 
   Router.prototype.search = function() {
-    var rcView, searchView;
+    var navView, rcView, searchView;
+    navView = new NavView();
     searchView = new SearchView();
     searchView.render();
     rcView = new ResultCollectionView();
@@ -475,7 +479,8 @@ module.exports = Router = (function(_super) {
   };
 
   Router.prototype.searchAllByDoctype = function(doctype) {
-    var options, rcView, searchView;
+    var navView, options, rcView, searchView;
+    navView = new NavView();
     options = {};
     if (doctype != null) {
       options['range'] = 'all';
@@ -553,7 +558,8 @@ module.exports = DoctypeView = (function(_super) {
     return DoctypeView.__super__.render.call(this, {
       name: this.model.get("name"),
       metadoctype: this.model.get("metadoctype"),
-      sum: this.model.get("sum")
+      sum: this.model.get("sum"),
+      app: this.model.get("app")
     });
   };
 
@@ -610,6 +616,54 @@ module.exports = DoctypesView = (function(_super) {
   DoctypesView.prototype.template = require('./templates/doctypes');
 
   return DoctypesView;
+
+})(BaseView);
+
+});
+
+;require.register("views/nav_view", function(exports, require, module) {
+var BaseView, NavView, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+BaseView = require('../lib/base_view');
+
+module.exports = NavView = (function(_super) {
+  __extends(NavView, _super);
+
+  function NavView() {
+    _ref = NavView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  NavView.prototype.el = 'body.application';
+
+  NavView.prototype.titles = {
+    '': '#doctypes',
+    'doctypes': '#doctypes',
+    'search': '#search',
+    'searchAllByDoctype': '#search'
+  };
+
+  NavView.prototype.initialize = function() {
+    return Backbone.history.on('route', function(source, path) {
+      return this.render(path);
+    }, this);
+  };
+
+  NavView.prototype.render = function(path) {
+    var that;
+    that = this;
+    return $('.nav > li').each(function() {
+      $(this).removeClass('active');
+      $(this).children('a').blur();
+      if ($(this).children('a').attr('href') === that.titles[path]) {
+        return $(this).addClass('active');
+      }
+    });
+  };
+
+  return NavView;
 
 })(BaseView);
 
@@ -721,29 +775,47 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<td class="full"><a');
+buf.push('<td class="full firstLetterUp"><a');
 buf.push(attrs({ 'href':('#search/all/' + (name) + '') }, {"href":true}));
-buf.push('>' + escape((interp = name) == null ? '' : interp) + '</a></td><td> ');
+buf.push('>' + escape((interp = name) == null ? '' : interp) + '</a></td><td>');
  if (typeof(sum) === 'number'){
 {
 buf.push('<span>' + escape((interp = sum) == null ? '' : interp) + '</span>');
 }
  }
 buf.push('</td><td> ');
- if (typeof(metadoctype) === 'object'){
-	fields = metadoctype.fields[0]
-	nof = 0
-	for (var obj in fields) {
-		nof++;
-	}
+ if (typeof(metadoctype) === 'object' || app.length > 0){
 {
-buf.push('<span class="label label-primary more-info"> More info <i class="icon-plus-sign"> </i></span><div class="md-desc-wrapper"><h5> <i class="icon-question-sign"> </i>&nbsp;&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h5><div class="md-desc-container"><strong>General informations</strong><br/>Display Name : <i>' + escape((interp = metadoctype.displayName) == null ? '' : interp) + '</i><br/>Related doctype : <i>' + escape((interp = metadoctype.related) == null ? '' : interp) + '	</i></div><div class="md-desc-container"><strong>Fields informations</strong><br/>Number of fields : <i>' + escape((interp = nof) == null ? '' : interp) + '</i><ul>');
- for (var obj in fields) {
+buf.push('<span class="label label-primary more-info"> More info <i class="icon-plus-sign"> </i></span><div class="md-desc-wrapper"><h5> <i class="icon-question-sign"> </i>&nbsp;&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h5>');
+ if (app.length > 0) {
 {
-buf.push('<li><span>' + escape((interp = fields[obj].displayName) == null ? '' : interp) + ' : <i>' + escape((interp = fields[obj].description) == null ? '' : interp) + ' </i></span></li>');
+buf.push('<div class="md-desc-container"><strong>Applications using it :</strong><ul class="sober-list">');
+ for (var index in app) {
+{
+buf.push('<li><i class="icon-download-alt"></i><span>' + escape((interp = app[index]) == null ? '' : interp) + '</span></li>');
 }
  }
-buf.push('</ul></div></div>');
+buf.push('</ul></div>');
+}
+}
+ if (typeof(metadoctype) === 'object') {
+{
+buf.push('<div class="md-desc-container"><strong>Fields informations :</strong><ul class="sober-list">');
+ var fields = metadoctype.fields[0];
+ for (var obj in fields) {
+{
+buf.push('<li><i class="icon-tag"></i><span>' + escape((interp = fields[obj].displayName) == null ? '' : interp) + ' - <i>' + escape((interp = fields[obj].description) == null ? '' : interp) + ' </i></span></li>');
+}
+ }
+buf.push('</ul></div>');
+}
+ }
+buf.push('</div>');
+}
+ }
+ else {
+{
+buf.push('<i>No information available</i>');
 }
  }
 buf.push('</td>');

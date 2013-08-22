@@ -692,7 +692,7 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
 @import '_responsive'
 */
 .bg-gray {
-  background-color: #ddd;
+  background-color: #f0f3f7;
 }
 .md-desc-wrapper {
   display: none;
@@ -704,6 +704,19 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
 }
 .more-info {
   cursor: pointer;
+}
+.sober-list {
+  list-style-type: none;
+}
+.sober-list i[class*="icon"] {
+  margin-right: 5px;
+  line-height: 1;
+}
+#main-nav i[class*="icon"] {
+  line-height: 0.7;
+}
+.firstLetterUp:first-letter {
+  text-transform: uppercase;
 }
 
 .chromeframe { margin: 0.2em 0; background: #ccc; color: #000; padding: 0.2em 0; }

@@ -1,3 +1,4 @@
+NavView = require 'views/nav_view'
 DoctypesView = require 'views/doctypes_view'
 DoctypeCollectionView = require 'views/doctype_collection_view'
 SearchView = require 'views/search_view'
@@ -15,18 +16,21 @@ module.exports = class Router extends Backbone.Router
         this.navigate("/doctypes", true)
 
     doctypes: ->
+        navView = new NavView()
         doctypesView = new DoctypesView()
         doctypesView.render()	
         dcView = new DoctypeCollectionView()
         dcView.render()
 
     search: ->
+        navView = new NavView()
         searchView = new SearchView()
         searchView.render()
         rcView = new ResultCollectionView()
         rcView.render()
 
     searchAllByDoctype : (doctype) ->
+        navView = new NavView()
         options = {}
         if doctype?
             options['range'] = 'all'

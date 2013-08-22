@@ -1,39 +1,41 @@
-td.full
+td.full.firstLetterUp
 	a(href='#search/all/#{name}') #{name}
-td 
+td
 	- if (typeof(sum) === 'number'){
 		span #{sum}
 	- }
 td 
-	- if (typeof(metadoctype) === 'object'){
-	-	fields = metadoctype.fields[0]
-	-	nof = 0
-	-	for (var obj in fields) {
-	-		nof++;
-	-	}
+	- if (typeof(metadoctype) === 'object' || app.length > 0){
 		span.label.label-primary.more-info  More info 
 			i.icon-plus-sign 
 		div.md-desc-wrapper
 			h5 
 				i.icon-question-sign 
 				|&nbsp;&nbsp;About #{name}
-			div.md-desc-container
-				strong General informations
-				br		
-				|Display Name : 
-				i #{metadoctype.displayName}
-				br
-				|Related doctype : 
-				i #{metadoctype.related}	
-			div.md-desc-container
-				strong Fields informations
-				br 
-				|Number of fields : 
-				i #{nof}
-				ul
-					- for (var obj in fields) {
-						li
-							span #{fields[obj].displayName} : 
-								i #{fields[obj].description} 
-					- }
+			- if (app.length > 0) {
+				div.md-desc-container
+					strong Applications using it :
+					ul.sober-list
+						- for (var index in app) {
+							li
+								i.icon-download-alt
+								span #{app[index]}
+						- }
+			-}
+			- if (typeof(metadoctype) === 'object') {
+				div.md-desc-container
+					strong Fields informations :
+					ul.sober-list
+						- var fields = metadoctype.fields[0];
+						- for (var obj in fields) {
+							li
+								i.icon-tag
+								span #{fields[obj].displayName} - 
+									i #{fields[obj].description} 
+						- }
+			- }
 	- }
+	- else {
+		i No information available
+	- }
+

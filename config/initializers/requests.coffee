@@ -19,7 +19,7 @@ module.exports = (compound) ->
 
     getAllByRelated = {
         map : (doc) ->
-            if doc.docType is 'Metadoctype'
+            if doc.docType.toLowerCase() is 'metadoctype'
                 emit doc.related, doc 
     }
 
@@ -35,12 +35,19 @@ module.exports = (compound) ->
             #         result.sum += elt || 0            
             return sum(values)      
     }
+    getPermissions = {
+        map : (doc) ->
+            if doc.docType.toLowerCase() is 'application'               
+                emit doc.name, doc.permissions
+    }
 
     setupRequests = [] 
     setupRequests.push (callback) -> 
-        ds.manageRequest(callback, DataSystem::PATH.metadoctype_getallbyrelated, getAllByRelated)
+        ds.manageRequest(callback, DataSystem::PATH.common.getsumsbydoctype, getSumsByDoctype)
     setupRequests.push (callback) -> 
-        ds.manageRequest(callback, DataSystem::PATH.metadoctype_getsumsbydoctype, getSumsByDoctype)
+        ds.manageRequest(callback, DataSystem::PATH.metadoctype.getallbyrelated, getAllByRelated)
+    setupRequests.push (callback) -> 
+        ds.manageRequest(callback, DataSystem::PATH.application.getpermissions, getPermissions)
 
     #agregate callback 
     async.parallel setupRequests, (error, results) ->
