@@ -7,9 +7,9 @@ module.exports = class ResultCollectionView extends ViewCollection
 	itemview: ResultView
 	collection: new ResultCollection()
 
+	
 	initialize: ->		
-		@collectionEl = '#result-list'
+		@count = @count++
+		@collectionEl = '#basic-accordion'
 		super
 		@collection.fetch( {data: $.param(@options)})
-		@views = {}
-		@listenTo @collection, "reset",   @onReset

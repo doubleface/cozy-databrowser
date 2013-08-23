@@ -7,47 +7,46 @@ module.exports = (compound) ->
     ds = new DataSystem(compound.models)
     async = require('async')
 
-
-    # all = (doc) ->
-    #     emit doc.title, doc
-
-    # Metadoctype.defineRequest "all", all, (err) ->
-    #     if err
-    #         compound.logger.write "Request Metadoctype#All, cannot be created"
-    #         compound.logger.write err
-
-
-    getAllByRelated = {
-        map : (doc) ->
-            if doc.docType.toLowerCase() is 'metadoctype'
-                emit doc.related, doc 
+    #prepare view functions
+    vFunc = {
+        common : {
+            getSumsByDoctype : {
+                map : (doc) ->
+                    if doc.docType?
+                        emit doc.docType, 1
+                reduce : (keys, values, rereduce) ->
+                    # result = { 'docType' : '', 'sum': 0 }
+                    # for elt, index in values
+                    #     if !isNaN(elt)
+                    #         result.docType = keys[index][0] || ''
+                    #         result.sum += elt || 0            
+                    return sum(values)
+            }          
+        }
+        metadoctype : {
+            getAllByRelated : {
+                map : (doc) ->
+                    if doc.docType.toLowerCase() is 'metadoctype'
+                        emit doc.related, doc
+            }
+        }
+        application : {
+            getPermissions : {
+                map : (doc) ->
+                    if doc.docType.toLowerCase() is 'application'
+                        emit doc.name, doc.permissions
+            }
+        }
     }
 
-    getSumsByDoctype = {
-        map : (doc) ->
-            if doc.docType?                
-                emit doc.docType, 1         
-        reduce : (keys, values, rereduce) ->
-            # result = { 'docType' : '', 'sum': 0 }
-            # for elt, index in values
-            #     if !isNaN(elt)
-            #         result.docType = keys[index][0] || ''
-            #         result.sum += elt || 0            
-            return sum(values)      
-    }
-    getPermissions = {
-        map : (doc) ->
-            if doc.docType.toLowerCase() is 'application'               
-                emit doc.name, doc.permissions
-    }
 
     setupRequests = [] 
     setupRequests.push (callback) -> 
-        ds.manageRequest(callback, DataSystem::PATH.common.getsumsbydoctype, getSumsByDoctype)
+        ds.manageRequest callback, DataSystem::PATH.common.getsumsbydoctype, vFunc.common.getSumsByDoctype
     setupRequests.push (callback) -> 
-        ds.manageRequest(callback, DataSystem::PATH.metadoctype.getallbyrelated, getAllByRelated)
+        ds.manageRequest callback, DataSystem::PATH.metadoctype.getallbyrelated, vFunc.metadoctype.getAllByRelated
     setupRequests.push (callback) -> 
-        ds.manageRequest(callback, DataSystem::PATH.application.getpermissions, getPermissions)
+        ds.manageRequest callback, DataSystem::PATH.application.getpermissions, vFunc.application.getPermissions
 
     #agregate callback 
     async.parallel setupRequests, (error, results) ->

@@ -314,6 +314,7 @@ module.exports = ViewCollection = (function(_super) {
 
   ViewCollection.prototype.initialize = function() {
     var collectionEl;
+    this.count = 0;
     ViewCollection.__super__.initialize.apply(this, arguments);
     this.views = {};
     this.listenTo(this.collection, "reset", this.onReset);
@@ -363,6 +364,8 @@ module.exports = ViewCollection = (function(_super) {
 
   ViewCollection.prototype.addItem = function(model) {
     var options, view;
+    this.count++;
+    model.set("count", this.count);
     options = _.extend({}, {
       model: model
     }, this.itemViewOptions(model));
@@ -693,13 +696,12 @@ module.exports = ResultCollectionView = (function(_super) {
   ResultCollectionView.prototype.collection = new ResultCollection();
 
   ResultCollectionView.prototype.initialize = function() {
-    this.collectionEl = '#result-list';
+    this.count = this.count++;
+    this.collectionEl = '#basic-accordion';
     ResultCollectionView.__super__.initialize.apply(this, arguments);
-    this.collection.fetch({
+    return this.collection.fetch({
       data: $.param(this.options)
     });
-    this.views = {};
-    return this.listenTo(this.collection, "reset", this.onReset);
   };
 
   return ResultCollectionView;
@@ -725,17 +727,26 @@ module.exports = ResultView = (function(_super) {
 
   ResultView.prototype.tagName = 'div';
 
-  ResultView.prototype.className = 'result-list-item';
+  ResultView.prototype.className = 'accordion-group';
 
   ResultView.prototype.render = function() {
     return ResultView.__super__.render.call(this, {
       no_result: this.model.get("no_result"),
-      value: this.model.get("value")
+      options: this.model.attributes,
+      count: this.model.get("count")
     });
   };
 
   ResultView.prototype.template = function() {
     return require('./templates/result');
+  };
+
+  ResultView.prototype.events = {
+    'click .accordion-toggle': 'blurIt'
+  };
+
+  ResultView.prototype.blurIt = function(e) {
+    return $(e.currentTarget).blur();
   };
 
   return ResultView;
@@ -792,7 +803,7 @@ buf.push('<span class="label label-primary more-info"> More info <i class="icon-
 buf.push('<div class="md-desc-container"><strong>Applications using it :</strong><ul class="sober-list">');
  for (var index in app) {
 {
-buf.push('<li><i class="icon-download-alt"></i><span>' + escape((interp = app[index]) == null ? '' : interp) + '</span></li>');
+buf.push('<li class="firstLetterUp"><i class="icon-download-alt"></i><span>' + escape((interp = app[index]) == null ? '' : interp) + '</span></li>');
 }
  }
 buf.push('</ul></div>');
@@ -842,15 +853,22 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
- if (no_result) {
-{
+ if (no_result) {	
 buf.push('<div>' + escape((interp = no_result) == null ? '' : interp) + '</div>');
+ }
+ else if (options) {
+	var content = options.idField ? options[options.idField] : options._id;
+buf.push('<div class="accordion-heading"><a');
+buf.push(attrs({ 'data-toggle':("collapse"), 'data-parent':("#basic-accordion"), 'href':("#collapse" + (count) + ""), "class": ('accordion-toggle') }, {"data-toggle":true,"data-parent":true,"href":true}));
+buf.push('>' + escape((interp = content) == null ? '' : interp) + '</a></div><div');
+buf.push(attrs({ 'style':("height: 0px;"), 'id':("collapse" + (count) + ""), "class": ('accordion-body') + ' ' + ('collapse') }, {"style":true,"id":true}));
+buf.push('><div class="accordion-inner">');
+ for (var field in options) {
+{
+buf.push('<p>' + escape((interp = field) == null ? '' : interp) + ' : ' + escape((interp = options[field]) == null ? '' : interp) + '</p>');
 }
  }
- else if (value) {
-{
-buf.push('<div>' + escape((interp = value) == null ? '' : interp) + '</div>');
-}
+buf.push('</div></div>');
  }
 }
 return buf.join("");
@@ -863,7 +881,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div></div></div></div><div class="container"><div class="row"><div class="span12"><div id="result-list"></div></div></div></div>');
+buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div></div></div></div><div class="container"><div class="row"><div class="span12"><h3 class="title">Results of my previous search</h3><div class="span11 offset1">					<div id="basic-accordion" class="accordion"></div></div></div></div></div>');
 }
 return buf.join("");
 };

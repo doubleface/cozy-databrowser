@@ -25,6 +25,7 @@ module.exports = class ViewCollection extends BaseView
 
     collectionEl: null
 
+
     # add 'empty' class to view when there is no subview
     onChange: ->
         @$el.toggleClass 'empty', _.size(@views) is 0
@@ -35,6 +36,7 @@ module.exports = class ViewCollection extends BaseView
 
     # bind listeners to the collection
     initialize: ->
+        @count = 0
         super
         @views = {}
         @listenTo @collection, "reset",   @onReset
@@ -68,6 +70,8 @@ module.exports = class ViewCollection extends BaseView
 
     # event listeners for add
     addItem: (model) =>
+        @count++
+        model.set("count", @count)
         options = _.extend {}, {model: model}, @itemViewOptions(model)
         view = new @itemview(options)
         @views[model.cid] = view.render()

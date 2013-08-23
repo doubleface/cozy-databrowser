@@ -1,6 +1,13 @@
-- if (no_result) {
-	div #{no_result}
+- if (no_result) {	
+div #{no_result}
 - }
-- else if (value) {
-	div #{value}
+- else if (options) {
+-	var content = options.idField ? options[options.idField] : options._id;
+.accordion-heading
+	a.accordion-toggle(data-toggle="collapse", data-parent="#basic-accordion", href="#collapse#{count}") #{content}
+.accordion-body.collapse(style="height: 0px;", id="collapse#{count}")
+	.accordion-inner
+		- for (var field in options) {
+			p #{field} : #{options[field]}
+		- }
 - }

@@ -63,12 +63,30 @@ action 'doctypes', ->
 action 'search', ->
 	if req.query? && req.query.range?
 		if req.query.range is 'all' and req.query.docType?
-			callback = (error, result) ->
-				if error					
-					res.send([{ 'no_result' : 'An error occurs during the search. Administrators was informed.' }])
-				else
-					res.send(result)
-			ds.getView(callback, DataSystem::PATH.request + req.query.docType + DataSystem::PATH.all)
 
+			requests = []
+			requests.push (callback) -> #0 -> all
+				ds.getView callback, DataSystem::PATH.request + req.query.docType + DataSystem::PATH.all
+			requests.push (callback) -> #1 -> metadoctypes
+				ds.getView callback, DataSystem::PATH.metadoctype.getallbyrelated	
+
+			async.parallel requests, (error, results) ->
+				jsonRes = []
+				if error
+					res.send('no_result', 'No result : Server error occurred while retrieving data.')
+					console.log error
+				else
+					idField = null
+					for md in results[1]
+						if md.key? and md.value.identificationField? and md.key.toLowerCase() is req.query.docType.toLowerCase()
+							idField = md.value.identificationField
+					for doc in results[0]
+						if doc.key? and doc.value? 
+							doc.value['idField'] = idField
+							jsonRes.push doc.value						
+					
+					#send json
+					console.log(jsonRes)
+					res.send(jsonRes)
 	else
 		res.send([{ 'no_result' : 'No result for now.' }])
