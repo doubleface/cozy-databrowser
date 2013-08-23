@@ -31,12 +31,14 @@ var Theme = function () {
 	}
 	
 	function enhancedAccordion () {
-		$('.accordion').on('show', function (e) {
+		$('#content').on('show', '.accordion', function (e) {
 	         $(e.target).prev('.accordion-heading').parent ().addClass('open');
+	         $(e.target).prev('.accordion-heading').find('.icon-plus-sign').addClass('icon-minus-sign').removeClass('icon-plus-sign');
 	    });
 	
-	    $('.accordion').on('hide', function (e) {
+	    $('#content').on('hide', '.accordion', function (e) {
 	        $(this).find('.accordion-toggle').not($(e.target)).parents ('.accordion-group').removeClass('open');
+	        $(this).find('.accordion-toggle').not($(e.target)).find('.icon-minus-sign').addClass('icon-plus-sign').removeClass('icon-minus-sign');
 	    });
 	    
 	    $('.accordion').each (function () {	    	

@@ -860,13 +860,30 @@ buf.push('<div>' + escape((interp = no_result) == null ? '' : interp) + '</div>'
 	var content = options.idField ? options[options.idField] : options._id;
 buf.push('<div class="accordion-heading"><a');
 buf.push(attrs({ 'data-toggle':("collapse"), 'data-parent':("#basic-accordion"), 'href':("#collapse" + (count) + ""), "class": ('accordion-toggle') }, {"data-toggle":true,"data-parent":true,"href":true}));
-buf.push('>' + escape((interp = content) == null ? '' : interp) + '</a></div><div');
+buf.push('><i class="icon-plus-sign"></i>&nbsp;&nbsp;' + escape((interp = content) == null ? '' : interp) + '</a></div><div');
 buf.push(attrs({ 'style':("height: 0px;"), 'id':("collapse" + (count) + ""), "class": ('accordion-body') + ' ' + ('collapse') }, {"style":true,"id":true}));
 buf.push('><div class="accordion-inner">');
  for (var field in options) {
-{
-buf.push('<p>' + escape((interp = field) == null ? '' : interp) + ' : ' + escape((interp = options[field]) == null ? '' : interp) + '</p>');
+ if (field !== 'idField' && field !== 'count') {
+ if  (typeof options[field] === "string" || typeof options[field] === "number" || typeof options[field] === "boolean") {
+buf.push('<div>' + escape((interp = field) == null ? '' : interp) + ' : <i>' + escape((interp = options[field]) == null ? '' : interp) + '</i></div>');
+ }
+ else if (typeof options[field] === "object" && options[field] !== null) {
+buf.push('<div> <strong>' + escape((interp = field) == null ? '' : interp) + ' </strong><ul class="sober-list">');
+ var withoutFields = true
+ for (var obj in options[field]) {
+ withoutFields = false
+ if (typeof options[field][obj] === 'object') {
+ options[field][obj] = $.stringify(options[field][obj])
+ }
+buf.push('<li>' + escape((interp = obj) == null ? '' : interp) + ' - <i>' + escape((interp = options[field][obj]) == null ? '' : interp) + '</i></li>');
+ }
+ if (withoutFields) {
+buf.push('<li> <i>empty</i></li>');
 }
+buf.push('</ul></div>');
+ }
+ }
  }
 buf.push('</div></div>');
  }
@@ -881,7 +898,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div></div></div></div><div class="container"><div class="row"><div class="span12"><h3 class="title">Results of my previous search</h3><div class="span11 offset1">					<div id="basic-accordion" class="accordion"></div></div></div></div></div>');
+buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div></div></div></div><div class="container"><div class="row"><div class="span12"><h3 class="title">Results of my previous search</h3><div id="basic-accordion" class="accordion"></div></div></div></div>');
 }
 return buf.join("");
 };

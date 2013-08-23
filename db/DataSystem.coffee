@@ -38,23 +38,14 @@ module.exports = class DataSystem
         #setted by coffeescript contructor function 
         
         #------ REQUIRED   
-        this.jsonClient = require('request-json').JsonClient           
-        
-        #------ SETTED
-        #this.bParamSetted = false
-                
-        #------ DECLARED
-        #this.oParamDeclared    
-        
-        #------ SUB-CONTRUCTOR
-        #this.create()
+        this.jsonClient = require('request-json').JsonClient 
         
         #------ SUB-PROCESS
         @constructor.CLASS_COUNT++
         
     #-------------- OBJECT METHODS ----------------------
     #------CONSTANT GETTERS
-    #use coffeescript :: (ex : DataSystem::DS_URL)
+    #use :: (ex : DataSystem::DS_URL)
     
     #------METHODS
     manageRequest : (callback, path, viewFunctions =  {}, pattern = '') ->
@@ -100,7 +91,7 @@ module.exports = class DataSystem
             
             #return result
             else  
-                callback false, body  
+                callback false, body
 
     postData : (callback, url, port, path, params = {})->
         client = new @jsonClient url +  ':'  + port

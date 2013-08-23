@@ -86,7 +86,6 @@ action 'search', ->
 							jsonRes.push doc.value						
 					
 					#send json
-					console.log(jsonRes)
 					res.send(jsonRes)
 	else
 		res.send([{ 'no_result' : 'No result for now.' }])
