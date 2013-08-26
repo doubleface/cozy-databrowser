@@ -780,11 +780,42 @@ module.exports = ResultView = (function(_super) {
   };
 
   ResultView.prototype.events = {
-    'click .accordion-toggle': 'blurIt'
+    'click .accordion-toggle': 'blurIt',
+    'mouseenter .label': 'showFieldDescription',
+    'mouseleave .label': 'showFieldDescription'
   };
 
   ResultView.prototype.blurIt = function(e) {
     return $(e.currentTarget).blur();
+  };
+
+  ResultView.prototype.showFieldDescription = function(e) {
+    var jqObj, left, top;
+    jqObj = $(e.currentTarget);
+    if (jqObj.attr("data-title") !== "") {
+      if (e.type === 'mouseenter') {
+        left = jqObj.offset().left - $('#basic-accordion.accordion').offset().left - 5;
+        top = jqObj.offset().top - $('#basic-accordion.accordion').offset().top - 7;
+        $('.info-box .field-title').css({
+          'padding-left': jqObj.width() + 18
+        });
+        $('.info-box .field-description').empty().html(jqObj.attr("data-title"));
+        $('.info-box').css({
+          'z-index': '5',
+          'left': left,
+          'top': top
+        });
+        $('.accordion .label').css({
+          'z-index': 'inherit'
+        });
+        jqObj.css({
+          'z-index': '10'
+        });
+        return $('.info-box').stop().fadeTo(200, 1);
+      } else {
+        return $('.info-box').stop().fadeTo(200, 0);
+      }
+    }
   };
 
   return ResultView;
@@ -863,7 +894,7 @@ buf.push('<span>' + escape((interp = sum) == null ? '' : interp) + '</span>');
 buf.push('</td><td> ');
  if (typeof(metadoctype) === 'object' || app.length > 0){
 {
-buf.push('<span class="label label-primary more-info"> More info <i class="icon-plus-sign"> </i></span><div class="md-desc-wrapper"><h5> <i class="icon-question-sign"> </i>&nbsp;&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h5>');
+buf.push('<span class="label label-primary more-info">More info <i class="icon-plus-sign"> </i></span><div class="md-desc-wrapper"><h5> <i class="icon-question-sign"> </i>&nbsp;&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h5>');
  if (app.length > 0) {
 {
 buf.push('<div class="md-desc-container"><strong>Applications using it :</strong><ul class="sober-list">');
@@ -923,19 +954,40 @@ var interp;
 buf.push('<div>' + escape((interp = no_result) == null ? '' : interp) + '</div>');
  }
  else if (options) {
-	var content = options.idField ? options[options.idField] : options._id;
+	var content = { 
+		field  : options.idField ? options.idField : 'id',
+		data : options.idField ? options[options.idField] : options._id
+	};
 buf.push('<div class="accordion-heading"><a');
 buf.push(attrs({ 'data-toggle':("collapse"), 'data-parent':("#basic-accordion"), 'href':("#collapse" + (count) + ""), "class": ('accordion-toggle') }, {"data-toggle":true,"data-parent":true,"href":true}));
-buf.push('><i class="icon-plus-sign"></i>&nbsp;&nbsp;' + escape((interp = content) == null ? '' : interp) + '</a></div><div');
+buf.push('><i class="icon-plus-sign"></i>&nbsp;' + escape((interp = content.field) == null ? '' : interp) + ' :\n&nbsp;' + escape((interp = content.data) == null ? '' : interp) + '</a></div><div');
 buf.push(attrs({ 'style':("height: 0px;"), 'id':("collapse" + (count) + ""), "class": ('accordion-body') + ' ' + ('collapse') }, {"style":true,"id":true}));
-buf.push('><div class="accordion-inner">');
+buf.push('><div class="accordion-inner"><table id="result-list" class="table">');
  for (var field in options) {
- if (field !== 'idField' && field !== 'count') {
+ fieldDescription = ""
+ if (options.descField && options.descField[field] && options.descField[field].description) {
+	fieldDescription = options.descField[field].description;
+}
+ if (field !== 'idField' && field !== 'count' && field !== 'descField') {
+{
+buf.push('<tr>	');
  if  (typeof options[field] === "string" || typeof options[field] === "number" || typeof options[field] === "boolean") {
-buf.push('<div>' + escape((interp = field) == null ? '' : interp) + ' : <i>' + escape((interp = options[field]) == null ? '' : interp) + '</i></div>');
+buf.push('<td> <span');
+buf.push(attrs({ 'data-title':("" + (fieldDescription) + ""), "class": ('label') + ' ' + ('label-secondary') }, {"data-title":true}));
+buf.push('>&nbsp;' + escape((interp = field) == null ? '' : interp) + '&nbsp; ');
+ if (fieldDescription !== "") {
+buf.push('<i class="icon-question-sign"></i>');
+}
+buf.push('</span></td><td>' + escape((interp = options[field]) == null ? '' : interp) + '</td>');
  }
  else if (typeof options[field] === "object" && options[field] !== null) {
-buf.push('<div> <strong>' + escape((interp = field) == null ? '' : interp) + ' </strong><ul class="sober-list">');
+buf.push('<td> <span');
+buf.push(attrs({ 'data-title':("" + (fieldDescription) + ""), "class": ('label') + ' ' + ('label-secondary') }, {"data-title":true}));
+buf.push('>&nbsp;' + escape((interp = field) == null ? '' : interp) + '&nbsp; ');
+ if (fieldDescription !== "") {
+buf.push('<i class="icon-question-sign"></i>');
+}
+buf.push('</span></td><td><ul class="sober-list">');
  var withoutFields = true
  for (var obj in options[field]) {
  withoutFields = false
@@ -947,12 +999,24 @@ buf.push('<li>' + escape((interp = obj) == null ? '' : interp) + ' - <i>' + esca
  if (withoutFields) {
 buf.push('<li> <i>empty</i></li>');
 }
-buf.push('</ul></div>');
+buf.push('</ul></td>');
+ }
+ else {
+buf.push('<td> <span');
+buf.push(attrs({ 'data-title':("" + (fieldDescription) + ""), "class": ('label') + ' ' + ('label-danger') }, {"data-title":true}));
+buf.push('>&nbsp;' + escape((interp = field) == null ? '' : interp) + '&nbsp; ');
+ if (fieldDescription !== "") {
+buf.push('<i class="icon-question-sign"></i>');
+}
+buf.push('</span></td><td>&nbsp;</td>');
+}
+buf.push('</tr>');
+}
  }
  }
+buf.push('</table></div></div>');
  }
-buf.push('</div></div>');
- }
+buf.push('<!-- <li class="dropdown open">--><!-- 				              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>--><!-- 				              <ul class="dropdown-menu">--><!-- 				                <li><a href="#tab3" data-toggle="tab">@fat</a></li>--><!-- 				                <li><a href="#tab4" data-toggle="tab">@mdo</a></li>--><!-- 				              </ul>--><!-- 				            </li>-->');
 }
 return buf.join("");
 };
@@ -964,7 +1028,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div></div></div></div><div class="container"><div class="row"><div class="span12">		<h3 class="title">Results of my previous search</h3><div id="basic-accordion" class="accordion"></div></div></div></div>');
+buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div></div></div></div><div class="container"><div class="row"><div class="span12">		<h3 class="title">Results of my previous search</h3><div id="all-result"><div id="basic-accordion" class="accordion"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div></div></div></div></div>');
 }
 return buf.join("");
 };

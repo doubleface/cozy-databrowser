@@ -86,12 +86,16 @@ action 'search', ->
 					console.log error
 				else
 					idField = null
+					descField = null
 					for md in results[1]
-						if md.key? and md.value.identificationField? and md.key.toLowerCase() is req.query.docType.toLowerCase()
+						if md.key? and md.value.identificationField? and md.key.toLowerCase() is req.query.docType.toLowerCase()							
 							idField = md.value.identificationField
+							if md.value.fields[0]?
+								descField = md.value.fields[0]
 					for doc in results[0]
 						if doc.key? and doc.value? 
 							doc.value['idField'] = idField
+							doc.value['descField'] = descField							
 							jsonRes.push doc.value						
 					
 					#send json
