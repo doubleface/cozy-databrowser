@@ -704,7 +704,8 @@ module.exports = ResultCollectionView = (function(_super) {
     return this.collection.fetch({
       data: $.param(this.options),
       success: function(data) {
-        return that.nbOfItem = data.length;
+        that.nbOfItem = data.length;
+        return that.loopFirstScroll();
       }
     });
   };
@@ -726,6 +727,19 @@ module.exports = ResultCollectionView = (function(_super) {
         }
       }
     });
+  };
+
+  ResultCollectionView.prototype.loopFirstScroll = function() {
+    var firstScroll, that;
+    that = this;
+    if (!this.isLoading && !this.noMoreItems) {
+      firstScroll = $(document).height() === $(window).height();
+      if (firstScroll) {
+        return this.loadNextPage(function() {
+          return that.loopFirstScroll();
+        });
+      }
+    }
   };
 
   return ResultCollectionView;
@@ -804,38 +818,26 @@ module.exports = SearchView = (function(_super) {
     var that;
     this.rcView = new ResultCollectionView(this.options);
     that = this;
-    $(window).bind('scroll', function() {
+    return $(window).bind('scroll', function() {
       if (!that.rcView.isLoading && !that.rcView.noMoreItems) {
         if ($(window).scrollTop() + $(window).height() === $(document).height()) {
           return that.loadMore();
         }
       }
     });
-    return $(window).bind('resize', function() {
-      return that.loopFirstScroll();
-    });
   };
 
   SearchView.prototype.afterRender = function() {
+    var that;
+    that = this;
     this.rcView.render();
-    return this.loopFirstScroll();
+    return $(window).bind('resize', function() {
+      return that.rcView.loopFirstScroll();
+    });
   };
 
   SearchView.prototype.loadMore = function(callback) {
     return this.rcView.loadNextPage(callback);
-  };
-
-  SearchView.prototype.loopFirstScroll = function() {
-    var firstScroll, that;
-    that = this;
-    if (!this.rcView.isLoading && !this.rcView.noMoreItems) {
-      firstScroll = $(document).height() === $(window).height();
-      if (firstScroll) {
-        return this.loadMore(function() {
-          return that.loopFirstScroll();
-        });
-      }
-    }
   };
 
   return SearchView;

@@ -18,6 +18,9 @@ module.exports = class ResultCollectionView extends ViewCollection
 			data: $.param(@options)
 			success : (data) ->
 				that.nbOfItem = data.length
+
+				#native size of the window could trigger next pages (infinite scroll)
+				that.loopFirstScroll()
 		}
 	loadNextPage : (callback) ->
 		that = this
@@ -33,3 +36,10 @@ module.exports = class ResultCollectionView extends ViewCollection
 				if callback?
 					callback()
 		}
+	loopFirstScroll : ()->
+		that = this
+		if !@isLoading and !@noMoreItems			
+			firstScroll = $(document).height() is $(window).height()
+			if (firstScroll)
+				@loadNextPage () ->
+					that.loopFirstScroll()

@@ -16,23 +16,14 @@ module.exports = class SearchView extends BaseView
 				if $(window).scrollTop() + $(window).height() is $(document).height()
 					that.loadMore()
 
-		#resize event could trigger next pages (infinite scroll)
-		$(window).bind 'resize', () ->
-			that.loopFirstScroll()
-
 	afterRender : ->
+		that = this
 		@rcView.render()
 
-		#native size of the window could trigger next pages (infinite scroll)
-		@loopFirstScroll()
+		#resize event could trigger next pages (infinite scroll)
+		$(window).bind 'resize', () ->
+			that.rcView.loopFirstScroll()
 
+		
 	loadMore : (callback)->		
 		@rcView.loadNextPage(callback)
-
-	loopFirstScroll : ()->
-		that = this
-		if !@rcView.isLoading and !@rcView.noMoreItems			
-			firstScroll = $(document).height() is $(window).height()
-			if (firstScroll)
-				@loadMore () ->
-					that.loopFirstScroll()
