@@ -64,9 +64,18 @@ action 'search', ->
 	if req.query? && req.query.range?
 		if req.query.range is 'all' and req.query.docType?
 
+			#prepare params
+			pageParams = {}
+			if parseInt(req.query.page, 10)? and parseInt(req.query.nbperpage, 10)?
+				page = parseInt(req.query.page, 10)
+				nbPerPage = parseInt(req.query.nbperpage, 10)
+				pageParams['limit'] = nbPerPage
+				if page > 1
+					pageParams['skip'] = nbPerPage * (page - 1)
+
 			requests = []
 			requests.push (callback) -> #0 -> all
-				ds.getView callback, DataSystem::PATH.request + req.query.docType + DataSystem::PATH.all
+				ds.getView callback, DataSystem::PATH.request + req.query.docType + DataSystem::PATH.all, pageParams
 			requests.push (callback) -> #1 -> metadoctypes
 				ds.getView callback, DataSystem::PATH.metadoctype.getallbyrelated	
 

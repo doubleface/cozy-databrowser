@@ -143,7 +143,13 @@ module.exports = ResultCollection = (function(_super) {
 
   ResultCollection.prototype.model = require('../models/result_model');
 
-  ResultCollection.prototype.url = 'search';
+  ResultCollection.prototype.url = function() {
+    return 'search?page=' + this.page + '&nbperpage=' + this.nbPerPage;
+  };
+
+  ResultCollection.prototype.page = 1;
+
+  ResultCollection.prototype.nbPerPage = 4;
 
   return ResultCollection;
 
@@ -456,7 +462,7 @@ module.exports = Router = (function(_super) {
     '': 'doctypes',
     'doctypes': 'doctypes',
     'search': 'search',
-    'search/all/:doctype': 'searchAllByDoctype'
+    'search/all/:doctype': 'search'
   };
 
   Router.prototype.redirectToDoctypes = function() {
@@ -472,27 +478,16 @@ module.exports = Router = (function(_super) {
     return dcView.render();
   };
 
-  Router.prototype.search = function() {
-    var navView, rcView, searchView;
-    navView = new NavView();
-    searchView = new SearchView();
-    searchView.render();
-    rcView = new ResultCollectionView();
-    return rcView.render();
-  };
-
-  Router.prototype.searchAllByDoctype = function(doctype) {
-    var navView, options, rcView, searchView;
+  Router.prototype.search = function(doctype) {
+    var navView, options, searchView;
     navView = new NavView();
     options = {};
     if (doctype != null) {
       options['range'] = 'all';
       options['docType'] = doctype;
     }
-    searchView = new SearchView();
-    searchView.render();
-    rcView = new ResultCollectionView(options);
-    return rcView.render();
+    searchView = new SearchView(options);
+    return searchView.render();
   };
 
   return Router;
@@ -693,14 +688,43 @@ module.exports = ResultCollectionView = (function(_super) {
 
   ResultCollectionView.prototype.itemview = ResultView;
 
-  ResultCollectionView.prototype.collection = new ResultCollection();
+  ResultCollectionView.prototype.collectionEl = '#basic-accordion';
+
+  ResultCollectionView.prototype.isLoading = false;
+
+  ResultCollectionView.prototype.noMoreItems = false;
+
+  ResultCollectionView.prototype.nbOfItem = 0;
 
   ResultCollectionView.prototype.initialize = function() {
-    this.count = this.count++;
-    this.collectionEl = '#basic-accordion';
+    var that;
+    that = this;
+    this.collection = new ResultCollection();
     ResultCollectionView.__super__.initialize.apply(this, arguments);
     return this.collection.fetch({
-      data: $.param(this.options)
+      data: $.param(this.options),
+      success: function(data) {
+        return that.nbOfItem = data.length;
+      }
+    });
+  };
+
+  ResultCollectionView.prototype.loadNextPage = function(callback) {
+    var that;
+    that = this;
+    this.collection.page++;
+    this.isLoading = true;
+    return this.collection.fetch({
+      data: $.param(this.options),
+      remove: false,
+      success: function(data) {
+        that.isLoading = false;
+        that.noMoreItems = that.nbOfItem === data.length;
+        that.nbOfItem = data.length;
+        if (callback != null) {
+          return callback();
+        }
+      }
     });
   };
 
@@ -756,11 +780,13 @@ module.exports = ResultView = (function(_super) {
 });
 
 ;require.register("views/search_view", function(exports, require, module) {
-var BaseView, SearchView, _ref,
+var BaseView, ResultCollectionView, SearchView, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 BaseView = require('../lib/base_view');
+
+ResultCollectionView = require('../views/result_collection_view');
 
 module.exports = SearchView = (function(_super) {
   __extends(SearchView, _super);
@@ -773,6 +799,44 @@ module.exports = SearchView = (function(_super) {
   SearchView.prototype.el = '#content';
 
   SearchView.prototype.template = require('./templates/search');
+
+  SearchView.prototype.initialize = function() {
+    var that;
+    this.rcView = new ResultCollectionView(this.options);
+    that = this;
+    $(window).bind('scroll', function() {
+      if (!that.rcView.isLoading && !that.rcView.noMoreItems) {
+        if ($(window).scrollTop() + $(window).height() === $(document).height()) {
+          return that.loadMore();
+        }
+      }
+    });
+    return $(window).bind('resize', function() {
+      return that.loopFirstScroll();
+    });
+  };
+
+  SearchView.prototype.afterRender = function() {
+    this.rcView.render();
+    return this.loopFirstScroll();
+  };
+
+  SearchView.prototype.loadMore = function(callback) {
+    return this.rcView.loadNextPage(callback);
+  };
+
+  SearchView.prototype.loopFirstScroll = function() {
+    var firstScroll, that;
+    that = this;
+    if (!this.rcView.isLoading && !this.rcView.noMoreItems) {
+      firstScroll = $(document).height() === $(window).height();
+      if (firstScroll) {
+        return this.loadMore(function() {
+          return that.loopFirstScroll();
+        });
+      }
+    }
+  };
 
   return SearchView;
 
@@ -898,7 +962,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div></div></div></div><div class="container"><div class="row"><div class="span12"><h3 class="title">Results of my previous search</h3><div id="basic-accordion" class="accordion"></div></div></div></div>');
+buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div></div></div></div><div class="container"><div class="row"><div class="span12">		<h3 class="title">Results of my previous search</h3><div id="basic-accordion" class="accordion"></div></div></div></div>');
 }
 return buf.join("");
 };

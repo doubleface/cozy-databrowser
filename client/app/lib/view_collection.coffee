@@ -25,7 +25,7 @@ module.exports = class ViewCollection extends BaseView
 
     collectionEl: null
 
-
+    
     # add 'empty' class to view when there is no subview
     onChange: ->
         @$el.toggleClass 'empty', _.size(@views) is 0

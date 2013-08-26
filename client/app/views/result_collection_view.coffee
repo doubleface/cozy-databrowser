@@ -4,12 +4,32 @@ ResultView = require './result_view'
 
 module.exports = class ResultCollectionView extends ViewCollection
 	
-	itemview: ResultView
-	collection: new ResultCollection()
-
+	itemview: ResultView	
+	collectionEl :'#basic-accordion'
+	isLoading : false
+	noMoreItems : false
+	nbOfItem : 0
 	
-	initialize: ->		
-		@count = @count++
-		@collectionEl = '#basic-accordion'
-		super
-		@collection.fetch( {data: $.param(@options)})
+	initialize: ->	
+		that = this
+		@collection = new ResultCollection()
+		super		
+		@collection.fetch {
+			data: $.param(@options)
+			success : (data) ->
+				that.nbOfItem = data.length
+		}
+	loadNextPage : (callback) ->
+		that = this
+		@collection.page++
+		@isLoading = true
+		@collection.fetch {
+			data: $.param(@options)
+			remove : false
+			success : (data) ->
+				that.isLoading = false	
+				that.noMoreItems = that.nbOfItem is data.length			
+				that.nbOfItem = data.length
+				if callback?
+					callback()
+		}
