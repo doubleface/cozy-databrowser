@@ -11,10 +11,10 @@ module.exports = class SearchView extends BaseView
 		that = this
 
 		#scroll event trigger next page (infinite scroll)
-		$(window).bind 'scroll', () ->
+		$(window).bind 'scroll', (e, isTriggered) ->
 			if !that.rcView.isLoading and !that.rcView.noMoreItems
 				if $(window).scrollTop() + $(window).height() is $(document).height()
-					that.loadMore()
+					that.loadMore(isTriggered)
 
 	afterRender : ->
 		that = this
@@ -25,5 +25,5 @@ module.exports = class SearchView extends BaseView
 			that.rcView.loopFirstScroll()
 
 		
-	loadMore : (callback)->		
-		@rcView.loadNextPage(callback)
+	loadMore : (isTriggered)->		
+		@rcView.loadNextPage(isTriggered)

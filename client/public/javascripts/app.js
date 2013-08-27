@@ -710,11 +710,18 @@ module.exports = ResultCollectionView = (function(_super) {
     });
   };
 
-  ResultCollectionView.prototype.loadNextPage = function(callback) {
+  ResultCollectionView.prototype.loadNextPage = function(isTriggered, callback) {
     var that;
     that = this;
     this.collection.page++;
     this.isLoading = true;
+    if (!isTriggered) {
+      $.msgGrowl({
+        type: 'loading',
+        title: 'Loading more results...',
+        text: 'If you want to see more results, you may scroll to the bottom.'
+      });
+    }
     return this.collection.fetch({
       data: $.param(this.options),
       remove: false,
@@ -722,6 +729,23 @@ module.exports = ResultCollectionView = (function(_super) {
         that.isLoading = false;
         that.noMoreItems = that.nbOfItem === data.length;
         that.nbOfItem = data.length;
+        if (that.noMoreItems) {
+          $('.load-more-result').hide();
+        }
+        if (that.noMoreItems && !isTriggered) {
+          $.msgGrowl({
+            type: 'info',
+            title: 'No more items to load.',
+            text: 'The current list display all data of the search.',
+            lifetime: 3000
+          });
+        } else if (!isTriggered) {
+          $.msgGrowl({
+            type: 'success',
+            title: 'Content loaded.',
+            text: 'If you want to see more results, you may scroll to the bottom.'
+          });
+        }
         if (callback != null) {
           return callback();
         }
@@ -735,7 +759,7 @@ module.exports = ResultCollectionView = (function(_super) {
     if (!this.isLoading && !this.noMoreItems) {
       firstScroll = $(document).height() === $(window).height();
       if (firstScroll) {
-        return this.loadNextPage(function() {
+        return this.loadNextPage(true, function() {
           return that.loopFirstScroll();
         });
       }
@@ -849,10 +873,10 @@ module.exports = SearchView = (function(_super) {
     var that;
     this.rcView = new ResultCollectionView(this.options);
     that = this;
-    return $(window).bind('scroll', function() {
+    return $(window).bind('scroll', function(e, isTriggered) {
       if (!that.rcView.isLoading && !that.rcView.noMoreItems) {
         if ($(window).scrollTop() + $(window).height() === $(document).height()) {
-          return that.loadMore();
+          return that.loadMore(isTriggered);
         }
       }
     });
@@ -867,8 +891,8 @@ module.exports = SearchView = (function(_super) {
     });
   };
 
-  SearchView.prototype.loadMore = function(callback) {
-    return this.rcView.loadNextPage(callback);
+  SearchView.prototype.loadMore = function(isTriggered) {
+    return this.rcView.loadNextPage(isTriggered);
   };
 
   return SearchView;
@@ -1028,7 +1052,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div></div></div></div><div class="container"><div class="row"><div class="span12">		<h3 class="title">Results of my previous search</h3><div id="all-result"><div id="basic-accordion" class="accordion"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div></div></div></div></div>');
+buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div></div></div></div><div class="container"><div class="row"><div class="span12">		<h3 class="title">Results of my previous search</h3><div id="all-result"><div id="basic-accordion" class="accordion"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div><span class="load-more-result">&nbsp;load more results&nbsp<i class="icon-circle-arrow-down"></i></span></div></div></div></div>');
 }
 return buf.join("");
 };
