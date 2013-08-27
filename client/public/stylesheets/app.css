@@ -865,9 +865,7 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
   margin: auto;
   width: 200px;
   text-align: center;
-}
-.load-more-result i {
-  line-height: 1.2;
+  line-height: 17px;
 }
 
 .chromeframe { margin: 0.2em 0; background: #ccc; color: #000; padding: 0.2em 0; }
