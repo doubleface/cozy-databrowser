@@ -1,71 +1,27 @@
-- if (no_result) {	
-div #{no_result}
+- if (results['no_result']) {
+
+em No results for now.
+
 - }
-- else if (options) {
--	var content = { 
--		field  : options.idField ? options.idField : 'id',
--		data : options.idField ? options[options.idField] : options._id
--	};
+- else {
+
 .accordion-heading
-	a.accordion-toggle(data-toggle="collapse", data-parent="#basic-accordion", href="#collapse#{count}")
+	a.accordion-toggle(data-toggle="collapse", data-parent="#basic-accordion", href="#collapse#{results.count}")
 		i.icon-plus-sign
-		|&nbsp;#{content.field} :
-		|&nbsp;#{content.data}
-.accordion-body.collapse(style="height: 0px;", id="collapse#{count}")
+		|&nbsp;#{results.heading.field} :
+		|&nbsp;#{results.heading.data}
+	div.remove-result Remove&nbsp;&nbsp;
+		i.icon-remove-sign
+.accordion-body.collapse(style="height: 0px;", id="collapse#{results.count}")
 	.accordion-inner
 		table.table#result-list
-			- for (var field in options) {
-			- fieldDescription = ""
-			- if (options.descField && options.descField[field] && options.descField[field].description) {
-			-	fieldDescription = options.descField[field].description;
-			-}
-			- if (field !== 'idField' && field !== 'count' && field !== 'descField') {
+			- for (var iCount = 0; iCount < results['fields'].length; iCount++) {
 				tr 	
-					- if  (typeof options[field] === "string" || typeof options[field] === "number" || typeof options[field] === "boolean") {
 					td 
-						span.label.label-secondary(data-title="#{fieldDescription}") &nbsp;#{field}&nbsp; 
-							- if (fieldDescription !== "") {
-							i.icon-question-sign
+						span.label(class="#{results['fields'][iCount].cdbLabelClass}", data-title="#{results['fields'][iCount].cdbFieldDescription}") &nbsp;#{results['fields'][iCount].cdbFieldName}&nbsp; 
+							- if (results['fields'][iCount].cdbFieldDescription!== "") {
+								i.icon-question-sign
 							-}
-					td #{options[field]}
-					- }
-					- else if (typeof options[field] === "object" && options[field] !== null) {
-					td 
-						span.label.label-secondary(data-title="#{fieldDescription}") &nbsp;#{field}&nbsp; 
-							- if (fieldDescription !== "") {
-							i.icon-question-sign
-							-}
-					td
-						ul.sober-list
-							- var withoutFields = true
-							- for (var obj in options[field]) {
-							- withoutFields = false
-							- if (typeof options[field][obj] === 'object') {
-							- options[field][obj] = $.stringify(options[field][obj])
-							- }
-							li #{obj} - 
-								i #{options[field][obj]}
-							- }
-							- if (withoutFields) {
-							li 
-								i empty
-							-}
-					- }
-					- else {
-					td 
-						span.label.label-danger(data-title="#{fieldDescription}") &nbsp;#{field}&nbsp; 
-							- if (fieldDescription !== "") {
-							i.icon-question-sign
-							-}
-					td &nbsp;
-					-}
-			- }
+					td!= results['fields'][iCount].cdbFieldData
 			- }
 - }
-// <li class="dropdown open">
-// 				              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-// 				              <ul class="dropdown-menu">
-// 				                <li><a href="#tab3" data-toggle="tab">@fat</a></li>
-// 				                <li><a href="#tab4" data-toggle="tab">@mdo</a></li>
-// 				              </ul>
-// 				            </li>

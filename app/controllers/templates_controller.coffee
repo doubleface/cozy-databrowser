@@ -59,19 +59,20 @@ action 'doctypes', ->
 			#send json
 			res.send(jsonRes)
 
-#doctypes
+#search
 action 'search', ->
-	if req.query? && req.query.range?
+	if req.query? and req.query.range?
 		if req.query.range is 'all' and req.query.docType?
 
 			#prepare params
 			pageParams = {}
 			if parseInt(req.query.page, 10)? and parseInt(req.query.nbperpage, 10)?
+				nbDeleted = if req.query.deleted? then parseInt(req.query.deleted, 10) else 0
 				page = parseInt(req.query.page, 10)
 				nbPerPage = parseInt(req.query.nbperpage, 10)
 				pageParams['limit'] = nbPerPage
 				if page > 1
-					pageParams['skip'] = nbPerPage * (page - 1)
+					pageParams['skip'] = (nbPerPage * (page - 1)) - nbDeleted
 
 			requests = []
 			requests.push (callback) -> #0 -> all
@@ -102,3 +103,20 @@ action 'search', ->
 					res.send(jsonRes)
 	else
 		res.send([{ 'no_result' : 'No result for now.' }])
+
+#delete
+action 'delete', ->
+	if req.query.id? 
+		requests = []
+		requests.push (callback) -> #0 -> delete
+				ds.deleteById callback, req.query.id
+		async.parallel requests, (error, results) ->
+				jsonRes = []
+				if error
+					res.send('error', 'Server error occurred while trying to remove data.')
+					console.log error
+				else
+					res.send(results[0])
+
+
+	

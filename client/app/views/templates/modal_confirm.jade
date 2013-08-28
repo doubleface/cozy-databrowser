@@ -1,0 +1,13 @@
+#confirmation-dialog.modal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-hidden='true') x
+        h4.modal-title
+          | #{title}
+      .modal-body
+        p
+          | #{body}
+      .modal-footer
+        span.btn.btn-link(data-dismiss='modal') cancel
+        span#confirmation-dialog-confirm.btn.btn-cozy(data-dismiss='modal') #{confirm}

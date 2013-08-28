@@ -37,6 +37,7 @@ module.exports = class ViewCollection extends BaseView
     # bind listeners to the collection
     initialize: ->
         @count = 0
+        @deleted = 0
         super
         @views = {}
         @listenTo @collection, "reset",   @onReset
@@ -80,6 +81,7 @@ module.exports = class ViewCollection extends BaseView
 
     # event listeners for remove
     removeItem: (model) =>
+        @deleted++
         @views[model.cid].remove()
         delete @views[model.cid]
 

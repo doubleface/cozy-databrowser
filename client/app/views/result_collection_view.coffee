@@ -8,7 +8,6 @@ module.exports = class ResultCollectionView extends ViewCollection
 	collectionEl :'#basic-accordion'
 	isLoading : false
 	noMoreItems : false
-	nbOfItem : 0
 	
 	initialize: ->	
 		that = this
@@ -16,52 +15,56 @@ module.exports = class ResultCollectionView extends ViewCollection
 		super		
 		@collection.fetch {
 			data: $.param(@options)
-			success : (data) ->
-				that.nbOfItem = data.length
+			success : (col, data) ->
 
 				#native size of the window could trigger next pages (infinite scroll)
-				that.loopFirstScroll()
-		}
-	loadNextPage : (isTriggered, callback) ->
-		that = this
-		@collection.page++
-		@isLoading = true
-		if !isTriggered
-			$.msgGrowl ({
-				type: 'loading'
-				title: 'Loading more results...'
-				text: 'If you want to see more results, you may scroll to the bottom.'
-			});
+				if that.options.range? and that.options.docType?		
+					if data.length is that.collection.nbPerPage
+						that.loopFirstScroll()
+						$('.load-more-result').show()
+						
+					else 						
+						that.noMoreItems = true
+						$('.load-more-result').hide()
+			error : () ->
+				that.displayLoadingError()
 
-		@collection.fetch {
-			data: $.param(@options)
-			remove : false
-			success : (data) ->
-				that.isLoading = false	
-				that.noMoreItems = that.nbOfItem is data.length			
-				that.nbOfItem = data.length
-				if that.noMoreItems 
-					$('.load-more-result').hide()
-				if that.noMoreItems and !isTriggered
-					$.msgGrowl ({
-						type: 'info'
-						title: 'No more items to load.'
-						text: 'The current list display all data of the search.'
-						lifetime : 3000
-					});				
-				else if !isTriggered
-					$.msgGrowl ({
-						type: 'success'
-						title: 'Content loaded.'
-						text: 'If you want to see more results, you may scroll to the bottom.'
-					});
-				if callback?
-					callback()
 		}
+	loadNextPage : (isTriggered, callback) ->				
+		that = this
+		@options['deleted'] = @deleted
+		if !@noMoreItems			
+			@isLoading = true
+			@collection.page++			
+			if !isTriggered
+				$('.load-more-result i, .load-more-result span').hide()
+				$('.load-more-result').spin 'tiny'
+			@collection.fetch {
+				data: $.param(@options)
+				remove : false
+				success : (col, data) ->
+					if !isTriggered
+						$('.load-more-result .spinner').hide()
+						$('.load-more-result i, .load-more-result span').show()					
+					that.noMoreItems = data.length < that.collection.nbPerPage
+					if that.noMoreItems 
+						$('.load-more-result').hide()
+					that.isLoading = false
+					if callback?
+						callback()						
+				error : () ->
+					that.displayLoadingError()
+			}
 	loopFirstScroll : ()->
 		that = this
 		if !@isLoading and !@noMoreItems			
-			firstScroll = $(document).height() is $(window).height()
+			firstScroll = $(document).height() is $(window).height()			
 			if (firstScroll)
 				@loadNextPage true, () ->
 					that.loopFirstScroll()
+
+	displayLoadingError : () ->
+		$('.load-more-result').css({'color' : '#AF4434'})
+		$('.load-more-result i').hide()
+		$('.load-more-result span').text('An error occurs during the loading process')
+		$('.load-more-result').show()

@@ -7,23 +7,24 @@ module.exports = class SearchView extends BaseView
 	template: require('./templates/search')  
 
 	initialize : ->
-		@rcView = new ResultCollectionView(@options)
 		that = this
+		@rcView = new ResultCollectionView(@options)		
 
 		#scroll event trigger next page (infinite scroll)
-		$(window).bind 'scroll', (e, isTriggered) ->
-			if !that.rcView.isLoading and !that.rcView.noMoreItems
-				if $(window).scrollTop() + $(window).height() is $(document).height()
-					that.loadMore(isTriggered)
+		if @options.range?
+			$(window).bind 'scroll', (e, isTriggered) ->
+				if !that.rcView.isLoading and !that.rcView.noMoreItems
+					if $(window).scrollTop() + $(window).height() is $(document).height()
+						that.loadMore(isTriggered)
 
 	afterRender : ->
 		that = this
 		@rcView.render()
 
-		#resize event could trigger next pages (infinite scroll)
+		#resize event trigger 1 or + pages (infinite scroll)
 		$(window).bind 'resize', () ->
 			that.rcView.loopFirstScroll()
 
 		
-	loadMore : (isTriggered)->		
+	loadMore : (isTriggered)->	
 		@rcView.loadNextPage(isTriggered)

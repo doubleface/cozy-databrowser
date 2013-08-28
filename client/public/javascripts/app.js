@@ -149,7 +149,7 @@ module.exports = ResultCollection = (function(_super) {
 
   ResultCollection.prototype.page = 1;
 
-  ResultCollection.prototype.nbPerPage = 4;
+  ResultCollection.prototype.nbPerPage = 10;
 
   return ResultCollection;
 
@@ -185,6 +185,62 @@ $(function() {
     }
     return _results;
   })();
+})();
+
+(function() {
+  return $.fn.spin = function(opts, color) {
+    var presets;
+    presets = {
+      tiny: {
+        lines: 8,
+        length: 2,
+        width: 2,
+        radius: 3
+      },
+      small: {
+        lines: 8,
+        length: 1,
+        width: 2,
+        radius: 5
+      },
+      large: {
+        lines: 10,
+        length: 8,
+        width: 4,
+        radius: 8
+      }
+    };
+    if (Spinner) {
+      return this.each(function() {
+        var $this, spinner;
+        $this = $(this);
+        spinner = $this.data("spinner");
+        if (spinner != null) {
+          spinner.stop();
+          return $this.data("spinner", null);
+        } else if (opts !== false) {
+          if (typeof opts === "string") {
+            if (opts in presets) {
+              opts = presets[opts];
+            } else {
+              opts = {};
+            }
+            if (color) {
+              opts.color = color;
+            }
+          }
+          spinner = new Spinner($.extend({
+            color: $this.css("color")
+          }, opts));
+          spinner.spin(this);
+          return $this.data("spinner", spinner);
+        }
+      });
+    } else {
+      console.log("Spinner class not available.");
+      return null;
+    }
+  };
 })();
 
 });
@@ -321,6 +377,7 @@ module.exports = ViewCollection = (function(_super) {
   ViewCollection.prototype.initialize = function() {
     var collectionEl;
     this.count = 0;
+    this.deleted = 0;
     ViewCollection.__super__.initialize.apply(this, arguments);
     this.views = {};
     this.listenTo(this.collection, "reset", this.onReset);
@@ -382,6 +439,7 @@ module.exports = ViewCollection = (function(_super) {
   };
 
   ViewCollection.prototype.removeItem = function(model) {
+    this.deleted++;
     this.views[model.cid].remove();
     delete this.views[model.cid];
     return this.onChange(this.views);
@@ -428,6 +486,19 @@ module.exports = ResultModel = (function(_super) {
   }
 
   ResultModel.prototype.rootUrl = "search";
+
+  ResultModel.prototype.methodUrl = {
+    'delete': '/delete'
+  };
+
+  ResultModel.prototype.sync = function(method, model, options) {
+    if (model.methodUrl && model.methodUrl[method.toLowerCase()]) {
+      options = options || {};
+      options.url = model.methodUrl[method.toLowerCase()];
+      options.type = 'get';
+    }
+    return Backbone.sync(method, model, options);
+  };
 
   return ResultModel;
 
@@ -694,8 +765,6 @@ module.exports = ResultCollectionView = (function(_super) {
 
   ResultCollectionView.prototype.noMoreItems = false;
 
-  ResultCollectionView.prototype.nbOfItem = 0;
-
   ResultCollectionView.prototype.initialize = function() {
     var that;
     that = this;
@@ -703,9 +772,19 @@ module.exports = ResultCollectionView = (function(_super) {
     ResultCollectionView.__super__.initialize.apply(this, arguments);
     return this.collection.fetch({
       data: $.param(this.options),
-      success: function(data) {
-        that.nbOfItem = data.length;
-        return that.loopFirstScroll();
+      success: function(col, data) {
+        if ((that.options.range != null) && (that.options.docType != null)) {
+          if (data.length === that.collection.nbPerPage) {
+            that.loopFirstScroll();
+            return $('.load-more-result').show();
+          } else {
+            that.noMoreItems = true;
+            return $('.load-more-result').hide();
+          }
+        }
+      },
+      error: function() {
+        return that.displayLoadingError();
       }
     });
   };
@@ -713,44 +792,36 @@ module.exports = ResultCollectionView = (function(_super) {
   ResultCollectionView.prototype.loadNextPage = function(isTriggered, callback) {
     var that;
     that = this;
-    this.collection.page++;
-    this.isLoading = true;
-    if (!isTriggered) {
-      $.msgGrowl({
-        type: 'loading',
-        title: 'Loading more results...',
-        text: 'If you want to see more results, you may scroll to the bottom.'
+    this.options['deleted'] = this.deleted;
+    if (!this.noMoreItems) {
+      this.isLoading = true;
+      this.collection.page++;
+      if (!isTriggered) {
+        $('.load-more-result i, .load-more-result span').hide();
+        $('.load-more-result').spin('tiny');
+      }
+      return this.collection.fetch({
+        data: $.param(this.options),
+        remove: false,
+        success: function(col, data) {
+          if (!isTriggered) {
+            $('.load-more-result .spinner').hide();
+            $('.load-more-result i, .load-more-result span').show();
+          }
+          that.noMoreItems = data.length < that.collection.nbPerPage;
+          if (that.noMoreItems) {
+            $('.load-more-result').hide();
+          }
+          that.isLoading = false;
+          if (callback != null) {
+            return callback();
+          }
+        },
+        error: function() {
+          return that.displayLoadingError();
+        }
       });
     }
-    return this.collection.fetch({
-      data: $.param(this.options),
-      remove: false,
-      success: function(data) {
-        that.isLoading = false;
-        that.noMoreItems = that.nbOfItem === data.length;
-        that.nbOfItem = data.length;
-        if (that.noMoreItems) {
-          $('.load-more-result').hide();
-        }
-        if (that.noMoreItems && !isTriggered) {
-          $.msgGrowl({
-            type: 'info',
-            title: 'No more items to load.',
-            text: 'The current list display all data of the search.',
-            lifetime: 3000
-          });
-        } else if (!isTriggered) {
-          $.msgGrowl({
-            type: 'success',
-            title: 'Content loaded.',
-            text: 'If you want to see more results, you may scroll to the bottom.'
-          });
-        }
-        if (callback != null) {
-          return callback();
-        }
-      }
-    });
   };
 
   ResultCollectionView.prototype.loopFirstScroll = function() {
@@ -764,6 +835,15 @@ module.exports = ResultCollectionView = (function(_super) {
         });
       }
     }
+  };
+
+  ResultCollectionView.prototype.displayLoadingError = function() {
+    $('.load-more-result').css({
+      'color': '#AF4434'
+    });
+    $('.load-more-result i').hide();
+    $('.load-more-result span').text('An error occurs during the loading process');
+    return $('.load-more-result').show();
   };
 
   return ResultCollectionView;
@@ -792,21 +872,85 @@ module.exports = ResultView = (function(_super) {
   ResultView.prototype.className = 'accordion-group';
 
   ResultView.prototype.render = function() {
+    var that;
+    that = this;
     return ResultView.__super__.render.call(this, {
-      no_result: this.model.get("no_result"),
-      options: this.model.attributes,
-      count: this.model.get("count")
+      results: that.manageResultsForView(this.model.attributes, this.model.get("count"))
     });
+  };
+
+  ResultView.prototype.manageResultsForView = function(attr, count) {
+    var field, iCounter, obj, results;
+    results = {};
+    if (attr.no_result != null) {
+      $('#all-result .accordion').empty();
+      results['no_result'] = true;
+      return results;
+    } else {
+      results['no_result'] = false;
+      results['count'] = count;
+      results['heading'] = {
+        'field': attr.idField != null ? attr.idField : 'id',
+        'data': attr.idField != null ? attr[attr.idField] : attr._id
+      };
+      results['fields'] = [];
+      iCounter = 0;
+      for (field in attr) {
+        if (field !== 'idField' && field !== 'count' && field !== 'descField') {
+          results['fields'][iCounter] = {
+            'cdbFieldDescription': "",
+            'cdbFieldName': field,
+            'cdbFieldData': "",
+            'cdbLabelClass': "label-secondary"
+          };
+          if ((attr.descField != null) && (attr.descField[field] != null)) {
+            if (attr.descField[field].description != null) {
+              results['fields'][iCounter]['cdbFieldDescription'] = attr.descField[field].description;
+            }
+            if ((attr.descField[field].displayName != null) && attr.descField[field].displayName !== "") {
+              results['fields'][iCounter]['cdbFieldName'] = attr.descField[field].displayName;
+              if (field === results['heading']['field']) {
+                results['heading']['field'] = attr.descField[field].displayName;
+              }
+            }
+          }
+          if (typeof attr[field] === 'string' || typeof attr[field] === 'number' || typeof attr[field] === 'boolean') {
+            results['fields'][iCounter]['cdbFieldData'] = attr[field];
+          } else if ((attr[field] != null) && typeof attr[field] === 'object') {
+            results['fields'][iCounter]['cdbFieldData'] = '<ul class="sober-list">';
+            for (obj in attr[field]) {
+              if (typeof attr[field][obj] === 'string' || typeof attr[field][obj] === 'number' || typeof attr[field][obj] === 'boolean') {
+                results['fields'][iCounter]['cdbFieldData'] += '<li>' + obj + ' : <i>' + attr[field][obj] + '</i></li>';
+              } else if ((attr[field][obj] != null) && typeof attr[field][obj] === 'object') {
+                results['fields'][iCounter]['cdbFieldData'] += '<li>' + obj + ' : <i>' + $.stringify(attr[field][obj]) + '</i></li>';
+              } else {
+                results['fields'][iCounter]['cdbFieldData'] += '<li><i>empty</i></li>';
+                results['fields'][iCounter]['cdbLabelClass'] = 'label-danger';
+              }
+            }
+            results['fields'][iCounter]['cdbFieldData'] += '</ul>';
+          } else {
+            results['fields'][iCounter]['cdbFieldData'] = '<i>empty</i>';
+            results['fields'][iCounter]['cdbLabelClass'] = 'label-danger';
+          }
+        }
+        iCounter++;
+      }
+      return results;
+    }
   };
 
   ResultView.prototype.template = function() {
     return require('./templates/result');
   };
 
+  ResultView.prototype.templateModal = require('./templates/modal_confirm');
+
   ResultView.prototype.events = {
     'click .accordion-toggle': 'blurIt',
     'mouseenter .label': 'showFieldDescription',
-    'mouseleave .label': 'showFieldDescription'
+    'mouseleave .label': 'showFieldDescription',
+    'click .remove-result': 'confirmRemoveResult'
   };
 
   ResultView.prototype.blurIt = function(e) {
@@ -842,6 +986,31 @@ module.exports = ResultView = (function(_super) {
     }
   };
 
+  ResultView.prototype.confirmRemoveResult = function(e) {
+    var data, that;
+    that = this;
+    e.preventDefault();
+    data = {
+      title: 'Confirmation required',
+      body: 'Are you sure ? This can\'t be undone, and will erase definitly the data from the database.',
+      confirm: 'delete permanently'
+    };
+    $("body").prepend(this.templateModal(data));
+    $("#confirmation-dialog").modal();
+    $("#confirmation-dialog").modal("show");
+    return $("#confirmation-dialog-confirm").bind("click", function() {
+      return that.removeResult();
+    });
+  };
+
+  ResultView.prototype.removeResult = function() {
+    this.model.set('id', this.model.get('_id'));
+    this.model.destroy({
+      data: 'id=' + this.model.get('id')
+    });
+    return $(window).resize();
+  };
+
   return ResultView;
 
 })(View);
@@ -871,15 +1040,17 @@ module.exports = SearchView = (function(_super) {
 
   SearchView.prototype.initialize = function() {
     var that;
-    this.rcView = new ResultCollectionView(this.options);
     that = this;
-    return $(window).bind('scroll', function(e, isTriggered) {
-      if (!that.rcView.isLoading && !that.rcView.noMoreItems) {
-        if ($(window).scrollTop() + $(window).height() === $(document).height()) {
-          return that.loadMore(isTriggered);
+    this.rcView = new ResultCollectionView(this.options);
+    if (this.options.range != null) {
+      return $(window).bind('scroll', function(e, isTriggered) {
+        if (!that.rcView.isLoading && !that.rcView.noMoreItems) {
+          if ($(window).scrollTop() + $(window).height() === $(document).height()) {
+            return that.loadMore(isTriggered);
+          }
         }
-      }
-    });
+      });
+    }
   };
 
   SearchView.prototype.afterRender = function() {
@@ -968,79 +1139,51 @@ return buf.join("");
 };
 });
 
+;require.register("views/templates/modal_confirm", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<div id="confirmation-dialog" class="modal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-hidden="true" class="close">x</button><h4 class="modal-title">' + escape((interp = title) == null ? '' : interp) + '</h4></div><div class="modal-body"><p>' + escape((interp = body) == null ? '' : interp) + '</p></div><div class="modal-footer"><span data-dismiss="modal" class="btn btn-link">cancel</span><span id="confirmation-dialog-confirm" data-dismiss="modal" class="btn btn-cozy">' + escape((interp = confirm) == null ? '' : interp) + '</span></div></div></div></div>');
+}
+return buf.join("");
+};
+});
+
 ;require.register("views/templates/result", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
 var interp;
- if (no_result) {	
-buf.push('<div>' + escape((interp = no_result) == null ? '' : interp) + '</div>');
- }
- else if (options) {
-	var content = { 
-		field  : options.idField ? options.idField : 'id',
-		data : options.idField ? options[options.idField] : options._id
-	};
-buf.push('<div class="accordion-heading"><a');
-buf.push(attrs({ 'data-toggle':("collapse"), 'data-parent':("#basic-accordion"), 'href':("#collapse" + (count) + ""), "class": ('accordion-toggle') }, {"data-toggle":true,"data-parent":true,"href":true}));
-buf.push('><i class="icon-plus-sign"></i>&nbsp;' + escape((interp = content.field) == null ? '' : interp) + ' :\n&nbsp;' + escape((interp = content.data) == null ? '' : interp) + '</a></div><div');
-buf.push(attrs({ 'style':("height: 0px;"), 'id':("collapse" + (count) + ""), "class": ('accordion-body') + ' ' + ('collapse') }, {"style":true,"id":true}));
-buf.push('><div class="accordion-inner"><table id="result-list" class="table">');
- for (var field in options) {
- fieldDescription = ""
- if (options.descField && options.descField[field] && options.descField[field].description) {
-	fieldDescription = options.descField[field].description;
-}
- if (field !== 'idField' && field !== 'count' && field !== 'descField') {
-{
-buf.push('<tr>	');
- if  (typeof options[field] === "string" || typeof options[field] === "number" || typeof options[field] === "boolean") {
-buf.push('<td> <span');
-buf.push(attrs({ 'data-title':("" + (fieldDescription) + ""), "class": ('label') + ' ' + ('label-secondary') }, {"data-title":true}));
-buf.push('>&nbsp;' + escape((interp = field) == null ? '' : interp) + '&nbsp; ');
- if (fieldDescription !== "") {
-buf.push('<i class="icon-question-sign"></i>');
-}
-buf.push('</span></td><td>' + escape((interp = options[field]) == null ? '' : interp) + '</td>');
- }
- else if (typeof options[field] === "object" && options[field] !== null) {
-buf.push('<td> <span');
-buf.push(attrs({ 'data-title':("" + (fieldDescription) + ""), "class": ('label') + ' ' + ('label-secondary') }, {"data-title":true}));
-buf.push('>&nbsp;' + escape((interp = field) == null ? '' : interp) + '&nbsp; ');
- if (fieldDescription !== "") {
-buf.push('<i class="icon-question-sign"></i>');
-}
-buf.push('</span></td><td><ul class="sober-list">');
- var withoutFields = true
- for (var obj in options[field]) {
- withoutFields = false
- if (typeof options[field][obj] === 'object') {
- options[field][obj] = $.stringify(options[field][obj])
- }
-buf.push('<li>' + escape((interp = obj) == null ? '' : interp) + ' - <i>' + escape((interp = options[field][obj]) == null ? '' : interp) + '</i></li>');
- }
- if (withoutFields) {
-buf.push('<li> <i>empty</i></li>');
-}
-buf.push('</ul></td>');
+ if (results['no_result']) {
+buf.push('<em>No results for now.</em>');
  }
  else {
-buf.push('<td> <span');
-buf.push(attrs({ 'data-title':("" + (fieldDescription) + ""), "class": ('label') + ' ' + ('label-danger') }, {"data-title":true}));
-buf.push('>&nbsp;' + escape((interp = field) == null ? '' : interp) + '&nbsp; ');
- if (fieldDescription !== "") {
+buf.push('<div class="accordion-heading"><a');
+buf.push(attrs({ 'data-toggle':("collapse"), 'data-parent':("#basic-accordion"), 'href':("#collapse" + (results.count) + ""), "class": ('accordion-toggle') }, {"data-toggle":true,"data-parent":true,"href":true}));
+buf.push('><i class="icon-plus-sign"></i>&nbsp;' + escape((interp = results.heading.field) == null ? '' : interp) + ' :\n&nbsp;' + escape((interp = results.heading.data) == null ? '' : interp) + '</a><div class="remove-result">Remove&nbsp;&nbsp;<i class="icon-remove-sign"></i></div></div><div');
+buf.push(attrs({ 'style':("height: 0px;"), 'id':("collapse" + (results.count) + ""), "class": ('accordion-body') + ' ' + ('collapse') }, {"style":true,"id":true}));
+buf.push('><div class="accordion-inner"><table id="result-list" class="table">');
+ for (var iCount = 0; iCount < results['fields'].length; iCount++) {
+{
+buf.push('<tr>	<td> <span');
+buf.push(attrs({ 'data-title':("" + (results['fields'][iCount].cdbFieldDescription) + ""), "class": ('label') + ' ' + ("" + (results['fields'][iCount].cdbLabelClass) + "") }, {"class":true,"data-title":true}));
+buf.push('>&nbsp;' + escape((interp = results['fields'][iCount].cdbFieldName) == null ? '' : interp) + '&nbsp; ');
+ if (results['fields'][iCount].cdbFieldDescription!== "") {
+{
 buf.push('<i class="icon-question-sign"></i>');
 }
-buf.push('</span></td><td>&nbsp;</td>');
 }
-buf.push('</tr>');
+buf.push('</span></td><td>');
+var __val__ = results['fields'][iCount].cdbFieldData
+buf.push(null == __val__ ? "" : __val__);
+buf.push('</td></tr>');
 }
- }
  }
 buf.push('</table></div></div>');
  }
-buf.push('<!-- <li class="dropdown open">--><!-- 				              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>--><!-- 				              <ul class="dropdown-menu">--><!-- 				                <li><a href="#tab3" data-toggle="tab">@fat</a></li>--><!-- 				                <li><a href="#tab4" data-toggle="tab">@mdo</a></li>--><!-- 				              </ul>--><!-- 				            </li>-->');
 }
 return buf.join("");
 };
@@ -1052,7 +1195,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div></div></div></div><div class="container"><div class="row"><div class="span12">		<h3 class="title">Results of my previous search</h3><div id="all-result"><div id="basic-accordion" class="accordion"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div><span class="load-more-result">&nbsp;load more results&nbsp<br/><i class="icon-circle-arrow-down"></i></span></div></div></div></div>');
+buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div></div></div></div><div class="container"><div class="row"><div class="span12">		<h3 class="title">Results of my previous search</h3><div id="all-result"><div id="basic-accordion" class="accordion"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div><div class="load-more-result"> <span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div></div></div></div>');
 }
 return buf.join("");
 };

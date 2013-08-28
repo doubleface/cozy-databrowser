@@ -16,6 +16,7 @@ module.exports = class DataSystem
     DS_URL : "http://127.0.0.1"
     DS_PORT : 9101
     PATH : {
+        data : '/data/'
         doctypes : '/doctypes'
         request : '/request/'
         all : '/all/'
@@ -66,6 +67,9 @@ module.exports = class DataSystem
     getDoctypes : (callback) -> 
         this.getData callback, @DS_URL, @DS_PORT, @PATH.doctypes
 
+    deleteById : (callback, id)->
+        this.deleteData callback, @DS_URL, @DS_PORT, @PATH.data + id + '/'
+
     
     putData : (callback, url, port, path, params = {})->
         client = new @jsonClient url +  ':'  + port
@@ -93,6 +97,7 @@ module.exports = class DataSystem
             else  
                 callback false, body
 
+
     postData : (callback, url, port, path, params = {})->
         client = new @jsonClient url +  ':'  + port
         client.post path, params, (error, response, body) ->
@@ -102,6 +107,19 @@ module.exports = class DataSystem
                 console.log error
                 callback true
 
+            #return result
+            else  
+                callback false, body
+
+    deleteData : (callback, url, port, path)->
+        client = new @jsonClient url +  ':'  + port
+        client.del path, (error, response, body) ->         
+
+            #return and log error
+            if error
+                console.log error
+                callback true
+            
             #return result
             else  
                 callback false, body
