@@ -1,14 +1,14 @@
 {
-  "name": "cozy-template",
+  "name": "cozy-databrowser",
   "version": "1.0.0",
   "engines": [
     "node = 0.8.x"
   ],
-  "description": "A template project for cozy applications",
+  "description": "Browse all the data in your Cozy!",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mycozycloud/cozy-template.git"
+    "url": "https://github.com/mycozycloud/cozy-databrowser.git"
   },
   "main": "server.coffee",
   "dependencies": {
@@ -33,5 +33,11 @@
   "scripts": {
     "test": "cake tests",
     "start": "coffee server.coffee"
+  },
+  "cozy-displayName": "Navigateur de données",
+  "cozy-permissions": {
+    "All": {
+      "description": "The application needs all the permission because it allows you to browse through all your data."
+    }
   }
 }
