@@ -106,10 +106,10 @@ action 'search', ->
 
 #delete
 action 'delete', ->
-	if req.query.id? 
+	if params.id? 
 		requests = []
 		requests.push (callback) -> #0 -> delete
-				ds.deleteById callback, req.query.id
+				ds.deleteById callback, params.id
 		async.parallel requests, (error, results) ->
 				jsonRes = []
 				if error
