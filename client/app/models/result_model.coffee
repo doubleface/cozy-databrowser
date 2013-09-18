@@ -1,5 +1,5 @@
 module.exports = class ResultModel extends Backbone.Model
-	rootUrl: "search"
+	urlRoot: "search"
 
 	methodUrl : {
 		'delete': 'delete'
