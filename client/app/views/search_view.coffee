@@ -25,6 +25,9 @@ module.exports = class SearchView extends BaseView
 		$(window).bind 'resize', () ->
 			that.rcView.loopFirstScroll()
 
+		#add search options
+		optionCddl = new noesis.CheckingDdl 'Doctypes : ', ['test', 'test 2', 'test 3'], '#search-options'
+
 		
 	loadMore : (isTriggered)->	
 		@rcView.loadNextPage(isTriggered)

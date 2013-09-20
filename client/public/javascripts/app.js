@@ -1050,12 +1050,13 @@ module.exports = SearchView = (function(_super) {
   };
 
   SearchView.prototype.afterRender = function() {
-    var that;
+    var optionCddl, that;
     that = this;
     this.rcView.render();
-    return $(window).bind('resize', function() {
+    $(window).bind('resize', function() {
       return that.rcView.loopFirstScroll();
     });
+    return optionCddl = new noesis.CheckingDdl('Doctypes : ', ['test', 'test 2', 'test 3'], '#search-options');
   };
 
   SearchView.prototype.loadMore = function(isTriggered) {
@@ -1199,7 +1200,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div><div class="masthead-text"><span id="search-label" class="search-label">My search</span><input type="text" id="search-field"/><button id="launch-search" class="btn btn-tertiary"><i class="icon-search"></i></button></div><div class="masthead-text"><span class="label-search">My options</span></div></div></div></div><div class="container"><div class="row"><div class="span12">		<h3 class="title">Results of my previous search</h3><div id="all-result"><div id="basic-accordion" class="accordion"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div><div class="load-more-result"> <span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div></div></div></div>');
+buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div><div class="masthead-text"><span id="search-label" class="search-label">My search</span><input type="text" id="search-field"/><button id="launch-search" class="btn btn-tertiary"><i class="icon-search"></i></button></div><div id="search-options" class="masthead-text"><span class="label-search">My options</span></div></div></div></div><div class="container"><div class="row"><div class="span12">		<h3 class="title">Results of my previous search</h3><div id="all-result"><div id="basic-accordion" class="accordion"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div><div class="load-more-result"> <span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div></div></div></div>');
 }
 return buf.join("");
 };

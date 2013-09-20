@@ -61,7 +61,6 @@ action 'doctypes', ->
 
 #search
 action 'search', ->
-	ds.indexId
 	if req.query? and req.query.range?
 		if req.query.range is 'all' and req.query.docType?
 
