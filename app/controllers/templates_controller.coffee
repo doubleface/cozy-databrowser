@@ -10,54 +10,54 @@ async = require 'async'
 action 'doctypes', ->
 
 #prepare request
-	requests = []
-	requests.push (callback) -> #0 -> doctypes
-		ds.getDoctypes(callback)
-	requests.push (callback) -> #1 -> metadoctypes
-		ds.getView(callback, DataSystem::PATH.metadoctype.getallbyrelated)
-		#ds.applyModelRequest(callback, 'Metadoctype', 'getAllByRelated')
-	requests.push (callback) -> #2 -> sums
-		ds.getView(callback, DataSystem::PATH.common.getsumsbydoctype, {group : true})
-		#ds.applyModelRequest(callback, 'All', 'getSumsByDoctype', {group : true})
-	requests.push (callback) -> #3 -> permissions
-		ds.getView(callback, DataSystem::PATH.application.getpermissions)
+    requests = []
+    requests.push (callback) -> #0 -> doctypes
+        ds.getDoctypes(callback)
+    requests.push (callback) -> #1 -> metadoctypes
+        ds.getView(callback, DataSystem::PATH.metadoctype.getallbyrelated)
+        #ds.applyModelRequest(callback, 'Metadoctype', 'getAllByRelated')
+    requests.push (callback) -> #2 -> sums
+        ds.getView(callback, DataSystem::PATH.common.getsumsbydoctype, {group : true})
+        #ds.applyModelRequest(callback, 'All', 'getSumsByDoctype', {group : true})
+    requests.push (callback) -> #3 -> permissions
+        ds.getView(callback, DataSystem::PATH.application.getpermissions)
 
-	#agregate callback 
-	async.parallel requests, (error, results) ->
-		jsonRes = []
-		if error
-			res.send(500, 'Server error occurred while retrieving data')
-			console.log error
-		else
-			for name in results[0]
+    #agregate callback
+    async.parallel requests, (error, results) ->
+        jsonRes = []
+        if error
+            res.send(500, 'Server error occurred while retrieving data')
+            console.log error
+        else
+            for name in results[0]
 
-				#prepare json object
-				newObj = {
-					'name' : name
-					'sum' : 0
-					'app' : []
-				}
-			
-				#add metadoctypes
-				for metadoctype in results[1]
-					if metadoctype.key? && metadoctype.key.toLowerCase() is name.toLowerCase()
-						newObj['metadoctype'] = metadoctype.value
-				
-				#add sums
-				for info in results[2]					
-					if info.key? and info.key.toLowerCase() is name.toLowerCase()
-						newObj['sum'] = info.value					
+                #prepare json object
+                newObj = {
+                    'name' : name
+                    'sum' : 0
+                    'app' : []
+                }
 
-				#add permissions
-				for permissions in results[3]
-					permissions = oObjectHelper.convertIndexesToLowerCase permissions 
-					if permissions.value? and permissions.value[name]?
-						newObj['app'].push(permissions.key)
-				jsonRes.push(newObj)
+                #add metadoctypes
+                for metadoctype in results[1]
+                    if metadoctype.key? && metadoctype.key.toLowerCase() is name.toLowerCase()
+                        newObj['metadoctype'] = metadoctype.value
+
+                #add sums
+                for info in results[2]
+                    if info.key? and info.key.toLowerCase() is name.toLowerCase()
+                        newObj['sum'] = info.value
+
+                #add permissions
+                for permissions in results[3]
+                    permissions = oObjectHelper.convertIndexesToLowerCase permissions
+                    if permissions.value? and permissions.value[name]?
+                        newObj['app'].push(permissions.key)
+                jsonRes.push(newObj)
 
 
-			#send json
-			res.send(jsonRes)
+            #send json
+            res.send(jsonRes)
 
 #search
 action 'search', ->
@@ -116,17 +116,15 @@ action 'search', ->
 
 #delete
 action 'delete', ->
-	if params.id? 
-		requests = []
-		requests.push (callback) -> #0 -> delete
-				ds.deleteById callback, params.id
-		async.parallel requests, (error, results) ->
-				jsonRes = []
-				if error
-					res.send('error', 'Server error occurred while trying to remove data.')
-					console.log error
-				else
-					res.send(results[0])
-
-
-	
+    if req.params.id?
+        requests = []
+        requests.push (callback) -> #0 -> delete
+                ds.deleteById callback, req.params.id
+        async.parallel requests, (error, results) ->
+                jsonRes = []
+                if error
+                    res.send('error', 'Server error occurred while trying to remove data.')
+                    console.log error
+                else
+                    res.send(results[0])
+        res.send req.query.id
