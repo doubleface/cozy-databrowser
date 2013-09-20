@@ -3352,6 +3352,30 @@ jQuery.extend({
         }
     }
 });
+;var noesis;
+
+noesis = noesis || {};
+
+noesis.CheckingDdl = (function() {
+  CheckingDdl.CLASS_NAME = "CheckingDdl";
+
+  CheckingDdl.CLASS_COUNT = 0;
+
+  function CheckingDdl(aStrings) {
+    this.aStrings = aStrings;
+    this.jsonClient = require('request-json').JsonClient;
+    this.constructor.CLASS_COUNT++;
+  }
+
+  CheckingDdl.prototype.create = function() {
+    var that;
+    return that = this;
+  };
+
+  return CheckingDdl;
+
+})();
+
 ;//fgnass.github.com/spin.js#v1.2.5
 (function(window, document, undefined) {
 

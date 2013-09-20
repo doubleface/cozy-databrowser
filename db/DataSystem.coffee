@@ -15,11 +15,13 @@ module.exports = class DataSystem
     #------------------ PROTOTYPE CONSTANTS ----------------
     DS_URL : "http://127.0.0.1"
     DS_PORT : 9101
+    DI_PORT : 9102
     PATH : {
         data : '/data/'
         doctypes : '/doctypes'
         request : '/request/'
         all : '/all/'
+        search : '/data/search/'
         common :
             getsumsbydoctype : '/request/common/getsumsbydoctype/'
         metadoctype :
@@ -99,6 +101,7 @@ module.exports = class DataSystem
 
 
     postData : (callback, url, port, path, params = {})->
+        that = this
         client = new @jsonClient url +  ':'  + port
         client.post path, params, (error, response, body) ->
 
@@ -109,6 +112,9 @@ module.exports = class DataSystem
 
             #return result
             else  
+                if not body.length?
+                    body = that.formatBody(body)
+
                 callback false, body
 
     deleteData : (callback, url, port, path)->
@@ -137,4 +143,16 @@ module.exports = class DataSystem
                 return callback(error, jsonRes) 
         else 
             return callback(error, jsonRes)
+
+    
+    formatBody : (body) ->
+        formattedBody = []        
+        if body.rows? and body.rows.length > 0
+            for row in body.rows
+                formattedRow = {}
+                if row._id? then formattedRow['id'] = row._id
+                if row.docType then formattedRow['key'] = row.docType
+                formattedRow['value'] = row
+                formattedBody.push formattedRow
+        return formattedBody
 #********************************************************

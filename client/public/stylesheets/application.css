@@ -2048,7 +2048,7 @@ Layout: Masthead
   font-size: 13px;
 }
 #masthead .masthead-pad {
-  display: table;
+  /*display: table;*/
   width: 100%;
 }
 #masthead .masthead-pad .masthead-icon {
@@ -2064,8 +2064,34 @@ Layout: Masthead
   top: 15px;
 }
 #masthead .masthead-pad .masthead-text {
-  display: table-cell;
+  /*display: table-cell;*/
   vertical-align: top;
+  width:320px;
+  float:left;
+}
+#masthead .masthead-pad .masthead-text span.search-label {
+  display:block;  
+}
+#masthead .masthead-pad .masthead-text input[type=text] {
+  font-family: 'Open Sans';
+  font-size: 13px;
+  color: #8e8d8d;
+  padding: 5px 10px;
+  background-color: #FFF;
+  width: 200px;
+  display: block;
+  float:left;
+  margin: 0;
+  box-shadow: inset 2px 2px 4px #f1f1f1;
+  border-radius:4px;
+  margin-right:5px;
+}
+#masthead .masthead-pad .masthead-text button {
+  height:31px;
+  font-size: 20px;  
+}
+#masthead .masthead-pad .masthead-text button i {
+  line-height:1em;
 }
 /*------------------------------------------------------------------
  

@@ -30,6 +30,14 @@ module.exports = class ResultCollectionView extends ViewCollection
 				that.displayLoadingError()
 
 		}
+
+	search : (content) ->
+		that = this
+		@options['query'] = content
+		@collection.fetch {
+			data: $.param(@options)
+		}
+
 	loadNextPage : (isTriggered, callback) ->				
 		that = this
 		@options['deleted'] = @deleted

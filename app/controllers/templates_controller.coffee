@@ -61,24 +61,35 @@ action 'doctypes', ->
 
 #search
 action 'search', ->
+	ds.indexId
 	if req.query? and req.query.range?
 		if req.query.range is 'all' and req.query.docType?
 
 			#prepare params
 			pageParams = {}
+
+			#skip deleted lines
 			if parseInt(req.query.page, 10)? and parseInt(req.query.nbperpage, 10)?
 				nbDeleted = if req.query.deleted? then parseInt(req.query.deleted, 10) else 0
 				page = parseInt(req.query.page, 10)
 				nbPerPage = parseInt(req.query.nbperpage, 10)
 				pageParams['limit'] = nbPerPage
-				if page > 1
+				if page > 1 and nbDeleted > 0
 					pageParams['skip'] = (nbPerPage * (page - 1)) - nbDeleted
 
-			requests = []
+			#add query for plain text search
+			if req.query.query? and req.query.query isnt ""
+				pageParams['query'] = req.query.query
+
+			requests = []			
 			requests.push (callback) -> #0 -> all
-				ds.getView callback, DataSystem::PATH.request + req.query.docType + DataSystem::PATH.all, pageParams
+				if pageParams['query']?
+					ds.getView callback, DataSystem::PATH.search + req.query.docType, pageParams
+				else
+					ds.getView callback, DataSystem::PATH.request + req.query.docType + DataSystem::PATH.all, pageParams
 			requests.push (callback) -> #1 -> metadoctypes
-				ds.getView callback, DataSystem::PATH.metadoctype.getallbyrelated	
+				ds.getView callback, DataSystem::PATH.metadoctype.getallbyrelated
+				
 
 			async.parallel requests, (error, results) ->
 				jsonRes = []

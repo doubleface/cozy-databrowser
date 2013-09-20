@@ -28,3 +28,9 @@ module.exports = class SearchView extends BaseView
 		
 	loadMore : (isTriggered)->	
 		@rcView.loadNextPage(isTriggered)
+
+	events : 
+		'click #launch-search' : 'launchSearch'
+
+	launchSearch : () ->		
+		@rcView.search($('#search-field').val())
