@@ -1,5 +1,3 @@
-noesis = noesis || {}
-
 #********************************************************
 #******************** CLASS CheckingDdl ******************
 #********************************************************
@@ -9,7 +7,7 @@ noesis = noesis || {}
 #@patches requirement :     none
 #@constructor :             Use "new" for create an instance of a CheckingDdl
   
-class noesis.CheckingDdl
+module.exports = class CheckingDdl
     #------------------ CONSTRUCTOR CONSTANTS ----------------
     @CLASS_NAME : "CheckingDdl"
     @CLASS_COUNT : 0

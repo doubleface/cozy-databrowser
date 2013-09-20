@@ -20,8 +20,9 @@ module.exports = class DataSystem
         data : '/data/'
         doctypes : '/doctypes'
         request : '/request/'
-        all : '/all/'
+        all : '/dball/'
         search : '/data/search/'
+        index : '/data/index/'
         common :
             getsumsbydoctype : '/request/common/getsumsbydoctype/'
         metadoctype :
@@ -41,7 +42,8 @@ module.exports = class DataSystem
         #setted by coffeescript contructor function 
         
         #------ REQUIRED   
-        this.jsonClient = require('request-json').JsonClient 
+        @jsonClient = require('request-json').JsonClient 
+        @pageCountMatrix = {}
         
         #------ SUB-PROCESS
         @constructor.CLASS_COUNT++
@@ -68,6 +70,14 @@ module.exports = class DataSystem
 
     getDoctypes : (callback) -> 
         this.getData callback, @DS_URL, @DS_PORT, @PATH.doctypes
+
+    indexId : (id, aFields) ->        
+        client = new @jsonClient @DS_URL +  ':'  + @DS_PORT
+        client.post @PATH.index + id, {"fields": aFields}, (error, response, body) ->
+            if error
+                console.log error
+            else if response.statusCode isnt 200
+                console.log new Error(body)
 
     deleteById : (callback, id)->
         this.deleteData callback, @DS_URL, @DS_PORT, @PATH.data + id + '/'

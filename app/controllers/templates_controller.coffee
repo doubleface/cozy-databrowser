@@ -9,7 +9,11 @@ async = require 'async'
 #doctypes
 action 'doctypes', ->
 
-#prepare request
+    #index several id for test
+    #ds.indexId "39bade34f76d6b32234c3974c8004ca9", ["description"]
+    #ds.indexId "39bade34f76d6b32234c3974c80059f0", ["description"]
+
+    #prepare request
     requests = []
     requests.push (callback) -> #0 -> doctypes
         ds.getDoctypes(callback)
@@ -61,58 +65,76 @@ action 'doctypes', ->
 
 #search
 action 'search', ->
-	if req.query? and req.query.range?
-		if req.query.range is 'all' and req.query.docType?
+    if req.query? and req.query.range?
+        if req.query.docType?
 
-			#prepare params
-			pageParams = {}
+            #prepare params
+            pageParams = {}            
 
-			#skip deleted lines
-			if parseInt(req.query.page, 10)? and parseInt(req.query.nbperpage, 10)?
-				nbDeleted = if req.query.deleted? then parseInt(req.query.deleted, 10) else 0
-				page = parseInt(req.query.page, 10)
-				nbPerPage = parseInt(req.query.nbperpage, 10)
-				pageParams['limit'] = nbPerPage
-				if page > 1 and nbDeleted > 0
-					pageParams['skip'] = (nbPerPage * (page - 1)) - nbDeleted
+            #skip deleted lines
+            if parseInt(req.query.page, 10)? and parseInt(req.query.nbperpage, 10)?
 
-			#add query for plain text search
-			if req.query.query? and req.query.query isnt ""
-				pageParams['query'] = req.query.query
+                #nbDeleted = if req.query.deleted? then parseInt(req.query.deleted, 10) else 0
+                page = parseInt(req.query.page, 10)
 
-			requests = []			
-			requests.push (callback) -> #0 -> all
-				if pageParams['query']?
-					ds.getView callback, DataSystem::PATH.search + req.query.docType, pageParams
-				else
-					ds.getView callback, DataSystem::PATH.request + req.query.docType + DataSystem::PATH.all, pageParams
-			requests.push (callback) -> #1 -> metadoctypes
-				ds.getView callback, DataSystem::PATH.metadoctype.getallbyrelated
-				
+                #page count matrix knows how many results must be skipped for each doctypes
+                if page is 1 and req.query.docType.length > 1
+                    newKey = req.query.docType.join('_')
+                    console.log newKey
+                    ds.pageCountMatrix[newKey] = []
+                console.log(ds.pageCountMatrix)
 
-			async.parallel requests, (error, results) ->
-				jsonRes = []
-				if error
-					res.send('no_result', 'No result : Server error occurred while retrieving data.')
-					console.log error
-				else
-					idField = null
-					descField = null
-					for md in results[1]
-						if md.key? and md.value.identificationField? and md.key.toLowerCase() is req.query.docType.toLowerCase()							
-							idField = md.value.identificationField
-							if md.value.fields[0]?
-								descField = md.value.fields[0]
-					for doc in results[0]
-						if doc.key? and doc.value? 
-							doc.value['idField'] = idField
-							doc.value['descField'] = descField							
-							jsonRes.push doc.value						
-					
-					#send json
-					res.send(jsonRes)
-	else
-		res.send([{ 'no_result' : 'No result for now.' }])
+                nbPerPage = parseInt(req.query.nbperpage, 10)
+                pageParams['limit'] = nbPerPage
+                if page > 1 #and nbDeleted > 0
+                    pageParams['skip'] = (nbPerPage * (page - 1)) #- nbDeleted
+
+            #add query for plain text search
+            if req.query.query? and req.query.query isnt ""
+                pageParams['query'] = req.query.query
+
+            requests = []
+            requests.push (callback) -> #0 -> metadoctypes
+                ds.getView callback, DataSystem::PATH.metadoctype.getallbyrelated
+
+
+            reqCount = 0
+            for dt in req.query.docType
+                requests.push (callback) -> #1 to n -> requests
+                    if pageParams['query']?
+                        ds.getView callback, DataSystem::PATH.search + req.query.docType[reqCount], pageParams
+                    else
+                        ds.getView callback, DataSystem::PATH.request + req.query.docType[reqCount] + DataSystem::PATH.all, pageParams
+                    reqCount++
+                
+
+            async.parallel requests, (error, results) ->
+                jsonRes = []
+                if error
+                    res.send('no_result', 'No result : Server error occurred while retrieving data.')
+                    console.log error
+                else
+                    idField = null
+                    descField = null
+                    # for md in results[0]
+                    #   if md.key? and md.value.identificationField? and md.key.toLowerCase() is req.query.docType[0].toLowerCase()                         
+                    #       idField = md.value.identificationField
+                    #       if md.value.fields[0]?
+                    #           descField = md.value.fields[0]
+                    for result, index in results                        
+                        if index > 0
+                            for doc in result
+                                # console.log doc
+                                # console.log '-----------'
+                                if doc.key? and doc.value? 
+                                    doc.value['idField'] = idField
+                                    doc.value['descField'] = descField                          
+                                    jsonRes.push doc.value                      
+                    
+                    #send json                  
+                    res.send(jsonRes)
+    else
+        res.send([{ 'no_result' : 'No result for now.' }])
 
 #delete
 action 'delete', ->

@@ -12,9 +12,6 @@ module.exports = class Router extends Backbone.Router
         'search' : 'search'
         'search/all/:doctype' : 'search'
 
-    redirectToDoctypes: ->
-        this.navigate("/doctypes", true)
-
     doctypes: ->
         navView = new NavView()
         doctypesView = new DoctypesView()
@@ -26,7 +23,11 @@ module.exports = class Router extends Backbone.Router
         navView = new NavView()
         options = {}
         if doctype?
+            if not /\|/.test decodeURIComponent(doctype)                
+                options['docType'] = new Array (doctype)
+            else
+                options['docType'] = decodeURIComponent(doctype).split /\|/
             options['range'] = 'all'
-            options['docType'] = doctype
+
         searchView = new SearchView(options)
         searchView.render()        
