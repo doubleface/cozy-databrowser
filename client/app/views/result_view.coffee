@@ -30,6 +30,7 @@ module.exports = class ResultView extends View
 
 			#heading
 			results['heading'] = {
+				'doctype' : attr.docType
 				'field' : if attr.idField? then attr.idField else 'id'
 				'data' : if attr.idField? then attr[attr.idField] else attr._id
 			}	

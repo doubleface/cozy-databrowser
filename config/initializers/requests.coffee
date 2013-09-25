@@ -3,9 +3,8 @@ module.exports = (compound) ->
     All = compound.models.All
     Metadoctype = compound.models.Metadoctype
 
-    DataSystem = require('./../../db/DataSystem')
-    ds = new DataSystem(compound.models)
-    async = require('async')
+    ds = require './../../db/DataSystem'
+    async = require 'async'
 
     #prepare view functions
     vFunc = {
@@ -42,11 +41,11 @@ module.exports = (compound) ->
 
     setupRequests = [] 
     setupRequests.push (callback) -> 
-        ds.manageRequest callback, DataSystem::PATH.common.getsumsbydoctype, vFunc.common.getSumsByDoctype
+        ds.manageRequest callback, ds.getPATH().common.getsumsbydoctype, vFunc.common.getSumsByDoctype
     setupRequests.push (callback) -> 
-        ds.manageRequest callback, DataSystem::PATH.metadoctype.getallbyrelated, vFunc.metadoctype.getAllByRelated
+        ds.manageRequest callback, ds.getPATH().metadoctype.getallbyrelated, vFunc.metadoctype.getAllByRelated
     setupRequests.push (callback) -> 
-        ds.manageRequest callback, DataSystem::PATH.application.getpermissions, vFunc.application.getPermissions
+        ds.manageRequest callback, ds.getPATH().application.getpermissions, vFunc.application.getPermissions
 
     #agregate callback 
     async.parallel setupRequests, (error, results) ->
@@ -70,7 +69,7 @@ module.exports = (compound) ->
 
             #prepare parameters
             for dt, index in results[0]
-                pathAll[index] = DataSystem::PATH.request + dt.toLowerCase() + DataSystem::PATH.all           
+                pathAll[index] = ds.getPATH().request + dt.toLowerCase() + ds.getPATH().all           
                 patternAll[index] = dt.toLowerCase() 
                 mapAll[index] =  {
                     map : (doc) ->

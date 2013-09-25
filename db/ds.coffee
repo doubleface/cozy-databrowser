@@ -7,7 +7,7 @@
 #@patches requirement :     none
 #@constructor :             Use "new" for create an instance of a DataSystem
   
-module.exports = class DataSystem 
+class DataSystem 
     #------------------ CONSTRUCTOR CONSTANTS ----------------
     @CLASS_NAME : "DataSystem"
     @CLASS_COUNT : 0
@@ -36,26 +36,28 @@ module.exports = class DataSystem
 
      
     #----------------- OBJECT PARAMETERS ---------------
-    constructor : (@models) ->
+    constructor : () ->
         
         #------ DIRECT
         #setted by coffeescript contructor function 
         
         #------ REQUIRED   
-        @jsonClient = require('request-json').JsonClient 
+        @jsonClient = require('request-json').JsonClient
+        @clientDS = new @jsonClient @DS_URL +  ':'  + @DS_PORT
         @pageCountMatrix = {}
         
         #------ SUB-PROCESS
+        #console.log("NEW DS !")
         @constructor.CLASS_COUNT++
         
     #-------------- OBJECT METHODS ----------------------
     #------CONSTANT GETTERS
     #use :: (ex : DataSystem::DS_URL)
+    getPATH : () ->
+        return @PATH
     
     #------METHODS
     manageRequest : (callback, path, viewFunctions =  {}, pattern = '') ->
-        that = this
-
         # convert map/reduce to string and replace optional pattern
         for key, func of viewFunctions
             viewFunctions[key] = func.toString()
@@ -63,29 +65,27 @@ module.exports = class DataSystem
                 viewFunctions[key] = viewFunctions[key].replace '__pattern__', pattern        
         
         #create request
-        that.putData callback, that.DS_URL, that.DS_PORT, path, viewFunctions
+        @putData callback, path, viewFunctions
 
     getView : (callback, path, params = {}) ->
-        this.postData callback, @DS_URL, @DS_PORT, path, params
+        @postData callback, path, params        
 
     getDoctypes : (callback) -> 
-        this.getData callback, @DS_URL, @DS_PORT, @PATH.doctypes
+        @getData callback, @PATH.doctypes
 
     indexId : (id, aFields) ->        
-        client = new @jsonClient @DS_URL +  ':'  + @DS_PORT
-        client.post @PATH.index + id, {"fields": aFields}, (error, response, body) ->
+        @clientDS.post @PATH.index + id, {"fields": aFields}, (error, response, body) ->
             if error
                 console.log error
             else if response.statusCode isnt 200
                 console.log new Error(body)
 
     deleteById : (callback, id)->
-        this.deleteData callback, @DS_URL, @DS_PORT, @PATH.data + id + '/'
+        @deleteData callback, @PATH.data + id + '/'
 
     
-    putData : (callback, url, port, path, params = {})->
-        client = new @jsonClient url +  ':'  + port
-        client.put path, params, (error, response, body) ->
+    putData : (callback, path, params = {})->
+        @clientDS.put path, params, (error, response, body) ->
 
             #return error     
             if error
@@ -96,9 +96,8 @@ module.exports = class DataSystem
             else  
                 callback false, body
 
-    getData : (callback, url, port, path)->
-        client = new @jsonClient url +  ':'  + port
-        client.get path, (error, response, body) ->         
+    getData : (callback, path)->
+        @clientDS.get path, (error, response, body) ->         
 
             #return and log error
             if error
@@ -110,10 +109,8 @@ module.exports = class DataSystem
                 callback false, body
 
 
-    postData : (callback, url, port, path, params = {})->
-        that = this
-        client = new @jsonClient url +  ':'  + port
-        client.post path, params, (error, response, body) ->
+    postData : (callback, path, params = {})->
+        @clientDS.post path, params, (error, response, body) =>
 
             #return error     
             if error
@@ -123,13 +120,12 @@ module.exports = class DataSystem
             #return result
             else  
                 if not body.length?
-                    body = that.formatBody(body)
+                    body = @formatBody(body)
 
                 callback false, body
 
-    deleteData : (callback, url, port, path)->
-        client = new @jsonClient url +  ':'  + port
-        client.del path, (error, response, body) ->         
+    deleteData : (callback, path)->
+        @clientDS.del path, (error, response, body) ->         
 
             #return and log error
             if error
@@ -140,19 +136,19 @@ module.exports = class DataSystem
             else  
                 callback false, body
     
-    applyModelRequest : (callback, modelName, requestName, requestParams) ->
-        requestParams = requestParams || {}
-        jsonRes = {}
-        error = true        
-        if @models[modelName]?
-            @models[modelName].request requestName, requestParams, (err, data) -> 
-                if data?                    
-                    if data.length > 0 
-                        error = false                         
-                        jsonRes = data
-                return callback(error, jsonRes) 
-        else 
-            return callback(error, jsonRes)
+    # applyModelRequest : (callback, modelName, requestName, requestParams) ->
+    #     requestParams = requestParams || {}
+    #     jsonRes = {}
+    #     error = true        
+    #     if @models[modelName]?
+    #         @models[modelName].request requestName, requestParams, (err, data) -> 
+    #             if data?                    
+    #                 if data.length > 0 
+    #                     error = false                         
+    #                     jsonRes = data
+    #             return callback(error, jsonRes) 
+    #     else 
+    #         return callback(error, jsonRes)
 
     
     formatBody : (body) ->
@@ -166,3 +162,5 @@ module.exports = class DataSystem
                 formattedBody.push formattedRow
         return formattedBody
 #********************************************************
+
+module.exports = new DataSystem()

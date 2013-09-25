@@ -1,8 +1,8 @@
 load 'application'
 
 #instanciate DataSystem
-DataSystem = require './db/DataSystem'
-ds = new DataSystem compound.models
+
+ds = require './db/ds'
 oObjectHelper = require './noesis-tools/oObjectHelper'
 async = require 'async'
 
@@ -18,13 +18,13 @@ action 'doctypes', ->
     requests.push (callback) -> #0 -> doctypes
         ds.getDoctypes(callback)
     requests.push (callback) -> #1 -> metadoctypes
-        ds.getView(callback, DataSystem::PATH.metadoctype.getallbyrelated)
+        ds.getView(callback, ds.getPATH().metadoctype.getallbyrelated)
         #ds.applyModelRequest(callback, 'Metadoctype', 'getAllByRelated')
     requests.push (callback) -> #2 -> sums
-        ds.getView(callback, DataSystem::PATH.common.getsumsbydoctype, {group : true})
+        ds.getView(callback, ds.getPATH().common.getsumsbydoctype, {group : true})
         #ds.applyModelRequest(callback, 'All', 'getSumsByDoctype', {group : true})
     requests.push (callback) -> #3 -> permissions
-        ds.getView(callback, DataSystem::PATH.application.getpermissions)
+        ds.getView(callback, ds.getPATH().application.getpermissions)
 
     #agregate callback
     async.parallel requests, (error, results) ->
@@ -65,74 +65,80 @@ action 'doctypes', ->
 
 #search
 action 'search', ->
-    if req.query? and req.query.range?
-        if req.query.docType?
+    if req.query? 
+        if req.query.doctype? and req.query.range? and req.query.page? and req.query.nbperpage?
 
             #prepare params
             pageParams = {}            
 
             #skip deleted lines
-            if parseInt(req.query.page, 10)? and parseInt(req.query.nbperpage, 10)?
+            page = parseInt(req.query.page, 10)
+            nbPerPage = parseInt(req.query.nbperpage, 10)
+            newKey = req.query.doctype.join('_')
+            if not ds.pageCountMatrix[newKey]?
+                ds.pageCountMatrix[newKey] = []
 
-                #nbDeleted = if req.query.deleted? then parseInt(req.query.deleted, 10) else 0
-                page = parseInt(req.query.page, 10)
-
-                #page count matrix knows how many results must be skipped for each doctypes
-                if page is 1 and req.query.docType.length > 1
-                    newKey = req.query.docType.join('_')
-                    console.log newKey
-                    ds.pageCountMatrix[newKey] = []
-                console.log(ds.pageCountMatrix)
-
-                nbPerPage = parseInt(req.query.nbperpage, 10)
-                pageParams['limit'] = nbPerPage
-                if page > 1 #and nbDeleted > 0
-                    pageParams['skip'] = (nbPerPage * (page - 1)) #- nbDeleted
+                #nbDeleted = if req.query.deleted? then parseInt(req.query.deleted, 10) else 0                
+                #pageParams['limit'] = nbPerPage
+                #if page > 1 #and nbDeleted > 0
+                    #pageParams['skip'] = (nbPerPage * (page - 1)) #- nbDeleted
 
             #add query for plain text search
-            if req.query.query? and req.query.query isnt ""
-                pageParams['query'] = req.query.query
-
-            requests = []
-            requests.push (callback) -> #0 -> metadoctypes
-                ds.getView callback, DataSystem::PATH.metadoctype.getallbyrelated
-
-
-            reqCount = 0
-            for dt in req.query.docType
-                requests.push (callback) -> #1 to n -> requests
-                    if pageParams['query']?
-                        ds.getView callback, DataSystem::PATH.search + req.query.docType[reqCount], pageParams
-                    else
-                        ds.getView callback, DataSystem::PATH.request + req.query.docType[reqCount] + DataSystem::PATH.all, pageParams
-                    reqCount++
+            #if req.query.query? and req.query.query isnt ""
+                #pageParams['query'] = req.query.query            
                 
+            if page is 1 
+                requests = []
+                requests.push (callback) -> #0 -> metadoctypes
+                    ds.getView callback, ds.getPATH().metadoctype.getallbyrelated
 
-            async.parallel requests, (error, results) ->
-                jsonRes = []
-                if error
-                    res.send('no_result', 'No result : Server error occurred while retrieving data.')
-                    console.log error
-                else
-                    idField = null
-                    descField = null
-                    # for md in results[0]
-                    #   if md.key? and md.value.identificationField? and md.key.toLowerCase() is req.query.docType[0].toLowerCase()                         
-                    #       idField = md.value.identificationField
-                    #       if md.value.fields[0]?
-                    #           descField = md.value.fields[0]
-                    for result, index in results                        
-                        if index > 0
-                            for doc in result
-                                # console.log doc
-                                # console.log '-----------'
-                                if doc.key? and doc.value? 
-                                    doc.value['idField'] = idField
-                                    doc.value['descField'] = descField                          
-                                    jsonRes.push doc.value                      
+                #one request per doctype
+                reqCount = 0
+                for dt in req.query.doctype
+                    requests.push (callback) -> #1 to n -> requests
+                        if pageParams['query']?
+                            ds.getView callback, ds.getPATH().search + req.query.doctype[reqCount], pageParams
+                        else
+                            ds.getView callback, ds.getPATH().request + req.query.doctype[reqCount] + ds.getPATH().all, pageParams
+                        reqCount++
                     
-                    #send json                  
-                    res.send(jsonRes)
+
+                async.parallel requests, (error, results) ->
+                    jsonRes = []
+                    if error
+                        res.send('no_result', 'No result : Server error occurred while retrieving data.')
+                        console.log error
+                    else
+                        idField = []
+                        descField = []
+                        for dt in req.query.doctype
+                            for md in results[0]
+                                if md.key? and md.value.identificationField? and md.key.toLowerCase() is dt.toLowerCase()                         
+                                    idField[dt.toLowerCase()] = md.value.identificationField
+                                    if md.value.fields[0]?
+                                        descField[dt.toLowerCase()] = md.value.fields[0]
+                        for result, index in results                        
+                            if index > 0
+                                for doc in result
+                                    if doc.key? and doc.value? 
+                                        doc.value['idField'] = idField[doc.value['docType'].toLowerCase()]
+                                        doc.value['descField'] = descField[doc.value['docType'].toLowerCase()]                         
+                                        jsonRes.push doc.value
+
+                            #page count matrix knows how many results must be skipped for each doctypes                        
+                        
+                        ds.pageCountMatrix[newKey] = jsonRes
+
+                        #prepare limit   
+                        limit = if ds.pageCountMatrix[newKey].length? and ds.pageCountMatrix[newKey].length <= nbPerPage then ds.pageCountMatrix[newKey].length else nbPerPage
+                        res.send(ds.pageCountMatrix[newKey].slice(0, limit))
+            else if ds.pageCountMatrix[newKey] and ds.pageCountMatrix[newKey].length > nbPerPage
+                #send json     
+                limit = if ds.pageCountMatrix[newKey].length? and ds.pageCountMatrix[newKey].length <= nbPerPage*page then ds.pageCountMatrix[newKey].length else nbPerPage*page              
+                res.send(ds.pageCountMatrix[newKey].slice(nbPerPage*(page-1), limit))
+            else
+                res.send([{ 'no_result' : 'No result for now.' }])
+                            
     else
         res.send([{ 'no_result' : 'No result for now.' }])
 

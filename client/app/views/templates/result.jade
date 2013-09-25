@@ -8,6 +8,7 @@ em No results for now.
 .accordion-heading
 	a.accordion-toggle(data-toggle="collapse", data-parent="#basic-accordion", href="#collapse#{results.count}")
 		i.icon-plus-sign
+		strong &nbsp;#{results.heading.doctype} 
 		|&nbsp;#{results.heading.field} :
 		|&nbsp;#{results.heading.data}
 	div.remove-result Remove&nbsp;&nbsp;

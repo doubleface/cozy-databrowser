@@ -18,7 +18,7 @@ module.exports = class ResultCollectionView extends ViewCollection
 			success : (col, data) ->
 
 				#native size of the window could trigger next pages (infinite scroll)
-				if that.options.range? and that.options.docType?		
+				if that.options.range? and that.options.doctype?		
 					if data.length is that.collection.nbPerPage
 						that.loopFirstScroll()
 						$('.load-more-result').show()
@@ -40,7 +40,7 @@ module.exports = class ResultCollectionView extends ViewCollection
 
 	loadNextPage : (isTriggered, callback) ->				
 		that = this
-		@options['deleted'] = @deleted
+		#@options['deleted'] = @deleted
 		if !@noMoreItems			
 			@isLoading = true
 			@collection.page++			

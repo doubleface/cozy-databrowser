@@ -12,4 +12,4 @@ if not module.parent
     server.listen port, host, ->
         console.log(
             "Compound server listening on %s:%d within %s environment",
-            host, port, server.set('env'))
+            host, port, server.set('env'))    

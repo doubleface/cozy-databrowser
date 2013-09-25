@@ -591,9 +591,9 @@ module.exports = Router = (function(_super) {
     options = {};
     if (doctype != null) {
       if (!/\|/.test(decodeURIComponent(doctype))) {
-        options['docType'] = new Array(doctype);
+        options['doctype'] = [doctype];
       } else {
-        options['docType'] = decodeURIComponent(doctype).split(/\|/);
+        options['doctype'] = decodeURIComponent(doctype).split(/\|/);
       }
       options['range'] = 'all';
     }
@@ -813,7 +813,7 @@ module.exports = ResultCollectionView = (function(_super) {
     return this.collection.fetch({
       data: $.param(this.options),
       success: function(col, data) {
-        if ((that.options.range != null) && (that.options.docType != null)) {
+        if ((that.options.range != null) && (that.options.doctype != null)) {
           if (data.length === that.collection.nbPerPage) {
             that.loopFirstScroll();
             return $('.load-more-result').show();
@@ -841,7 +841,6 @@ module.exports = ResultCollectionView = (function(_super) {
   ResultCollectionView.prototype.loadNextPage = function(isTriggered, callback) {
     var that;
     that = this;
-    this.options['deleted'] = this.deleted;
     if (!this.noMoreItems) {
       this.isLoading = true;
       this.collection.page++;
@@ -939,6 +938,7 @@ module.exports = ResultView = (function(_super) {
       results['no_result'] = false;
       results['count'] = count;
       results['heading'] = {
+        'doctype': attr.docType,
         'field': attr.idField != null ? attr.idField : 'id',
         'data': attr.idField != null ? attr[attr.idField] : attr._id
       };
@@ -1223,7 +1223,7 @@ buf.push('<em>No results for now.</em>');
  else {
 buf.push('<div class="accordion-heading"><a');
 buf.push(attrs({ 'data-toggle':("collapse"), 'data-parent':("#basic-accordion"), 'href':("#collapse" + (results.count) + ""), "class": ('accordion-toggle') }, {"data-toggle":true,"data-parent":true,"href":true}));
-buf.push('><i class="icon-plus-sign"></i>&nbsp;' + escape((interp = results.heading.field) == null ? '' : interp) + ' :\n&nbsp;' + escape((interp = results.heading.data) == null ? '' : interp) + '</a><div class="remove-result">Remove&nbsp;&nbsp;<i class="icon-remove-sign"></i></div></div><div');
+buf.push('><i class="icon-plus-sign"></i><strong>&nbsp;' + escape((interp = results.heading.doctype) == null ? '' : interp) + ' </strong>&nbsp;' + escape((interp = results.heading.field) == null ? '' : interp) + ' :\n&nbsp;' + escape((interp = results.heading.data) == null ? '' : interp) + '</a><div class="remove-result">Remove&nbsp;&nbsp;<i class="icon-remove-sign"></i></div></div><div');
 buf.push(attrs({ 'style':("height: 0px;"), 'id':("collapse" + (results.count) + ""), "class": ('accordion-body') + ' ' + ('collapse') }, {"style":true,"id":true}));
 buf.push('><div class="accordion-inner"><table id="result-list" class="table">');
  for (var iCount = 0; iCount < results['fields'].length; iCount++) {

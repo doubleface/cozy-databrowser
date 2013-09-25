@@ -24,10 +24,9 @@ module.exports = class Router extends Backbone.Router
         options = {}
         if doctype?
             if not /\|/.test decodeURIComponent(doctype)                
-                options['docType'] = new Array (doctype)
+                options['doctype'] = [doctype]
             else
-                options['docType'] = decodeURIComponent(doctype).split /\|/
+                options['doctype'] = decodeURIComponent(doctype).split /\|/
             options['range'] = 'all'
-
         searchView = new SearchView(options)
         searchView.render()        
