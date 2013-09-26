@@ -730,6 +730,75 @@ module.exports = DoctypesView = (function(_super) {
 
 });
 
+;require.register("views/dt_cddl_collection_view", function(exports, require, module) {
+var BaseView, DtCddlCollectionView, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+BaseView = require('../lib/base_view');
+
+module.exports = DtCddlCollectionView = (function(_super) {
+  __extends(DtCddlCollectionView, _super);
+
+  function DtCddlCollectionView() {
+    _ref = DtCddlCollectionView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  DtCddlCollectionView.prototype.itemview = DtCddlView;
+
+  DtCddlCollectionView.prototype.collection = new DoctypeCollection();
+
+  DtCddlCollectionView.prototype.initialize = function() {
+    this.collectionEl = '#dt-cddl-list';
+    DtCddlCollectionView.__super__.initialize.apply(this, arguments);
+    this.collection.fetch();
+    this.views = {};
+    return this.listenTo(this.collection, "reset", this.onReset);
+  };
+
+  return DtCddlCollectionView;
+
+})(ViewCollection);
+
+});
+
+;require.register("views/dt_cddl_view", function(exports, require, module) {
+var DtCddlView, View, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+View = require('./../lib/view');
+
+module.exports = DtCddlView = (function(_super) {
+  __extends(DtCddlView, _super);
+
+  function DtCddlView() {
+    _ref = DtCddlView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  DtCddlView.prototype.tagName = 'li';
+
+  DtCddlView.prototype.className = 'dt-cddl-list-item';
+
+  DtCddlView.prototype.render = function() {
+    return DtCddlView.__super__.render.call(this, {
+      name: this.model.get("name"),
+      metadoctype: this.model.get("metadoctype")
+    });
+  };
+
+  DtCddlView.prototype.template = function() {
+    return require('./templates/dt-cddl-list-item');
+  };
+
+  return DtCddlView;
+
+})(View);
+
+});
+
 ;require.register("views/nav_view", function(exports, require, module) {
 var BaseView, NavView, _ref,
   __hasProp = {}.hasOwnProperty,
@@ -841,6 +910,7 @@ module.exports = ResultCollectionView = (function(_super) {
   ResultCollectionView.prototype.loadNextPage = function(isTriggered, callback) {
     var that;
     that = this;
+    this.options['deleted'] = this.deleted;
     if (!this.noMoreItems) {
       this.isLoading = true;
       this.collection.page++;
@@ -1067,15 +1137,13 @@ module.exports = ResultView = (function(_super) {
 });
 
 ;require.register("views/search_view", function(exports, require, module) {
-var BaseView, CheckingDdl, ResultCollectionView, SearchView, _ref,
+var BaseView, ResultCollectionView, SearchView, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 BaseView = require('../lib/base_view');
 
 ResultCollectionView = require('../views/result_collection_view');
-
-CheckingDdl = require('../noesis-classes/CheckingDdl');
 
 module.exports = SearchView = (function(_super) {
   __extends(SearchView, _super);
@@ -1105,13 +1173,12 @@ module.exports = SearchView = (function(_super) {
   };
 
   SearchView.prototype.afterRender = function() {
-    var optionCddl, that;
+    var that;
     that = this;
     this.rcView.render();
-    $(window).bind('resize', function() {
+    return $(window).bind('resize', function() {
       return that.rcView.loopFirstScroll();
     });
-    return optionCddl = new CheckingDdl('Doctypes : ', ['test', 'test 2', 'test 3'], '#search-options');
   };
 
   SearchView.prototype.loadMore = function(isTriggered) {
@@ -1199,6 +1266,18 @@ return buf.join("");
 };
 });
 
+;require.register("views/templates/dt_cddl-list-item", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<' + (name) + '></' + (name) + '>');
+}
+return buf.join("");
+};
+});
+
 ;require.register("views/templates/modal_confirm", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
@@ -1255,7 +1334,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div><div class="masthead-text"><span id="search-label" class="search-label">My search</span><input type="text" id="search-field"/><button id="launch-search" class="btn btn-tertiary"><i class="icon-search"></i></button></div><div id="search-options" class="masthead-text"><span class="label-search">My options</span></div></div></div></div><div class="container"><div class="row"><div class="span12">		<h3 class="title">Results of my previous search</h3><div id="all-result"><div id="basic-accordion" class="accordion"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div><div class="load-more-result"> <span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div></div></div></div>');
+buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div><div class="masthead-text"><span id="search-label" class="search-label">My search</span><input type="text" id="search-field"/><button id="launch-search" class="btn btn-tertiary"><i class="icon-search"></i></button></div></div></div></div><div class="container"><div class="row"><div class="span12">    <h3 class="title">Results of my previous search</h3><div id="all-result"><div id="basic-accordion" class="accordion"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div><div class="load-more-result"> <span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div></div></div></div>');
 }
 return buf.join("");
 };
