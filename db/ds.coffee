@@ -47,7 +47,7 @@ class DataSystem
         @pageCountMatrix = {}
         
         #------ SUB-PROCESS
-        #console.log("NEW DS !")
+        console.log("NEW DS !")
         @constructor.CLASS_COUNT++
         
     #-------------- OBJECT METHODS ----------------------

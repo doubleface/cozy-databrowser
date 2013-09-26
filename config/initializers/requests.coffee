@@ -37,7 +37,7 @@ module.exports = (compound) ->
             }
         }
     }
-
+    console.log(ds.getPATH().common.getsumsbydoctype)
 
     setupRequests = [] 
     setupRequests.push (callback) -> 

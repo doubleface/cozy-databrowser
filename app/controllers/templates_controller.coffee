@@ -97,10 +97,11 @@ action 'search', ->
             #reqCount = 0
             #for dt in req.query.doctype
             requests.push (callback) -> #1 to n -> requests
+                doctypeName = req.query.doctype[0].toLowerCase()
                 if pageParams['query']?
-                    ds.getView callback, ds.getPATH().search + req.query.doctype[0], pageParams
+                    ds.getView callback, ds.getPATH().search + doctypeName, pageParams
                 else
-                    ds.getView callback, ds.getPATH().request + req.query.doctype[0] + ds.getPATH().all, pageParams
+                    ds.getView callback, ds.getPATH().request + doctypeName + ds.getPATH().all, pageParams
                 #reqCount++
                     
 
