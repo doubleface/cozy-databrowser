@@ -1,6 +1,6 @@
 BaseView = require '../lib/base_view'
 ResultCollectionView = require '../views/result_collection_view'
-CheckingDdl = require '../noesis-classes/CheckingDdl'
+#CheckingDdl = require '../noesis-classes/CheckingDdl'
 
 module.exports = class SearchView extends BaseView
 
@@ -27,7 +27,7 @@ module.exports = class SearchView extends BaseView
 			that.rcView.loopFirstScroll()
 
 		#add search options
-		optionCddl = new CheckingDdl 'Doctypes : ', ['test', 'test 2', 'test 3'], '#search-options'
+		#optionCddl = new CheckingDdl 'Doctypes : ', ['test', 'test 2', 'test 3'], '#search-options'
 
 		
 	loadMore : (isTriggered)->	

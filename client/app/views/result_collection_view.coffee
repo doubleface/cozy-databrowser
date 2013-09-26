@@ -40,7 +40,7 @@ module.exports = class ResultCollectionView extends ViewCollection
 
 	loadNextPage : (isTriggered, callback) ->				
 		that = this
-		#@options['deleted'] = @deleted
+		@options['deleted'] = @deleted
 		if !@noMoreItems			
 			@isLoading = true
 			@collection.page++			

@@ -3,7 +3,7 @@ module.exports = (compound) ->
     All = compound.models.All
     Metadoctype = compound.models.Metadoctype
 
-    ds = require './../../db/DataSystem'
+    ds = require './../../db/ds'
     async = require 'async'
 
     #prepare view functions
