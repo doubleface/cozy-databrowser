@@ -4,13 +4,13 @@ td
 	- if (typeof(sum) === 'number'){
 		span #{sum}
 	- }
-td 
+td
 	- if (typeof(metadoctype) === 'object' || app.length > 0){
-		span.label.label-primary.more-info More info 
-			i.icon-plus-sign 
+		span.label.label-primary.more-info More info
+			i.icon-plus-sign
 		div.md-desc-wrapper
-			h5 
-				i.icon-question-sign 
+			h5
+				i.icon-question-sign
 				|&nbsp;&nbsp;About #{name}
 			- if (app.length > 0) {
 				div.md-desc-container
@@ -26,12 +26,12 @@ td
 				div.md-desc-container
 					strong Fields informations :
 					ul.sober-list
-						- var fields = metadoctype.fields[0];
+						- var fields = metadoctype.fields;
 						- for (var obj in fields) {
 							li
 								i.icon-tag
-								span #{fields[obj].displayName} - 
-									i #{fields[obj].description} 
+								span #{fields[obj].displayName} -&nbsp;
+									i #{fields[obj].description}
 						- }
 			- }
 	- }
