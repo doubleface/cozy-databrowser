@@ -8,7 +8,7 @@ module.exports = class SearchView extends BaseView
 	template: require('./templates/search')  
 
 	initialize : ->
-		that = this
+		that = this		
 		@rcView = new ResultCollectionView(@options)		
 
 		#scroll event trigger next page (infinite scroll)
@@ -19,7 +19,7 @@ module.exports = class SearchView extends BaseView
 						that.loadMore(isTriggered)
 
 	afterRender : ->
-		that = this
+		that = this		
 		@rcView.render()
 
 		#resize event trigger 1 or + pages (infinite scroll)

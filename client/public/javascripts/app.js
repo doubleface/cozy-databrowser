@@ -879,30 +879,34 @@ module.exports = ResultCollectionView = (function(_super) {
     that = this;
     this.collection = new ResultCollection();
     ResultCollectionView.__super__.initialize.apply(this, arguments);
-    return this.collection.fetch({
-      data: $.param(this.options),
-      success: function(col, data) {
-        $('.loading-image').remove();
-        if ((that.options.range != null) && (that.options.doctype != null)) {
-          if (data.length === that.collection.nbPerPage) {
-            that.loopFirstScroll();
-            return $('.load-more-result').show();
-          } else {
-            that.noMoreItems = true;
-            return $('.load-more-result').hide();
+    if (this.options.doctype != null) {
+      return this.collection.fetch({
+        data: $.param(this.options),
+        success: function(col, data) {
+          $('.loading-image').remove();
+          if ((that.options.range != null) && (that.options.doctype != null)) {
+            if (data.length === that.collection.nbPerPage) {
+              that.loopFirstScroll();
+              return $('.load-more-result').show();
+            } else {
+              that.noMoreItems = true;
+              return $('.load-more-result').hide();
+            }
           }
+        },
+        error: function() {
+          $('.loading-image').remove();
+          return that.displayLoadingError();
         }
-      },
-      error: function() {
-        $('.loading-image').remove();
-        return that.displayLoadingError();
-      }
-    });
+      });
+    }
   };
 
   ResultCollectionView.prototype.render = function() {
     var id, view, _ref1;
-    $('#all-result').append('<div class="loading-image"><img src="images/ajax-loader.gif" /></div>');
+    if (this.options.doctype != null) {
+      $('#all-result').append('<div class="loading-image"><img src="images/ajax-loader.gif" /></div>');
+    }
     _ref1 = this.views;
     for (id in _ref1) {
       view = _ref1[id];

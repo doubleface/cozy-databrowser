@@ -13,26 +13,28 @@ module.exports = class ResultCollectionView extends ViewCollection
         that = this
         @collection = new ResultCollection()            
         super
-        @collection.fetch {
-            data: $.param(@options)
-            success : (col, data) ->
-                $('.loading-image').remove()
-                #native size of the window could trigger next pages (infinite scroll)
-                if that.options.range? and that.options.doctype?        
-                    if data.length is that.collection.nbPerPage
-                        that.loopFirstScroll()
-                        $('.load-more-result').show()
-                        
-                    else                        
-                        that.noMoreItems = true
-                        $('.load-more-result').hide()
-            error : () ->
-                $('.loading-image').remove()
-                that.displayLoadingError()
-        }
+        if @options.doctype?
+            @collection.fetch {
+                data: $.param(@options)
+                success : (col, data) ->
+                    $('.loading-image').remove()
+                    #native size of the window could trigger next pages (infinite scroll)
+                    if that.options.range? and that.options.doctype?        
+                        if data.length is that.collection.nbPerPage
+                            that.loopFirstScroll()
+                            $('.load-more-result').show()
+                            
+                        else                        
+                            that.noMoreItems = true
+                            $('.load-more-result').hide()
+                error : () ->
+                    $('.loading-image').remove()
+                    that.displayLoadingError()
+            }
 
     render: ->
-        $('#all-result').append('<div class="loading-image"><img src="images/ajax-loader.gif" /></div>')   
+        if @options.doctype?
+            $('#all-result').append('<div class="loading-image"><img src="images/ajax-loader.gif" /></div>')   
         view.$el.detach() for id, view of @views
         super
 
