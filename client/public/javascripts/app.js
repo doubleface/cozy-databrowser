@@ -882,6 +882,7 @@ module.exports = ResultCollectionView = (function(_super) {
     return this.collection.fetch({
       data: $.param(this.options),
       success: function(col, data) {
+        $('.loading-image').remove();
         if ((that.options.range != null) && (that.options.doctype != null)) {
           if (data.length === that.collection.nbPerPage) {
             that.loopFirstScroll();
@@ -893,9 +894,21 @@ module.exports = ResultCollectionView = (function(_super) {
         }
       },
       error: function() {
+        $('.loading-image').remove();
         return that.displayLoadingError();
       }
     });
+  };
+
+  ResultCollectionView.prototype.render = function() {
+    var id, view, _ref1;
+    $('#all-result').append('<div class="loading-image"><img src="images/ajax-loader.gif" /></div>');
+    _ref1 = this.views;
+    for (id in _ref1) {
+      view = _ref1[id];
+      view.$el.detach();
+    }
+    return ResultCollectionView.__super__.render.apply(this, arguments);
   };
 
   ResultCollectionView.prototype.search = function(content) {
@@ -1217,7 +1230,7 @@ buf.push('<span>' + escape((interp = sum) == null ? '' : interp) + '</span>');
 buf.push('</td><td>');
  if (typeof(metadoctype) === 'object' || app.length > 0){
 {
-buf.push('<span class="label label-primary more-info">More info<i class="icon-plus-sign"></i></span><div class="md-desc-wrapper"><h5><i class="icon-question-sign"></i>&nbsp;&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h5>');
+buf.push('<span class="label label-primary more-info">More info&nbsp;<i class="icon-plus-sign"></i></span><div class="md-desc-wrapper"><h5><i class="icon-question-sign"></i>&nbsp;&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h5>');
  if (app.length > 0) {
 {
 buf.push('<div class="md-desc-container"><strong>Applications using it :</strong><ul class="sober-list">');

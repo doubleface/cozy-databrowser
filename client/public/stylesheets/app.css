@@ -765,6 +765,10 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
 #all-result {
   position: relative;
 }
+.loading-image {
+  text-align: center;
+  padding-top: 15px;
+}
 .load-more-result {
   color: #316ab7;
   font-weight: bold;
