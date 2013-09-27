@@ -1,11 +1,19 @@
 load 'application'
 
-#instanciate DataSystem
+#------------------ BEGIN REQUIRE ------------------
+#instanciate Databrowser classes (datasystem, searchengine)
+ds = require './db/dataSystem'
+se = require('./db/searchEngine')(ds)
 
-ds = require './db/ds'
+#instanciate Noesis helpers
 oObjectHelper = require './noesis-tools/oObjectHelper'
-async = require 'async'
 
+#add Cozy helpers
+async = require 'async'
+#-------------------- END REQUIRE ------------------
+
+
+#------------------ BEGIN ACTIONS ------------------
 #doctypes
 action 'doctypes', ->
 
@@ -65,81 +73,87 @@ action 'doctypes', ->
 #search
 action 'search', ->
     if req.query? 
-        if req.query.doctype? and req.query.range? and req.query.page? and req.query.nbperpage?
 
-            #prepare params
+        tabDoctypes = req.query.doctype || null
+
+        if tabDoctypes? and req.query.range? and req.query.page? and req.query.nbperpage?
+
+            #----PEPARE PARAMS
             pageParams = {}
+
+            #page params
             page = parseInt(req.query.page, 10)
-            nbPerPage = parseInt(req.query.nbperpage, 10)
-            
+            nbPerPage = parseInt(req.query.nbperpage, 10)   
 
-            #newKey = req.query.doctype.join('_')
-            # if not ds.pageCountMatrix[newKey]?
-            #     ds.pageCountMatrix[newKey] = []
-
-            #skip & limit + deleted lines
+            #skip & limit + deleted lines params
             nbDeleted = if req.query.deleted? then parseInt(req.query.deleted, 10) else 0              
             pageParams['limit'] = nbPerPage
             if page > 1 
                 pageParams['skip'] = (nbPerPage * (page - 1)) - nbDeleted
 
-            #add query for plain text search
+            #query param
             if req.query.query? and req.query.query isnt ""
-                pageParams['query'] = req.query.query            
-                
-            #if page is 1 
-            requests = []
-            requests.push (callback) -> #0 -> metadoctypes
-                ds.getView callback, ds.getPATH().metadoctype.getallbyrelated
+                pageParams['query'] = req.query.query     
 
-            #one request per doctype
-            #reqCount = 0
-            #for dt in req.query.doctype
-            requests.push (callback) -> #1 to n -> requests
-                doctypeName = req.query.doctype[0].toLowerCase()
-                if pageParams['query']?
-                    ds.getView callback, ds.getPATH().search + doctypeName, pageParams
-                else
-                    ds.getView callback, ds.getPATH().request + doctypeName + ds.getPATH().all, pageParams
-                #reqCount++
+
+            #prepare multiple page process
+            # newKey = req.query.doctype.join('_')
+            # if not ds.pageCountMatrix[newKey]?
+            #     ds.pageCountMatrix[newKey] = []
+
+
+            #----VERIFY DOCTYPE 'ALL' REQUESTS
+            tabUnregistered = []
+            for dt in tabDoctypes                
+                if not ds.registeredPatterns[dt.toLowerCase()]?
+                    tabUnregistered.push dt.toLowerCase()
+
+            if tabUnregistered.length > 0 
+
+                #verify if doctype exist
+                requests = []
+                requests.push (callback) -> #0 -> doctypes
+                    ds.getDoctypes(callback)
+                async.parallel requests, (error, results) ->
+                    if error
+                        res.send {'no_result' : 'Error : Server error occurred while retrieving data.'}
+                        console.log error
+                    else         
+
+                        #compare submitted doctype and existing doctype for more security        
+                        bError = false                       
+                        tabRegisteredDoctypes = results[0]                        
+                        for dtUnreg in tabUnregistered
+                            bUnknowDoctype = true
+                            for dtReg, index in tabRegisteredDoctypes
+                                if not bError
+                                    if dtUnreg.toLowerCase() is dtReg.toLowerCase()
+                                        bUnknowDoctype = false                                    
+                                    if bUnknowDoctype and index is tabRegisteredDoctypes.length-1                                    
+                                        res.send {'no_result': 'Error : You try to access to an unknown doctype.'}
+                                        bError = true
+
+
+                        if not bError
+                            #prepare request 'all' for each doctypes
+                            setupRequestsAll = ds.prepareDballRequests(tabUnregistered)                     
+
+                            #agregate callbacks
+                            if setupRequestsAll.length > 0
+                                async.parallel setupRequestsAll, (error, results) ->
+                                    if error
+                                        console.log error
+                                        res.send {'no_result' : 'Error : Server error occurred while retrieving data.'}
+                                    else
+                                        se.doBasicSearch(res, tabDoctypes, pageParams)
+                            else
+                                res.send {'no_result' : 'Error : Server error occurred while retrieving data.'}
+
+            else 
+                se.doBasicSearch(res, tabDoctypes, pageParams)  
                     
-
-            async.parallel requests, (error, results) ->
-                jsonRes = []
-                if error
-                    res.send('no_result', 'No result : Server error occurred while retrieving data.')
-                    console.log error
-                else
-                    idField = []
-                    descField = []
-                    #for dt in req.query.doctype
-                    for md in results[0]
-                        if md.key? and md.value.identificationField? and md.key.toLowerCase() is req.query.doctype[0].toLowerCase()                         
-                            idField[req.query.doctype[0].toLowerCase()] = md.value.identificationField
-                            if md.value.fields[0]?
-                                descField[req.query.doctype[0].toLowerCase()] = md.value.fields[0]
-                    #for result, index in results                       
-                        #if index > 0
-                    for doc in results[1]
-                        if doc.key? and doc.value? 
-                            doc.value['idField'] = idField[doc.value['docType'].toLowerCase()]
-                            doc.value['descField'] = descField[doc.value['docType'].toLowerCase()]                         
-                            jsonRes.push doc.value
-
-                    res.send(jsonRes)
-
-                    #page count matrix knows how many results must be skipped for each doctypes
-                    #ds.pageCountMatrix[newKey] = jsonRes
-
-                    #prepare limit   
-                    #limit = if ds.pageCountMatrix[newKey].length? and ds.pageCountMatrix[newKey].length <= nbPerPage then ds.pageCountMatrix[newKey].length else nbPerPage
-                    #res.send(ds.pageCountMatrix[newKey].slice(0, limit))                    
-            # else if ds.pageCountMatrix[newKey] and ds.pageCountMatrix[newKey].length > nbPerPage
-            #     #send json     
-            #     limit = if ds.pageCountMatrix[newKey].length? and ds.pageCountMatrix[newKey].length <= nbPerPage*page then ds.pageCountMatrix[newKey].length else nbPerPage*page              
-            #     res.send(ds.pageCountMatrix[newKey].slice(nbPerPage*(page-1), limit))
         else
-            res.send([{ 'no_result' : 'No result for now.' }])
+            res.send {'no_result' : 'Error : Unknown research parameters'}
 
 #delete
 action 'delete', ->
@@ -153,3 +167,4 @@ action 'delete', ->
                 console.log error
             else
                 res.send req.query.id
+#-------------------- END ACTIONS ------------------

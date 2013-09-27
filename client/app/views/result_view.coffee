@@ -17,11 +17,11 @@ module.exports = class ResultView extends View
 		if attr.no_result?
 			$('#all-result .accordion').empty()
 			results['no_result'] = true
+			results['no_result_msg'] = attr.no_result
 			return results
 
 		#prepare results
 		else
-
 			#no_result
 			results['no_result'] = false	
 

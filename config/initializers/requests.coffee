@@ -3,7 +3,7 @@ module.exports = (compound) ->
     All = compound.models.All
     Metadoctype = compound.models.Metadoctype
 
-    ds = require './../../db/ds'
+    ds = require './../../db/dataSystem'
     async = require 'async'
 
     #prepare view functions
@@ -58,33 +58,15 @@ module.exports = (compound) ->
     async.parallel requests, (error, results) ->
         if error
             console.log error
-        else 
+        else  
+            
+            #prepare request 'all' for each doctypes       
+            setupRequestsAll = ds.prepareDballRequests(results[0])
 
-            #needed var
-            setupRequestsAll = []
-            globalCount = 0
-            pathAll = []
-            patternAll = [] 
-            mapAll =  [] 
-
-            #prepare parameters
-            for dt, index in results[0]
-                pathAll[index] = ds.getPATH().request + dt.toLowerCase() + ds.getPATH().all           
-                patternAll[index] = dt.toLowerCase() 
-                mapAll[index] =  {
-                    map : (doc) ->
-                        if doc.docType?
-                            if doc.docType.toLowerCase() is '__pattern__'
-                                emit doc._id, doc 
-                }
-
-                #prepare request        
-                setupRequestsAll.push (callback) ->                     
-                    ds.manageRequest(callback, pathAll[globalCount], mapAll[globalCount], patternAll[globalCount])
-                    globalCount++
-
-            #agregate callback
+            #agregate callbacks
             if setupRequestsAll.length > 0
                 async.parallel setupRequestsAll, (error, results) ->
                     if error
-                        console.log error               
+                        console.log error
+                    # else 
+                    #     console.log ds.registeredPatterns      

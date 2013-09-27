@@ -1003,6 +1003,7 @@ module.exports = ResultView = (function(_super) {
     if (attr.no_result != null) {
       $('#all-result .accordion').empty();
       results['no_result'] = true;
+      results['no_result_msg'] = attr.no_result;
       return results;
     } else {
       results['no_result'] = false;
@@ -1213,10 +1214,10 @@ buf.push('>' + escape((interp = name) == null ? '' : interp) + '</a></td><td>');
 buf.push('<span>' + escape((interp = sum) == null ? '' : interp) + '</span>');
 }
  }
-buf.push('</td><td> ');
+buf.push('</td><td>');
  if (typeof(metadoctype) === 'object' || app.length > 0){
 {
-buf.push('<span class="label label-primary more-info">More info <i class="icon-plus-sign"> </i></span><div class="md-desc-wrapper"><h5> <i class="icon-question-sign"> </i>&nbsp;&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h5>');
+buf.push('<span class="label label-primary more-info">More info<i class="icon-plus-sign"></i></span><div class="md-desc-wrapper"><h5><i class="icon-question-sign"></i>&nbsp;&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h5>');
  if (app.length > 0) {
 {
 buf.push('<div class="md-desc-container"><strong>Applications using it :</strong><ul class="sober-list">');
@@ -1231,10 +1232,10 @@ buf.push('</ul></div>');
  if (typeof(metadoctype) === 'object') {
 {
 buf.push('<div class="md-desc-container"><strong>Fields informations :</strong><ul class="sober-list">');
- var fields = metadoctype.fields[0];
+ var fields = metadoctype.fields;
  for (var obj in fields) {
 {
-buf.push('<li><i class="icon-tag"></i><span>' + escape((interp = fields[obj].displayName) == null ? '' : interp) + ' - <i>' + escape((interp = fields[obj].description) == null ? '' : interp) + ' </i></span></li>');
+buf.push('<li><i class="icon-tag"></i><span>' + escape((interp = fields[obj].displayName) == null ? '' : interp) + ' -&nbsp;<i>' + escape((interp = fields[obj].description) == null ? '' : interp) + '</i></span></li>');
 }
  }
 buf.push('</ul></div>');
@@ -1297,7 +1298,7 @@ var buf = [];
 with (locals || {}) {
 var interp;
  if (results['no_result']) {
-buf.push('<em>No results for now.</em>');
+buf.push('<em>' + escape((interp = results['no_result_msg']) == null ? '' : interp) + '</em>');
  }
  else {
 buf.push('<div class="accordion-heading"><a');

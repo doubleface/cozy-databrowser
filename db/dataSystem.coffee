@@ -44,10 +44,10 @@ class DataSystem
         #------ REQUIRED   
         @jsonClient = require('request-json').JsonClient
         @clientDS = new @jsonClient @DS_URL +  ':'  + @DS_PORT
-        @pageCountMatrix = {}
+        @registeredPatterns = {}
+        #@pageCountMatrix = {}
         
         #------ SUB-PROCESS
-        console.log("NEW DS !")
         @constructor.CLASS_COUNT++
         
     #-------------- OBJECT METHODS ----------------------
@@ -57,6 +57,30 @@ class DataSystem
         return @PATH
     
     #------METHODS
+    prepareDballRequests : (tabPatterns) ->
+        setupRequestsAll = []
+        globalCount = 0
+        pathAll = []
+        patternAll = [] 
+        mapAll =  [] 
+
+        #prepare parameters
+        for pattern, index in tabPatterns
+            pathAll[index] = @PATH.request + pattern.toLowerCase() + @PATH.all           
+            patternAll[index] = pattern.toLowerCase() 
+            mapAll[index] =  {
+                map : (doc) ->
+                    if doc.docType?
+                        if doc.docType.toLowerCase() is '__pattern__'
+                            emit doc._id, doc 
+            }
+
+            #prepare request        
+            setupRequestsAll.push (callback) =>                     
+                @manageRequest(callback, pathAll[globalCount], mapAll[globalCount], patternAll[globalCount])
+                globalCount++
+        return setupRequestsAll
+
     manageRequest : (callback, path, viewFunctions =  {}, pattern = '') ->
         # convert map/reduce to string and replace optional pattern
         for key, func of viewFunctions
@@ -65,7 +89,19 @@ class DataSystem
                 viewFunctions[key] = viewFunctions[key].replace '__pattern__', pattern        
         
         #create request
-        @putData callback, path, viewFunctions
+                #create request
+        @clientDS.put path, viewFunctions, (error, response, body) =>
+
+            #return error     
+            if error
+                console.log error
+                callback true
+
+            #return result
+            else
+                if pattern isnt ''
+                    @registeredPatterns[pattern] = true
+                callback false, body
 
     getView : (callback, path, params = {}) ->
         @postData callback, path, params        
