@@ -6,8 +6,8 @@
 #@noesis requirement :      none
 #@patches requirement :     none
 #@constructor :             Use "new" for create an instance of a DataSystem
-  
-class DataSystem 
+
+class DataSystem
     #------------------ CONSTRUCTOR CONSTANTS ----------------
     @CLASS_NAME : "DataSystem"
     @CLASS_COUNT : 0
@@ -26,36 +26,40 @@ class DataSystem
         common :
             getsumsbydoctype : '/request/common/getsumsbydoctype/'
         metadoctype :
-            getallbyrelated : '/request/metadoctype/getallbyrelated/'  
+            getallbyrelated : '/request/metadoctype/getallbyrelated/'
         application :
-            getpermissions : '/request/application/getpermissions/'   
+            getpermissions : '/request/application/getpermissions/'
     }
 
-         
+
     #------------- CLASS DIRECT PROCESS ----------------
 
-     
+
     #----------------- OBJECT PARAMETERS ---------------
     constructor : () ->
-        
+
         #------ DIRECT
-        #setted by coffeescript contructor function 
-        
-        #------ REQUIRED   
+        #setted by coffeescript contructor function
+
+        #------ REQUIRED
         @jsonClient = require('request-json').JsonClient
         @clientDS = new @jsonClient @DS_URL +  ':'  + @DS_PORT
-        @registeredPatterns = {}
+        if process.env.NODE_ENV is "production"
+            username = process.env.NAME
+            password = process.env.TOKEN
+            @clientDS.setBasicAuth username, password
         #@pageCountMatrix = {}
-        
+        @registeredPatterns = {}
+
         #------ SUB-PROCESS
         @constructor.CLASS_COUNT++
-        
+
     #-------------- OBJECT METHODS ----------------------
     #------CONSTANT GETTERS
     #use :: (ex : DataSystem::DS_URL)
     getPATH : () ->
         return @PATH
-    
+
     #------METHODS
     prepareDballRequests : (tabPatterns) ->
         setupRequestsAll = []
@@ -86,8 +90,8 @@ class DataSystem
         for key, func of viewFunctions
             viewFunctions[key] = func.toString()
             if pattern isnt ''
-                viewFunctions[key] = viewFunctions[key].replace '__pattern__', pattern        
-        
+                viewFunctions[key] = viewFunctions[key].replace '__pattern__', pattern
+
         #create request
                 #create request
         @clientDS.put path, viewFunctions, (error, response, body) =>
@@ -104,12 +108,12 @@ class DataSystem
                 callback false, body
 
     getView : (callback, path, params = {}) ->
-        @postData callback, path, params        
+        @postData callback, path, params
 
-    getDoctypes : (callback) -> 
+    getDoctypes : (callback) ->
         @getData callback, @PATH.doctypes
 
-    indexId : (id, aFields) ->        
+    indexId : (id, aFields) ->
         @clientDS.post @PATH.index + id, {"fields": aFields}, (error, response, body) ->
             if error
                 console.log error
@@ -119,76 +123,76 @@ class DataSystem
     deleteById : (callback, id)->
         @deleteData callback, @PATH.data + id + '/'
 
-    
+
     putData : (callback, path, params = {})->
         @clientDS.put path, params, (error, response, body) ->
 
-            #return error     
+            #return error
             if error
                 console.log error
                 callback true
 
             #return result
-            else  
+            else
                 callback false, body
 
     getData : (callback, path)->
-        @clientDS.get path, (error, response, body) ->         
+        @clientDS.get path, (error, response, body) ->
 
             #return and log error
             if error
                 console.log error
                 callback true
-            
+
             #return result
-            else  
+            else
                 callback false, body
 
 
     postData : (callback, path, params = {})->
         @clientDS.post path, params, (error, response, body) =>
 
-            #return error     
+            #return error
             if error
                 console.log error
                 callback true
 
             #return result
-            else  
+            else
                 if not body.length?
                     body = @formatBody(body)
 
                 callback false, body
 
     deleteData : (callback, path)->
-        @clientDS.del path, (error, response, body) ->         
+        @clientDS.del path, (error, response, body) ->
 
             #return and log error
             if error
                 console.log error
                 callback true
-            
+
             #return result
-            else  
+            else
                 callback false, body
-    
+
     # applyModelRequest : (callback, modelName, requestName, requestParams) ->
     #     requestParams = requestParams || {}
     #     jsonRes = {}
-    #     error = true        
+    #     error = true
     #     if @models[modelName]?
-    #         @models[modelName].request requestName, requestParams, (err, data) -> 
-    #             if data?                    
-    #                 if data.length > 0 
-    #                     error = false                         
+    #         @models[modelName].request requestName, requestParams, (err, data) ->
+    #             if data?
+    #                 if data.length > 0
+    #                     error = false
     #                     jsonRes = data
-    #             return callback(error, jsonRes) 
-    #     else 
+    #             return callback(error, jsonRes)
+    #     else
     #         return callback(error, jsonRes)
 
-    
+
     formatBody : (body) ->
-        formattedBody = []        
+        formattedBody = []
         if body.rows? and body.rows.length > 0
             for row in body.rows
                 formattedRow = {}
