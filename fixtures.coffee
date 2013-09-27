@@ -19,7 +19,7 @@ dataCollection.push
     related: "Alarm" # what doctype this document describes
     displayName: "Alarme"
     identificationField: "description"
-    fields: [
+    fields: {
         "action":
             displayName: "Action"
             description: "Représente le canal de diffusion de l'alarme dans le format iCal (DISPLAY, EMAIL, AUDIO)"
@@ -29,7 +29,7 @@ dataCollection.push
         "related":
             displayName: "En relation"
             description: "Si cette alarme a été créée en relation avec un autre document, ce champ permet de spécifier l'identifiant de ce document."
-    ]
+    }
 
 # Agenda documents
 dataCollection.push
@@ -139,7 +139,7 @@ dataCollection.push
     related: "Contact" # what doctype this document describes
     displayName: "Contact"
     identificationField: "fn"
-    fields: [
+    fields: {
         "fn":
             displayName: "Nom complet"
             description: "Le nom complet du contact."
@@ -149,7 +149,7 @@ dataCollection.push
         "note":
             displayName: "Note"
             description: "Une note sur le contact."
-    ]
+    }
 
 # Contact documents
 dataCollection.push
@@ -196,7 +196,7 @@ dataCollection.push
     related: "Task" # what doctype this document describes
     displayName: "Tâche"
     identificationField: "description"
-    fields: [
+    fields: {
         "description":
             displayName: "Description"
             description: "Le contenu de la tâche."
@@ -221,7 +221,7 @@ dataCollection.push
         "tags":
             displayName: "Tags"
             description: "Les tags liés à la tâche."
-    ]
+    }
 
 # Task documents
 dataCollection.push

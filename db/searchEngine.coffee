@@ -35,8 +35,7 @@ class SearchEngine
     #use :: (ex : SearchEngine::DS_URL)
     
     #------METHODS
-    doBasicSearch : (res, tabDoctypes, pageParams) -> 
-
+    doBasicSearch : (res, tabDoctypes, pageParams) ->         
             requests = []
             requests.push (callback) => #0 -> metadoctypes
                 @ds.getView callback, @ds.getPATH().metadoctype.getallbyrelated
@@ -74,7 +73,10 @@ class SearchEngine
                             doc.value['idField'] = idField[doc.value['docType'].toLowerCase()]
                             doc.value['descField'] = descField[doc.value['docType'].toLowerCase()]                         
                             jsonRes.push doc.value  
-                    res.send(jsonRes)
+                    if jsonRes.length > 0
+                        res.send(jsonRes)
+                    else
+                        res.send {'no_result': 'No results.'}
 
                     #page count matrix knows how many results must be skipped for each doctypes
                     #ds.pageCountMatrix[newKey] = jsonRes

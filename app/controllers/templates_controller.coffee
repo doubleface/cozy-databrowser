@@ -150,7 +150,8 @@ action 'search', ->
                                 res.send {'no_result' : 'Error : Server error occurred while retrieving data.'}
 
             else 
-                se.doBasicSearch(res, tabDoctypes, pageParams)  
+                se.doBasicSearch(res, tabDoctypes, pageParams)
+
                     
         else
             res.send {'no_result' : 'Error : Unknown research parameters'}
