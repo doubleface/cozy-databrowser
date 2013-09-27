@@ -3,7 +3,7 @@
 #********************************************************
 #@description :             DataSystem define....
 #@outside requirement : 	npm 'request-json'
-#@noesis requirement :      none
+#@noesis requirement :      oErrorHelper
 #@patches requirement :     none
 #@constructor :             Use "new" for create an instance of a DataSystem
 
@@ -42,16 +42,25 @@ class DataSystem
         #setted by coffeescript contructor function
 
         #------ REQUIRED
+        @hlpError = require './../noesis-tools/oErrorHelper'
         @jsonClient = require('request-json').JsonClient
         @clientDS = new @jsonClient @DS_URL +  ':'  + @DS_PORT
+        #@pageCountMatrix = {}
+        @registeredPatterns = {}
+
+               
+
+        #------ SUB-PROCESS
+        #Authentification
         if process.env.NODE_ENV is "production"
             username = process.env.NAME
             password = process.env.TOKEN
             @clientDS.setBasicAuth username, password
-        #@pageCountMatrix = {}
-        @registeredPatterns = {}
+        
+        #Error manager
+        @hlpError.setErrorManager(@)
 
-        #------ SUB-PROCESS
+        #Class
         @constructor.CLASS_COUNT++
 
     #-------------- OBJECT METHODS ----------------------
@@ -98,7 +107,7 @@ class DataSystem
 
             #return error     
             if error
-                console.log error
+                @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
                 callback true
 
             #return result
@@ -114,11 +123,12 @@ class DataSystem
         @getData callback, @PATH.doctypes
 
     indexId : (id, aFields) ->
-        @clientDS.post @PATH.index + id, {"fields": aFields}, (error, response, body) ->
+        that = this
+        @clientDS.post @PATH.index + id, {"fields": aFields}, (error, response, body) =>
             if error
-                console.log error
+                @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
             else if response.statusCode isnt 200
-                console.log new Error(body)
+                @logErrInConsole new Error(body), @_getFunc(), @_getFile(), @_getLine()
 
     deleteById : (callback, id)->
         @deleteData callback, @PATH.data + id + '/'
@@ -129,7 +139,7 @@ class DataSystem
 
             #return error
             if error
-                console.log error
+                @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
                 callback true
 
             #return result
@@ -141,7 +151,7 @@ class DataSystem
 
             #return and log error
             if error
-                console.log error
+                @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
                 callback true
 
             #return result
@@ -154,7 +164,7 @@ class DataSystem
 
             #return error
             if error
-                console.log error
+                @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
                 callback true
 
             #return result
@@ -169,7 +179,7 @@ class DataSystem
 
             #return and log error
             if error
-                console.log error
+                @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
                 callback true
 
             #return result

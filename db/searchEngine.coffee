@@ -24,10 +24,12 @@ class SearchEngine
         #------ DIRECT
         #setted by coffeescript contructor function 
         
-        #------ REQUIRED  
+        #------ REQUIRED
+        @hlpError = require './../noesis-tools/oErrorHelper'
         @async = require 'async' 
         
         #------ SUB-PROCESS
+        @hlpError.setErrorManager(@)
         @constructor.CLASS_COUNT++
         
     #-------------- OBJECT METHODS ----------------------
@@ -56,7 +58,7 @@ class SearchEngine
                 jsonRes = []
                 if error
                     res.send {'no_result' : 'Error : Server error occurred while retrieving data.'}
-                    console.log error
+                    @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
                 else
                     idField = []
                     descField = []
