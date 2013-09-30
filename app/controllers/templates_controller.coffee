@@ -17,26 +17,35 @@ async = require 'async'
 #doctypes
 action 'doctypes', ->
 
+    jsonRes = []
+
     #index several id for test
     #ds.indexId "39bade34f76d6b32234c3974c8004ca9", ["description"]
     #ds.indexId "39bade34f76d6b32234c3974c80059f0", ["description"]
 
-    #prepare request
+    
+    #------PREPARE REQUESTS
     requests = []
-    requests.push (callback) -> #0 -> doctypes
-        ds.getDoctypes(callback)
-    requests.push (callback) -> #1 -> metadoctypes
-        ds.getView(callback, ds.getPATH().metadoctype.getallbyrelated)
-        #ds.applyModelRequest(callback, 'Metadoctype', 'getAllByRelated')
-    requests.push (callback) -> #2 -> sums
-        ds.getView(callback, ds.getPATH().common.getsumsbydoctype, {group : true})
-        #ds.applyModelRequest(callback, 'All', 'getSumsByDoctype', {group : true})
-    requests.push (callback) -> #3 -> permissions
-        ds.getView(callback, ds.getPATH().application.getpermissions)
 
-    #agregate callback
+    #0 -> doctypes
+    requests.push (callback) ->
+        ds.getDoctypes callback
+
+    #1 -> metadoctypes
+    requests.push (callback) ->
+        ds.getView callback, ds.getPATH().metadoctype.getallbyrelated
+
+    #2 -> sums
+    requests.push (callback) ->
+        ds.getView callback, ds.getPATH().common.getsumsbydoctype, {group : true}
+
+    #3 -> permissions
+    requests.push (callback) ->
+        ds.getView callback, ds.getPATH().application.getpermissions
+
+
+    #------AGREGATE CALLBACKS
     async.parallel requests, (error, results) ->
-        jsonRes = []
         if error
             res.send(500, 'Server error occurred while retrieving data')
             console.log error

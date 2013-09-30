@@ -731,11 +731,15 @@ module.exports = DoctypesView = (function(_super) {
 });
 
 ;require.register("views/dt_cddl_collection_view", function(exports, require, module) {
-var BaseView, DtCddlCollectionView, _ref,
+var DoctypeCollection, DtCddlCollectionView, DtCddlView, ViewCollection, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-BaseView = require('../lib/base_view');
+ViewCollection = require('../lib/view_collection');
+
+DtCddlView = require('./dt_cddl_view');
+
+DoctypeCollection = require('../collections/doctype_collection');
 
 module.exports = DtCddlCollectionView = (function(_super) {
   __extends(DtCddlCollectionView, _super);
@@ -784,13 +788,12 @@ module.exports = DtCddlView = (function(_super) {
 
   DtCddlView.prototype.render = function() {
     return DtCddlView.__super__.render.call(this, {
-      name: this.model.get("name"),
-      metadoctype: this.model.get("metadoctype")
+      name: this.model.get("name")
     });
   };
 
   DtCddlView.prototype.template = function() {
-    return require('./templates/dt-cddl-list-item');
+    return require('./templates/dt_cddl_list_item');
   };
 
   return DtCddlView;
@@ -1155,13 +1158,15 @@ module.exports = ResultView = (function(_super) {
 });
 
 ;require.register("views/search_view", function(exports, require, module) {
-var BaseView, ResultCollectionView, SearchView, _ref,
+var BaseView, DtCddlCollectionView, ResultCollectionView, SearchView, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 BaseView = require('../lib/base_view');
 
 ResultCollectionView = require('../views/result_collection_view');
+
+DtCddlCollectionView = require('../views/dt_cddl_collection_view');
 
 module.exports = SearchView = (function(_super) {
   __extends(SearchView, _super);
@@ -1179,6 +1184,7 @@ module.exports = SearchView = (function(_super) {
     var that;
     that = this;
     this.rcView = new ResultCollectionView(this.options);
+    this.dtCddlCollectionView = new DtCddlCollectionView();
     if (this.options.range != null) {
       return $(window).bind('scroll', function(e, isTriggered) {
         if (!that.rcView.isLoading && !that.rcView.noMoreItems) {
@@ -1194,6 +1200,7 @@ module.exports = SearchView = (function(_super) {
     var that;
     that = this;
     this.rcView.render();
+    this.dtCddlCollectionView.render();
     return $(window).bind('resize', function() {
       return that.rcView.loopFirstScroll();
     });
@@ -1284,13 +1291,15 @@ return buf.join("");
 };
 });
 
-;require.register("views/templates/dt_cddl-list-item", function(exports, require, module) {
+;require.register("views/templates/dt_cddl_list_item", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<' + (name) + '></' + (name) + '>');
+buf.push('<a');
+buf.push(attrs({ 'href':('#search/all/' + (name) + '') }, {"href":true}));
+buf.push('>' + escape((interp = name) == null ? '' : interp) + '</a>');
 }
 return buf.join("");
 };
@@ -1352,7 +1361,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div><div class="masthead-text"><span id="search-label" class="search-label">My search</span><input type="text" id="search-field"/><button id="launch-search" class="btn btn-tertiary"><i class="icon-search"></i></button></div></div></div></div><div class="container"><div class="row"><div class="span12">    <h3 class="title">Results of my previous search</h3><div id="all-result"><div id="basic-accordion" class="accordion"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div><div class="load-more-result"> <span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div></div></div></div>');
+buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div><div class="masthead-text"><span id="search-label" class="search-label">My search</span><input type="text" id="search-field"/><button id="launch-search" class="btn btn-tertiary"><i class="icon-search"></i></button></div><div id="search-options" class="masthead-text"><span class="label-search">My options</span><div class="dropdown"><a href="javascript:;" data-toggle="dropdown" class="dropdown-toggle btn classic-toggle btn-tertiary">Current doctype&nbsp;<b class="caret"></b></a><ul id="dt-cddl-list" class="dropdown-menu"></ul></div></div></div></div></div><div class="container"><div class="row"><div class="span12">    <h3 class="title">Results of my previous search</h3><div id="all-result"><div id="basic-accordion" class="accordion"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div><div class="load-more-result"> <span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div></div></div></div>');
 }
 return buf.join("");
 };
