@@ -13,11 +13,17 @@ module.exports = class ResultView extends View
 	manageResultsForView: (attr, count) ->
 		results = {}
 
-		#case no results
+		#case no results because error
 		if attr.no_result?
 			$('#all-result .accordion').empty()
 			results['no_result'] = true
 			results['no_result_msg'] = attr.no_result
+			return results
+
+		#case no results without error
+		else if count is 0
+			results['no_result'] = true
+			results['no_result_msg'] = 'No results.'
 			return results
 
 		#prepare results

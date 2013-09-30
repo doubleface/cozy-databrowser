@@ -1022,6 +1022,10 @@ module.exports = ResultView = (function(_super) {
       results['no_result'] = true;
       results['no_result_msg'] = attr.no_result;
       return results;
+    } else if (count === 0) {
+      results['no_result'] = true;
+      results['no_result_msg'] = 'No results.';
+      return results;
     } else {
       results['no_result'] = false;
       results['count'] = count;

@@ -135,7 +135,7 @@ class DataSystem
 
 
     putData : (callback, path, params = {})->
-        @clientDS.put path, params, (error, response, body) ->
+        @clientDS.put path, params, (error, response, body) =>
 
             #return error
             if error
@@ -147,7 +147,7 @@ class DataSystem
                 callback false, body
 
     getData : (callback, path)->
-        @clientDS.get path, (error, response, body) ->
+        @clientDS.get path, (error, response, body) =>
 
             #return and log error
             if error
@@ -175,7 +175,7 @@ class DataSystem
                 callback false, body
 
     deleteData : (callback, path)->
-        @clientDS.del path, (error, response, body) ->
+        @clientDS.del path, (error, response, body) =>
 
             #return and log error
             if error
