@@ -54,7 +54,7 @@ class SearchEngine
                 #reqCount++
                     
 
-            @async.parallel requests, (error, results) ->
+            @async.parallel requests, (error, results) =>
                 jsonRes = []
                 if error
                     res.send {'no_result' : 'Error : Server error occurred while retrieving data.'}
@@ -75,10 +75,8 @@ class SearchEngine
                             doc.value['idField'] = idField[doc.value['docType'].toLowerCase()]
                             doc.value['descField'] = descField[doc.value['docType'].toLowerCase()]                         
                             jsonRes.push doc.value  
-                    if jsonRes.length > 0
-                        res.send(jsonRes)
-                    else
-                        res.send {'no_result': 'No results.'}
+                    res.send(jsonRes)
+
 
                     #page count matrix knows how many results must be skipped for each doctypes
                     #ds.pageCountMatrix[newKey] = jsonRes
