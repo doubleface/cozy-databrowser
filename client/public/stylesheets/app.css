@@ -816,8 +816,8 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
 }
 .dropdown-menu {
   max-height: 400px;
-  overflow-y: auto;
   overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .chromeframe { margin: 0.2em 0; background: #ccc; color: #000; padding: 0.2em 0; }
