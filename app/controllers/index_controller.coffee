@@ -19,55 +19,66 @@ action 'doctypes', ->
     #dataSystem.indexId "39bade34f76d6b32234c3974c8004ca9", ["description"]
     #dataSystem.indexId "39bade34f76d6b32234c3974c80059f0", ["description"]
 
-    #prepare request
+    # prepare the requests
     requests = []
-    requests.push (callback) -> #0 -> doctypes
-        dataSystem.getDoctypes(callback)
-    requests.push (callback) -> #1 -> metadoctypes
-        dataSystem.getView(callback, dataSystem.getPATH().metadoctype.getallbyrelated)
-        #dataSystem.applyModelRequest(callback, 'Metadoctype', 'getAllByRelated')
-    requests.push (callback) -> #2 -> sums
-        dataSystem.getView(callback, dataSystem.getPATH().common.getsumsbydoctype, {group : true})
-        #dataSystem.applyModelRequest(callback, 'All', 'getSumsByDoctype', {group : true})
-    requests.push (callback) -> #3 -> permissions
-        dataSystem.getView(callback, dataSystem.getPATH().application.getpermissions)
+    requests.push (callback) -> #0 -> get the doctypes list
+        dataSystem.getDoctypes callback
 
-    #agregate callback
+    requests.push (callback) -> #1 -> get all the metadoctypes
+        targetUrl = dataSystem.getPATH().metadoctype.getallbyrelated
+        dataSystem.getView callback, targetUrl
+
+    requests.push (callback) -> #2 -> get the numbers of docs per doctype
+        targetUrl = dataSystem.getPATH().common.getsumsbydoctype
+        dataSystem.getView callback, targetUrl, group: true
+
+    requests.push (callback) -> #3 -> get the permissions
+        targetUrl = dataSystem.getPATH().application.getpermissions
+        dataSystem.getView callback, targetUrl
+
+    #agregate all the data
     async.parallel requests, (error, results) ->
-        jsonRes = []
+        doctypeList = []
         if error
-            res.send(500, 'Server error occurred while retrieving data')
+            res.send 500, 'Server error occurred while retrieving data'
             console.log error
         else
-            for name in results[0]
+            #
+            doctypes = results[0]
+            metadoctypesByDoctype = results[1]
+            sumsByDoctype = results[2]
+            permissionsByDoctype = results[3]
 
-                #prepare json object
-                newObj = {
-                    'name' : name
-                    'sum' : 0
-                    'app' : []
-                }
+            for doctypeName in doctypes
+
+                doctypeName = doctypeName.toLowerCase()
+
+                # initialize json object
+                agregate =
+                    name: doctypeName
+                    sum: 0
+                    app: []
 
                 #add metadoctypes
-                for metadoctype in results[1]
-                    if metadoctype.key? && metadoctype.key.toLowerCase() is name.toLowerCase()
-                        newObj['metadoctype'] = metadoctype.value
+                for metadoctype in metadoctypesByDoctype
+                    if metadoctype.key?.toLowerCase() is doctypeName
+                        agregate['metadoctype'] = metadoctype.value
 
                 #add sums
-                for info in results[2]
-                    if info.key? and info.key.toLowerCase() is name.toLowerCase()
-                        newObj['sum'] = info.value
+                for sum in sumsByDoctype
+                    if sum.key?.toLowerCase() is doctypeName
+                        agregate['sum'] = sum.value
 
                 #add permissions
-                for permissions in results[3]
+                for permissions in permissionsByDoctype
                     permissions = oObjectHelper.convertIndexesToLowerCase permissions
-                    if permissions.value? and permissions.value[name]?
-                        newObj['app'].push(permissions.key)
-                jsonRes.push(newObj)
+                    if permissions.value? and permissions.value[doctypeName]?
+                        agregate['app'].push permissions.key
+
+                doctypeList.push agregate
 
             #send json
-            res.send(jsonRes)
-
+            res.send doctypeList
 #search
 action 'search', ->
     if req.query?
@@ -157,13 +168,13 @@ action 'search', ->
 #delete
 action 'delete', ->
     if req.params.id?
-        requests = []
-        requests.push (callback) -> #0 -> delete
-                dataSystem.deleteById callback, req.params.id
-        async.parallel requests, (error, results) ->
+        dataSystem.deleteById req.params.id, (error) ->
             if error
-                res.send('error', 'Server error occurred while trying to remove data.')
+                msg = 'Server error occurred while trying to remove data.'
                 console.log error
+                res.send 500, msg
             else
                 res.send req.query.id
+    else
+        res.send 400, "Document ID parameter not found."
 #-------------------- END ACTIONS ------------------

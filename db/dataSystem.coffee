@@ -48,7 +48,7 @@ class DataSystem
         #@pageCountMatrix = {}
         @registeredPatterns = {}
 
-               
+
 
         #------ SUB-PROCESS
         #Authentification
@@ -56,7 +56,7 @@ class DataSystem
             username = process.env.NAME
             password = process.env.TOKEN
             @clientDS.setBasicAuth username, password
-        
+
         #Error manager
         @hlpError.setErrorManager(@)
 
@@ -74,22 +74,22 @@ class DataSystem
         setupRequestsAll = []
         globalCount = 0
         pathAll = []
-        patternAll = [] 
-        mapAll =  [] 
+        patternAll = []
+        mapAll =  []
 
         #prepare parameters
         for pattern, index in tabPatterns
-            pathAll[index] = @PATH.request + pattern.toLowerCase() + @PATH.all           
-            patternAll[index] = pattern.toLowerCase() 
+            pathAll[index] = @PATH.request + pattern.toLowerCase() + @PATH.all
+            patternAll[index] = pattern.toLowerCase()
             mapAll[index] =  {
                 map : (doc) ->
                     if doc.docType?
                         if doc.docType.toLowerCase() is '__pattern__'
-                            emit doc._id, doc 
+                            emit doc._id, doc
             }
 
-            #prepare request        
-            setupRequestsAll.push (callback) =>                     
+            #prepare request
+            setupRequestsAll.push (callback) =>
                 @manageRequest(callback, pathAll[globalCount], mapAll[globalCount], patternAll[globalCount])
                 globalCount++
         return setupRequestsAll
@@ -105,7 +105,7 @@ class DataSystem
                 #create request
         @clientDS.put path, viewFunctions, (error, response, body) =>
 
-            #return error     
+            #return error
             if error
                 @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
                 callback true
@@ -130,8 +130,8 @@ class DataSystem
             else if response.statusCode isnt 200
                 @logErrInConsole new Error(body), @_getFunc(), @_getFile(), @_getLine()
 
-    deleteById : (callback, id)->
-        @deleteData callback, @PATH.data + id + '/'
+    deleteById : (id, callback)->
+        @deleteData @PATH.data + id + '/', callback
 
 
     putData : (callback, path, params = {})->
@@ -174,17 +174,13 @@ class DataSystem
 
                 callback false, body
 
-    deleteData : (callback, path)->
+    deleteData : (path, callback)->
         @clientDS.del path, (error, response, body) =>
-
-            #return and log error
             if error
                 @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
-                callback true
-
-            #return result
+                callback error, body
             else
-                callback false, body
+                callback error, body
 
     # applyModelRequest : (callback, modelName, requestName, requestParams) ->
     #     requestParams = requestParams || {}
