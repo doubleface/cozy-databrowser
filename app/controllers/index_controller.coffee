@@ -15,11 +15,13 @@ async = require 'async'
 #doctypes
 action 'doctypes', ->
 
+    jsonRes = []
+
     #index several id for test
     #dataSystem.indexId "39bade34f76d6b32234c3974c8004ca9", ["description"]
     #dataSystem.indexId "39bade34f76d6b32234c3974c80059f0", ["description"]
 
-    # prepare the requests
+    #------PREPARE REQUESTS
     requests = []
     requests.push (callback) -> #0 -> get the doctypes list
         dataSystem.getDoctypes callback
@@ -39,6 +41,9 @@ action 'doctypes', ->
     #agregate all the data
     async.parallel requests, (error, results) ->
         doctypeList = []
+
+    #------AGREGATE CALLBACKS
+    async.parallel requests, (error, results) ->
         if error
             res.send 500, 'Server error occurred while retrieving data'
             console.log error

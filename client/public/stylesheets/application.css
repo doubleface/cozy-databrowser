@@ -321,7 +321,7 @@ select {
   border-radius: 5px;
 }
 .dropdown-menu li > a {
-  padding: 5px 9px;
+  padding: 2px 9px;
   margin: 0 6px;
   font-size: 12px;
   -webkit-border-radius: 4px;

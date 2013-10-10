@@ -9,9 +9,13 @@
                 input(type="text")#search-field
                 button#launch-search.btn.btn-tertiary
                     i.icon-search
-            //- .masthead-text#search-options
-            //-     span.label-search My options
-            //-     ul#dt-cddl-list
+            .masthead-text#search-options
+                span.label-search My options
+                div.dropdown
+                    a(href="javascript:;", class="dropdown-toggle btn classic-toggle btn-tertiary", data-toggle="dropdown") Current doctype&nbsp;
+                        b.caret
+                    ul#dt-cddl-list.dropdown-menu
+                    
 .container
     .row
         .span12     
