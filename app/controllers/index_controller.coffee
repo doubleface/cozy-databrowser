@@ -15,7 +15,7 @@ async = require 'async'
 #doctypes
 action 'doctypes', ->
 
-    jsonRes = []
+    doctypeList = []
 
     #index several id for test
     #dataSystem.indexId "39bade34f76d6b32234c3974c8004ca9", ["description"]
