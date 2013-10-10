@@ -1,9 +1,7 @@
-load 'application'
-
 #------------------ BEGIN REQUIRE ------------------
 #instanciate Databrowser classes (datasystem, searchengine)
-ds = require './db/dataSystem'
-se = require('./db/searchEngine')(ds)
+dataSystem = require './db/dataSystem'
+searchEngine = require('./db/searchEngine')(dataSystem)
 
 #instanciate Noesis helpers
 oObjectHelper = require './noesis-tools/oObjectHelper'
@@ -18,21 +16,21 @@ async = require 'async'
 action 'doctypes', ->
 
     #index several id for test
-    #ds.indexId "39bade34f76d6b32234c3974c8004ca9", ["description"]
-    #ds.indexId "39bade34f76d6b32234c3974c80059f0", ["description"]
+    #dataSystem.indexId "39bade34f76d6b32234c3974c8004ca9", ["description"]
+    #dataSystem.indexId "39bade34f76d6b32234c3974c80059f0", ["description"]
 
     #prepare request
     requests = []
     requests.push (callback) -> #0 -> doctypes
-        ds.getDoctypes(callback)
+        dataSystem.getDoctypes(callback)
     requests.push (callback) -> #1 -> metadoctypes
-        ds.getView(callback, ds.getPATH().metadoctype.getallbyrelated)
-        #ds.applyModelRequest(callback, 'Metadoctype', 'getAllByRelated')
+        dataSystem.getView(callback, dataSystem.getPATH().metadoctype.getallbyrelated)
+        #dataSystem.applyModelRequest(callback, 'Metadoctype', 'getAllByRelated')
     requests.push (callback) -> #2 -> sums
-        ds.getView(callback, ds.getPATH().common.getsumsbydoctype, {group : true})
-        #ds.applyModelRequest(callback, 'All', 'getSumsByDoctype', {group : true})
+        dataSystem.getView(callback, dataSystem.getPATH().common.getsumsbydoctype, {group : true})
+        #dataSystem.applyModelRequest(callback, 'All', 'getSumsByDoctype', {group : true})
     requests.push (callback) -> #3 -> permissions
-        ds.getView(callback, ds.getPATH().application.getpermissions)
+        dataSystem.getView(callback, dataSystem.getPATH().application.getpermissions)
 
     #agregate callback
     async.parallel requests, (error, results) ->
@@ -72,7 +70,7 @@ action 'doctypes', ->
 
 #search
 action 'search', ->
-    if req.query? 
+    if req.query?
 
         tabDoctypes = req.query.doctype || null
 
@@ -83,60 +81,60 @@ action 'search', ->
 
             #page params
             page = parseInt(req.query.page, 10)
-            nbPerPage = parseInt(req.query.nbperpage, 10)   
+            nbPerPage = parseInt(req.query.nbperpage, 10)
 
             #skip & limit + deleted lines params
-            nbDeleted = if req.query.deleted? then parseInt(req.query.deleted, 10) else 0              
+            nbDeleted = if req.query.deleted? then parseInt(req.query.deleted, 10) else 0
             pageParams['limit'] = nbPerPage
-            if page > 1 
+            if page > 1
                 pageParams['skip'] = (nbPerPage * (page - 1)) - nbDeleted
 
             #query param
             if req.query.query? and req.query.query isnt ""
-                pageParams['query'] = req.query.query     
+                pageParams['query'] = req.query.query
 
 
             #prepare multiple page process
             # newKey = req.query.doctype.join('_')
-            # if not ds.pageCountMatrix[newKey]?
-            #     ds.pageCountMatrix[newKey] = []
+            # if not dataSystem.pageCountMatrix[newKey]?
+            #     dataSystem.pageCountMatrix[newKey] = []
 
 
             #----VERIFY DOCTYPE 'ALL' REQUESTS
             tabUnregistered = []
-            for dt in tabDoctypes                
-                if not ds.registeredPatterns[dt.toLowerCase()]?
+            for dt in tabDoctypes
+                if not dataSystem.registeredPatterns[dt.toLowerCase()]?
                     tabUnregistered.push dt.toLowerCase()
 
-            if tabUnregistered.length > 0 
+            if tabUnregistered.length > 0
 
                 #verify if doctype exist
                 requests = []
                 requests.push (callback) -> #0 -> doctypes
-                    ds.getDoctypes(callback)
+                    dataSystem.getDoctypes(callback)
                 async.parallel requests, (error, results) ->
                     if error
                         res.send {'no_result' : 'Error : Server error occurred while retrieving data.'}
                         console.log error
-                    else         
+                    else
 
-                        #compare submitted doctype and existing doctype for more security        
-                        bError = false                       
-                        tabRegisteredDoctypes = results[0]                        
+                        #compare submitted doctype and existing doctype for more security
+                        bError = false
+                        tabRegisteredDoctypes = results[0]
                         for dtUnreg in tabUnregistered
                             bUnknowDoctype = true
                             for dtReg, index in tabRegisteredDoctypes
                                 if not bError
                                     if dtUnreg.toLowerCase() is dtReg.toLowerCase()
-                                        bUnknowDoctype = false                                    
-                                    if bUnknowDoctype and index is tabRegisteredDoctypes.length-1                                    
+                                        bUnknowDoctype = false
+                                    if bUnknowDoctype and index is tabRegisteredDoctypes.length-1
                                         res.send {'no_result': 'Error : You try to access to an unknown doctype.'}
                                         bError = true
 
 
                         if not bError
                             #prepare request 'all' for each doctypes
-                            setupRequestsAll = ds.prepareDballRequests(tabUnregistered)                     
+                            setupRequestsAll = dataSystem.prepareDballRequests(tabUnregistered)
 
                             #agregate callbacks
                             if setupRequestsAll.length > 0
@@ -145,14 +143,14 @@ action 'search', ->
                                         console.log error
                                         res.send {'no_result' : 'Error : Server error occurred while retrieving data.'}
                                     else
-                                        se.doBasicSearch(res, tabDoctypes, pageParams)
+                                        searchEngine.doBasicSearch(res, tabDoctypes, pageParams)
                             else
                                 res.send {'no_result' : 'Error : Server error occurred while retrieving data.'}
 
-            else 
-                se.doBasicSearch(res, tabDoctypes, pageParams)
+            else
+                searchEngine.doBasicSearch(res, tabDoctypes, pageParams)
 
-                    
+
         else
             res.send {'no_result' : 'Error : Unknown research parameters'}
 
@@ -161,7 +159,7 @@ action 'delete', ->
     if req.params.id?
         requests = []
         requests.push (callback) -> #0 -> delete
-                ds.deleteById callback, req.params.id
+                dataSystem.deleteById callback, req.params.id
         async.parallel requests, (error, results) ->
             if error
                 res.send('error', 'Server error occurred while trying to remove data.')
