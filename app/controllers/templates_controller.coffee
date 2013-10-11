@@ -163,7 +163,7 @@ action 'search', ->
 
                     
         else
-            res.send {'no_result' : 'Error : Unknown research parameters'}
+            res.send []
 
 #delete
 action 'delete', ->
