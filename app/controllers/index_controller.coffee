@@ -1,12 +1,12 @@
 #------------------ BEGIN REQUIRE ------------------
-#instanciate Databrowser classes (datasystem, searchengine)
+#instanciate DataBrowser classes (DataSystem, SearchEngine)
 dataSystem = require './db/dataSystem'
 searchEngine = require('./db/searchEngine')(dataSystem)
 
 #instanciate Noesis helpers
 oObjectHelper = require './noesis-tools/oObjectHelper'
 
-#add Cozy helpers
+#add NPM helpers
 async = require 'async'
 #-------------------- END REQUIRE ------------------
 
@@ -15,11 +15,10 @@ async = require 'async'
 #doctypes
 action 'doctypes', ->
 
-    doctypeList = []
-
-    #index several id for test
+    #------INDEX SEVERAL ID FOR TEST
     #dataSystem.indexId "39bade34f76d6b32234c3974c8004ca9", ["description"]
     #dataSystem.indexId "39bade34f76d6b32234c3974c80059f0", ["description"]
+      
 
     #------PREPARE REQUESTS
     requests = []
@@ -27,28 +26,25 @@ action 'doctypes', ->
         dataSystem.getDoctypes callback
 
     requests.push (callback) -> #1 -> get all the metadoctypes
-        targetUrl = dataSystem.getPATH().metadoctype.getallbyrelated
+        targetUrl = dataSystem.PATH.metadoctype.getallbyrelated
         dataSystem.getView callback, targetUrl
 
     requests.push (callback) -> #2 -> get the numbers of docs per doctype
-        targetUrl = dataSystem.getPATH().common.getsumsbydoctype
+        targetUrl = dataSystem.PATH.common.getsumsbydoctype
         dataSystem.getView callback, targetUrl, group: true
 
     requests.push (callback) -> #3 -> get the permissions
-        targetUrl = dataSystem.getPATH().application.getpermissions
+        targetUrl = dataSystem.PATH.application.getpermissions
         dataSystem.getView callback, targetUrl
 
-    #agregate all the data
-    async.parallel requests, (error, results) ->
-        doctypeList = []
 
     #------AGREGATE CALLBACKS
     async.parallel requests, (error, results) ->
         if error
-            res.send 500, 'Server error occurred while retrieving data'
+            res.send 500, @dataSystem.ERR_MSG.retrieveData
             console.log error
         else
-            #
+            doctypeList = []
             doctypes = results[0]
             metadoctypesByDoctype = results[1]
             sumsByDoctype = results[2]
@@ -74,8 +70,9 @@ action 'doctypes', ->
                     if sum.key?.toLowerCase() is doctypeName
                         agregate['sum'] = sum.value
 
-                #add permissions
+                #add permissions                
                 for permissions in permissionsByDoctype
+                    #ensure permissions keys are in lowercase
                     permissions = oObjectHelper.convertIndexesToLowerCase permissions
                     if permissions.value? and permissions.value[doctypeName]?
                         agregate['app'].push permissions.key
@@ -130,7 +127,7 @@ action 'search', ->
                     dataSystem.getDoctypes(callback)
                 async.parallel requests, (error, results) ->
                     if error
-                        res.send {'no_result' : 'Error : Server error occurred while retrieving data.'}
+                        res.send {'no_result' : dataSystem.ERR_MSG.retrieveData}
                         console.log error
                     else
 
@@ -144,7 +141,7 @@ action 'search', ->
                                     if dtUnreg.toLowerCase() is dtReg.toLowerCase()
                                         bUnknowDoctype = false
                                     if bUnknowDoctype and index is tabRegisteredDoctypes.length-1
-                                        res.send {'no_result': 'Error : You try to access to an unknown doctype.'}
+                                        res.send {'no_result': dataSystem.ERR_MSG.unknownDoctype}
                                         bError = true
 
 
@@ -157,29 +154,28 @@ action 'search', ->
                                 async.parallel setupRequestsAll, (error, results) ->
                                     if error
                                         console.log error
-                                        res.send {'no_result' : 'Error : Server error occurred while retrieving data.'}
+                                        res.send {'no_result' : dataSystem.ERR_MSG.retrieveData}
                                     else
                                         searchEngine.doBasicSearch(res, tabDoctypes, pageParams)
                             else
-                                res.send {'no_result' : 'Error : Server error occurred while retrieving data.'}
+                                res.send {'no_result' : dataSystem.ERR_MSG.retrieveData }
 
             else
                 searchEngine.doBasicSearch(res, tabDoctypes, pageParams)
 
 
         else
-            res.send {'no_result' : 'Error : Unknown research parameters'}
+            res.send {'no_result' : dataSystem.ERR_MSG.unknownParameters}
 
 #delete
 action 'delete', ->
     if req.params.id?
         dataSystem.deleteById req.params.id, (error) ->
             if error
-                msg = 'Server error occurred while trying to remove data.'
                 console.log error
-                res.send 500, msg
+                res.send 500, dataSystem.ERR_MSG.removeData 
             else
                 res.send req.query.id
     else
-        res.send 400, "Document ID parameter not found."
+        res.send 400, dataSystem.ERR_MSG.unknownId
 #-------------------- END ACTIONS ------------------

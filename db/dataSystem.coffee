@@ -30,6 +30,13 @@ class DataSystem
         application:
             getpermissions: '/request/application/getpermissions/'
 
+    ERR_MSG:
+        retrieveData : 'Error : Server error occurred while retrieving data.'
+        removeData : 'Error : Server error occurred while trying to remove data.'
+        unknownDoctype : 'Error : You try to access to an unknown doctype.'
+        unknownParamaters : 'Error : Unknown research parameters'        
+        unknownId : 'Error : Document ID parameter not found.'
+
 
     #------------- CLASS DIRECT PROCESS ----------------
 
@@ -61,12 +68,6 @@ class DataSystem
         @constructor.CLASS_COUNT++
 
     #-------------- OBJECT METHODS ----------------------
-    #------CONSTANT GETTERS
-    #use :: (ex : DataSystem::DS_URL)
-    getPATH : () ->
-        return @PATH
-
-    #------METHODS
     prepareDballRequests: (tabPatterns) ->
         setupRequestsAll = []
         globalCount = 0

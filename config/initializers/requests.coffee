@@ -1,9 +1,6 @@
 module.exports = (compound) ->
 
-    All = compound.models.All
-    Metadoctype = compound.models.Metadoctype
-
-    ds = require './../../db/dataSystem'
+    dataSystem = require './../../db/dataSystem'
     async = require 'async'
 
     #prepare view functions
@@ -40,11 +37,11 @@ module.exports = (compound) ->
 
     setupRequests = [] 
     setupRequests.push (callback) -> 
-        ds.manageRequest callback, ds.getPATH().common.getsumsbydoctype, vFunc.common.getSumsByDoctype
+        dataSystem.manageRequest callback, dataSystem.PATH.common.getsumsbydoctype, vFunc.common.getSumsByDoctype
     setupRequests.push (callback) -> 
-        ds.manageRequest callback, ds.getPATH().metadoctype.getallbyrelated, vFunc.metadoctype.getAllByRelated
+        dataSystem.manageRequest callback, dataSystem.PATH.metadoctype.getallbyrelated, vFunc.metadoctype.getAllByRelated
     setupRequests.push (callback) -> 
-        ds.manageRequest callback, ds.getPATH().application.getpermissions, vFunc.application.getPermissions
+        dataSystem.manageRequest callback, dataSystem.PATH.application.getpermissions, vFunc.application.getPermissions
 
     #agregate callback 
     async.parallel setupRequests, (error, results) ->
@@ -53,14 +50,14 @@ module.exports = (compound) ->
 
     requests = []
     requests.push (callback) -> #0 -> doctypes
-        ds.getDoctypes(callback)
+        dataSystem.getDoctypes(callback)
     async.parallel requests, (error, results) ->
         if error
             console.log error
         else  
             
             #prepare request 'all' for each doctypes       
-            setupRequestsAll = ds.prepareDballRequests(results[0])
+            setupRequestsAll = dataSystem.prepareDballRequests(results[0])
 
             #agregate callbacks
             if setupRequestsAll.length > 0
@@ -68,4 +65,4 @@ module.exports = (compound) ->
                     if error
                         console.log error
                     # else 
-                    #     console.log ds.registeredPatterns      
+                    #     console.log dataSystem.registeredPatterns      

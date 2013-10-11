@@ -40,7 +40,7 @@ class SearchEngine
     doBasicSearch : (res, tabDoctypes, pageParams) ->         
             requests = []
             requests.push (callback) => #0 -> metadoctypes
-                @ds.getView callback, @ds.getPATH().metadoctype.getallbyrelated
+                @ds.getView callback, @ds.PATH.metadoctype.getallbyrelated
 
             #one request per doctype
             #reqCount = 0
@@ -48,16 +48,16 @@ class SearchEngine
             requests.push (callback) => #1 to n -> requests
                 doctypeName = tabDoctypes[0].toLowerCase()
                 if pageParams['query']?
-                    @ds.getView callback, @ds.getPATH().search + doctypeName, pageParams
+                    @ds.getView callback, @ds.PATH.search + doctypeName, pageParams
                 else
-                    @ds.getView callback, @ds.getPATH().request + doctypeName + @ds.getPATH().all, pageParams
+                    @ds.getView callback, @ds.PATH.request + doctypeName + @ds.PATH.all, pageParams
                 #reqCount++
                     
 
             @async.parallel requests, (error, results) =>
                 jsonRes = []
                 if error
-                    res.send {'no_result' : 'Error : Server error occurred while retrieving data.'}
+                    res.send {'no_result' : @ds.ERR_MSG.retrieveData}
                     @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
                 else
                     idField = []
