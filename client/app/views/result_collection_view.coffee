@@ -29,6 +29,7 @@ module.exports = class ResultCollectionView extends ViewCollection
                             $('.load-more-result').hide()
                 error : () ->
                     $('.loading-image').remove()
+                    that.noMoreItems = true
                     that.displayLoadingError()
             }
 
@@ -48,7 +49,8 @@ module.exports = class ResultCollectionView extends ViewCollection
     loadNextPage : (isTriggered, callback) ->               
         that = this
         @options['deleted'] = @deleted
-        if !@noMoreItems            
+        console.log @noMoreItems
+        if !@noMoreItems    
             @isLoading = true
             @collection.page++          
             if !isTriggered
@@ -58,16 +60,20 @@ module.exports = class ResultCollectionView extends ViewCollection
                 data: $.param(@options)
                 remove : false
                 success : (col, data) ->
-                    if !isTriggered
-                        $('.load-more-result .spinner').hide()
-                        $('.load-more-result i, .load-more-result span').show()                 
-                    that.noMoreItems = data.length < that.collection.nbPerPage
-                    if that.noMoreItems 
-                        $('.load-more-result').hide()
-                    that.isLoading = false
-                    if callback?
-                        callback()                      
+                    if data.length?
+                        if !isTriggered
+                            $('.load-more-result .spinner').hide()
+                            $('.load-more-result i, .load-more-result span').show()                 
+                        that.noMoreItems = data.length < that.collection.nbPerPage
+                        if that.noMoreItems 
+                            $('.load-more-result').hide()
+                        that.isLoading = false
+                        if callback?
+                            callback() 
+                    else
+                        that.noMoreItems = true                                         
                 error : () ->
+                    that.noMoreItems = true
                     that.displayLoadingError()
             }
     loopFirstScroll : ()->
