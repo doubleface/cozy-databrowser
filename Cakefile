@@ -5,6 +5,7 @@ option '-f' , '--file [FILE*]' , 'test file to run'
 option ''   , '--dir [DIR*]'   , 'directory where to grab test files'
 option '-d' , '--debug'        , 'run node in debug mode'
 option '-b' , '--debug-brk'    , 'run node in --debug-brk mode (stops on first line)'
+option '-v' , '--verbose'      , 'run in development NODE_ENV instead of test NODE_ENV'
 
 options =  # defaults, will be overwritten by command line options
     file        : no
@@ -37,9 +38,9 @@ task 'tests', 'run server tests, ./test is parsed by default, otherwise use -f o
     if options.file
         testFiles  = testFiles.concat(options.file)
     if not(options.dir or options.file)
-        testFiles = walk("test", [])
+        testFiles = walk("tests", [])
     runTests testFiles
-    
+
 task 'tests:client', 'run client tests through mocha', (opts) ->
     options     = opts
     uiTestFiles = walk("client/test", [])
@@ -47,7 +48,11 @@ task 'tests:client', 'run client tests through mocha', (opts) ->
 
 
 runTests = (fileList) ->
-    command = "mocha " + fileList.join(" ") + " "
+    if options['verbose']
+        env = 'NODE_ENV=development'
+    else
+        env = 'NODE_ENV=test'
+    command = "#{env} mocha " + fileList.join(" ") + " "
     if options['debug-brk']
         command += "--debug-brk --forward-io --profile "
     if options.debug

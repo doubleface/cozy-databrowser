@@ -9,34 +9,33 @@
 
 class DataSystem
     #------------------ CONSTRUCTOR CONSTANTS ----------------
-    @CLASS_NAME : "DataSystem"
-    @CLASS_COUNT : 0
+    @CLASS_NAME: "DataSystem"
+    @CLASS_COUNT: 0
 
     #------------------ PROTOTYPE CONSTANTS ----------------
-    DS_URL : "http://127.0.0.1"
-    DS_PORT : 9101
-    DI_PORT : 9102
-    PATH : {
-        data : '/data/'
-        doctypes : '/doctypes'
-        request : '/request/'
-        all : '/dball/'
-        search : '/data/search/'
-        index : '/data/index/'
-        common :
-            getsumsbydoctype : '/request/common/getsumsbydoctype/'
-        metadoctype :
-            getallbyrelated : '/request/metadoctype/getallbyrelated/'
-        application :
-            getpermissions : '/request/application/getpermissions/'
-    }
+    DS_URL: "http://127.0.0.1"
+    DS_PORT: 9101
+    DI_PORT: 9102
+    PATH:
+        data: '/data/'
+        doctypes: '/doctypes'
+        request: '/request/'
+        all: '/dball/'
+        search: '/data/search/'
+        index: '/data/index/'
+        common:
+            getsumsbydoctype: '/request/common/getsumsbydoctype/'
+        metadoctype:
+            getallbyrelated: '/request/metadoctype/getallbyrelated/'
+        application:
+            getpermissions: '/request/application/getpermissions/'
 
 
     #------------- CLASS DIRECT PROCESS ----------------
 
 
     #----------------- OBJECT PARAMETERS ---------------
-    constructor : () ->
+    constructor: ->
 
         #------ DIRECT
         #setted by coffeescript contructor function
@@ -48,15 +47,13 @@ class DataSystem
         #@pageCountMatrix = {}
         @registeredPatterns = {}
 
-               
-
         #------ SUB-PROCESS
         #Authentification
         if process.env.NODE_ENV is "production"
             username = process.env.NAME
             password = process.env.TOKEN
             @clientDS.setBasicAuth username, password
-        
+
         #Error manager
         @hlpError.setErrorManager(@)
 
@@ -70,31 +67,29 @@ class DataSystem
         return @PATH
 
     #------METHODS
-    prepareDballRequests : (tabPatterns) ->
+    prepareDballRequests: (tabPatterns) ->
         setupRequestsAll = []
         globalCount = 0
         pathAll = []
-        patternAll = [] 
-        mapAll =  [] 
+        patternAll = []
+        mapAll =  []
 
         #prepare parameters
         for pattern, index in tabPatterns
-            pathAll[index] = @PATH.request + pattern.toLowerCase() + @PATH.all           
-            patternAll[index] = pattern.toLowerCase() 
-            mapAll[index] =  {
-                map : (doc) ->
+            pathAll[index] = @PATH.request + pattern.toLowerCase() + @PATH.all
+            patternAll[index] = pattern.toLowerCase()
+            mapAll[index] =
+                map: (doc) ->
                     if doc.docType?
                         if doc.docType.toLowerCase() is '__pattern__'
-                            emit doc._id, doc 
-            }
-
-            #prepare request        
-            setupRequestsAll.push (callback) =>                     
+                            emit doc._id, doc
+            #prepare request
+            setupRequestsAll.push (callback) =>
                 @manageRequest(callback, pathAll[globalCount], mapAll[globalCount], patternAll[globalCount])
                 globalCount++
         return setupRequestsAll
 
-    manageRequest : (callback, path, viewFunctions =  {}, pattern = '') ->
+    manageRequest: (callback, path, viewFunctions =  {}, pattern = '') ->
         # convert map/reduce to string and replace optional pattern
         for key, func of viewFunctions
             viewFunctions[key] = func.toString()
@@ -105,7 +100,7 @@ class DataSystem
                 #create request
         @clientDS.put path, viewFunctions, (error, response, body) =>
 
-            #return error     
+            #return error
             if error
                 @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
                 callback true
@@ -116,13 +111,13 @@ class DataSystem
                     @registeredPatterns[pattern] = true
                 callback false, body
 
-    getView : (callback, path, params = {}) ->
+    getView: (callback, path, params = {}) ->
         @postData callback, path, params
 
-    getDoctypes : (callback) ->
+    getDoctypes: (callback) ->
         @getData callback, @PATH.doctypes
 
-    indexId : (id, aFields) ->
+    indexId: (id, aFields) ->
         that = this
         @clientDS.post @PATH.index + id, {"fields": aFields}, (error, response, body) =>
             if error
@@ -130,12 +125,12 @@ class DataSystem
             else if response.statusCode isnt 200
                 @logErrInConsole new Error(body), @_getFunc(), @_getFile(), @_getLine()
 
-    deleteById : (callback, id)->
-        @deleteData callback, @PATH.data + id + '/'
+    deleteById: (id, callback) ->
+        @deleteData @PATH.data + id + '/', callback
 
 
-    putData : (callback, path, params = {})->
-        @clientDS.put path, params, (error, response, body) ->
+    putData: (callback, path, params = {}) ->
+        @clientDS.put path, params, (error, response, body) =>
 
             #return error
             if error
@@ -146,8 +141,8 @@ class DataSystem
             else
                 callback false, body
 
-    getData : (callback, path)->
-        @clientDS.get path, (error, response, body) ->
+    getData: (callback, path) ->
+        @clientDS.get path, (error, response, body) =>
 
             #return and log error
             if error
@@ -159,7 +154,7 @@ class DataSystem
                 callback false, body
 
 
-    postData : (callback, path, params = {})->
+    postData: (callback, path, params = {}) ->
         @clientDS.post path, params, (error, response, body) =>
 
             #return error
@@ -174,34 +169,15 @@ class DataSystem
 
                 callback false, body
 
-    deleteData : (callback, path)->
-        @clientDS.del path, (error, response, body) ->
-
-            #return and log error
+    deleteData: (path, callback) ->
+        @clientDS.del path, (error, response, body) =>
             if error
                 @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
-                callback true
-
-            #return result
+                callback error, body
             else
-                callback false, body
+                callback error, body
 
-    # applyModelRequest : (callback, modelName, requestName, requestParams) ->
-    #     requestParams = requestParams || {}
-    #     jsonRes = {}
-    #     error = true
-    #     if @models[modelName]?
-    #         @models[modelName].request requestName, requestParams, (err, data) ->
-    #             if data?
-    #                 if data.length > 0
-    #                     error = false
-    #                     jsonRes = data
-    #             return callback(error, jsonRes)
-    #     else
-    #         return callback(error, jsonRes)
-
-
-    formatBody : (body) ->
+    formatBody: (body) ->
         formattedBody = []
         if body.rows? and body.rows.length > 0
             for row in body.rows
@@ -211,6 +187,5 @@ class DataSystem
                 formattedRow['value'] = row
                 formattedBody.push formattedRow
         return formattedBody
-#********************************************************
 
 module.exports = new DataSystem()
