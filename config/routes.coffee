@@ -1,4 +1,4 @@
 exports.routes = (map) ->
-	map.get 'doctypes', 'templates#doctypes'
-	map.get 'search', 'templates#search'
-	map.del 'search/:id', 'templates#delete'
+	map.get 'doctypes', 'index#doctypes'
+	map.get 'search', 'index#search'
+	map.del 'search/:id', 'index#delete'
