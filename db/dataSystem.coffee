@@ -6,8 +6,8 @@
 #@noesis requirement :      oErrorHelper
 #@patches requirement :     none
 #@constructor :             Use "new" for create an instance of a DataSystem
-
-class DataSystem
+CoreClass = require './CoreClass'
+class DataSystem extends CoreClass
     #------------------ CONSTRUCTOR CONSTANTS ----------------
     @CLASS_NAME: "DataSystem"
     @CLASS_COUNT: 0
@@ -38,20 +38,13 @@ class DataSystem
         unknownId : 'Error : Document ID parameter not found.'
 
 
-    #------------- CLASS DIRECT PROCESS ----------------
-
-
     #----------------- OBJECT PARAMETERS ---------------
     constructor: ->
-
-        #------ DIRECT
-        #setted by coffeescript contructor function
 
         #------ REQUIRED
         @hlpError = require './../noesis-tools/oErrorHelper'
         @jsonClient = require('request-json').JsonClient
         @clientDS = new @jsonClient @DS_URL +  ':'  + @DS_PORT
-        #@pageCountMatrix = {}
         @registeredPatterns = {}
 
         #------ SUB-PROCESS
@@ -60,12 +53,6 @@ class DataSystem
             username = process.env.NAME
             password = process.env.TOKEN
             @clientDS.setBasicAuth username, password
-
-        #Error manager
-        @hlpError.setErrorManager(@)
-
-        #Class
-        @constructor.CLASS_COUNT++
 
     #-------------- OBJECT METHODS ----------------------
     prepareDballRequests: (tabPatterns) ->
@@ -103,7 +90,7 @@ class DataSystem
 
             #return error
             if error
-                @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
+                @_logErrInConsole error, @_getErrFunc(), @_getErrFile(), @_getErrLine()
                 callback true
 
             #return result
@@ -119,12 +106,11 @@ class DataSystem
         @getData callback, @PATH.doctypes
 
     indexId: (id, aFields) ->
-        that = this
         @clientDS.post @PATH.index + id, {"fields": aFields}, (error, response, body) =>
             if error
-                @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
+                @_logErrInConsole error, @_getErrFunc(), @_getErrFile(), @_getErrLine()
             else if response.statusCode isnt 200
-                @logErrInConsole new Error(body), @_getFunc(), @_getFile(), @_getLine()
+                @_logErrInConsole new Error(body), @_getErrFunc(), @_getErrFile(), @_getErrLine()
 
     deleteById: (id, callback) ->
         @deleteData @PATH.data + id + '/', callback
@@ -135,7 +121,7 @@ class DataSystem
 
             #return error
             if error
-                @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
+                @_logErrInConsole error, @_getErrFunc(), @_getErrFile(), @_getErrLine()
                 callback true
 
             #return result
@@ -147,7 +133,7 @@ class DataSystem
 
             #return and log error
             if error
-                @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
+                @_logErrInConsole error, @_getErrFunc(), @_getErrFile(), @_getErrLine()
                 callback true
 
             #return result
@@ -160,7 +146,7 @@ class DataSystem
 
             #return error
             if error
-                @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
+                @_logErrInConsole error, @_getErrFunc(), @_getErrFile(), @_getErrLine()
                 callback true
 
             #return result
@@ -173,7 +159,7 @@ class DataSystem
     deleteData: (path, callback) ->
         @clientDS.del path, (error, response, body) =>
             if error
-                @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
+                @_logErrInConsole error, @_getErrFunc(), @_getErrFile(), @_getErrLine()
                 callback error, body
             else
                 callback error, body

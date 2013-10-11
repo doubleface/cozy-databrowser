@@ -6,18 +6,11 @@
 #@noesis requirement :      none
 #@patches requirement :     none
 #@constructor :             Use "new" for create an instance of a SearchEngine
-  
-class SearchEngine 
+CoreClass = require './CoreClass'
+class SearchEngine extends CoreClass
     #------------------ CONSTRUCTOR CONSTANTS ----------------
     @CLASS_NAME : "SearchEngine"
-    @CLASS_COUNT : 0
-
-    #------------------ PROTOTYPE CONSTANTS ----------------
-
-         
-    #------------- CLASS DIRECT PROCESS ----------------
-
-     
+   
     #----------------- OBJECT PARAMETERS ---------------
     constructor : (@ds) ->
         
@@ -25,12 +18,8 @@ class SearchEngine
         #setted by coffeescript contructor function 
         
         #------ REQUIRED
-        @hlpError = require './../noesis-tools/oErrorHelper'
         @async = require 'async' 
         
-        #------ SUB-PROCESS
-        @hlpError.setErrorManager(@)
-        @constructor.CLASS_COUNT++
         
     #-------------- OBJECT METHODS ----------------------
     #------CONSTANT GETTERS
@@ -58,7 +47,7 @@ class SearchEngine
                 jsonRes = []
                 if error
                     res.send {'no_result' : @ds.ERR_MSG.retrieveData}
-                    @logErrInConsole error, @_getFunc(), @_getFile(), @_getLine()
+                    @_logErrInConsole error, @_getErrFunc(), @_getErrFile(), @_getErrLine()
                 else
                     idField = []
                     descField = []
