@@ -90,7 +90,7 @@ class DataSystem extends CoreClass
 
             #return error
             if error
-                @_logErrInConsole error, @_getErrFunc(), @_getErrFile(), @_getErrLine()
+                @_logErrInConsole error
                 callback true
 
             #return result
@@ -108,9 +108,9 @@ class DataSystem extends CoreClass
     indexId: (id, aFields) ->
         @clientDS.post @PATH.index + id, {"fields": aFields}, (error, response, body) =>
             if error
-                @_logErrInConsole error, @_getErrFunc(), @_getErrFile(), @_getErrLine()
+                @_logErrorInConsole error
             else if response.statusCode isnt 200
-                @_logErrInConsole new Error(body), @_getErrFunc(), @_getErrFile(), @_getErrLine()
+                @_logErrorInConsole new Error(body)
 
     deleteById: (id, callback) ->
         @deleteData @PATH.data + id + '/', callback
@@ -121,7 +121,7 @@ class DataSystem extends CoreClass
 
             #return error
             if error
-                @_logErrInConsole error, @_getErrFunc(), @_getErrFile(), @_getErrLine()
+                @_logErrInConsole error
                 callback true
 
             #return result
@@ -133,7 +133,7 @@ class DataSystem extends CoreClass
 
             #return and log error
             if error
-                @_logErrInConsole error, @_getErrFunc(), @_getErrFile(), @_getErrLine()
+                @_logErrInConsole error
                 callback true
 
             #return result
@@ -146,7 +146,7 @@ class DataSystem extends CoreClass
 
             #return error
             if error
-                @_logErrInConsole error, @_getErrFunc(), @_getErrFile(), @_getErrLine()
+                @_logErrInConsole error
                 callback true
 
             #return result
@@ -159,7 +159,7 @@ class DataSystem extends CoreClass
     deleteData: (path, callback) ->
         @clientDS.del path, (error, response, body) =>
             if error
-                @_logErrInConsole error, @_getErrFunc(), @_getErrFile(), @_getErrLine()
+                @_logErrInConsole error
                 callback error, body
             else
                 callback error, body

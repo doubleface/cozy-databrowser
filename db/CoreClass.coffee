@@ -1,38 +1,49 @@
-module.exports = class CoreClass
-    constructor: ->
-        @_errCount = 0
+module.exports = class CoreClass    
+    
+    #----REQUIRE CLASS CONSTANT 
+    _traceback = require 'traceback' 
 
-    _getErrStack: ->
-        orig = Error.prepareStackTrace
-        Error.prepareStackTrace = (_, stack) ->
-            return stack;
-        err = new Error
-        Error.captureStackTrace(err, arguments.callee)
-        stack = err.stack
-        Error.prepareStackTrace = orig
-        return stack[1]
+    #----SETTED CLASS VAR
+    _errCount = 0   
+    
+    #----METHODS 
+    _logErrorInConsole: (error, allStack = false) ->
 
-    _getErrFunc: ->
-        return @_getErrStack().getFunctionName()
+        _errCount++
 
-    _getErrLine: ->
-        return (@_getErrStack().getLineNumber() - 1)          
+        #get stack trace ([0] gives CoreClass, [1] gives current class)
+        trace = _traceback()
+        if trace.length > 1 
+            info = trace[1]
 
-    _getErrFile: ->
-        return @_getErrStack().getFileName() 
+        #prepare default values       
+        info = info || {}
+        error = error || 'No information'
+        myClass = @constructor.CLASS_NAME || null
+        func = info.method || info.name || null
+        file = info.path || 'File not found' 
+        line = info.line  || 'Unknown'
+        column = info.col || 'Unknown' 
+
+        #log error in console
+        console.log '---------ERROR n°' + _errCount + '--------'
+        if myClass? then console.log '-- Running Class : "' + myClass + '"'
+        if func? then console.log '-- Running Property : "' + func + '"'             
+        console.log '-- File :"' + file + '"'
+        console.log '-- Line : "' + line + '", Column : "' + column + '"'
+        console.log '******* Error Msg ********'
+        console.log error       
         
-    _logErrInConsole: (error, func, file, line) =>
-            @errorCount++
-            error = error || 'No information'
-            func = func || 'Anonymous'
-            file = file || 'Unknown' 
-            line = line  || 'Not found'            
-            myClass = @constructor.CLASS_NAME || 'Unknown'
-            console.log '---------ERROR n°' + @_errCount + '--------'
-            console.log '-- Running Class : ' + myClass
-            console.log '-- Running Property : ' + func                       
-            console.log '-- File :' + file
-            console.log '-- Line : ' + line
-            console.log '-- Error msg : '
-            console.log '\t' + error
-            console.log '----------------------'            
+
+        #log the all stack one by one
+        if allStack and trace.length > 2
+            console.log '***** Stack description *****'
+            for currentStack, index in trace
+                if index > 1
+                    errorMsg = ""
+                    errorMsg += index + ') in ' + currentStack.path
+                    errorMsg +=  ', line ' + currentStack.line
+                    errorMsg += ', col ' + currentStack.col
+                    console.log errorMsg
+
+        console.log '---------------------------------'

@@ -47,7 +47,7 @@ class SearchEngine extends CoreClass
                 jsonRes = []
                 if error
                     res.send {'no_result' : @ds.ERR_MSG.retrieveData}
-                    @_logErrInConsole error, @_getErrFunc(), @_getErrFile(), @_getErrLine()
+                    @_logErrInConsole error
                 else
                     idField = []
                     descField = []
