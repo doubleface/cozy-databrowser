@@ -1,21 +1,25 @@
+CoreClass = require './CoreClass'
+
 #********************************************************
 #******************** CLASS DataSystem ******************
 #********************************************************
-#@description :             DataSystem define....
-#@outside requirement : 	npm 'request-json'
-#@noesis requirement :      oErrorHelper
-#@patches requirement :     none
-#@constructor :             Use "new" for create an instance of a DataSystem
-CoreClass = require './CoreClass'
+#@description : used to communicate with the cozy data-system
+
 class DataSystem extends CoreClass
+
     #------------------ CONSTRUCTOR CONSTANTS ----------------
     @CLASS_NAME: "DataSystem"
-    @CLASS_COUNT: 0
 
     #------------------ PROTOTYPE CONSTANTS ----------------
+    #required dependencies
+    JSON_CLIENT = require('request-json').JsonClient
+
+    #general pathes
     DS_URL: "http://127.0.0.1"
     DS_PORT: 9101
     DI_PORT: 9102
+
+    #specific pathes
     PATH:
         data: '/data/'
         doctypes: '/doctypes'
@@ -30,6 +34,7 @@ class DataSystem extends CoreClass
         application:
             getpermissions: '/request/application/getpermissions/'
 
+    #common error messages
     ERR_MSG:
         retrieveData : 'Error : Server error occurred while retrieving data.'
         removeData : 'Error : Server error occurred while trying to remove data.'
@@ -39,12 +44,10 @@ class DataSystem extends CoreClass
 
 
     #----------------- OBJECT PARAMETERS ---------------
-    constructor: ->
-
-        #------ REQUIRED
-        @hlpError = require './../noesis-tools/oErrorHelper'
-        @jsonClient = require('request-json').JsonClient
-        @clientDS = new @jsonClient @DS_URL +  ':'  + @DS_PORT
+    constructor: ->       
+        
+        #------ SETTED
+        @clientDS = new JSON_CLIENT @DS_URL +  ':'  + @DS_PORT
         @registeredPatterns = {}
 
         #------ SUB-PROCESS
@@ -105,9 +108,12 @@ class DataSystem extends CoreClass
         @getData callback, @PATH.doctypes
 
     indexId: (id, aFields) ->
-        @clientDS.post @PATH.index + id, {"fields": aFields}, (error, response, body) =>
+        fields = {"fields": aFields}
+        @clientDS.post @PATH.index + id, fields, (error, response, body) =>
+
             if error
                 @_logErrorInConsole error
+
             else if response.statusCode isnt 200
                 @_logErrorInConsole new Error(body)
 
@@ -118,24 +124,20 @@ class DataSystem extends CoreClass
     putData: (callback, path, params = {}) ->
         @clientDS.put path, params, (error, response, body) =>
 
-            #return error
             if error
                 @_logErrorInConsole error
                 callback true
 
-            #return result
             else
                 callback false, body
 
     getData: (callback, path) ->
         @clientDS.get path, (error, response, body) =>
 
-            #return and log error
             if error
                 @_logErrorInConsole error
                 callback true
 
-            #return result
             else
                 callback false, body
 
@@ -143,12 +145,10 @@ class DataSystem extends CoreClass
     postData: (callback, path, params = {}) ->
         @clientDS.post path, params, (error, response, body) =>
 
-            #return error
             if error
                 @_logErrorInConsole error
                 callback true
 
-            #return result
             else
                 if not body.length?
                     body = @formatBody(body)
@@ -157,14 +157,17 @@ class DataSystem extends CoreClass
 
     deleteData: (path, callback) ->
         @clientDS.del path, (error, response, body) =>
+
             if error
                 @_logErrorInConsole error
                 callback error, body
+
             else
                 callback error, body
 
     formatBody: (body) ->
         formattedBody = []
+
         if body.rows? and body.rows.length > 0
             for row in body.rows
                 formattedRow = {}
@@ -172,6 +175,8 @@ class DataSystem extends CoreClass
                 if row.docType then formattedRow['key'] = row.docType
                 formattedRow['value'] = row
                 formattedBody.push formattedRow
+
         return formattedBody
+#********************************************************
 
 module.exports = new DataSystem()

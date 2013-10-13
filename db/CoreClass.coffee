@@ -1,18 +1,27 @@
+#********************************************************
+#******************* CLASS CoreClass ********************
+#********************************************************
+#@description : used as an abstract class giving usefull common methods
+#@tip :         all attributes and methods begin with _
+
 module.exports = class CoreClass    
     
-    #----REQUIRE CLASS CONSTANT 
-    _traceback = require 'traceback' 
+    #------------------ CONSTRUCTOR CONSTANTS ----------------
 
-    #----SETTED CLASS VAR
-    _errCount = 0   
+    #------------------ PROTOTYPE CONSTANTS ----------------
+    #required dependencies
+    _TRACEBACK = require 'traceback' 
+
+    #setted class var
+    _ERROR_COUNT = 0   
     
     #----METHODS 
     _logErrorInConsole: (error, allStack = false) ->
 
-        _errCount++
+        _ERROR_COUNT++
 
         #get stack trace ([0] gives CoreClass, [1] gives extended class)
-        trace = _traceback()
+        trace = _TRACEBACK()
         if trace.length > 1 
             info = trace[1]
 
