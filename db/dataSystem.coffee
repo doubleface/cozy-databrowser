@@ -55,45 +55,44 @@ class DataSystem extends CoreClass
             @clientDS.setBasicAuth username, password
 
     #-------------- OBJECT METHODS ----------------------
-    prepareDballRequests: (tabPatterns) ->
-        setupRequestsAll = []
-        globalCount = 0
-        pathAll = []
-        patternAll = []
-        mapAll =  []
+    prepareDballRequests: (patterns = []) ->
+        setupRequestsAll = []        
 
         #prepare parameters
-        for pattern, index in tabPatterns
-            pathAll[index] = @PATH.request + pattern.toLowerCase() + @PATH.all
-            patternAll[index] = pattern.toLowerCase()
-            mapAll[index] =
-                map: (doc) ->
-                    if doc.docType?
-                        if doc.docType.toLowerCase() is '__pattern__'
-                            emit doc._id, doc
-            #prepare request
-            setupRequestsAll.push (callback) =>
-                @manageRequest(callback, pathAll[globalCount], mapAll[globalCount], patternAll[globalCount])
-                globalCount++
+        for pattern, index in patterns            
+               
+            #prepare request (as a closure)
+            ((pattern)=>
+                setupRequestsAll.push (callback) => 
+                    soberPattern = pattern.toLowerCase()
+                    path = @PATH.request + soberPattern  + @PATH.all              
+                    viewFunctions =
+                        map: (doc) ->
+                            if doc.docType?
+                                if doc.docType.toLowerCase() is '__pattern__'
+                                    emit doc._id, doc
+                    @manageRequest callback, path, viewFunctions, soberPattern
+
+            )(pattern)
         return setupRequestsAll
 
     manageRequest: (callback, path, viewFunctions =  {}, pattern = '') ->
+        
         # convert map/reduce to string and replace optional pattern
         for key, func of viewFunctions
-            viewFunctions[key] = func.toString()
+            funcAsString = func.toString()
             if pattern isnt ''
-                viewFunctions[key] = viewFunctions[key].replace '__pattern__', pattern
+                viewFunctions[key] = funcAsString.replace '__pattern__', pattern
+            else
+                viewFunctions[key] = funcAsString 
 
         #create request
-                #create request
         @clientDS.put path, viewFunctions, (error, response, body) =>
 
-            #return error
             if error
-                @_logErrInConsole error
+                @_logErrorInConsole error
                 callback true
 
-            #return result
             else
                 if pattern isnt ''
                     @registeredPatterns[pattern] = true
@@ -121,7 +120,7 @@ class DataSystem extends CoreClass
 
             #return error
             if error
-                @_logErrInConsole error
+                @_logErrorInConsole error
                 callback true
 
             #return result
@@ -133,7 +132,7 @@ class DataSystem extends CoreClass
 
             #return and log error
             if error
-                @_logErrInConsole error
+                @_logErrorInConsole error
                 callback true
 
             #return result
@@ -146,7 +145,7 @@ class DataSystem extends CoreClass
 
             #return error
             if error
-                @_logErrInConsole error
+                @_logErrorInConsole error
                 callback true
 
             #return result
@@ -159,7 +158,7 @@ class DataSystem extends CoreClass
     deleteData: (path, callback) ->
         @clientDS.del path, (error, response, body) =>
             if error
-                @_logErrInConsole error
+                @_logErrorInConsole error
                 callback error, body
             else
                 callback error, body

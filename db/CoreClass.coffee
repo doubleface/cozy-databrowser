@@ -11,7 +11,7 @@ module.exports = class CoreClass
 
         _errCount++
 
-        #get stack trace ([0] gives CoreClass, [1] gives current class)
+        #get stack trace ([0] gives CoreClass, [1] gives extended class)
         trace = _traceback()
         if trace.length > 1 
             info = trace[1]
@@ -35,7 +35,7 @@ module.exports = class CoreClass
         console.log error       
         
 
-        #log the all stack one by one
+        #log all traces in stack one by one
         if allStack and trace.length > 2
             console.log '***** Stack description *****'
             for currentStack, index in trace
