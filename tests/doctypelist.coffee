@@ -2,27 +2,30 @@ Client = require('request-json').JsonClient
 should = require 'should'
 app = require '../server'
 fixtures = require 'cozy-fixtures'
+path = require 'path'
 
 client = new Client "http://localhost:8888/"
 
 instantiateApp = require '../server'
 app = instantiateApp()
 
+fixtures.setDefaultValues
+    dirPath: path.resolve __dirname, './fixtures/'
+    silent: true
+    removeBeforeLoad: false # useless because we clean the DB before tests
+
 # clean all the data in database
-cleanDB = (done) ->
-    fixtures.resetDatabase
-        silent: true
-        callback: done
+cleanDB = (done) -> fixtures.resetDatabase callback: done
 
 describe "Doctype list management", ->
 
-    before (done) ->
-        app.listen 8888, "127.0.0.1", ->
-            cleanDB done
+    before (done) -> app.listen 8888, "127.0.0.1", done
+    before cleanDB
 
     after (done) ->
         app.compound.server.close()
         done()
+    after cleanDB
 
     describe "When the database is empty", ->
 
@@ -36,14 +39,9 @@ describe "Doctype list management", ->
 
     describe "When we add 2 documents of one doctype (Alarm) and we request the doctypes list", ->
 
-        before (done) ->
-            cleanDB ->
-                fixtures.load
-                    dirPath: './tests/fixtures/'
-                    doctypeTarget: 'alarm'
-                    silent: true
-                    removeBeforeLoad: false
-                    callback: done
+        before cleanDB
+        before (done) -> fixtures.load doctypeTarget: 'alarm', callback: done
+        after cleanDB
 
         describe "When we request the doctypes list", (done) =>
 
@@ -58,7 +56,7 @@ describe "Doctype list management", ->
                     @body = body
                     done()
 
-            after (done) -> cleanDB done
+            after -> cleanDB
 
             it "The response shouldn't be an error", =>
                 should.not.exist @err
@@ -84,13 +82,9 @@ describe "Doctype list management", ->
     describe "When we add documents of multiple doctypes with the metadoctype information", ->
 
         # load all the fixtures
-        before (done) ->
-            cleanDB ->
-                fixtures.load
-                    dirPath: './tests/fixtures/'
-                    silent: true
-                    callback: done
-        after (done) -> cleanDB done
+        before cleanDB
+        before (done) -> fixtures.load removeBeforeLoad: true, callback: done
+        after cleanDB
 
         describe "When we request the doctypes list", (done) =>
 
@@ -103,7 +97,6 @@ describe "Doctype list management", ->
                     @err = err
                     @res = res
                     @body = body
-                    #console.log body
                     done()
 
             it "The response shouldn't be an error", =>
