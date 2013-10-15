@@ -1236,7 +1236,8 @@ module.exports = SearchView = (function(_super) {
 });
 
 ;require.register("views/templates/doctype", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1291,7 +1292,8 @@ return buf.join("");
 });
 
 ;require.register("views/templates/doctypes", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1303,7 +1305,8 @@ return buf.join("");
 });
 
 ;require.register("views/templates/dt_cddl_list_item", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1317,7 +1320,8 @@ return buf.join("");
 });
 
 ;require.register("views/templates/modal_confirm", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1329,7 +1333,8 @@ return buf.join("");
 });
 
 ;require.register("views/templates/result", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1367,7 +1372,8 @@ return buf.join("");
 });
 
 ;require.register("views/templates/search", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {

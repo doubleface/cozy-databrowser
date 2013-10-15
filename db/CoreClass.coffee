@@ -10,7 +10,6 @@ module.exports = class CoreClass
 
     #------------------ PROTOTYPE CONSTANTS ----------------
     #required dependencies
-    _TRACEBACK = require 'traceback' 
 
     #setted class var
     _ERROR_COUNT = 0   
@@ -23,13 +22,15 @@ module.exports = class CoreClass
         _ERROR_COUNT++
 
         #get stack trace ([0] gives CoreClass, [1] gives extended class)
-        trace = _TRACEBACK()
+        if Error.prepareStackTrace then delete Error.prepareStackTrace
+        trace = require('traceback')()
         if trace.length > 1 
             info = trace[1]
 
         #prepare default values       
-        info = info || {}
-        error = error || 'No information'
+        info = info || {}   
+        errorMsg = error || 'No information'
+                    
         myClass = @constructor.CLASS_NAME || null
         func = info.method || info.name || null
         file = info.path || 'File not found' 
@@ -43,7 +44,7 @@ module.exports = class CoreClass
         console.log '-- File :"' + file + '"'
         console.log '-- Line : "' + line + '", Column : "' + column + '"'
         console.log '******* Error Msg ********'
-        console.log error       
+        console.log errorMsg      
         
 
         #log all traces in stack one by one
