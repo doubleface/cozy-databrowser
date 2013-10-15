@@ -3,9 +3,9 @@
 dataSystem = require './db/dataSystem'
 searchEngine = require('./db/searchEngine')(dataSystem)
 
-#instanciate Noesis helpers
-oObjectHelper = require './noesis-tools/oObjectHelper'
-oArrayHelper = require './noesis-tools/oArrayHelper'
+#instanciate helpers
+oObjectHelper = require './helpers/oObjectHelper'
+oArrayHelper = require './helpers/oArrayHelper'
 
 #add NPM helpers
 async = require 'async'

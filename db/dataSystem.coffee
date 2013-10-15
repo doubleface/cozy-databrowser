@@ -1,4 +1,4 @@
-CoreClass = require './CoreClass'
+CoreClass = require './../helpers/CoreClass'
 
 #********************************************************
 #******************** CLASS DataSystem ******************
@@ -112,10 +112,10 @@ class DataSystem extends CoreClass
         @clientDS.post @PATH.index + id, fields, (error, response, body) =>
 
             if error
-                @_logErrorInConsole error
+                @_logErrorInConsole error, true
 
             else if response.statusCode isnt 200
-                @_logErrorInConsole new Error(body)
+                @_logErrorInConsole new Error(body), true
 
     deleteById: (id, callback) ->
         @deleteData @PATH.data + id + '/', callback
