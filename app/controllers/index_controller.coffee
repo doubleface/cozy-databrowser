@@ -3,9 +3,9 @@
 dataSystem = require './db/dataSystem'
 searchEngine = require('./db/searchEngine')(dataSystem)
 
-#instanciate Noesis helpers
-oObjectHelper = require './noesis-tools/oObjectHelper'
-oArrayHelper = require './noesis-tools/oArrayHelper'
+#instanciate helpers
+oObjectHelper = require './helpers/oObjectHelper'
+oArrayHelper = require './helpers/oArrayHelper'
 
 #add NPM helpers
 async = require 'async'
@@ -17,8 +17,8 @@ async = require 'async'
 action 'doctypes', ->
 
     #------INDEX SEVERAL ID FOR TEST
-    dataSystem.indexId "39bade34f76d6b32234c3974c8004ca9", ["description"]
-    dataSystem.indexId "39bade34f76d6b32234c3974c80059f0", ["description"]
+    #dataSystem.indexId "39bade34f76d6b32234c3974c8004ca9", ["description"]
+    #dataSystem.indexId "39bade34f76d6b32234c3974c80059f0", ["description"]
       
 
     #------PREPARE REQUESTS

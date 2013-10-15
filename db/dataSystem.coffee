@@ -1,4 +1,4 @@
-CoreClass = require './CoreClass'
+CoreClass = require './../helpers/CoreClass'
 
 #********************************************************
 #******************** CLASS DataSystem ******************
