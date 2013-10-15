@@ -37,7 +37,7 @@ describe "Doctype list management", ->
                 body.length.should.equal 0
                 done()
 
-    describe "When we add 2 documents of one doctype (Alarm) and we request the doctypes list", ->
+    describe "When we add 2 documents of one doctype (Alarm)", ->
 
         before cleanDB
         before (done) -> fixtures.load doctypeTarget: 'alarm', callback: done
@@ -55,8 +55,6 @@ describe "Doctype list management", ->
                     @res = res
                     @body = body
                     done()
-
-            after -> cleanDB
 
             it "The response shouldn't be an error", =>
                 should.not.exist @err
@@ -83,7 +81,7 @@ describe "Doctype list management", ->
 
         # load all the fixtures
         before cleanDB
-        before (done) -> fixtures.load removeBeforeLoad: true, callback: done
+        before (done) -> fixtures.load callback: done
         after cleanDB
 
         describe "When we request the doctypes list", (done) =>
