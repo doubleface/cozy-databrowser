@@ -17,8 +17,8 @@ async = require 'async'
 action 'doctypes', ->
 
     #------INDEX SEVERAL ID FOR TEST
-    dataSystem.indexId "39bade34f76d6b32234c3974c8004ca9", ["description"]
-    dataSystem.indexId "39bade34f76d6b32234c3974c80059f0", ["description"]
+    #dataSystem.indexId "39bade34f76d6b32234c3974c8004ca9", ["description"]
+    #dataSystem.indexId "39bade34f76d6b32234c3974c80059f0", ["description"]
       
 
     #------PREPARE REQUESTS
