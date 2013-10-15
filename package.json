@@ -24,7 +24,7 @@
     "jugglingdb-cozy-adapter": "0.3.1",
     "async": "~0.2.9",
     "request-json": ">= 0",
-    "traceback" : "0.3.0"
+    "traceback" : ">=0.3.0"
   },
   "devDependencies": {
     "should": "= 2.0.1",

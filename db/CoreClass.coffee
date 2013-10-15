@@ -37,7 +37,7 @@ module.exports = class CoreClass
         column = info.col || 'Unknown' 
 
         #log error in console
-        console.log '---------ERROR n°' + _errCount + '--------'
+        console.log '---------ERROR n°' + _ERROR_COUNT + '--------'
         if myClass? then console.log '-- Running Class : "' + myClass + '"'
         if func? then console.log '-- Running Property : "' + func + '"'             
         console.log '-- File :"' + file + '"'
