@@ -19,7 +19,7 @@ action 'doctypes', ->
     #------INDEX SEVERAL ID FOR TEST
     #dataSystem.indexId "39bade34f76d6b32234c3974c8004ca9", ["description"]
     #dataSystem.indexId "39bade34f76d6b32234c3974c80059f0", ["description"]
-      
+
 
     #------PREPARE REQUESTS
     requests = []
@@ -71,11 +71,15 @@ action 'doctypes', ->
                     if sum.key?.toLowerCase() is doctypeName
                         agregate['sum'] = sum.value
 
-                #add permissions                
+                #add permissions
+                #console.log permissionsByDoctype
                 for permissions in permissionsByDoctype
                     #ensure permissions keys are in lowercase
-                    permissions = oObjectHelper.setKeysToLowerCase permissions
-                    if permissions.value? and permissions.value[doctypeName]?
+                    permissionKeys = Object.keys permissions.value
+                    permissionKeys = permissionKeys.map (single) ->
+                        return single.toLowerCase()
+
+                    if doctypeName in permissionKeys
                         agregate['app'].push permissions.key
 
                 doctypeList.push agregate
@@ -128,12 +132,12 @@ action 'search', ->
                         bError = false
                         for dtUnreg in unregistered
 
-                            if not oArrayHelper.isInArray dtUnreg, registered  
-                                errorMsg = dataSystem.ERR_MSG.unknownDoctype                        
+                            if not oArrayHelper.isInArray dtUnreg, registered
+                                errorMsg = dataSystem.ERR_MSG.unknownDoctype
                                 res.send {'no_result': errorMsg}
                                 bError = true
                                 break
-                          
+
                         if not bError
 
                             #prepare request 'all' for each doctypes
@@ -163,7 +167,7 @@ action 'delete', ->
         dataSystem.deleteById req.params.id, (error) ->
             if error
                 console.log error
-                res.send 500, dataSystem.ERR_MSG.removeData 
+                res.send 500, dataSystem.ERR_MSG.removeData
             else
                 res.send req.query.id
     else

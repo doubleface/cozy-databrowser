@@ -104,12 +104,13 @@ describe "Doctype list management", ->
                 @res.statusCode.should.equal 200
                 should.exist @body
 
-            it "And should have 3 doctypes: metadoctype, alarm and contact", =>
-                @body.length.should.equal 3
+            it "And should have 4 doctypes: metadoctype, application, alarm and contact", =>
+                @body.length.should.equal 4
                 @alarm = null
                 @metadoctype = null
                 @contact = null
-                expectedDoctypes = ['alarm', 'metadoctype', 'contact']
+                @application = null
+                expectedDoctypes = ['alarm', 'metadoctype', 'contact', 'application']
                 for doctypeInfo in @body
                     if doctypeInfo.name is 'alarm'
                         @alarm = doctypeInfo
@@ -117,22 +118,50 @@ describe "Doctype list management", ->
                         @metadoctype = doctypeInfo
                     else if doctypeInfo.name is 'contact'
                         @contact = doctypeInfo
+                    else if doctypeInfo.name is 'application'
+                        @application = doctypeInfo
                     else
                         expectedDoctypes.should.contain doctypeInfo.name
 
                 should.exist @alarm
                 should.exist @metadoctype
                 should.exist @contact
+                should.exist @application
 
-            it "And alarm should have its meta information", =>
-                @alarm.should.have.properties ['name', 'sum', 'app', 'metadoctype']
+            it "And alarm should be well formed", =>
+                @alarm.should.have.properties ['name', 'sum', 'app']
+
+            it "And alarm should have have its meta information", =>
+                @alarm.should.have.property 'metadoctype'
                 @alarm.metadoctype.should.have.properties ['related', 'displayName', 'identificationField', 'fields']
                 @alarm.metadoctype.related.should.equal 'Alarm'
                 @alarm.metadoctype.displayName.should.equal 'Alarme'
                 @alarm.metadoctype.identificationField.should.equal 'description'
 
+            it "And alarm should have the application 'photos' in its app list", =>
+                @alarm.should.have.property 'app'
+                @alarm.app.should.have.lengthOf 1
+                @alarm.app[0].should.equal 'photos'
+
+            it "And contact should be well formed", =>
+                @contact.should.have.properties ['name', 'sum', 'app']
+
+            it "And contact should have the application 'photos' in its apps list", =>
+                @contact.should.have.property 'app'
+                @contact.app.should.have.lengthOf 1
+                @contact.app[0].should.equal 'photos'
+
             it "And contact shouldn't have its meta information", =>
                 @contact.should.not.have.property 'metadoctype'
 
+            it "And metadoctype should be well formed", =>
+                @metadoctype.should.have.properties ['name', 'sum', 'app']
+
             it "And metadoctype shouldn't have its meta information", =>
                 @metadoctype.should.not.have.property 'metadoctype'
+
+            it "And application should be well formed", =>
+                @application.should.have.properties ['name', 'sum', 'app']
+
+            it "And application shouldn't have its meta information", =>
+                @application.should.not.have.property 'metadoctype'
