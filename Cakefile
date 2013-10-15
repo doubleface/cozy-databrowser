@@ -1,5 +1,6 @@
 fs     = require 'fs'
 {exec} = require 'child_process'
+util   = require 'util'
 
 option '-f' , '--file [FILE*]' , 'test file to run'
 option ''   , '--dir [DIR*]'   , 'directory where to grab test files'
@@ -15,7 +16,7 @@ options =  # defaults, will be overwritten by command line options
 
 
 # Grab test files of a directory
-walk = (dir, fileList) ->
+walk = (dir, fileList, excludeDirectories = []) ->
     list = fs.readdirSync(dir)
     if list
         for file in list
@@ -41,18 +42,12 @@ task 'tests', 'run server tests, ./test is parsed by default, otherwise use -f o
         testFiles = walk("tests", [])
     runTests testFiles
 
-task 'tests:client', 'run client tests through mocha', (opts) ->
-    options     = opts
-    uiTestFiles = walk("client/test", [])
-    runTests uiTestFiles
-
-
 runTests = (fileList) ->
     if options['verbose']
         env = 'NODE_ENV=development'
     else
         env = 'NODE_ENV=test'
-    command = "#{env} mocha " + fileList.join(" ") + " "
+    command = "#{env} ./node_modules/mocha/bin/mocha " + fileList.join(" ") + " "
     if options['debug-brk']
         command += "--debug-brk --forward-io --profile "
     if options.debug
@@ -63,19 +58,16 @@ runTests = (fileList) ->
             console.log "Running mocha caught exception: \n" + err
         console.log stdout
 
+task "lint", "Run coffeelint on source files", ->
 
-task "xunit", "", ->
-    process.env.TZ = "Europe/Paris"
-    command = "mocha "
-    command += " --require should --compilers coffee:coffee-script -R xunit > xunit.xml"
-    exec command, (err, stdout, stderr) ->
-        console.log stdout
+    # if installed globally, output will be colored
+    testCommand = "coffeelint -v"
+    exec testCommand, (err, stdout, stderr) ->
+        if err or stderr
+            command = "./node_modules/coffeelint/bin/coffeelint"
+        else
+            command = "coffeelint"
 
-
-task "xunit:client", "", ->
-    process.env.TZ = "Europe/Paris"
-    command = "mocha client/test/*"
-    command += " --require should --compilers coffee:coffee-script -R xunit > xunitclient.xml"
-    exec command, (err, stdout, stderr) ->
-        console.log stdout
-
+        command += " -f coffeelint.json -r app db config helpers"
+        exec command, (err, stdout, stderr) ->
+            console.log stdout
