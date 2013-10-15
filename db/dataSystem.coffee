@@ -58,28 +58,28 @@ class DataSystem extends CoreClass
             @clientDS.setBasicAuth username, password
 
     #-------------- OBJECT METHODS ----------------------
-    prepareDballRequests: (patterns = []) ->
+    prepareDballRequests: (doctypes = []) ->
         setupRequestsAll = []        
 
         #prepare parameters
-        for pattern, index in patterns            
+        for doctypeName, index in doctypes            
                
             #prepare request (as a closure)
-            ((pattern)=>
+            ((doctypeName)=>
                 setupRequestsAll.push (callback) => 
-                    soberPattern = pattern.toLowerCase()
-                    path = @PATH.request + soberPattern  + @PATH.all              
+                    doctypeName = doctypeName.toLowerCase()
+                    path = @PATH.request + doctypeName  + @PATH.all              
                     viewFunctions =
                         map: (doc) ->
                             if doc.docType?
                                 if doc.docType.toLowerCase() is '__pattern__'
-                                    emit doc._id, doc
-                    @manageRequest callback, path, viewFunctions, soberPattern
+                                    emit doc._id, doc                                
+                    @manageRequest path, viewFunctions, callback, doctypeName
 
-            )(pattern)
+            )(doctypeName)
         return setupRequestsAll
 
-    manageRequest: (callback, path, viewFunctions =  {}, pattern = '') ->
+    manageRequest: (path, viewFunctions, callback, pattern = '') ->
         
         # convert map/reduce to string and replace optional pattern
         for key, func of viewFunctions
@@ -151,7 +151,7 @@ class DataSystem extends CoreClass
 
             else
                 if not body.length?
-                    body = @formatBody(body)
+                    body = @formatBody body
 
                 callback false, body
 

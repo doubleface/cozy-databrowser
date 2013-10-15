@@ -5,6 +5,7 @@ searchEngine = require('./db/searchEngine')(dataSystem)
 
 #instanciate Noesis helpers
 oObjectHelper = require './noesis-tools/oObjectHelper'
+oArrayHelper = require './noesis-tools/oArrayHelper'
 
 #add NPM helpers
 async = require 'async'
@@ -73,7 +74,7 @@ action 'doctypes', ->
                 #add permissions                
                 for permissions in permissionsByDoctype
                     #ensure permissions keys are in lowercase
-                    permissions = oObjectHelper.convertIndexesToLowerCase permissions
+                    permissions = oObjectHelper.setKeysToLowerCase permissions
                     if permissions.value? and permissions.value[doctypeName]?
                         agregate['app'].push permissions.key
 
@@ -85,9 +86,11 @@ action 'doctypes', ->
 action 'search', ->
     if req.query?
 
-        tabDoctypes = req.query.doctype || null
+        doctypes = req.query.doctype || null
+        range = req.query.range || null
+        deleted = req.query.deleted || null
 
-        if tabDoctypes? and req.query.range? and req.query.page? and req.query.nbperpage?
+        if doctypes? and range? and req.query.page? and req.query.nbperpage?
 
             #----PEPARE PARAMS
             pageParams = {}
@@ -97,7 +100,7 @@ action 'search', ->
             nbPerPage = parseInt(req.query.nbperpage, 10)
 
             #skip & limit + deleted lines params
-            nbDeleted = if req.query.deleted? then parseInt(req.query.deleted, 10) else 0
+            nbDeleted = if deleted? then parseInt(deleted, 10) else 0
             pageParams['limit'] = nbPerPage
             if page > 1
                 pageParams['skip'] = (nbPerPage * (page - 1)) - nbDeleted
@@ -106,48 +109,35 @@ action 'search', ->
             if req.query.query? and req.query.query isnt ""
                 pageParams['query'] = req.query.query
 
-
-            #prepare multiple page process
-            # newKey = req.query.doctype.join('_')
-            # if not dataSystem.pageCountMatrix[newKey]?
-            #     dataSystem.pageCountMatrix[newKey] = []
-
-
             #----VERIFY DOCTYPE 'ALL' REQUESTS
-            tabUnregistered = []
-            for dt in tabDoctypes
+            unregistered = []
+            for dt in doctypes
                 if not dataSystem.registeredPatterns[dt.toLowerCase()]?
-                    tabUnregistered.push dt.toLowerCase()
+                    unregistered.push dt.toLowerCase()
 
-            if tabUnregistered.length > 0
+            if unregistered.length > 0
 
                 #verify if doctype exist
-                requests = []
-                requests.push (callback) -> #0 -> doctypes
-                    dataSystem.getDoctypes(callback)
-                async.parallel requests, (error, results) ->
+                dataSystem.getDoctypes (error, registered) ->
                     if error
                         res.send {'no_result' : dataSystem.ERR_MSG.retrieveData}
                         console.log error
                     else
 
-                        #compare submitted doctype and existing doctype for more security
+                        #compare given doctype and existing doctype for security
                         bError = false
-                        tabRegisteredDoctypes = results[0]
-                        for dtUnreg in tabUnregistered
-                            bUnknowDoctype = true
-                            for dtReg, index in tabRegisteredDoctypes
-                                if not bError
-                                    if dtUnreg.toLowerCase() is dtReg.toLowerCase()
-                                        bUnknowDoctype = false
-                                    if bUnknowDoctype and index is tabRegisteredDoctypes.length-1
-                                        res.send {'no_result': dataSystem.ERR_MSG.unknownDoctype}
-                                        bError = true
+                        for dtUnreg in unregistered
 
-
+                            if not oArrayHelper.isInArray dtUnreg, registered  
+                                errorMsg = dataSystem.ERR_MSG.unknownDoctype                        
+                                res.send {'no_result': errorMsg}
+                                bError = true
+                                break
+                          
                         if not bError
+
                             #prepare request 'all' for each doctypes
-                            setupRequestsAll = dataSystem.prepareDballRequests(tabUnregistered)
+                            setupRequestsAll = dataSystem.prepareDballRequests(unregistered)
 
                             #agregate callbacks
                             if setupRequestsAll.length > 0
@@ -156,12 +146,12 @@ action 'search', ->
                                         console.log error
                                         res.send {'no_result' : dataSystem.ERR_MSG.retrieveData}
                                     else
-                                        searchEngine.doBasicSearch(res, tabDoctypes, pageParams)
+                                        searchEngine.doBasicSearch(res, doctypes, pageParams)
                             else
                                 res.send {'no_result' : dataSystem.ERR_MSG.retrieveData }
 
             else
-                searchEngine.doBasicSearch(res, tabDoctypes, pageParams)
+                searchEngine.doBasicSearch(res, doctypes, pageParams)
 
 
         else

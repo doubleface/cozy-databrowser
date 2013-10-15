@@ -1,10 +1,9 @@
-module.exports = {
-	convertIndexesToLowerCase: (obj) ->
+module.exports = 
+	setKeysToLowerCase: (obj) ->
 		newObj = {}
-		for index, subElt of obj		
+		for key, subElt of obj		
 			if typeof subElt is 'object'
-				newObj[index.toLowerCase()] = this.convertIndexesToLowerCase(subElt)
+				newObj[key.toLowerCase()] = this.setKeysToLowerCase(subElt)
 			else 
-				newObj[index.toLowerCase()] = subElt
+				newObj[key.toLowerCase()] = subElt
 		return newObj
-}

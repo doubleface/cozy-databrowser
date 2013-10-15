@@ -15,7 +15,9 @@ module.exports = class CoreClass
     #setted class var
     _ERROR_COUNT = 0   
     
-    #----METHODS 
+    #----------------- OBJECT PARAMETERS ---------------
+    
+    #------------------ OBJECT METHODS -----------------
     _logErrorInConsole: (error, allStack = false) ->
 
         _ERROR_COUNT++
