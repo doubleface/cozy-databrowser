@@ -20,8 +20,12 @@ helpers.startApp = (done) ->
             done()
 
 helpers.stopApp = (done) ->
-    @app.server.close done
-
+    @app.server.close ->
+        # those instances are shared and require cache must be cleaned so
+        # we can isolate tests cases
+        delete require.cache[require.resolve('../server/db/dataSystem')]
+        delete require.cache[require.resolve('../server/db/searchEngine')]
+        done()
 
 # database helper
 helpers.cleanDB = (done) -> fixtures.resetDatabase callback: done
