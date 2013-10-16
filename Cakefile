@@ -14,19 +14,18 @@ options =  # defaults, will be overwritten by command line options
     debug       : no
     'debug-brk' : no
 
-
 # Grab test files of a directory
-walk = (dir, fileList, excludeDirectories = []) ->
-    list = fs.readdirSync(dir)
+walk = (dir, fileList, excludeElements = []) ->
+    list = fs.readdirSync dir
     if list
         for file in list
-            if file
-                filename = dir + '/' + file
-                stat = fs.statSync(filename)
+            if file and file not in excludeElements
+                filename = "#{dir}/#{file}"
+                stat = fs.statSync filename
                 if stat and stat.isDirectory()
-                    walk(filename, fileList)
-                else if filename.substr(-6) == "coffee"
-                    fileList.push(filename)
+                    walk filename, fileList, excludeElements
+                else if filename.substr(-6) is "coffee"
+                    fileList.push filename
     return fileList
 
 
@@ -35,11 +34,11 @@ task 'tests', 'run server tests, ./test is parsed by default, otherwise use -f o
     testFiles = []
     if options.dir
         dirList   = options.dir
-        testFiles = walk(dir, testFiles) for dir in dirList
+        testFiles = walk dir, testFiles for dir in dirList
     if options.file
-        testFiles  = testFiles.concat(options.file)
-    if not(options.dir or options.file)
-        testFiles = walk("tests", [])
+        testFiles  = testFiles.concat options.file
+    if not (options.dir or options.file)
+        testFiles = walk "tests", []
     runTests testFiles
 
 runTests = (fileList) ->
@@ -59,6 +58,8 @@ runTests = (fileList) ->
         console.log stdout
 
 task "lint", "Run coffeelint on source files", ->
+    lintFiles = []
+    walk '.', lintFiles, ['node_modules', 'tests']
 
     # if installed globally, output will be colored
     testCommand = "coffeelint -v"
@@ -68,6 +69,6 @@ task "lint", "Run coffeelint on source files", ->
         else
             command = "coffeelint"
 
-        command += " -f coffeelint.json -r server client/app"
+        command += " -f coffeelint.json -r " + lintFiles.join " "
         exec command, (err, stdout, stderr) ->
             console.log stdout
