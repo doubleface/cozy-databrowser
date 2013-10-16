@@ -45,7 +45,7 @@ describe "Doctype list management", ->
             @body = null
 
             before (done) =>
-               client.get 'doctypes', (err, res, body) =>
+                client.get 'doctypes', (err, res, body) =>
                     @err = err
                     @res = res
                     @body = body
@@ -86,7 +86,7 @@ describe "Doctype list management", ->
             @body = null
 
             before (done) =>
-               client.get 'doctypes', (err, res, body) =>
+                client.get 'doctypes', (err, res, body) =>
                     @err = err
                     @res = res
                     @body = body
