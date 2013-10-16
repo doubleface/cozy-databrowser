@@ -40,13 +40,13 @@ class DataSystem extends CoreClass
         retrieveData : 'Error : Server error occurred while retrieving data.'
         removeData : 'Error : Server error occurred while trying to remove data.'
         unknownDoctype : 'Error : You try to access to an unknown doctype.'
-        unknownParamaters : 'Error : Unknown research parameters'        
+        unknownParamaters : 'Error : Unknown research parameters'
         unknownId : 'Error : Document ID parameter not found.'
 
 
     #----------------- OBJECT PARAMETERS ---------------
-    constructor: ->       
-        
+    constructor: ->
+
         #------ SETTED
         @clientDS = new @JSON_CLIENT @DS_URL +  ':'  + @DS_PORT
         @registeredPatterns = {}
@@ -60,36 +60,35 @@ class DataSystem extends CoreClass
 
     #-------------- OBJECT METHODS ----------------------
     prepareDballRequests: (doctypes = []) ->
-        setupRequestsAll = []        
+        setupRequestsAll = []
 
         #prepare parameters
-        for doctypeName, index in doctypes            
-               
+        for doctypeName, index in doctypes
+
             #prepare request (as a closure)
             ((doctypeName)=>
-                setupRequestsAll.push (callback) => 
+                setupRequestsAll.push (callback) =>
                     doctypeName = doctypeName.toLowerCase()
-                    path = @PATH.request + doctypeName  + @PATH.all              
+                    path = @PATH.request + doctypeName  + @PATH.all
                     viewFunctions =
                         map: (doc) ->
                             if doc.docType?
                                 if doc.docType.toLowerCase() is '__pattern__'
-                                    emit doc._id, doc                                
+                                    emit doc._id, doc
                     @manageRequest path, viewFunctions, callback, doctypeName
 
             )(doctypeName)
         return setupRequestsAll
 
     manageRequest: (path, viewFunctions, callback, pattern = '') ->
-        
+
         # convert map/reduce to string and replace optional pattern
         for key, func of viewFunctions
             funcAsString = func.toString()
             if pattern isnt ''
                 viewFunctions[key] = funcAsString.replace '__pattern__', pattern
             else
-                viewFunctions[key] = funcAsString 
-        console.log(path)
+                viewFunctions[key] = funcAsString
 
         #create request
         @clientDS.put path, viewFunctions, (error, response, body) =>
@@ -190,7 +189,7 @@ class DataSystem extends CoreClass
                 console.log error
             else
 
-                #compare given doctype and existing doctype for security                
+                #compare given doctype and existing doctype for security
                 for unregistered in doctypes
                     if not @ARRAY_HELPER.isInArray unregistered, registered
                         bError = true

@@ -22,16 +22,6 @@ describe "Search management", ->
     after helpers.stopApp
     after helpers.cleanDB
 
-    describe "When the database is empty", ->
-
-        it "doctypes list should be empty", (done) ->
-            client.get 'doctypes', (err, res, body) ->
-                should.exist res
-                res.should.have.property 'statusCode'
-                res.statusCode.should.equal 200
-                body.length.should.equal 0
-                done()
-
     describe "When we add 2 documents of one doctype (Alarm)", ->
 
         before helpers.cleanDB
@@ -39,7 +29,7 @@ describe "Search management", ->
         before (done) -> fixtures.load doctypeTarget: 'metadoctype', callback: done
         after helpers.cleanDB
 
-        describe "When dataSystem and searchEngine are created'", (done) =>
+        describe "When dataSystem and searchEngine are created'", =>
             before (done) =>
                 @dataSystem = require './../server/db/dataSystem'
                 @searchEngine = require('./../server/db/searchEngine')(@dataSystem)
@@ -48,7 +38,7 @@ describe "Search management", ->
             it "The alarm 'dball' request shouldn't be registered", =>
                 should.not.exist @dataSystem.registeredPatterns['alarm']
 
-            describe "When prepare the 'all' request on doctype 'alarm'", (done) =>  
+            describe "When prepare the 'all' request on doctype 'alarm'", =>  
                 before (done) =>    
                     @doctypes = ['alarm']                
                     @isAlarmValid = false
@@ -67,15 +57,15 @@ describe "Search management", ->
                 it "A dball request should be ready for 'alarm'", =>
                     @isDballRequestReady.should.be.true
 
-            describe "When create the dball request for alarm", (done) =>
+            describe "When create the dball request for alarm", =>
                 before (done) =>
-                    @dball[0] (error, body)->
+                    @dball[0] (error, body) =>
                         done()     
                 
                 it "The dball request on 'alarm' must be now registered", =>
                     should.exist @dataSystem.registeredPatterns['alarm']  
 
-            describe "When we request 'all' on alarm", (done) =>
+            describe "When we request 'all' on alarm", ->
                 before (done) =>
                     client.post "request/alarm/dball/", {}, (err, res, body) =>
                         @err = err
@@ -83,9 +73,9 @@ describe "Search management", ->
                         @body = body
                         done()
 
-                # it "The response shouldn't be an error", =>
-                #     should.not.exist @err
-                #     should.exist @res
-                #     @res.should.have.property 'statusCode'
-                #     @res.statusCode.should.equal 200
-                #     should.exist @body
+                it "The response shouldn't be an error", =>
+                    should.not.exist @err
+                    should.exist @res
+                    @res.should.have.property 'statusCode'
+                    @res.statusCode.should.equal 200
+                    should.exist @body
