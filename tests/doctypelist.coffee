@@ -16,8 +16,8 @@ fixtures.setDefaultValues
 
 describe "Doctype list management", ->
 
-    before helpers.startApp
     before helpers.cleanDB
+    before helpers.startApp    
 
     after helpers.stopApp
     after helpers.cleanDB

@@ -89,6 +89,7 @@ class DataSystem extends CoreClass
                 viewFunctions[key] = funcAsString.replace '__pattern__', pattern
             else
                 viewFunctions[key] = funcAsString 
+        console.log(path)
 
         #create request
         @clientDS.put path, viewFunctions, (error, response, body) =>
