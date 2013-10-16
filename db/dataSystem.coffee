@@ -12,7 +12,8 @@ class DataSystem extends CoreClass
 
     #------------------ PROTOTYPE CONSTANTS ----------------
     #required dependencies
-    JSON_CLIENT = require('request-json').JsonClient
+    JSON_CLIENT: require('request-json').JsonClient
+    ARRAY_HELPER: require './../helpers/oArrayHelper'
 
     #general pathes
     DS_URL: "http://127.0.0.1"
@@ -47,7 +48,7 @@ class DataSystem extends CoreClass
     constructor: ->       
         
         #------ SETTED
-        @clientDS = new JSON_CLIENT @DS_URL +  ':'  + @DS_PORT
+        @clientDS = new @JSON_CLIENT @DS_URL +  ':'  + @DS_PORT
         @registeredPatterns = {}
 
         #------ SUB-PROCESS
@@ -177,6 +178,27 @@ class DataSystem extends CoreClass
                 formattedBody.push formattedRow
 
         return formattedBody
+
+    areValidDoctypes: (doctypes, callback = null) ->
+        @getDoctypes (error, registered) =>
+            errorMsg = null
+            areValid = true
+            bError = false
+            if error
+                errorMsg = @ERR_MSG.retrieveData
+                console.log error
+            else
+
+                #compare given doctype and existing doctype for security                
+                for unregistered in doctypes
+                    if not @ARRAY_HELPER.isInArray unregistered, registered
+                        bError = true
+                        errorMsg = @ERR_MSG.unknownDoctype
+                        break
+
+            areValid = not bError
+            if callback? then callback areValid, errorMsg
+
 #********************************************************
 
 module.exports = new DataSystem()

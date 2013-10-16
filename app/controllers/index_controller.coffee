@@ -3,10 +3,6 @@
 dataSystem = require './db/dataSystem'
 searchEngine = require('./db/searchEngine')(dataSystem)
 
-#instanciate helpers
-oObjectHelper = require './helpers/oObjectHelper'
-oArrayHelper = require './helpers/oArrayHelper'
-
 #add NPM helpers
 async = require 'async'
 #-------------------- END REQUIRE ------------------
@@ -122,37 +118,23 @@ action 'search', ->
             if unregistered.length > 0
 
                 #verify if doctype exist
-                dataSystem.getDoctypes (error, registered) ->
-                    if error
-                        res.send {'no_result' : dataSystem.ERR_MSG.retrieveData}
-                        console.log error
-                    else
+                dataSystem.areValidDoctypes unregistered, (areValid, errorMsg) ->
+                    if not areValid or errorMsg?   
+                        res.send {'no_result' : errorMsg }                    
+                    else 
+                         #prepare request 'all' for each doctypes
+                        setupRequestsAll = dataSystem.prepareDballRequests(unregistered)
 
-                        #compare given doctype and existing doctype for security
-                        bError = false
-                        for dtUnreg in unregistered
-
-                            if not oArrayHelper.isInArray dtUnreg, registered
-                                errorMsg = dataSystem.ERR_MSG.unknownDoctype
-                                res.send {'no_result': errorMsg}
-                                bError = true
-                                break
-
-                        if not bError
-
-                            #prepare request 'all' for each doctypes
-                            setupRequestsAll = dataSystem.prepareDballRequests(unregistered)
-
-                            #agregate callbacks
-                            if setupRequestsAll.length > 0
-                                async.parallel setupRequestsAll, (error, results) ->
-                                    if error
-                                        console.log error
-                                        res.send {'no_result' : dataSystem.ERR_MSG.retrieveData}
-                                    else
-                                        searchEngine.doBasicSearch(res, doctypes, pageParams)
-                            else
-                                res.send {'no_result' : dataSystem.ERR_MSG.retrieveData }
+                        #agregate callbacks
+                        if setupRequestsAll.length > 0
+                            async.parallel setupRequestsAll, (error, results) ->
+                                if error
+                                    console.log error
+                                    res.send {'no_result' : dataSystem.ERR_MSG.retrieveData}
+                                else
+                                    searchEngine.doBasicSearch(res, doctypes, pageParams)
+                        else
+                            res.send {'no_result' : dataSystem.ERR_MSG.retrieveData }
 
             else
                 searchEngine.doBasicSearch(res, doctypes, pageParams)

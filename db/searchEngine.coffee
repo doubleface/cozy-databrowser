@@ -35,7 +35,7 @@ class SearchEngine extends CoreClass
                     searchPath = @ds.PATH.search + doctypeName
                     @ds.getView callback, searchPath, pageParams
 
-                else
+                else                    
                     requestPath = @ds.PATH.request + doctypeName
                     @ds.getView callback, requestPath + @ds.PATH.all, pageParams
                 #reqCount++
