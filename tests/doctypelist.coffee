@@ -7,7 +7,7 @@ helpers = require './helpers'
 helpers.options =
     serverHost: 'localhost'
     serverPort: '8888'
-client = new Client "http://localhost:8888/"
+client = new Client "http://#{helpers.options.serverHost}:#{helpers.options.serverPort}/"
 
 fixtures.setDefaultValues
     dirPath: path.resolve __dirname, './fixtures/'
