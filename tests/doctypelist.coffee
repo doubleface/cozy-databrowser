@@ -1,31 +1,26 @@
 Client = require('request-json').JsonClient
 should = require 'should'
-app = require '../server'
 fixtures = require 'cozy-fixtures'
 path = require 'path'
 
-client = new Client "http://localhost:8888/"
-
-instantiateApp = require '../server'
-app = instantiateApp()
+helpers = require './helpers'
+helpers.options =
+    serverHost: 'localhost'
+    serverPort: '8888'
+client = new Client "http://#{helpers.options.serverHost}:#{helpers.options.serverPort}/"
 
 fixtures.setDefaultValues
     dirPath: path.resolve __dirname, './fixtures/'
     silent: true
     removeBeforeLoad: false # useless because we clean the DB before tests
 
-# clean all the data in database
-cleanDB = (done) -> fixtures.resetDatabase callback: done
-
 describe "Doctype list management", ->
 
-    before (done) -> app.listen 8888, "127.0.0.1", done
-    before cleanDB
+    before helpers.startApp
+    before helpers.cleanDB
 
-    after (done) ->
-        app.compound.server.close()
-        done()
-    after cleanDB
+    after helpers.stopApp
+    after helpers.cleanDB
 
     describe "When the database is empty", ->
 
@@ -39,9 +34,9 @@ describe "Doctype list management", ->
 
     describe "When we add 2 documents of one doctype (Alarm)", ->
 
-        before cleanDB
+        before helpers.cleanDB
         before (done) -> fixtures.load doctypeTarget: 'alarm', callback: done
-        after cleanDB
+        after helpers.cleanDB
 
         describe "When we request the doctypes list", (done) =>
 
@@ -50,7 +45,7 @@ describe "Doctype list management", ->
             @body = null
 
             before (done) =>
-               client.get 'doctypes', (err, res, body) =>
+                client.get 'doctypes', (err, res, body) =>
                     @err = err
                     @res = res
                     @body = body
@@ -80,9 +75,9 @@ describe "Doctype list management", ->
     describe "When we add documents of multiple doctypes with the metadoctype information", ->
 
         # load all the fixtures
-        before cleanDB
+        before helpers.cleanDB
         before (done) -> fixtures.load callback: done
-        after cleanDB
+        after helpers.cleanDB
 
         describe "When we request the doctypes list", (done) =>
 
@@ -91,7 +86,7 @@ describe "Doctype list management", ->
             @body = null
 
             before (done) =>
-               client.get 'doctypes', (err, res, body) =>
+                client.get 'doctypes', (err, res, body) =>
                     @err = err
                     @res = res
                     @body = body
