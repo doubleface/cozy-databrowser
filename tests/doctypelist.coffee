@@ -104,13 +104,14 @@ describe "Doctype list management", ->
                 @res.statusCode.should.equal 200
                 should.exist @body
 
-            it "And should have 4 doctypes: metadoctype, application, alarm and contact", =>
+            it "And should have 4 doctypes: metadoctype, application, alarm and contact", =>                
                 @body.length.should.equal 4
                 @alarm = null
                 @metadoctype = null
                 @contact = null
                 @application = null
                 expectedDoctypes = ['alarm', 'metadoctype', 'contact', 'application']
+
                 for doctypeInfo in @body
                     if doctypeInfo.name is 'alarm'
                         @alarm = doctypeInfo
