@@ -1,25 +1,20 @@
-#------------------ BEGIN REQUIRE ------------------
 #instanciate DataBrowser classes (DataSystem, SearchEngine)
-dataSystem = require './db/dataSystem'
-searchEngine = require('./db/searchEngine')(dataSystem)
+dataSystem = require '../db/dataSystem'
+searchEngine = require('../db/searchEngine')(dataSystem)
 
 #instanciate helpers
-oObjectHelper = require './helpers/oObjectHelper'
-oArrayHelper = require './helpers/oArrayHelper'
+oObjectHelper = require '../helpers/oObjectHelper'
+oArrayHelper = require '../helpers/oArrayHelper'
 
 #add NPM helpers
 async = require 'async'
-#-------------------- END REQUIRE ------------------
 
-
-#------------------ BEGIN ACTIONS ------------------
 #doctypes
-action 'doctypes', ->
+module.exports.doctypes = (req, res) ->
 
     #------INDEX SEVERAL ID FOR TEST
     #dataSystem.indexId "39bade34f76d6b32234c3974c8004ca9", ["description"]
     #dataSystem.indexId "39bade34f76d6b32234c3974c80059f0", ["description"]
-
 
     #------PREPARE REQUESTS
     requests = []
@@ -87,7 +82,7 @@ action 'doctypes', ->
             #send json
             res.send doctypeList
 #search
-action 'search', ->
+module.exports.search = (req, res) ->
     if req.query?
 
         doctypes = req.query.doctype || null
@@ -162,14 +157,13 @@ action 'search', ->
             res.send {'no_result' : dataSystem.ERR_MSG.unknownParameters}
 
 #delete
-action 'delete', ->
+module.exports.delete = (req, res) ->
     if req.params.id?
         dataSystem.deleteById req.params.id, (error) ->
             if error
                 console.log error
                 res.send 500, dataSystem.ERR_MSG.removeData
             else
-                res.send req.query.id
+                res.send 204, req.query.id
     else
         res.send 400, dataSystem.ERR_MSG.unknownId
-#-------------------- END ACTIONS ------------------

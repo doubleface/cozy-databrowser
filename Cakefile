@@ -68,6 +68,6 @@ task "lint", "Run coffeelint on source files", ->
         else
             command = "coffeelint"
 
-        command += " -f coffeelint.json -r app db config helpers"
+        command += " -f coffeelint.json -r server"
         exec command, (err, stdout, stderr) ->
             console.log stdout
