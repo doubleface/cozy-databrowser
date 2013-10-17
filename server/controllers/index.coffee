@@ -1,6 +1,6 @@
 #instanciate DataBrowser classes (DataSystem, SearchEngine)
-dataSystem = require '../db/dataSystem'
-searchEngine = require('../db/searchEngine')(dataSystem)
+dataSystem = require '../lib/dataSystem'
+searchEngine = require('../lib/searchEngine')(dataSystem)
 
 #add NPM helpers
 async = require 'async'
@@ -19,22 +19,22 @@ module.exports.doctypes = (req, res) ->
 
     requests.push (callback) -> #1 -> get all the metadoctypes
         targetUrl = dataSystem.PATH.metadoctype.getallbyrelated
-        dataSystem.getView callback, targetUrl
+        dataSystem.getView targetUrl, callback
 
     requests.push (callback) -> #2 -> get the numbers of docs per doctype
         targetUrl = dataSystem.PATH.common.getsumsbydoctype
-        dataSystem.getView callback, targetUrl, group: true
+        dataSystem.getView targetUrl, callback, group: true
 
     requests.push (callback) -> #3 -> get the permissions
         targetUrl = dataSystem.PATH.application.getpermissions
-        dataSystem.getView callback, targetUrl
+        dataSystem.getView targetUrl, callback
 
 
     #------AGREGATE CALLBACKS
     async.parallel requests, (error, results) ->
-        if error
+        if error?
             res.send 500, @dataSystem.ERR_MSG.retrieveData
-            console.log error
+
         else
             doctypeList = []
             doctypes = results[0]
@@ -114,16 +114,16 @@ module.exports.search = (req, res) ->
 
                 #verify if doctype exist
                 dataSystem.areValidDoctypes unregistered, (areValid, errorMsg) ->
-                    if not areValid or errorMsg?   
-                        res.send {'no_result' : errorMsg }                    
-                    else 
+                    if not areValid or errorMsg?
+                        res.send {'no_result' : errorMsg }
+                    else
                          #prepare request 'all' for each doctypes
                         setupRequestsAll = dataSystem.prepareDballRequests(unregistered)
 
                         #agregate callbacks
                         if setupRequestsAll.length > 0
                             async.parallel setupRequestsAll, (error, results) ->
-                                if error
+                                if error?
                                     console.log error
                                     res.send {'no_result' : dataSystem.ERR_MSG.retrieveData}
                                 else
@@ -142,8 +142,7 @@ module.exports.search = (req, res) ->
 module.exports.delete = (req, res) ->
     if req.params.id?
         dataSystem.deleteById req.params.id, (error) ->
-            if error
-                console.log error
+            if error?
                 res.send 500, dataSystem.ERR_MSG.removeData
             else
                 res.send 204, req.query.id

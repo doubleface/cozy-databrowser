@@ -23,8 +23,8 @@ helpers.stopApp = (done) ->
     @app.server.close ->
         # those instances are shared and require cache must be cleaned so
         # we can isolate tests cases
-        delete require.cache[require.resolve('../server/db/dataSystem')]
-        delete require.cache[require.resolve('../server/db/searchEngine')]
+        delete require.cache[require.resolve('../server/lib/dataSystem')]
+        delete require.cache[require.resolve('../server/lib/searchEngine')]
         done()
 
 # database helper

@@ -1,6 +1,6 @@
 Client = require('request-json').JsonClient
 should = require 'should'
-fixtures = require '../../cozy-fixtures/main'
+fixtures = require 'cozy-fixtures/main'
 path = require 'path'
 
 helpers = require './helpers'
@@ -34,7 +34,7 @@ describe "App initialization", ->
     describe "When fixtures for 4 doctypes are added", ->
 
         before (done) -> fixtures.load callback: done
-        after helpers.cleanDB
+        after helpers.cleanDBWithRequests
 
         describe "When the app starts", ->
 

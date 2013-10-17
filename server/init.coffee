@@ -1,7 +1,7 @@
 module.exports = (initCallback) ->
 
     #----require dependencies
-    dataSystem = require './db/dataSystem'
+    dataSystem = require './lib/dataSystem'
     async = require 'async'
 
     #----prepare view functions
@@ -47,13 +47,14 @@ module.exports = (initCallback) ->
 
     #----agregate callback
     async.parallel setupRequests, (error, results) ->
-        console.log error if error
+        console.log error if error?
 
         dataSystem.getDoctypes (error, results) ->
 
-            if error
+            if error?
                 console.log error
                 initCallback()
+
             else
                 #prepare request 'all' for each doctypes
                 setupRequestsAll = dataSystem.prepareDballRequests results

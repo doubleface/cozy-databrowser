@@ -17,7 +17,7 @@ fixtures.setDefaultValues
 describe "Doctype list management", ->
 
     before helpers.cleanDB
-    before helpers.startApp    
+    before helpers.startApp
 
     after helpers.stopApp
     after helpers.cleanDB
@@ -99,7 +99,7 @@ describe "Doctype list management", ->
                 @res.statusCode.should.equal 200
                 should.exist @body
 
-            it "And should have 4 doctypes: metadoctype, application, alarm and contact", =>                
+            it "And should have 4 doctypes: metadoctype, application, alarm and contact", =>
                 @body.length.should.equal 4
                 @alarm = null
                 @metadoctype = null

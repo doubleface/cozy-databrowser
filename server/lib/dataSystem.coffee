@@ -95,66 +95,66 @@ class DataSystem extends CoreClass
 
             if error
                 @_logErrorInConsole error
-                callback true
+                callback error
 
             else
                 if pattern isnt ''
                     @registeredPatterns[pattern] = true
-                callback false, body
+                callback null, body
 
-    getView: (callback, path, params = {}) ->
-        @postData callback, path, params
+    getView: (path, callback, params = {}) ->
+        @postData path, callback, params
 
     getDoctypes: (callback) ->
-        @getData callback, @PATH.doctypes
+        @getData @PATH.doctypes, callback
 
     indexId: (id, aFields) ->
         fields = {"fields": aFields}
         @clientDS.post @PATH.index + id, fields, (error, response, body) =>
 
             if error
-                @_logErrorInConsole error, true
+                @_logErrorInConsole error
 
             else if response.statusCode isnt 200
-                @_logErrorInConsole new Error(body), true
+                @_logErrorInConsole new Error(body)
 
     deleteById: (id, callback) ->
         @deleteData @PATH.data + id + '/', callback
 
 
-    putData: (callback, path, params = {}) ->
+    putData: (path, callback, params = {}) ->
         @clientDS.put path, params, (error, response, body) =>
 
             if error
                 @_logErrorInConsole error
-                callback true
+                callback error
 
             else
-                callback false, body
+                callback null, body
 
-    getData: (callback, path) ->
+    getData: (path, callback) ->
         @clientDS.get path, (error, response, body) =>
 
             if error
                 @_logErrorInConsole error
-                callback true
+                callback error
 
             else
-                callback false, body
+                callback null, body
 
 
-    postData: (callback, path, params = {}) ->
+    postData: (path, callback, params = {}) ->
         @clientDS.post path, params, (error, response, body) =>
 
             if error
                 @_logErrorInConsole error
-                callback true
+                callback error
 
             else
                 if not body.length?
                     body = @formatBody body
 
-                callback false, body
+                callback null, body
 
     deleteData: (path, callback) ->
         @clientDS.del path, (error, response, body) =>
