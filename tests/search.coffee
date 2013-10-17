@@ -29,7 +29,7 @@ describe "Search management", ->
         before (done) -> fixtures.load doctypeTarget: 'metadoctype', callback: done
         after helpers.cleanDB
 
-        describe "When dataSystem and searchEngine are created'", =>
+        describe "When dataSystem and searchEngine are created'", ->
             before (done) =>
                 @dataSystem = require './../server/lib/dataSystem'
                 @searchEngine = require('./../server/lib/searchEngine')(@dataSystem)
@@ -69,7 +69,8 @@ describe "Search management", ->
 
             describe "When we request 'all' on alarm", =>
                 before (done) =>
-                    @dataSystem.getView "/request/alarm/dball/", (err, body) =>
+                    pathAlarm = @dataSystem.PATH.request + 'alarm' + @dataSystem.PATH.all
+                    @dataSystem.getView pathAlarm, (err, body) =>
                         @errOnAlarm = err
                         @bodyAlarm = body
                         done()
@@ -82,10 +83,56 @@ describe "Search management", ->
                     @bodyAlarm.should.have.lengthOf 2
 
                 it "The response should be well formed", =>
-                    @bodyAlarm[0].should.have.properties ['id', 'key', 'value']
-                    @bodyAlarm[1].should.have.properties ['id', 'key', 'value']
+                    @bodyAlarm[0].should.have.keys('id', 'key', 'value')
+                    @bodyAlarm[1].should.have.keys('id', 'key', 'value')
 
                 it "Each element of the response should be well formed", =>
-                    @bodyAlarm[0].id.should.have.type('string')
-                    @bodyAlarm[0].key.should.have.type('string')
-                    @bodyAlarm[0].value.should.have.type('object')
+                    for alarm in @bodyAlarm
+                        alarm.id.should.have.type('string')
+                        alarm.key.should.have.type('string')
+                        alarm.value.should.have.type('object')
+
+            describe "When we request 'metadoctypes by related'", =>
+                before (done) =>
+                    pathMD = @dataSystem.PATH.metadoctype.getallbyrelated
+                    @dataSystem.getView pathMD, (err, body) =>
+                        @errOnMetadoctype = err
+                        @bodyMetadoctype = body
+                        done()
+
+                it "The response shouldn't be an error", =>
+                    should.not.exist @errOnMetadoctype
+                    should.exist @bodyMetadoctype
+
+                it "The response should contains 1 results", =>
+                    @bodyMetadoctype.should.have.lengthOf 1
+
+                it "The response should be well formed", =>
+                    @bodyMetadoctype[0].should.have.keys('id', 'key', 'value')
+
+                it "Each element of the response should be well formed", =>
+                    @bodyMetadoctype[0].id.should.have.type('string')
+                    @bodyMetadoctype[0].key.should.have.type('string')
+                    @bodyMetadoctype[0].value.should.have.type('object')
+
+                it "The metadoctype must be related to 'Alarm'", =>
+                    @bodyMetadoctype[0].value.related.should.equal('Alarm')
+
+            describe "When we add the metadoctype to alarm", =>
+                before (done) =>
+                    @newFields = @searchEngine.prepareMetadoctypeInfo(@bodyMetadoctype, 'alarm')
+                    for alarm in @bodyAlarm
+                        alarm.value['idField'] = @newFields.idField['alarm']
+                        alarm.value['descField'] = @newFields.descField['alarm']
+                    done()
+
+                it "New idenfication/description fields for 'alarm' should exist", =>
+                    @newFields.idField['alarm'].should.exist
+                    @newFields.descField['alarm'].should.exist
+
+                it "New fields should be well formed", =>
+                    @bodyAlarm[1].value['idField'].should.have.type('string')
+                    @bodyAlarm[1].value['descField'].should.have.type('object')
+
+
+

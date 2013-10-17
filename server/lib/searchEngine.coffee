@@ -19,7 +19,7 @@ class SearchEngine extends CoreClass
         @path = @dataSystem.PATH
 
     #-------------- OBJECT METHODS ----------------------
-    doBasicSearch : (res, tabDoctypes, pageParams) ->
+    doBasicSearch : (res, doctypes, pageParams) ->
             requests = []
             path =
             requests.push (callback) => #0 -> metadoctypes
@@ -30,7 +30,7 @@ class SearchEngine extends CoreClass
             #for dt in req.query.doctype
             requests.push (callback) => #1 to n -> requests
 
-                doctypeName = tabDoctypes[0].toLowerCase()
+                doctypeName = doctypes[0].toLowerCase()
 
                 if pageParams['query']?
                     searchPath = @path.search + doctypeName
@@ -43,39 +43,49 @@ class SearchEngine extends CoreClass
 
 
             ASYNC.parallel requests, (error, results) =>
-                jsonRes = []
+                documents = []
 
                 if error
                     res.send {'no_result' : @dataSystem.ERR_MSG.retrieveData}
                     @_logErrorInConsole error
 
                 else
-                    idField = []
-                    descField = []
 
                     #for dt in req.query.doctype
-                    for md in results[0]
-                        if md.key?
-
-                            doctypeName = tabDoctypes[0].toLowerCase()
-                            identifier = md.value.identificationField || null
-                            key = md.key.toLowerCase() || null
-
-                            if identifier? and key is doctypeName
-                                idField[doctypeName] = identifier
-                                if md.value.fields?
-                                    descField[doctypeName] = md.value.fields
+                    doctypeName = doctypes[0].toLowerCase()
+                    newFields = @prepareMetadoctypeInfo results[0], doctypeName
 
                     #for result, index in results
                         #if index > 0
                     for doc in results[1]
                         if doc.key? and doc.value?
-                            currentDoctype = doc.value['docType'].toLowerCase()
-                            doc.value['idField'] = idField[currentDoctype]
-                            doc.value['descField'] = descField[currentDoctype]
-                            jsonRes.push doc.value
+                            myDoctype = doc.value['docType'].toLowerCase()
+                            doc.value['idField'] = newFields.idField[myDoctype]
+                            doc.value['descField'] = newFields.descField[myDoctype]
+                            documents.push doc.value
 
-                    res.send(jsonRes)
+                    res.send(documents)
+
+    prepareMetadoctypeInfo : (metadoctypes, currentDoctype) ->
+        newFields =
+            idField : [],
+            descField : []
+
+        for metadoctype in metadoctypes
+
+            if metadoctype.key?
+                identifier = metadoctype.value.identificationField || null
+                key = metadoctype.key.toLowerCase() || null
+
+                if identifier? and key is currentDoctype
+                    newFields.idField[currentDoctype] = identifier
+
+                    if metadoctype.value.fields?
+                        descripter = metadoctype.value.fields
+                        newFields.descField[currentDoctype] = descripter
+        return newFields
+
+
 #********************************************************
 
 module.exports = (param) -> return new SearchEngine param

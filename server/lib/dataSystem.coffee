@@ -125,7 +125,8 @@ class DataSystem extends CoreClass
     putData: (path, callback, params = {}) ->
         @clientDS.put path, params, (error, response, body) =>
 
-            if error
+            if error or response.statusCode isnt 200
+                error = error || new Error(body)
                 @_logErrorInConsole error
                 callback error
 
@@ -135,7 +136,8 @@ class DataSystem extends CoreClass
     getData: (path, callback) ->
         @clientDS.get path, (error, response, body) =>
 
-            if error
+            if error or response.statusCode isnt 200
+                error = error || new Error(body)
                 @_logErrorInConsole error
                 callback error
 
@@ -146,7 +148,8 @@ class DataSystem extends CoreClass
     postData: (path, callback, params = {}) ->
         @clientDS.post path, params, (error, response, body) =>
 
-            if error
+            if error or response.statusCode isnt 200
+                error = error || new Error(body)
                 @_logErrorInConsole error
                 callback error
 
@@ -159,9 +162,10 @@ class DataSystem extends CoreClass
     deleteData: (path, callback) ->
         @clientDS.del path, (error, response, body) =>
 
-            if error
+            if error or response.statusCode isnt 200
+                error = error || new Error(body)
                 @_logErrorInConsole error
-                callback error, body
+                callback error
 
             else
                 callback error, body
