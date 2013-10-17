@@ -83,14 +83,14 @@ describe "Search management", ->
                     @bodyAlarm.should.have.lengthOf 2
 
                 it "The response should be well formed", =>
-                    @bodyAlarm[0].should.have.keys('id', 'key', 'value')
-                    @bodyAlarm[1].should.have.keys('id', 'key', 'value')
+                    @bodyAlarm[0].should.have.keys 'id', 'key', 'value'
+                    @bodyAlarm[1].should.have.keys 'id', 'key', 'value'
 
                 it "Each element of the response should be well formed", =>
                     for alarm in @bodyAlarm
-                        alarm.id.should.have.type('string')
-                        alarm.key.should.have.type('string')
-                        alarm.value.should.have.type('object')
+                        alarm.id.should.have.type 'string'
+                        alarm.key.should.have.type 'string'
+                        alarm.value.should.have.type 'object'
 
             describe "When we request 'metadoctypes by related'", =>
                 before (done) =>
@@ -108,31 +108,31 @@ describe "Search management", ->
                     @bodyMetadoctype.should.have.lengthOf 1
 
                 it "The response should be well formed", =>
-                    @bodyMetadoctype[0].should.have.keys('id', 'key', 'value')
+                    @bodyMetadoctype[0].should.have.keys 'id', 'key', 'value'
 
                 it "Each element of the response should be well formed", =>
-                    @bodyMetadoctype[0].id.should.have.type('string')
-                    @bodyMetadoctype[0].key.should.have.type('string')
-                    @bodyMetadoctype[0].value.should.have.type('object')
+                    @bodyMetadoctype[0].id.should.have.type 'string'
+                    @bodyMetadoctype[0].key.should.have.type 'string'
+                    @bodyMetadoctype[0].value.should.have.type 'object'
 
                 it "The metadoctype must be related to 'Alarm'", =>
-                    @bodyMetadoctype[0].value.related.should.equal('Alarm')
+                    @bodyMetadoctype[0].value.related.should.equal 'Alarm'
 
             describe "When we add the metadoctype to alarm", =>
                 before (done) =>
-                    @newFields = @searchEngine.prepareMetadoctypeInfo(@bodyMetadoctype, 'alarm')
+                    @newFields = @searchEngine.prepareMetadoctypeInfo @bodyMetadoctype, 'alarm'
                     for alarm in @bodyAlarm
                         alarm.value['idField'] = @newFields.idField['alarm']
                         alarm.value['descField'] = @newFields.descField['alarm']
                     done()
 
                 it "New idenfication/description fields for 'alarm' should exist", =>
-                    @newFields.idField['alarm'].should.exist
-                    @newFields.descField['alarm'].should.exist
+                    should.exist @newFields.idField['alarm']
+                    should.exist @newFields.descField['alarm']
 
                 it "New fields should be well formed", =>
-                    @bodyAlarm[1].value['idField'].should.have.type('string')
-                    @bodyAlarm[1].value['descField'].should.have.type('object')
+                    @bodyAlarm[1].value['idField'].should.have.type 'string'
+                    @bodyAlarm[1].value['descField'].should.have.type 'object'
 
 
 

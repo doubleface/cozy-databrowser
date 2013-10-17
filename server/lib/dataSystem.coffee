@@ -20,7 +20,7 @@ class DataSystem extends CoreClass
     DS_PORT: 9101
     DI_PORT: 9102
 
-    #specific pathes
+    #specific paths
     PATH:
         data: '/data/'
         doctypes: '/doctypes'
