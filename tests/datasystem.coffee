@@ -16,11 +16,11 @@ fixtures.setDefaultValues
 
 describe "Datasystem management", ->
 
-    before helpers.cleanDB
-    before helpers.startApp
+    before helpers.cleanDBWithRequest
     before (done) -> fixtures.load callback: done
+    before helpers.startApp
     after helpers.stopApp
-    after helpers.cleanDB
+    after helpers.cleanDBWithRequest
 
     describe "When we instanciate DataSystem", =>
         before (done) =>
