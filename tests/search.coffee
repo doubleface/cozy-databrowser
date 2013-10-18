@@ -134,5 +134,25 @@ describe "Search management", ->
                     @bodyAlarm[1].value['idField'].should.have.type 'string'
                     @bodyAlarm[1].value['descField'].should.have.type 'object'
 
+            describe "When we perform a plain text search on indexed data"
+
+                before (done) =>
+
+                    #index data
+                    path = @dataSystem.PATH.request + 'alarm' + @dataSystem.PATH.all
+                    @dataSystem.postData path, (err, body) =>
+                        if not err?
+                            for alarm in body
+                                dataSystem.indexId alarm.id, ['description']
+                        searchCallback = (err, body) =>
+                            @errSearch = err
+                            @bodySearch = body
+                            done()
+                        @dataSystel.postData path, searchCallback, { 'query' : 'scopyleft'}
+
+                it "The search action shouldn't return an error", =>
+                    console.log @errSearch
+
+
 
 
