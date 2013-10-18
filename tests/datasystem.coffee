@@ -240,7 +240,65 @@ describe "Datasystem management", ->
                     should.not.exist @errMDSum
                     @bodyMDSum[0].value.should.be.equal 1
 
+            describe "When we try to use instance cooking methods", =>
 
+                before (done) =>
+                    aAll =  ['alarm', 'metadoctype']
+                    @requestAll = @dataSystem.prepareDballRequests aAll
+                    done()
+
+                it "The PREPARE DBALL method should return an array of function", =>
+                    @requestAll.should.have.type 'object'
+                    @requestAll[0].should.have.type 'function'
+
+            describe "When we try to use instance format methods", =>
+
+                before (done) =>
+                    fakeBody =
+                        rows: []
+                    fakeBody.rows.push
+                        _id: 'e6dd4fbb424496f74fba2d12e622699a'
+                        _rev: '1-ace8aec52e5eee28464753dd4c8c5938'
+                        docType: 'alarm'
+                        action: 'DISPLAY'
+                        trigg: 'Tue Jul 02 2013 16:00:00'
+                        description: 'Réunion review scopyleft'
+                        related: null
+                        id: 'e6dd4fbb424496f74fba2d12e622699a'
+                    @newBody = @dataSystem.formatBody fakeBody
+                    done()
+
+                it "The FORMAT BODY method should return a well formed body", =>
+                    should.exist @newBody
+                    @newBody[0].should.have.keys 'id', 'key', 'value'
+
+            describe "When we try to use instance validation methods", =>
+
+                before (done) -> fixtures.load callback: done
+                before (done) =>
+                    doctypes = ['alarm', 'metadoctype']
+                    @dataSystem.areValidDoctypes doctypes, (areValid, errMsg) =>
+                        @errValid = errMsg
+                        @areValid = areValid
+                        done()
+                before (done) =>
+                    doctypes = ['fakedoctype']
+                    @dataSystem.areValidDoctypes doctypes, (areValid, errMsg) =>
+                        @errValid2 = errMsg
+                        @areValid2 = areValid
+                        done()
+
+                it "The ARE VALID DOCTYPES method for 'alarm' and 'metadoctype' shouldn't return an error", =>
+                    should.not.exist @errValid
+
+                it "The ARE VALID DOCTYPES method for 'alarm' and 'metadoctype' should be true", =>
+                    @areValid.should.be.true
+
+                it "The ARE VALID DOCTYPES method for 'fakedoctype' should return an error", =>
+                    should.exist @errValid2
+
+                it "The ARE VALID DOCTYPES method for 'fakedoctype' should be false", =>
+                    @areValid2.should.be.false
 
 
 

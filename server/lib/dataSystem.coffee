@@ -189,7 +189,7 @@ class DataSystem extends CoreClass
 
         return formattedBody
 
-    #---- VERIFICATION METHODS
+    #---- VALIDATION METHODS
     areValidDoctypes: (doctypes, callback = null) ->
         @getDoctypes (error, registered) =>
             errorMsg = null

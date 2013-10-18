@@ -9,8 +9,11 @@ async = require 'async'
 module.exports.doctypes = (req, res) ->
 
     #------INDEX SEVERAL ID FOR TEST
-    #dataSystem.indexId "39bade34f76d6b32234c3974c8004ca9", ["description"]
-    #dataSystem.indexId "39bade34f76d6b32234c3974c80059f0", ["description"]
+    # path = dataSystem.PATH.request + 'alarm' + dataSystem.PATH.all
+    # dataSystem.postData path, (err, body) ->
+    #     if not err?
+    #         for alarm in body
+    #             dataSystem.indexId alarm.id, ['description']
 
     #------PREPARE REQUESTS
     requests = []
