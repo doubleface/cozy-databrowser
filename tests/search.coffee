@@ -16,11 +16,11 @@ fixtures.setDefaultValues
 
 describe "Search management", ->
 
-    before helpers.cleanDBWithRequest
+    before helpers.cleanDBWithRequests
     before helpers.startApp
 
     after helpers.stopApp
-    after helpers.cleanDBWithRequest
+    after helpers.cleanDBWithRequests
 
     describe "When we add 2 documents of one doctype (Alarm)", ->
 

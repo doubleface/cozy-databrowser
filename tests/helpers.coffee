@@ -30,7 +30,8 @@ helpers.stopApp = (done) ->
 # database helper
 helpers.cleanDB = (done) -> fixtures.resetDatabase callback: done
 helpers.cleanDBWithRequests = (done) ->
-    fixtures.resetDatabase designsToRemove: true, callback: done
+    fixtures.resetDatabase removeAllRequests: true, callback: done
+
 
 
 module.exports = helpers
