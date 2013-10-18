@@ -88,6 +88,36 @@ describe "Datasystem management", ->
                         @bodyGet = body
                         done()
 
+                before (done) =>
+
+                    @pathSumAlarm = '/request/tests/getalarmsum/'
+                    viewFunctions =
+                        map: (doc) ->
+                            if doc.docType? and doc.docType.toLowerCase() is 'alarm'
+                                emit doc.docType, 1
+                        reduce: (keys, values, rereduce) ->
+                            return sum(values)
+                    for key, func of viewFunctions
+                        viewFunctions[key] = func.toString()
+
+                    @dataSystem.putData @pathSumAlarm, viewFunctions, (err, body) =>
+                        @errPut = err
+                        @bodyPut = body
+                        @dataSystem.postData @pathSumAlarm, (errAlarmSum, bodyAlarmSum) =>
+                            @errAlarmSum = errAlarmSum
+                            @bodyAlarmSum = bodyAlarmSum
+                            done()
+
+                before (done) =>
+                    path = @dataSystem.PATH.data + @bodyPost[1].id + '/'
+                    @dataSystem.deleteData path, (err, body) =>
+                        @errDel = err
+                        @dataSystem.postData @pathSumAlarm, (errAlarmSum, bodyAlarmSum) =>
+                            @errAlarmSum2 = errAlarmSum
+                            @bodyAlarmSum2 = bodyAlarmSum
+                            done()
+
+
                 it "The POST action shouldn't return an error", =>
                     should.not.exist @errPost
 
@@ -103,21 +133,112 @@ describe "Datasystem management", ->
                     should.exist @bodyGet
                     @bodyGet.should.have.type 'object'
 
-                # it "The PUT action shouldn't return an error", =>
-                #     should.not.exist @errPost
+                it "The PUT action shouldn't return an error", =>
+                    should.not.exist @errPut
 
-                # it "The PUT action should return a well formed body", =>
-                #     should.exist @bodyPost
-                #     for alarm in @bodyPost
-                #         alarm.should.have.keys 'id', 'key', 'value'
+                it "The PUT action should return a well formed body", =>
+                    should.exist @bodyPut
+                    @bodyPut.success.should.be.true
 
-                # it "The DELETE action shouldn't return an error", =>
-                #     should.not.exist @errPost
+                it "After the PUT action, new request must be usable and return sum of alarms", =>
+                    should.not.exist @errAlarmSum
+                    @bodyAlarmSum[0].value.should.be.equal 2
 
-                # it "The DELETE action should return a well formed body", =>
-                #     should.exist @bodyPost
-                #     for alarm in @bodyPost
-                #         alarm.should.have.keys 'id', 'key', 'value'
+                it "The DELETE action shouldn't return an error", =>
+                    should.not.exist @errDel
+
+                it "After the DELETE action, sum of alarm must be 1", =>
+                    should.not.exist @errAlarmSum2
+                    @bodyAlarmSum2[0].value.should.be.equal 1
+
+            describe "When we try to use instance request methods", =>
+
+                before (done) =>
+
+                    path = @dataSystem.PATH.application.getpermissions
+                    @dataSystem.getView path, (err, body) =>
+                        @errView = err
+                        @bodyView = body
+                        done()
+
+                before (done) =>
+
+                    @dataSystem.getDoctypes (err, body) =>
+                        @errDoctypes = err
+                        @bodyDoctypes = body
+                        done()
+
+                before (done) =>
+
+                    @dataSystem.indexId @bodyPost[0].id, ['description'], (err, body) =>
+                        @errIndex = err
+                        @bodyIndex = body
+                        done()
+
+                before (done) =>
+
+                    @dataSystem.deleteById @bodyPost[0].id, (err, body) =>
+                        @errDelId = err
+                        @dataSystem.postData @pathSumAlarm, (errAlarmSum, bodyAlarmSum) =>
+                            @errAlarmSum3 = errAlarmSum
+                            @bodyAlarmSum3 = bodyAlarmSum
+                            done()
+
+                before (done) =>
+                    @pathSumMetadoctype = '/request/tests/getmetadoctypesum/'
+                    viewFunctions =
+                        map: (doc) ->
+                            if doc.docType? and doc.docType.toLowerCase() is 'metadoctype'
+                                emit doc.docType, 1
+                        reduce: (keys, values, rereduce) ->
+                            return sum(values)
+
+                    @dataSystem.manageRequest @pathSumMetadoctype, viewFunctions, (err, body) =>
+                        @errManageReq = err
+                        @bodyManageReq = body
+                        @dataSystem.getView @pathSumMetadoctype, (errMDSum, bodyMDSum) =>
+                            @errMDSum = errMDSum
+                            @bodyMDSum = bodyMDSum
+                            done()
+
+                it "The GET VIEW method shouldn't return an error", =>
+                    should.not.exist @errView
+
+                it "The GET VIEW method should return a well formed body", =>
+                    should.exist @bodyView
+                    @bodyView[0].should.have.keys 'id', 'key', 'value'
+
+                it "The GET DOCTYPES method shouldn't return an error", =>
+                    should.not.exist @errDoctypes
+
+                it "The GET DOCTYPES method should return a well formed body", =>
+                    should.exist @bodyDoctypes
+                    @bodyDoctypes.should.have.type 'object'
+
+                it "The INDEX ID method shouldn't return an error", =>
+                    should.not.exist @errIndex
+
+                it "The INDEX ID method should return a well formed body", =>
+                    should.exist @bodyIndex
+                    @bodyIndex.success.should.be.true
+
+                it "The DELETE BY ID method shouldn't return an error", =>
+                    should.not.exist @errDeleteId
+
+                it "After DELETE BY ID method, sum of alarm must be 0", =>
+                    should.not.exist @errAlarmSum3
+                    @bodyAlarmSum3.should.have.lengthOf 0
+
+                it "The MANAGE REQUEST method shouldn't return an error", =>
+                    should.not.exist @errManageReq
+
+                it "The MANAGE REQUEST method should return a well formed body", =>
+                    should.exist @bodyManageReq
+                    @bodyManageReq.success.should.be.true
+
+                it "After the MANAGE REQUEST action, new request must be usable and return sum of metadoctypes", =>
+                    should.not.exist @errMDSum
+                    @bodyMDSum[0].value.should.be.equal 1
 
 
 

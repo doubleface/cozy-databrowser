@@ -59,6 +59,7 @@ class DataSystem extends CoreClass
             @clientDS.setBasicAuth username, password
 
     #-------------- OBJECT METHODS ----------------------
+    #---- COOKING METHODS
     prepareDballRequests: (doctypes = []) ->
         setupRequestsAll = []
 
@@ -80,6 +81,7 @@ class DataSystem extends CoreClass
             )(doctypeName)
         return setupRequestsAll
 
+    #---- REQUEST METHODS
     manageRequest: (path, viewFunctions, callback, pattern = '') ->
 
         # convert map/reduce to string and replace optional pattern
@@ -108,21 +110,24 @@ class DataSystem extends CoreClass
     getDoctypes: (callback) ->
         @getData @PATH.doctypes, callback
 
-    indexId: (id, aFields) ->
+    indexId: (id, aFields, callback) ->
         fields = {"fields": aFields}
         @clientDS.post @PATH.index + id, fields, (error, response, body) =>
 
-            if error
+            if error or response.statusCode isnt 200
+                error = error || new Error(body)
                 @_logErrorInConsole error
+                callback error
 
-            else if response.statusCode isnt 200
-                @_logErrorInConsole new Error(body)
+            else
+                callback null, body
 
     deleteById: (id, callback) ->
         @deleteData @PATH.data + id + '/', callback
 
 
-    putData: (path, callback, params = {}) ->
+    #---- CRUD HTTTP METHODS
+    putData: (path, params, callback) ->
         @clientDS.put path, params, (error, response, body) =>
 
             if error or response.statusCode isnt 200
@@ -162,14 +167,15 @@ class DataSystem extends CoreClass
     deleteData: (path, callback) ->
         @clientDS.del path, (error, response, body) =>
 
-            if error or response.statusCode isnt 200
+            if error or response.statusCode isnt 204
                 error = error || new Error(body)
                 @_logErrorInConsole error
                 callback error
 
             else
-                callback error, body
+                callback null, body
 
+    #---- FORMAT METHODS
     formatBody: (body) ->
         formattedBody = []
 
@@ -183,6 +189,7 @@ class DataSystem extends CoreClass
 
         return formattedBody
 
+    #---- VERIFICATION METHODS
     areValidDoctypes: (doctypes, callback = null) ->
         @getDoctypes (error, registered) =>
             errorMsg = null
