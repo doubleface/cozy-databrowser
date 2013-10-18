@@ -115,7 +115,7 @@ class DataSystem extends CoreClass
         @clientDS.post @PATH.index + id, fields, (error, response, body) =>
 
             if error or response.statusCode isnt 200
-                error = error || new Error(body)
+                error = error || new Error body.error
                 @_logErrorInConsole error
                 if callback? then callback error
 
@@ -142,7 +142,7 @@ class DataSystem extends CoreClass
         @clientDS.get path, (error, response, body) =>
 
             if error or response.statusCode isnt 200
-                error = error || new Error(body)
+                error = error || new Error body.error
                 @_logErrorInConsole error
                 callback error
 
@@ -154,7 +154,7 @@ class DataSystem extends CoreClass
         @clientDS.post path, params, (error, response, body) =>
 
             if error or response.statusCode isnt 200
-                error = error || new Error(body)
+                error = error || new Error body.error
                 @_logErrorInConsole error
                 callback error
 
@@ -168,7 +168,7 @@ class DataSystem extends CoreClass
         @clientDS.del path, (error, response, body) =>
 
             if error or response.statusCode isnt 204
-                error = error || new Error(body)
+                error = error || new Error body.error
                 @_logErrorInConsole error
                 callback error
 
@@ -198,6 +198,7 @@ class DataSystem extends CoreClass
             if error
                 errorMsg = @ERR_MSG.retrieveData
                 console.log error
+                bError = true
             else
 
                 #compare given doctype and existing doctype for security
