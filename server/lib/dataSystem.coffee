@@ -110,17 +110,17 @@ class DataSystem extends CoreClass
     getDoctypes: (callback) ->
         @getData @PATH.doctypes, callback
 
-    indexId: (id, aFields, callback) ->
+    indexId: (id, aFields, callback = null) ->
         fields = {"fields": aFields}
         @clientDS.post @PATH.index + id, fields, (error, response, body) =>
 
             if error or response.statusCode isnt 200
                 error = error || new Error(body)
                 @_logErrorInConsole error
-                callback error
+                if callback? then callback error
 
             else
-                callback null, body
+                if callback? then callback null, body
 
     deleteById: (id, callback) ->
         @deleteData @PATH.data + id + '/', callback
@@ -130,8 +130,8 @@ class DataSystem extends CoreClass
     putData: (path, params, callback) ->
         @clientDS.put path, params, (error, response, body) =>
 
-            if error or response.statusCode isnt 200
-                error = error || new Error(body)
+            if error
+                error = error
                 @_logErrorInConsole error
                 callback error
 
@@ -183,7 +183,7 @@ class DataSystem extends CoreClass
             for row in body.rows
                 formattedRow = {}
                 if row._id? then formattedRow['id'] = row._id
-                if row.docType then formattedRow['key'] = row.docType
+                if row.docType? then formattedRow['key'] = row.docType
                 formattedRow['value'] = row
                 formattedBody.push formattedRow
 
