@@ -35,6 +35,8 @@ class SearchEngine extends CoreClass
                 if pageParams['query']?
                     searchPath = @path.search + doctypeName
                     @dataSystem.getView searchPath, callback, pageParams
+                    console.log searchPath
+                    console.log pageParams
 
                 else
                     requestPath = @path.request + doctypeName + @path.all

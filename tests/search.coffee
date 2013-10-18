@@ -134,24 +134,32 @@ describe "Search management", ->
                     @bodyAlarm[1].value['idField'].should.have.type 'string'
                     @bodyAlarm[1].value['descField'].should.have.type 'object'
 
-            describe "When we perform a plain text search on indexed data"
+            # describe "When we perform a plain text search on indexed data", =>
+            #     #index data
+            #     before (done) =>
+            #         path = @dataSystem.PATH.request + 'alarm' + @dataSystem.PATH.all
+            #         @dataSystem.postData path, (err, body) =>
+            #             if not err?
+            #                 @dataSystem.indexId body[0].id, ['description'], (errIndex, bodyIndex) =>
+            #                     @dataSystem.indexId body[1].id, ['description'], (errIndex, bodyIndex) =>
+            #                         done()
 
-                before (done) =>
+            #     #search data
+            #     before (done) =>
+            #         searchPath = @dataSystem.PATH.search + 'alarm'
+            #         searchCallback = (err, body) =>
+            #             @errSearch = err
+            #             @bodySearch = body
+            #             done()
+            #         searchParams =
+            #             query: 'scopyleft'
+            #         @dataSystem.getView searchPath, searchCallback, searchParams
 
-                    #index data
-                    path = @dataSystem.PATH.request + 'alarm' + @dataSystem.PATH.all
-                    @dataSystem.postData path, (err, body) =>
-                        if not err?
-                            for alarm in body
-                                dataSystem.indexId alarm.id, ['description']
-                        searchCallback = (err, body) =>
-                            @errSearch = err
-                            @bodySearch = body
-                            done()
-                        @dataSystel.postData path, searchCallback, { 'query' : 'scopyleft'}
+            #     it "The search action shouldn't return an error", =>
+            #         should.not.exist @errSearch
 
-                it "The search action shouldn't return an error", =>
-                    console.log @errSearch
+            #     it "The search action should return a result", =>
+            #         console.log @bodySearch
 
 
 
