@@ -2,149 +2,187 @@ View = require './../lib/view'
 
 module.exports = class ResultView extends View
 
-	tagName: 'div'
-	className: 'accordion-group'
+    tagName: 'div'
+    className: 'accordion-group'
 
-	render: ->
-		that = this
-		super
-			results : that.manageResultsForView @model.attributes, @model.get("count")
+    render: =>
+        super
+            results : @manageResultsForView()
 
-	manageResultsForView: (attr, count) ->
-		results = {}
+    manageResultsForView: ->
+        attr = @model.attributes
+        count = @model.get('count')
+        results = {}
 
-		#case no results because error
-		if attr.no_result?
-			$('#all-result .accordion').empty()
-			results['no_result'] = true
-			results['no_result_msg'] = attr.no_result
-			return results
+        #case no results because error
+        if attr.no_result?
+            $('#all-result .accordion').empty()
+            results['no_result'] = true
+            results['no_result_msg'] = attr.no_result
+            return results
 
-		#case no results without error
-		else if count is 0
-			results['no_result'] = true
-			results['no_result_msg'] = 'No results.'
-			return results
+        #case no results without error
+        else if count is 0
+            results['no_result'] = true
+            results['no_result_msg'] = 'No results.'
+            return results
 
-		#prepare results
-		else
-			#no_result
-			results['no_result'] = false	
+        #prepare results
+        else
+            #no_result
+            results['no_result'] = false
 
-			#count		
-			results['count'] = count			
+            #count
+            results['count'] = count
 
-			#heading
-			results['heading'] = {
-				'doctype' : attr.docType
-				'field' : if attr.idField? then attr.idField else 'id'
-				'data' : if attr.idField? then attr[attr.idField] else attr._id
-			}	
+            #heading
+            results['heading'] =
+                'doctype' : attr.docType
+                'field' : if attr.idField? then attr.idField else 'id'
+                'data' : if attr.idField? then attr[attr.idField] else attr._id
 
-			#fields
-			results['fields'] = []
-			iCounter = 0
-
-			for field of attr
-
-				if field isnt 'idField' and field isnt 'count' and field isnt 'descField'
-					
-					#prepare new fields
-					results['fields'][iCounter] = {
-						'cdbFieldDescription' : ""
-						'cdbFieldName' : field
-						'cdbFieldData' : ""
-						'cdbLabelClass' : "label-secondary"
-					}
-
-					#add description and name				
-					if attr.descField? and attr.descField[field]?
-						if attr.descField[field].description?
-							results['fields'][iCounter]['cdbFieldDescription'] = attr.descField[field].description
-						
-						if attr.descField[field].displayName? and attr.descField[field].displayName isnt ""
-							results['fields'][iCounter]['cdbFieldName'] = attr.descField[field].displayName
-							if field is results['heading']['field']
-								results['heading']['field'] = attr.descField[field].displayName
-
-					#add data according to typeof		
-					#field isn't an object	: display text
-					if typeof attr[field] is 'string' or typeof attr[field] is 'number' or typeof attr[field] is 'boolean'
-						results['fields'][iCounter]['cdbFieldData'] = attr[field]
-
-					#field is an object : display list
-					else if attr[field]? and typeof attr[field] is 'object'	
-						results['fields'][iCounter]['cdbFieldData'] = '<ul class="sober-list">'						 
-						for obj of attr[field]
-							if typeof attr[field][obj] is 'string' or typeof attr[field][obj] is 'number' or typeof attr[field][obj] is 'boolean'
-								results['fields'][iCounter]['cdbFieldData'] += '<li>' + obj + ' : <i>' + attr[field][obj] + '</i></li>'
-							else if attr[field][obj]? and typeof attr[field][obj] is 'object'
-								results['fields'][iCounter]['cdbFieldData'] += '<li>' + obj + ' : <i>' + $.stringify(attr[field][obj]) + '</i></li>'
-							else
-								results['fields'][iCounter]['cdbFieldData'] += '<li><i>empty</i></li>'
-								results['fields'][iCounter]['cdbLabelClass'] = 'label-danger'
-						results['fields'][iCounter]['cdbFieldData'] += '</ul>'
-					else
-						results['fields'][iCounter]['cdbFieldData'] = '<i>empty</i>'
-						results['fields'][iCounter]['cdbLabelClass'] = 'label-danger'
-						
-				iCounter++
-	
-			return results
+            #fields
+            results['fields'] = @prepareResultFields attr
 
 
-	template: ->
-		require './templates/result'
+            return results
 
-	templateModal: require('./templates/modal_confirm')
+    prepareResultFields: (attr) ->
+        iCounter = 0
+        fields = []
+        settedField = ['idField', 'count', 'descField']
+        simpleTypes = ['string', 'number', 'boolean']
 
-	events : {
-		'click .accordion-toggle' : 'blurIt'
-		'mouseenter .label' : 'showFieldDescription'
-		'mouseleave .label' : 'showFieldDescription'
-		'click .remove-result' : 'confirmRemoveResult'
-	}
-	blurIt : (e) ->
-		$(e.currentTarget).blur()
+        for fieldName, field of attr
 
-	showFieldDescription : (e) ->
-		jqObj = $(e.currentTarget)
-		if jqObj.attr("data-title") isnt ""
-			if e.type is 'mouseenter'
-				
-				left = jqObj.offset().left - $('#basic-accordion.accordion').offset().left - 5
-				top = jqObj.offset().top - $('#basic-accordion.accordion').offset().top - 7
-				$('.info-box .field-title').css({'padding-left' : jqObj.width() + 18})
-				$('.info-box .field-description').empty().html(jqObj.attr("data-title"))		
-				$('.info-box').css({'z-index' : '5', 'left' : left , 'top' : top})
-				$('.accordion .label').css({'z-index' : 'inherit'})
-				jqObj.css({'z-index' : '10'})
-				$('.info-box').stop().fadeTo(200, 1);
-			else
-				$('.info-box').stop().fadeTo(200, 0);
+            description = ""
+            isNativField = ($.inArray fieldName, settedField) is -1
+            if isNativField
 
-	confirmRemoveResult : (e) ->
-		that = this
-		e.preventDefault()
-	
-		data =
-			title: 'Confirmation required'
-			body: 'Are you sure ? This can\'t be undone, and will erase definitly the data from the database.'
-			confirm: 'delete permanently'
+                #prepare new fields
+                fields[iCounter] =
+                    'cdbFieldDescription' : ""
+                    'cdbFieldName' : fieldName
+                    'cdbFieldData' : ""
+                    'cdbLabelClass' : "label-secondary"
 
-		$("body").prepend @templateModal(data)
-		$("#confirmation-dialog").modal()
-		$("#confirmation-dialog").modal("show")
-		$("#confirmation-dialog-confirm").bind "click", ()->
-			that.removeResult()
-	
-	removeResult : () ->
+                #add description and name
+                if attr.descField? and attr.descField[fieldName]?
+                    if attr.descField[fieldName].description?
+                        description = attr.descField[fieldName].description
+                        fields[iCounter]['cdbFieldDescription'] = description
+                    # hasDisplayName = attr.descField[field].displayName?
+                    # descField = attr.descField[field]
+                    # if hasDisplayName and descField.displayName isnt ""
+                    #     displayName = attr.descField[field].displayName
+                    #     fields[iCounter]['cdbFieldName'] = displayName
+                    #     if field is results['heading']['field']
+                    #         results['heading']['field'] = displayName
 
-		#set id for the native backbone delete action
-		@model.set('id', @model.get('_id'))
+                #add data according to typeof
+                #field isn't an object  : display text
+                typeOfField = typeof field
+                isSimpleType = ($.inArray typeOfField, simpleTypes) isnt -1
+                if isSimpleType
+                    fields[iCounter]['cdbFieldData'] = field
 
-		#remove
-		@model.destroy {
-			data : 'id=' + @model.get('id')				
-		}
-		$(window).resize()
+                #field is an object : display list
+                else if field? and typeOfField is 'object'
+                    fields[iCounter]['cdbFieldData'] = '<ul class="sober-list">'
+                    for objName, obj of field
+                        newLi = ''
+                        typeOfObj = typeof obj
+                        isSimpleObj = ($.inArray typeOfObj, simpleTypes) isnt -1
+
+                        if isSimpleObj
+                            newLi = '<li>' + objName + ' : '
+                            newLi += '<i>' + obj + '</i></li>'
+                            fields[iCounter]['cdbFieldData'] += newLi
+
+                        else if obj? and typeof obj is 'object'
+                            newLi = '<li>' + objName + ' : '
+                            newLi += '<i>' + $.stringify(obj) + '</i></li>'
+                            fields[iCounter]['cdbFieldData'] += newLi
+
+                        else
+                            newLi = '<li><i>empty</i></li>'
+                            fields[iCounter]['cdbFieldData'] += newLi
+                            fields[iCounter]['cdbLabelClass'] = 'label-danger'
+                    fields[iCounter]['cdbFieldData'] += '</ul>'
+
+                else
+                    fields[iCounter]['cdbFieldData'] = '<i>empty</i>'
+                    fields[iCounter]['cdbLabelClass'] = 'label-danger'
+
+            iCounter++
+        return fields
+
+
+
+    template: ->
+        require './templates/result'
+
+    templateModal: require('./templates/modal_confirm')
+
+    events :
+        'click .accordion-toggle' : 'blurIt'
+        'mouseenter .label' : 'showFieldDescription'
+        'mouseleave .label' : 'showFieldDescription'
+        'click .remove-result' : 'confirmRemoveResult'
+
+    blurIt : (e) ->
+        $(e.currentTarget).blur()
+
+    showFieldDescription : (e) ->
+        jqObj = $(e.currentTarget)
+        if jqObj.attr("data-title") isnt ""
+            if e.type is 'mouseenter'
+                offsetLeft = jqObj.offset().left
+                offsetTop = jqObj.offset().top
+                accordionOffsetLeft = $('#basic-accordion.accordion')
+                    .offset()
+                    .left
+                accordionOffsetTop = $('#basic-accordion.accordion')
+                    .offset()
+                    .top
+                left = offsetLeft - accordionOffsetLeft - 5
+                top = offsetTop - accordionOffsetTop - 7
+                width = jqObj.width()
+                $('.info-box .field-title').css {'padding-left' : width + 18}
+                title = jqObj.attr("data-title")
+                $('.info-box .field-description').empty().html title
+                infoBoxCss =
+                    'z-index' : '5'
+                    'left' : left
+                    'top' : top
+                $('.info-box').css infoBoxCss
+                $('.accordion .label').css {'z-index' : 'inherit'}
+                jqObj.css({'z-index' : '10'})
+                $('.info-box').stop().fadeTo(200, 1)
+            else
+                $('.info-box').stop().fadeTo(200, 0)
+
+    confirmRemoveResult : (e) ->
+        that = this
+        e.preventDefault()
+        message = 'Are you sure ? This can\'t be undone, '
+        message += 'and will erase definitly the data from the database.'
+        data =
+            title: 'Confirmation required'
+            body: message
+            confirm: 'delete permanently'
+
+        $("body").prepend @templateModal(data)
+        $("#confirmation-dialog").modal()
+        $("#confirmation-dialog").modal("show")
+        $("#confirmation-dialog-confirm").bind "click", ->
+            that.removeResult()
+
+    removeResult : ->
+
+        #set id for the native backbone delete action
+        @model.set('id', @model.get('_id'))
+
+        #remove
+        @model.destroy { data : 'id=' + @model.get('id') }
+        $(window).resize()

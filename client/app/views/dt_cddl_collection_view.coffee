@@ -10,6 +10,6 @@ module.exports = class DtCddlCollectionView extends ViewCollection
     initialize: ->
         @collectionEl = '#dt-cddl-list'
         super
-        @collection.fetch()     
+        @collection.fetch()
         @views = {}
-        @listenTo @collection, "reset",   @onReset
+        @listenTo @collection, "reset", @onReset

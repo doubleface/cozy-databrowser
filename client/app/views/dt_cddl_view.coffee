@@ -6,7 +6,7 @@ module.exports = class DtCddlView extends View
     className: 'dt-cddl-list-item'
 
     render: ->
-        super 
+        super
             name: @model.get("name")
 
     template: ->

@@ -524,15 +524,20 @@ module.exports = CheckingDdl = (function() {
   CheckingDdl.prototype.create = function() {
     var eltCb, eltContainer, eltContent, eltListItem, eltTitle, sRow, that, _i, _len, _ref;
     that = this;
-    eltContainer = $(document.createElement('div')).addClass(CSS_CLASSES.container).attr('id', this.sEltUniqId);
-    eltTitle = $(document.createElement('span')).addClass(CSS_CLASSES.title).text(this.sTitle);
+    eltContainer = $(document.createElement('div'));
+    eltContainer.addClass(CSS_CLASSES.container).attr('id', this.sEltUniqId);
+    eltTitle = $(document.createElement('span'));
+    eltTitle.addClass(CSS_CLASSES.title).text(this.sTitle);
     this.eltList = $(document.createElement('ul'));
     _ref = this.aStrings;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       sRow = _ref[_i];
-      eltListItem = $(document.createElement('li')).addClass(CSS_CLASSES.listItem);
-      eltContent = $(document.createElement('span')).addClass(CSS_CLASSES.listItemContent).text(sRow);
-      eltCb = $(document.createElement('input')).attr('type', 'checkbox').addClass(CSS_CLASSES.listItemCb);
+      eltListItem = $(document.createElement('li'));
+      eltListItem.addClass(CSS_CLASSES.listItem);
+      eltContent = $(document.createElement('span'));
+      eltContent.addClass(CSS_CLASSES.listItemContent).text(sRow);
+      eltCb = $(document.createElement('input')).attr('type', 'checkbox');
+      eltCb.addClass(CSS_CLASSES.listItemCb);
       eltListItem.append([eltContent, eltCb]);
       this.eltList.append(eltListItem);
     }
@@ -690,12 +695,14 @@ module.exports = DoctypeView = (function(_super) {
       descWrapper.appendTo(newTd).show();
       newTd.appendTo(newTr);
       jqObj.closest("." + this.className).after(newTr);
-      return jqObj.removeClass('label-primary').addClass('label-danger').empty().append(' Hide info <i class="icon-minus-sign"></i> ');
+      jqObj.removeClass('label-primary').addClass('label-danger').empty();
+      return jqObj.append(' Hide info <i class="icon-minus-sign"></i> ');
     } else {
       descWrapper = jqObj.closest("." + this.className).next("tr").find('.md-desc-wrapper').hide();
       jqObj.parent().append(descWrapper);
       jqObj.closest("." + this.className).next("tr").remove();
-      return jqObj.removeClass('label-danger').addClass('label-primary').empty().append(' More info <i class="icon-plus-sign"></i> ');
+      jqObj.removeClass('label-danger').addClass('label-primary').empty();
+      return jqObj.append(' More info <i class="icon-plus-sign"></i> ');
     }
   };
 
@@ -907,9 +914,12 @@ module.exports = ResultCollectionView = (function(_super) {
   };
 
   ResultCollectionView.prototype.render = function() {
-    var id, view, _ref1;
+    var id, loader, view, _ref1;
     if (this.options.doctype != null) {
-      $('#all-result').append('<div class="loading-image"><img src="images/ajax-loader.gif" /></div>');
+      loader = '<div class="loading-image">';
+      loader += '<img src="images/ajax-loader.gif" />';
+      loader += '</div>';
+      $('#all-result').append(loader);
     }
     _ref1 = this.views;
     for (id in _ref1) {
@@ -944,12 +954,15 @@ module.exports = ResultCollectionView = (function(_super) {
         data: $.param(this.options),
         remove: false,
         success: function(col, data) {
+          var isDone;
           if (data.length != null) {
             if (!isTriggered) {
               $('.load-more-result .spinner').hide();
-              $('.load-more-result i, .load-more-result span').show();
+              $('.load-more-result i').show();
+              $('.load-more-result span').show();
             }
-            that.noMoreItems = data.length < that.collection.nbPerPage;
+            isDone = data.length < that.collection.nbPerPage;
+            that.noMoreItems = isDone;
             if (that.noMoreItems) {
               $('.load-more-result').hide();
             }
@@ -983,11 +996,13 @@ module.exports = ResultCollectionView = (function(_super) {
   };
 
   ResultCollectionView.prototype.displayLoadingError = function() {
+    var errorMsg;
     $('.load-more-result').css({
       'color': '#AF4434'
     });
     $('.load-more-result i').hide();
-    $('.load-more-result span').text('An error occurs during the loading process');
+    errorMsg = 'An error occurs during the loading process';
+    $('.load-more-result span').text(errorMsg);
     return $('.load-more-result').show();
   };
 
@@ -999,6 +1014,7 @@ module.exports = ResultCollectionView = (function(_super) {
 
 ;require.register("views/result_view", function(exports, require, module) {
 var ResultView, View, _ref,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -1008,6 +1024,7 @@ module.exports = ResultView = (function(_super) {
   __extends(ResultView, _super);
 
   function ResultView() {
+    this.render = __bind(this.render, this);
     _ref = ResultView.__super__.constructor.apply(this, arguments);
     return _ref;
   }
@@ -1017,15 +1034,15 @@ module.exports = ResultView = (function(_super) {
   ResultView.prototype.className = 'accordion-group';
 
   ResultView.prototype.render = function() {
-    var that;
-    that = this;
     return ResultView.__super__.render.call(this, {
-      results: that.manageResultsForView(this.model.attributes, this.model.get("count"))
+      results: this.manageResultsForView()
     });
   };
 
-  ResultView.prototype.manageResultsForView = function(attr, count) {
-    var field, iCounter, obj, results;
+  ResultView.prototype.manageResultsForView = function() {
+    var attr, count, results;
+    attr = this.model.attributes;
+    count = this.model.get('count');
     results = {};
     if (attr.no_result != null) {
       $('#all-result .accordion').empty();
@@ -1044,51 +1061,68 @@ module.exports = ResultView = (function(_super) {
         'field': attr.idField != null ? attr.idField : 'id',
         'data': attr.idField != null ? attr[attr.idField] : attr._id
       };
-      results['fields'] = [];
-      iCounter = 0;
-      for (field in attr) {
-        if (field !== 'idField' && field !== 'count' && field !== 'descField') {
-          results['fields'][iCounter] = {
-            'cdbFieldDescription': "",
-            'cdbFieldName': field,
-            'cdbFieldData': "",
-            'cdbLabelClass': "label-secondary"
-          };
-          if ((attr.descField != null) && (attr.descField[field] != null)) {
-            if (attr.descField[field].description != null) {
-              results['fields'][iCounter]['cdbFieldDescription'] = attr.descField[field].description;
-            }
-            if ((attr.descField[field].displayName != null) && attr.descField[field].displayName !== "") {
-              results['fields'][iCounter]['cdbFieldName'] = attr.descField[field].displayName;
-              if (field === results['heading']['field']) {
-                results['heading']['field'] = attr.descField[field].displayName;
-              }
-            }
-          }
-          if (typeof attr[field] === 'string' || typeof attr[field] === 'number' || typeof attr[field] === 'boolean') {
-            results['fields'][iCounter]['cdbFieldData'] = attr[field];
-          } else if ((attr[field] != null) && typeof attr[field] === 'object') {
-            results['fields'][iCounter]['cdbFieldData'] = '<ul class="sober-list">';
-            for (obj in attr[field]) {
-              if (typeof attr[field][obj] === 'string' || typeof attr[field][obj] === 'number' || typeof attr[field][obj] === 'boolean') {
-                results['fields'][iCounter]['cdbFieldData'] += '<li>' + obj + ' : <i>' + attr[field][obj] + '</i></li>';
-              } else if ((attr[field][obj] != null) && typeof attr[field][obj] === 'object') {
-                results['fields'][iCounter]['cdbFieldData'] += '<li>' + obj + ' : <i>' + $.stringify(attr[field][obj]) + '</i></li>';
-              } else {
-                results['fields'][iCounter]['cdbFieldData'] += '<li><i>empty</i></li>';
-                results['fields'][iCounter]['cdbLabelClass'] = 'label-danger';
-              }
-            }
-            results['fields'][iCounter]['cdbFieldData'] += '</ul>';
-          } else {
-            results['fields'][iCounter]['cdbFieldData'] = '<i>empty</i>';
-            results['fields'][iCounter]['cdbLabelClass'] = 'label-danger';
-          }
-        }
-        iCounter++;
-      }
+      results['fields'] = this.prepareResultFields(attr);
       return results;
     }
+  };
+
+  ResultView.prototype.prepareResultFields = function(attr) {
+    var description, field, fieldName, fields, iCounter, isNativField, isSimpleObj, isSimpleType, newLi, obj, objName, settedField, simpleTypes, typeOfField, typeOfObj;
+    iCounter = 0;
+    fields = [];
+    settedField = ['idField', 'count', 'descField'];
+    simpleTypes = ['string', 'number', 'boolean'];
+    for (fieldName in attr) {
+      field = attr[fieldName];
+      description = "";
+      isNativField = ($.inArray(fieldName, settedField)) === -1;
+      if (isNativField) {
+        fields[iCounter] = {
+          'cdbFieldDescription': "",
+          'cdbFieldName': fieldName,
+          'cdbFieldData': "",
+          'cdbLabelClass': "label-secondary"
+        };
+        if ((attr.descField != null) && (attr.descField[fieldName] != null)) {
+          if (attr.descField[fieldName].description != null) {
+            description = attr.descField[fieldName].description;
+            fields[iCounter]['cdbFieldDescription'] = description;
+          }
+        }
+        typeOfField = typeof field;
+        isSimpleType = ($.inArray(typeOfField, simpleTypes)) !== -1;
+        if (isSimpleType) {
+          fields[iCounter]['cdbFieldData'] = field;
+        } else if ((field != null) && typeOfField === 'object') {
+          fields[iCounter]['cdbFieldData'] = '<ul class="sober-list">';
+          for (objName in field) {
+            obj = field[objName];
+            newLi = '';
+            typeOfObj = typeof obj;
+            isSimpleObj = ($.inArray(typeOfObj, simpleTypes)) !== -1;
+            if (isSimpleObj) {
+              newLi = '<li>' + objName + ' : ';
+              newLi += '<i>' + obj + '</i></li>';
+              fields[iCounter]['cdbFieldData'] += newLi;
+            } else if ((obj != null) && typeof obj === 'object') {
+              newLi = '<li>' + objName + ' : ';
+              newLi += '<i>' + $.stringify(obj) + '</i></li>';
+              fields[iCounter]['cdbFieldData'] += newLi;
+            } else {
+              newLi = '<li><i>empty</i></li>';
+              fields[iCounter]['cdbFieldData'] += newLi;
+              fields[iCounter]['cdbLabelClass'] = 'label-danger';
+            }
+          }
+          fields[iCounter]['cdbFieldData'] += '</ul>';
+        } else {
+          fields[iCounter]['cdbFieldData'] = '<i>empty</i>';
+          fields[iCounter]['cdbLabelClass'] = 'label-danger';
+        }
+      }
+      iCounter++;
+    }
+    return fields;
   };
 
   ResultView.prototype.template = function() {
@@ -1109,21 +1143,28 @@ module.exports = ResultView = (function(_super) {
   };
 
   ResultView.prototype.showFieldDescription = function(e) {
-    var jqObj, left, top;
+    var accordionOffsetLeft, accordionOffsetTop, infoBoxCss, jqObj, left, offsetLeft, offsetTop, title, top, width;
     jqObj = $(e.currentTarget);
     if (jqObj.attr("data-title") !== "") {
       if (e.type === 'mouseenter') {
-        left = jqObj.offset().left - $('#basic-accordion.accordion').offset().left - 5;
-        top = jqObj.offset().top - $('#basic-accordion.accordion').offset().top - 7;
+        offsetLeft = jqObj.offset().left;
+        offsetTop = jqObj.offset().top;
+        accordionOffsetLeft = $('#basic-accordion.accordion').offset().left;
+        accordionOffsetTop = $('#basic-accordion.accordion').offset().top;
+        left = offsetLeft - accordionOffsetLeft - 5;
+        top = offsetTop - accordionOffsetTop - 7;
+        width = jqObj.width();
         $('.info-box .field-title').css({
-          'padding-left': jqObj.width() + 18
+          'padding-left': width + 18
         });
-        $('.info-box .field-description').empty().html(jqObj.attr("data-title"));
-        $('.info-box').css({
+        title = jqObj.attr("data-title");
+        $('.info-box .field-description').empty().html(title);
+        infoBoxCss = {
           'z-index': '5',
           'left': left,
           'top': top
-        });
+        };
+        $('.info-box').css(infoBoxCss);
         $('.accordion .label').css({
           'z-index': 'inherit'
         });
@@ -1138,12 +1179,14 @@ module.exports = ResultView = (function(_super) {
   };
 
   ResultView.prototype.confirmRemoveResult = function(e) {
-    var data, that;
+    var data, message, that;
     that = this;
     e.preventDefault();
+    message = 'Are you sure ? This can\'t be undone, ';
+    message += 'and will erase definitly the data from the database.';
     data = {
       title: 'Confirmation required',
-      body: 'Are you sure ? This can\'t be undone, and will erase definitly the data from the database.',
+      body: message,
       confirm: 'delete permanently'
     };
     $("body").prepend(this.templateModal(data));
@@ -1198,8 +1241,10 @@ module.exports = SearchView = (function(_super) {
     this.dtCddlCollectionView = new DtCddlCollectionView();
     if (this.options.range != null) {
       return $(window).bind('scroll', function(e, isTriggered) {
+        var docHeight;
         if (!that.rcView.isLoading && !that.rcView.noMoreItems) {
-          if ($(window).scrollTop() + $(window).height() === $(document).height()) {
+          docHeight = $(document).height();
+          if ($(window).scrollTop() + $(window).height() === docHeight) {
             return that.loadMore(isTriggered);
           }
         }

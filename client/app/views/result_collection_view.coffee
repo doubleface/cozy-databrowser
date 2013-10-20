@@ -3,31 +3,31 @@ ResultCollection = require '../collections/result_collection'
 ResultView = require './result_view'
 
 module.exports = class ResultCollectionView extends ViewCollection
-    
-    itemview: ResultView    
+
+    itemview: ResultView
     collectionEl :'#basic-accordion'
     isLoading : false
     noMoreItems : false
-    
-    initialize: ->  
+
+    initialize: ->
         that = this
-        @collection = new ResultCollection()            
+        @collection = new ResultCollection()
         super
         if @options.doctype?
             @collection.fetch {
                 data: $.param(@options)
                 success : (col, data) ->
                     $('.loading-image').remove()
-                    #native size of the window could trigger next pages (infinite scroll)
-                    if that.options.range? and that.options.doctype?        
+                    #native size of the window can trigger next pages and scroll
+                    if that.options.range? and that.options.doctype?
                         if data.length is that.collection.nbPerPage
                             that.loopFirstScroll()
                             $('.load-more-result').show()
-                            
-                        else                        
+
+                        else
                             that.noMoreItems = true
                             $('.load-more-result').hide()
-                error : () ->
+                error : ->
                     $('.loading-image').remove()
                     that.noMoreItems = true
                     that.displayLoadingError()
@@ -35,7 +35,10 @@ module.exports = class ResultCollectionView extends ViewCollection
 
     render: ->
         if @options.doctype?
-            $('#all-result').append('<div class="loading-image"><img src="images/ajax-loader.gif" /></div>')   
+            loader = '<div class="loading-image">'
+            loader += '<img src="images/ajax-loader.gif" />'
+            loader += '</div>'
+            $('#all-result').append(loader)
         view.$el.detach() for id, view of @views
         super
 
@@ -46,13 +49,13 @@ module.exports = class ResultCollectionView extends ViewCollection
             data: $.param(@options)
         }
 
-    loadNextPage : (isTriggered, callback) ->               
+    loadNextPage : (isTriggered, callback) ->
         that = this
         @options['deleted'] = @deleted
         console.log @noMoreItems
-        if !@noMoreItems    
+        if !@noMoreItems
             @isLoading = true
-            @collection.page++          
+            @collection.page++
             if !isTriggered
                 $('.load-more-result i, .load-more-result span').hide()
                 $('.load-more-result').spin 'tiny'
@@ -63,29 +66,32 @@ module.exports = class ResultCollectionView extends ViewCollection
                     if data.length?
                         if !isTriggered
                             $('.load-more-result .spinner').hide()
-                            $('.load-more-result i, .load-more-result span').show()                 
-                        that.noMoreItems = data.length < that.collection.nbPerPage
-                        if that.noMoreItems 
+                            $('.load-more-result i').show()
+                            $('.load-more-result span').show()
+                        isDone = data.length < that.collection.nbPerPage
+                        that.noMoreItems = isDone
+                        if that.noMoreItems
                             $('.load-more-result').hide()
                         that.isLoading = false
                         if callback?
-                            callback() 
+                            callback()
                     else
-                        that.noMoreItems = true                                         
-                error : () ->
+                        that.noMoreItems = true
+                error: ->
                     that.noMoreItems = true
                     that.displayLoadingError()
             }
-    loopFirstScroll : ()->
+    loopFirstScroll: ->
         that = this
-        if !@isLoading and !@noMoreItems            
-            firstScroll = $(document).height() is $(window).height()            
+        if !@isLoading and !@noMoreItems
+            firstScroll = $(document).height() is $(window).height()
             if (firstScroll)
-                @loadNextPage true, () ->
+                @loadNextPage true, ->
                     that.loopFirstScroll()
 
-    displayLoadingError : () ->
-        $('.load-more-result').css({'color' : '#AF4434'})
+    displayLoadingError: ->
+        $('.load-more-result').css {'color' : '#AF4434'}
         $('.load-more-result i').hide()
-        $('.load-more-result span').text('An error occurs during the loading process')
+        errorMsg = 'An error occurs during the loading process'
+        $('.load-more-result span').text errorMsg
         $('.load-more-result').show()

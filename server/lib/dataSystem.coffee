@@ -38,7 +38,7 @@ class DataSystem extends CoreClass
     #common error messages
     ERR_MSG:
         retrieveData : 'Error : Server error occurred while retrieving data.'
-        removeData : 'Error : Server error occurred while trying to remove data.'
+        removeData : 'Error : Server error occurred while removing data.'
         unknownDoctype : 'Error : You try to access to an unknown doctype.'
         unknownParamaters : 'Error : Unknown research parameters'
         unknownId : 'Error : Document ID parameter not found.'

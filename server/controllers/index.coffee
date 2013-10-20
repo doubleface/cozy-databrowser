@@ -91,7 +91,7 @@ module.exports.search = (req, res) ->
         if doctypes? and range? and req.query.page? and req.query.nbperpage?
 
             #----PEPARE PARAMS
-            pageParams = {}
+            params = {}
 
             #page params
             page = parseInt(req.query.page, 10)
@@ -99,13 +99,13 @@ module.exports.search = (req, res) ->
 
             #skip & limit + deleted lines params
             nbDeleted = if deleted? then parseInt(deleted, 10) else 0
-            pageParams['limit'] = nbPerPage
+            params['limit'] = nbPerPage
             if page > 1
-                pageParams['skip'] = (nbPerPage * (page - 1)) - nbDeleted
+                params['skip'] = (nbPerPage * (page - 1)) - nbDeleted
 
             #query param
             if req.query.query? and req.query.query isnt ""
-                pageParams['query'] = req.query.query
+                params['query'] = req.query.query
 
             #----VERIFY DOCTYPE 'ALL' REQUESTS
             unregistered = []
@@ -116,26 +116,27 @@ module.exports.search = (req, res) ->
             if unregistered.length > 0
 
                 #verify if doctype exist
-                dataSystem.areValidDoctypes unregistered, (areValid, errorMsg) ->
-                    if not areValid or errorMsg?
+                dataSystem.areValidDoctypes unregistered, (isValid, errorMsg) ->
+                    if not isValid or errorMsg?
                         res.send {'no_result' : errorMsg }
                     else
                          #prepare request 'all' for each doctypes
-                        setupRequestsAll = dataSystem.prepareDballRequests(unregistered)
+                        setDbAll = dataSystem.prepareDballRequests unregistered
 
                         #agregate callbacks
-                        if setupRequestsAll.length > 0
-                            async.parallel setupRequestsAll, (error, results) ->
+                        errorRetrieve = dataSystem.ERR_MSG.retrieveData
+                        if setDbAll.length > 0
+                            async.parallel setDbAll, (error, results) ->
                                 if error?
                                     console.log error
-                                    res.send {'no_result' : dataSystem.ERR_MSG.retrieveData}
+                                    res.send {'no_result' : errorRetrieve}
                                 else
-                                    searchEngine.doBasicSearch(res, doctypes, pageParams)
+                                    searchEngine.doBasicSearch res, doctypes, params
                         else
-                            res.send {'no_result' : dataSystem.ERR_MSG.retrieveData }
+                            res.send {'no_result' : errorRetrieve}
 
             else
-                searchEngine.doBasicSearch(res, doctypes, pageParams)
+                searchEngine.doBasicSearch res, doctypes, params
 
 
         else

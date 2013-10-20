@@ -20,53 +20,53 @@ class SearchEngine extends CoreClass
 
     #-------------- OBJECT METHODS ----------------------
     doBasicSearch : (res, doctypes, pageParams) ->
-            requests = []
-            path =
-            requests.push (callback) => #0 -> metadoctypes
-                @dataSystem.getView @path.metadoctype.getallbyrelated, callback
+        requests = []
+        path =
+        requests.push (callback) => #0 -> metadoctypes
+            @dataSystem.getView @path.metadoctype.getallbyrelated, callback
 
-            #one request per doctype
-            #reqCount = 0
-            #for dt in req.query.doctype
-            requests.push (callback) => #1 to n -> requests
+        #one request per doctype
+        #reqCount = 0
+        #for dt in req.query.doctype
+        requests.push (callback) => #1 to n -> requests
 
+            doctypeName = doctypes[0].toLowerCase()
+
+            if pageParams['query']?
+                searchPath = @path.search + doctypeName
+                @dataSystem.getView searchPath, callback, pageParams
+                console.log searchPath
+                console.log pageParams
+
+            else
+                requestPath = @path.request + doctypeName + @path.all
+                @dataSystem.getView requestPath, callback, pageParams
+            #reqCount++
+
+
+        ASYNC.parallel requests, (error, results) =>
+            documents = []
+
+            if error
+                res.send {'no_result' : @dataSystem.ERR_MSG.retrieveData}
+                @_logErrorInConsole error
+
+            else
+
+                #for dt in req.query.doctype
                 doctypeName = doctypes[0].toLowerCase()
+                newFields = @prepareMetadoctypeInfo results[0], doctypeName
 
-                if pageParams['query']?
-                    searchPath = @path.search + doctypeName
-                    @dataSystem.getView searchPath, callback, pageParams
-                    console.log searchPath
-                    console.log pageParams
+                #for result, index in results
+                    #if index > 0
+                for doc in results[1]
+                    if doc.key? and doc.value?
+                        myDoctype = doc.value['docType'].toLowerCase()
+                        doc.value['idField'] = newFields.idField[myDoctype]
+                        doc.value['descField'] = newFields.descField[myDoctype]
+                        documents.push doc.value
 
-                else
-                    requestPath = @path.request + doctypeName + @path.all
-                    @dataSystem.getView requestPath, callback, pageParams
-                #reqCount++
-
-
-            ASYNC.parallel requests, (error, results) =>
-                documents = []
-
-                if error
-                    res.send {'no_result' : @dataSystem.ERR_MSG.retrieveData}
-                    @_logErrorInConsole error
-
-                else
-
-                    #for dt in req.query.doctype
-                    doctypeName = doctypes[0].toLowerCase()
-                    newFields = @prepareMetadoctypeInfo results[0], doctypeName
-
-                    #for result, index in results
-                        #if index > 0
-                    for doc in results[1]
-                        if doc.key? and doc.value?
-                            myDoctype = doc.value['docType'].toLowerCase()
-                            doc.value['idField'] = newFields.idField[myDoctype]
-                            doc.value['descField'] = newFields.descField[myDoctype]
-                            documents.push doc.value
-
-                    res.send(documents)
+                res.send(documents)
 
     prepareMetadoctypeInfo : (metadoctypes, currentDoctype) ->
         newFields =

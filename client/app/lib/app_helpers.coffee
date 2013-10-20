@@ -1,4 +1,4 @@
-(() ->
+(->
     # IIFE to avoid collisions with other variables
     (->
         # Make it safe to do console.log() always.
@@ -10,10 +10,10 @@
                    profile,profileEnd,time,timeEnd,trace,warn').split ','
 
         console[method] = console[method] or dummy while method = methods.pop()
-    )()  
+    )()
 )()
   # Initialize Spin JS the lib that displays loading indicators
-(() ->
+(->
     $.fn.spin = (opts, color) ->
         presets =
             tiny:
