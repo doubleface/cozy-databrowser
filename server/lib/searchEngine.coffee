@@ -19,7 +19,7 @@ class SearchEngine extends CoreClass
         @path = @dataSystem.PATH
 
     #-------------- OBJECT METHODS ----------------------
-    doBasicSearch : (res, doctypes, pageParams) ->
+    search : (res, doctypes, pageParams) ->
         requests = []
         path =
         requests.push (callback) => #0 -> metadoctypes
@@ -35,8 +35,6 @@ class SearchEngine extends CoreClass
             if pageParams['query']?
                 searchPath = @path.search + doctypeName
                 @dataSystem.getView searchPath, callback, pageParams
-                console.log searchPath
-                console.log pageParams
 
             else
                 requestPath = @path.request + doctypeName + @path.all

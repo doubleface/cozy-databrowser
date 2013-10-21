@@ -13,7 +13,8 @@ module.exports.doctypes = (req, res) ->
     # dataSystem.postData path, (err, body) ->
     #     if not err?
     #         for alarm in body
-    #             dataSystem.indexId alarm.id, ['description']
+    #             console.log alarm.id
+    #             dataSystem.indexId alarm.id, ['description', 'trigg']
 
     #------PREPARE REQUESTS
     requests = []
@@ -131,12 +132,12 @@ module.exports.search = (req, res) ->
                                     console.log error
                                     res.send {'no_result' : errorRetrieve}
                                 else
-                                    searchEngine.doBasicSearch res, doctypes, params
+                                    searchEngine.search res, doctypes, params
                         else
                             res.send {'no_result' : errorRetrieve}
 
             else
-                searchEngine.doBasicSearch res, doctypes, params
+                searchEngine.search res, doctypes, params
 
 
         else

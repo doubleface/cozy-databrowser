@@ -50,6 +50,7 @@ class DataSystem extends CoreClass
         #------ SETTED
         @clientDS = new @JSON_CLIENT @DS_URL +  ':'  + @DS_PORT
         @registeredPatterns = {}
+        @isSilent = false
 
         #------ SUB-PROCESS
         #Authentification
@@ -59,7 +60,7 @@ class DataSystem extends CoreClass
             @clientDS.setBasicAuth username, password
 
     #-------------- OBJECT METHODS ----------------------
-    #---- COOKING METHODS
+    #---- PREPARATION METHODS
     prepareDballRequests: (doctypes = []) ->
         setupRequestsAll = []
 
@@ -96,7 +97,7 @@ class DataSystem extends CoreClass
         @clientDS.put path, viewFunctions, (error, response, body) =>
 
             if error
-                @_logErrorInConsole error
+                unless @silent then @_logErrorInConsole error
                 callback error
 
             else
@@ -116,7 +117,7 @@ class DataSystem extends CoreClass
 
             if error or response.statusCode isnt 200
                 error = error || new Error body.error
-                @_logErrorInConsole error
+                unless @silent then @_logErrorInConsole error
                 if callback? then callback error
 
             else
@@ -132,7 +133,7 @@ class DataSystem extends CoreClass
 
             if error
                 error = error
-                @_logErrorInConsole error
+                unless @silent then @_logErrorInConsole error
                 callback error
 
             else
@@ -143,7 +144,7 @@ class DataSystem extends CoreClass
 
             if error or response.statusCode isnt 200
                 error = error || new Error body.error
-                @_logErrorInConsole error
+                unless @silent then @_logErrorInConsole error
                 callback error
 
             else
@@ -155,7 +156,7 @@ class DataSystem extends CoreClass
 
             if error or response.statusCode isnt 200
                 error = error || new Error body.error
-                @_logErrorInConsole error
+                unless @silent then @_logErrorInConsole error
                 callback error
 
             else
@@ -169,7 +170,7 @@ class DataSystem extends CoreClass
 
             if error or response.statusCode isnt 204
                 error = error || new Error body.error
-                @_logErrorInConsole error
+                unless @silent then @_logErrorInConsole error
                 callback error
 
             else

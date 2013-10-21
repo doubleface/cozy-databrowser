@@ -22,10 +22,11 @@ describe "Datasystem management", ->
     after helpers.stopApp
     after helpers.cleanDBWithRequests
 
-    describe "When we instanciate DataSystem", =>
+    describe "When instanciate DataSystem", =>
         before (done) =>
             @CoreClass = require './../server/helpers/CoreClass'
             @dataSystem = require './../server/lib/dataSystem'
+            @dataSystem.silent = true
             done()
 
         it "The CoreClass should exists as a function", =>
@@ -36,13 +37,13 @@ describe "Datasystem management", ->
             should.exist @dataSystem
             @dataSystem.should.have.type 'object'
 
-        describe "When we try to access to constructor constants", =>
+        describe "When access to constructor constants", =>
 
             it "CLASS_NAME should exist as a string", =>
                 should.exist @dataSystem.constructor.CLASS_NAME
                 @dataSystem.constructor.CLASS_NAME.should.have.type 'string'
 
-        describe "When we try to access to prototype constants", =>
+        describe "When access to prototype constants", =>
 
             it "The npm dependency request-json must be load as JSON_CLIENT", =>
                 should.exist @dataSystem.JSON_CLIENT
@@ -58,7 +59,7 @@ describe "Datasystem management", ->
             it "Other constants should be : PATH, ERR_MSG", =>
                 @dataSystem.should.have.properties 'PATH', 'ERR_MSG'
 
-        describe "When we try to access to instance attributes", =>
+        describe "When access to instance attributes", =>
 
             it "The request-json client 'clientDS' should be construct", =>
                 should.exist @dataSystem.clientDS
@@ -68,26 +69,66 @@ describe "Datasystem management", ->
                 should.exist @dataSystem.registeredPatterns
                 @dataSystem.registeredPatterns.should.have.type 'object'
 
-        describe "When we try to use instance methods", =>
 
-            describe "When we try to use instance CRUD HTTP methods", =>
+        describe "When use  CRUD HTTP methods", =>
+
+            describe "When use POST method", =>
+
+                before (done) =>
+                    path = @dataSystem.PATH.request + 'alarm' + @dataSystem.PATH.all
+                    @dataSystem.postData path, (err, body) =>
+                        @errPostValid = err
+                        @bodyPostValid = body
+                        done()
+
+                it "The valid POST action shouldn't return an error", =>
+                    should.not.exist @errPostValid
+
+
+                it "The valid POST action should return a well formed body", =>
+                    should.exist @bodyPostValid
+                    @bodyPostValid.should.be.an.Array
 
                 before (done) =>
 
-                    path = @dataSystem.PATH.request + 'alarm' + @dataSystem.PATH.all
+                    path = @dataSystem.PATH.request + 'fakedoctype' + @dataSystem.PATH.all
                     @dataSystem.postData path, (err, body) =>
-                        @errPost = err
-                        @bodyPost = body
+                        @errPostFake = err
+                        @bodyPostFake = body
                         done()
 
+                it "The not valid POST action should return a 'not found' error", =>
+                    should.exist @errPostFake
+                    @errPostFake.message.should.equal 'not found'
+
+            describe "When use GET method", =>
                 before (done) =>
 
                     path = @dataSystem.PATH.doctypes
                     @dataSystem.getData path, (err, body) =>
-                        @errGet = err
-                        @bodyGet = body
+                        @errGetValid = err
+                        @bodyGetValid = body
                         done()
 
+                it "The valid GET action shouldn't return an error", =>
+                    should.not.exist @errGetValid
+
+                it "The valid GET action should return a well formed body", =>
+                    should.exist @bodyGetValid
+                    @bodyGetValid.should.be.an.Array
+
+                before (done) =>
+
+                    path = '/fakepath/'
+                    @dataSystem.getData path, (err, body) =>
+                        @errGetFake = err
+                        @bodyGetFake = body
+                        done()
+
+                 it "The not valid GET action should return an error", =>
+                    should.exist @errGetFake
+
+            describe "When use PUT method", =>
                 before (done) =>
 
                     @pathSumAlarm = '/request/tests/getalarmsum/'
@@ -108,33 +149,8 @@ describe "Datasystem management", ->
                             @bodyAlarmSum = bodyAlarmSum
                             done()
 
-                before (done) =>
-                    path = @dataSystem.PATH.data + @bodyPost[1].id + '/'
-                    @dataSystem.deleteData path, (err, body) =>
-                        @errDel = err
-                        @dataSystem.postData @pathSumAlarm, (errAlarmSum, bodyAlarmSum) =>
-                            @errAlarmSum2 = errAlarmSum
-                            @bodyAlarmSum2 = bodyAlarmSum
-                            done()
-
-
-                it "The POST action shouldn't return an error", =>
-                    should.not.exist @errPost
-
-                it "The POST action should return a well formed body", =>
-                    should.exist @bodyPost
-                    for alarm in @bodyPost
-                        alarm.should.have.keys 'id', 'key', 'value'
-
-                it "The GET action shouldn't return an error", =>
-                    should.not.exist @errGet
-
-                it "The GET action should return a well formed body", =>
-                    should.exist @bodyGet
-                    @bodyGet.should.have.type 'object'
-
                 it "The PUT action shouldn't return an error", =>
-                    should.not.exist @errPut
+                should.not.exist @errPut
 
                 it "The PUT action should return a well formed body", =>
                     should.exist @bodyPut
@@ -144,6 +160,18 @@ describe "Datasystem management", ->
                     should.not.exist @errAlarmSum
                     @bodyAlarmSum[0].value.should.be.equal 2
 
+            describe "When use DELETE method", =>
+
+                before (done) =>
+                    path = @dataSystem.PATH.data + @bodyPostValid[1].id + '/'
+                    @dataSystem.deleteData path, (err, body) =>
+                        @errDel = err
+                        @dataSystem.postData @pathSumAlarm, (errAlarmSum, bodyAlarmSum) =>
+                            @errAlarmSum2 = errAlarmSum
+                            @bodyAlarmSum2 = bodyAlarmSum
+                            done()
+
+
                 it "The DELETE action shouldn't return an error", =>
                     should.not.exist @errDel
 
@@ -151,7 +179,9 @@ describe "Datasystem management", ->
                     should.not.exist @errAlarmSum2
                     @bodyAlarmSum2[0].value.should.be.equal 1
 
-            describe "When we try to use instance request methods", =>
+        describe "When use request methods", =>
+
+            describe "When use GET VIEW method", =>
 
                 before (done) =>
 
@@ -161,30 +191,65 @@ describe "Datasystem management", ->
                         @bodyView = body
                         done()
 
-                before (done) =>
 
+                it "The GET VIEW method shouldn't return an error", =>
+                    should.not.exist @errView
+
+                it "The GET VIEW method should return a well formed body", =>
+                    should.exist @bodyView
+                    @bodyView[0].should.have.keys 'id', 'key', 'value'
+
+            describe "When use GET DOCTYPES method", =>
+
+                before (done) =>
                     @dataSystem.getDoctypes (err, body) =>
                         @errDoctypes = err
                         @bodyDoctypes = body
                         done()
 
+                it "The GET DOCTYPES method shouldn't return an error", =>
+                    should.not.exist @errDoctypes
+
+                it "The GET DOCTYPES method should return a well formed body", =>
+                    should.exist @bodyDoctypes
+                    @bodyDoctypes.should.have.type 'object'
+
+            describe "When use INDEX ID method", =>
+
                 before (done) =>
 
-                    @dataSystem.indexId @bodyPost[0].id, ['description'], (err, body) =>
+                    @dataSystem.indexId @bodyPostValid[0].id, ['description'], (err, body) =>
                         @errIndex = err
                         @bodyIndex = body
                         done()
 
+                it "The INDEX ID method shouldn't return an error", =>
+                    should.not.exist @errIndex
+
+                it "The INDEX ID method should return a well formed body", =>
+                    should.exist @bodyIndex
+                    @bodyIndex.success.should.be.true
+
+            describe "When use DELETE ID method", =>
+
                 before (done) =>
 
-                    @dataSystem.deleteById @bodyPost[0].id, (err, body) =>
+                    @dataSystem.deleteById @bodyPostValid[0].id, (err, body) =>
                         @errDelId = err
                         @dataSystem.postData @pathSumAlarm, (errAlarmSum, bodyAlarmSum) =>
                             @errAlarmSum3 = errAlarmSum
                             @bodyAlarmSum3 = bodyAlarmSum
                             done()
 
-                before (done) =>
+
+                it "The DELETE BY ID method shouldn't return an error", =>
+                    should.not.exist @errDeleteId
+
+                it "After DELETE BY ID method, sum of alarm must be 0", =>
+                    should.not.exist @errAlarmSum3
+                    @bodyAlarmSum3.should.have.lengthOf 0
+
+                 before (done) =>
                     @pathSumMetadoctype = '/request/tests/getmetadoctypesum/'
                     viewFunctions =
                         map: (doc) ->
@@ -201,33 +266,7 @@ describe "Datasystem management", ->
                             @bodyMDSum = bodyMDSum
                             done()
 
-                it "The GET VIEW method shouldn't return an error", =>
-                    should.not.exist @errView
-
-                it "The GET VIEW method should return a well formed body", =>
-                    should.exist @bodyView
-                    @bodyView[0].should.have.keys 'id', 'key', 'value'
-
-                it "The GET DOCTYPES method shouldn't return an error", =>
-                    should.not.exist @errDoctypes
-
-                it "The GET DOCTYPES method should return a well formed body", =>
-                    should.exist @bodyDoctypes
-                    @bodyDoctypes.should.have.type 'object'
-
-                it "The INDEX ID method shouldn't return an error", =>
-                    should.not.exist @errIndex
-
-                it "The INDEX ID method should return a well formed body", =>
-                    should.exist @bodyIndex
-                    @bodyIndex.success.should.be.true
-
-                it "The DELETE BY ID method shouldn't return an error", =>
-                    should.not.exist @errDeleteId
-
-                it "After DELETE BY ID method, sum of alarm must be 0", =>
-                    should.not.exist @errAlarmSum3
-                    @bodyAlarmSum3.should.have.lengthOf 0
+            describe "When use MANAGE REQUEST method", =>
 
                 it "The MANAGE REQUEST method shouldn't return an error", =>
                     should.not.exist @errManageReq
@@ -240,7 +279,9 @@ describe "Datasystem management", ->
                     should.not.exist @errMDSum
                     @bodyMDSum[0].value.should.be.equal 1
 
-            describe "When we try to use instance cooking methods", =>
+        describe "When use preparation methods", =>
+
+            describe "When use MANAGE REQUEST method", =>
 
                 before (done) =>
                     aAll =  ['alarm', 'metadoctype']
@@ -251,7 +292,9 @@ describe "Datasystem management", ->
                     @requestAll.should.have.type 'object'
                     @requestAll[0].should.have.type 'function'
 
-            describe "When we try to use instance format methods", =>
+        describe "When use format methods", =>
+
+            describe "When use FORMAT BODY method", =>
 
                 before (done) =>
                     fakeBody =
@@ -272,7 +315,9 @@ describe "Datasystem management", ->
                     should.exist @newBody
                     @newBody[0].should.have.keys 'id', 'key', 'value'
 
-            describe "When we try to use instance validation methods", =>
+        describe "When we try to use instance validation methods", =>
+
+            describe "When use ARE VALIDE DOCTYPES method", =>
 
                 before (done) -> fixtures.load callback: done
                 before (done) =>
