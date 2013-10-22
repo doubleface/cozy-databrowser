@@ -582,9 +582,7 @@ module.exports = Router = (function(_super) {
   };
 
   Router.prototype.doctypes = function() {
-    var dcView, doctypesView, navView;
-    console.log('test');
-    navView = new NavView();
+    var dcView, doctypesView;
     doctypesView = new DoctypesView();
     doctypesView.render();
     dcView = new DoctypeCollectionView();
@@ -592,8 +590,7 @@ module.exports = Router = (function(_super) {
   };
 
   Router.prototype.search = function(doctype) {
-    var navView, options, searchView;
-    navView = new NavView();
+    var options, searchView;
     options = {};
     if (doctype != null) {
       if (!/\|/.test(decodeURIComponent(doctype))) {
@@ -1344,7 +1341,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Doctypes</h2><p>Here you can find the full list of document types present on your cozy</p></div></div></div></div><div class="container"><div class="row"><div class="span12"><h3 class="title">My current doctype list	</h3></div><div class="span11 offset1">	<div id="doctypes-container"><table class="table"><thead>						<th>Name</th><th>Number of documents</th><th>About that doctype</th></thead><tbody id="doctypes-list"></tbody></table></div></div></div></div>');
+buf.push('<div class="page-header"><h1>Doctypes<small><i class="icon-double-angle-right"></i>&nbsp;The full list of document types present on your cozy</small></h1></div><div class="row"><div class="col-xs-12"><div class="table-responsive"><div id="doctypes-container"><table class="table table-striped table-bordered table-hover"><thead><th>Name</th><th>Number of documents</th><th>About that doctype</th></thead><tbody id="doctypes-list"></tbody></table></div></div></div></div>');
 }
 return buf.join("");
 };

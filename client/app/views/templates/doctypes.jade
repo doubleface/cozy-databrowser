@@ -1,18 +1,16 @@
-#masthead
-	.container
-		.masthead-pad            
-			.masthead-text
-				h2 Doctypes
-				p Here you can find the full list of document types present on your cozy
-.container
-	.row
-		.span12
-			h3.title My current doctype list	
-		.span11.offset1	
-			#doctypes-container
-				table.table
-					thead						
-						th Name
-						th Number of documents
-						th About that doctype
-					tbody#doctypes-list
+.page-header
+    h1 Doctypes
+        small
+            i.icon-double-angle-right
+            |&nbsp;The full list of document types present on your cozy
+.row
+    .col-xs-12
+        .table-responsive
+            #doctypes-container
+                table.table.table-striped.table-bordered.table-hover
+                    thead
+                        th Name
+                        th Number of documents
+                        th About that doctype
+                    tbody#doctypes-list
+

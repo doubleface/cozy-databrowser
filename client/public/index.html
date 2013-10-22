@@ -25,7 +25,7 @@
         <!-- inline styles related to this page -->
 
         <!-- ace settings handler -->
-        <script src="javascripts/ace-extra.min.js"></script>
+
 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
@@ -69,23 +69,19 @@
                     </script>
 
                     <div class="sidebar-shortcuts" id="sidebar-shortcuts">
-                        <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
-                            previous
-
-                            <button class="btn btn-info">
-                                <i class="icon-pencil"></i>
-                            </button>
-
+                        <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large" style="text-align:right;">
                             <button class="btn btn-warning">
-                                <i class="icon-group"></i>
+                                <i class="icon-chevron-sign-left"></i>
                             </button>
 
-                            next
+                            <button class="btn btn-danger">
+                                <i class="icon-chevron-sign-right"></i>
+                            </button>
                         </div>
 
                     </div><!-- #sidebar-shortcuts -->
 
-                    <div class="nav-search" id="nav-search">
+                    <div class="nav-search" id="nav-search" style="padding-bottom:5px;height:40px">
                         <form class="form-search">
                             <span class="input-icon">
                                 <input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
@@ -95,9 +91,10 @@
                     </div><!-- #nav-search -->
 
                     <ul class="nav nav-list">
+
                         <li class="active open">
-                            <a href="" class="dropdown-toggle">
-                                <i class="icon-desktop"></i>
+                            <a href="#" class="dropdown-toggle">
+                                <i class="icon-list"></i>
                                 <span class="menu-text"> Doctypes</span>
 
                                 <b class="arrow icon-angle-down"></b>
@@ -112,7 +109,6 @@
                                 </li>
                             </ul>
                         </li>
-
                     </ul><!-- /.nav-list -->
 
                     <div class="sidebar-collapse" id="sidebar-collapse">
@@ -129,27 +125,12 @@
                         &nbsp;&nbsp;Currently exploring : <em>all doctypes</em>
                     </div>
 
-                    <div class="page-content">
-                        <div class="page-header">
-                            <h1>
-                                List of all doctypes
-                                <small>
-                                    <i class="icon-double-angle-right"></i>
-                                    The full list of document types present on your cozy
-                                </small>
-                            </h1>
-                        </div><!-- /.page-header -->
+                    <div class="page-content" id="content">
 
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <!-- PAGE CONTENT BEGINS -->
+                        <!-- PAGE CONTENT BEGINS -->
 
-                                    <div id="content">
-                                    </div>
+                        <!-- PAGE CONTENT ENDS -->
 
-                                <!-- PAGE CONTENT ENDS -->
-                            </div><!-- /.col -->
-                        </div><!-- /.row -->
                     </div><!-- /.page-content -->
                 </div><!-- /.main-content -->
             </div><!-- /.main-container-inner -->
@@ -161,12 +142,13 @@
 
 
         <script src="javascripts/vendor.js"></script>
-        <script src="javascripts/app.js"></script>
 
         <!-- ace scripts -->
+        <script src="javascripts/ace-extra.min.js"></script>
         <script src="javascripts/ace-elements.min.js"></script>
         <script src="javascripts/ace.min.js"></script>
         <script src="javascripts/spin.js"></script>
+        <script src="javascripts/app.js"  onload="require('initialize');"></script>
 
     </body>
 </html>
