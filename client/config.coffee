@@ -18,15 +18,21 @@ exports.config =
                 before: [
                     'vendor/scripts/jquery-2.0.3.min.js'
                     'vendor/scripts/underscore-1.5.2.min.js'
-                    'vendor/scripts/backbone-1.1.0.min.js'
                     'vendor/scripts/bootstrap.min.js'
+                    'vendor/scripts/backbone-1.1.0.min.js'
                 ]
 
-        # stylesheets:
-        #     joinTo: 'stylesheets/app.css'
-        #     order:
-        #         before: ['vendor/styles/normalize.css']
-        #         after: ['vendor/styles/helpers.css']
+        stylesheets:
+            joinTo: 'stylesheets/app.css'
+            order:
+                before: [
+                    'vendor/styles/bootstrap.min.css'
+                    'vendor/styles/font-awesome.min.css'
+                    'vendor/styles/ace-fonts.css'
+                    'vendor/styles/ace.min.css'
+                    'vendor/styles/ace-rtl.min.css'
+                    'vendor/styles/ace-skins.min.css'
+                ]
 
         templates:
             defaultExtension: 'jade'

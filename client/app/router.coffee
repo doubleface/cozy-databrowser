@@ -4,6 +4,7 @@ DoctypeCollectionView = require 'views/doctype_collection_view'
 SearchView = require 'views/search_view'
 ResultCollectionView = require 'views/result_collection_view'
 
+
 module.exports = class Router extends Backbone.Router
 
     routes:
@@ -13,6 +14,7 @@ module.exports = class Router extends Backbone.Router
         'search/all/:doctype' : 'search'
 
     doctypes: ->
+        console.log 'test'
         navView = new NavView()
         doctypesView = new DoctypesView()
         doctypesView.render()

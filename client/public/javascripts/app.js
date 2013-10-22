@@ -583,6 +583,7 @@ module.exports = Router = (function(_super) {
 
   Router.prototype.doctypes = function() {
     var dcView, doctypesView, navView;
+    console.log('test');
     navView = new NavView();
     doctypesView = new DoctypesView();
     doctypesView.render();
