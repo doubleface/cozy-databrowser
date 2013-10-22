@@ -552,13 +552,15 @@ module.exports = CheckingDdl = (function() {
 });
 
 ;require.register("router", function(exports, require, module) {
-var DoctypeCollectionView, DoctypesView, NavView, ResultCollectionView, Router, SearchView, _ref,
+var DoctypeCollectionView, DoctypeNavCollectionView, DoctypesView, NavView, ResultCollectionView, Router, SearchView, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 NavView = require('views/nav_view');
 
 DoctypesView = require('views/doctypes_view');
+
+DoctypeNavCollectionView = require('views/doctype_nav_collection_view');
 
 DoctypeCollectionView = require('views/doctype_collection_view');
 
@@ -582,7 +584,9 @@ module.exports = Router = (function(_super) {
   };
 
   Router.prototype.doctypes = function() {
-    var dcView, doctypesView;
+    var dcView, doctypeNavCollectionView, doctypesView;
+    doctypeNavCollectionView = new DoctypeNavCollectionView();
+    doctypeNavCollectionView.render();
     doctypesView = new DoctypesView();
     doctypesView.render();
     dcView = new DoctypeCollectionView();
@@ -644,6 +648,80 @@ module.exports = DoctypeCollectionView = (function(_super) {
   return DoctypeCollectionView;
 
 })(ViewCollection);
+
+});
+
+;require.register("views/doctype_nav_collection_view", function(exports, require, module) {
+var DoctypeCollection, DoctypeNavCollectionView, DoctypeNavView, ViewCollection, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+ViewCollection = require('../lib/view_collection');
+
+DoctypeCollection = require('../collections/doctype_collection');
+
+DoctypeNavView = require('./doctype_nav_view');
+
+module.exports = DoctypeNavCollectionView = (function(_super) {
+  __extends(DoctypeNavCollectionView, _super);
+
+  function DoctypeNavCollectionView() {
+    _ref = DoctypeNavCollectionView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  DoctypeNavCollectionView.prototype.itemview = DoctypeNavView;
+
+  DoctypeNavCollectionView.prototype.collection = new DoctypeCollection();
+
+  DoctypeNavCollectionView.prototype.initialize = function() {
+    console.log('test');
+    this.collectionEl = '#doctype-nav-collection-view';
+    console.log($(this.collectionEl).length);
+    DoctypeNavCollectionView.__super__.initialize.apply(this, arguments);
+    this.collection.fetch();
+    this.views = {};
+    return this.listenTo(this.collection, "reset", this.onReset);
+  };
+
+  return DoctypeNavCollectionView;
+
+})(ViewCollection);
+
+});
+
+;require.register("views/doctype_nav_view", function(exports, require, module) {
+var DoctypeNavView, View, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+View = require('./../lib/view');
+
+module.exports = DoctypeNavView = (function(_super) {
+  __extends(DoctypeNavView, _super);
+
+  function DoctypeNavView() {
+    _ref = DoctypeNavView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  DoctypeNavView.prototype.tagName = 'li';
+
+  DoctypeNavView.prototype.className = 'doctype-list-item';
+
+  DoctypeNavView.prototype.render = function() {
+    return DoctypeNavView.__super__.render.call(this, {
+      name: this.model.get("name")
+    });
+  };
+
+  DoctypeNavView.prototype.template = function() {
+    return require('./templates/doctype_nav');
+  };
+
+  return DoctypeNavView;
+
+})(View);
 
 });
 
@@ -1333,13 +1411,27 @@ return buf.join("");
 };
 });
 
+;require.register("views/templates/doctype_nav", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<a');
+buf.push(attrs({ 'href':('#search/all/' + (name) + '') }, {"href":true}));
+buf.push('>' + escape((interp = name) == null ? '' : interp) + '</a>');
+}
+return buf.join("");
+};
+});
+
 ;require.register("views/templates/doctypes", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="page-header"><h1>Doctypes<small><i class="icon-double-angle-right"></i>&nbsp;The full list of document types present on your cozy</small></h1></div><div class="row"><div class="col-xs-12"><div class="table-responsive"><div id="doctypes-container"><table class="table table-striped table-bordered table-hover"><thead><th>Name</th><th>Number of documents</th><th>About that doctype</th></thead><tbody id="doctypes-list"></tbody></table></div></div></div></div>');
+buf.push('<div class="current-title"> <h1>Doctypes</h1></div><div class="row"><div class="col-xs-12"><div class="table-responsive"><div id="doctypes-container"><table class="table table-striped table-bordered table-hover"><thead><th>Name</th><th>Number of documents</th><th>About that doctype</th></thead><tbody id="doctypes-list"></tbody></table></div></div></div></div>');
 }
 return buf.join("");
 };

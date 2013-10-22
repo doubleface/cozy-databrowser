@@ -411,12 +411,100 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-weibo:before{content:"\f18a";}
 .icon-renren:before{content:"\f18b";}
 
-/*
-// nib is a powerful lib for stylus that provides cross-browser css3 mixins.
-@import 'nib'
-@import '_base'
-@import '_cozy-databrowser'
-
+::selection {
+  background: #ffa60b;
+}
+::-moz-selection {
+  background: #ffa60b;
+}
+@font-face {
+  font-family: styled;
+  src: url("../fonts/maven-pro-light-300.otf");
+}
+@font-face {
+  font-family: main;
+  src: url("../fonts/signika-regular.ttf");
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  font-family: styled, helvetica;
+  color: #444;
+  background-color: #fcfcfc;
+  padding: 0px;
+}
+a,
+a:visited {
+  color: #f95a5a;
+  text-decoration: none;
+}
+a:focus,
+a:hover {
+  color: #f95a5a;
+  text-decoration: underline;
+  font: bold 16px "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: styled, helvetica;
+  font-weight: normal;
+  color: #222;
+}
+h1 {
+  font-size: 5em;
+  line-height: 1.4;
+  margin-bottom: 0.5em;
+}
+h2 {
+  font-size: 2em;
+  line-height: 1;
+  margin-bottom: 0.5em;
+}
+p {
+  margin: 0 0 1.5em;
+}
+ul,
+ol {
+  margin: 0 1.5em 1.5em 0;
+  list-style-type: none;
+}
+.spacer {
+  clear: both;
+}
+html {
+  min-height: 100%;
+  position: relative;
+}
+body {
+  padding-bottom: 0;
+  min-height: 100%;
+  font-size: 13px;
+}
+.current-path {
+  position: relative;
+  border-bottom: 1px solid #e5e5e5;
+  background-color: #f5f5f5;
+  min-height: 41px;
+  line-height: 40px;
+  padding: 0 12px 0 0;
+  display: block;
+}
+.current-title {
+  margin: 0 0 12px;
+  border-bottom: 1px dotted #e2e2e2;
+  padding-bottom: 16px;
+  padding-top: 7px;
+}
+.current-title h1 {
+  padding: 0;
+  margin: 0 8px;
+  font-size: 24px;
+}
 
 
 /*# sourceMappingURL=app.css.map*/

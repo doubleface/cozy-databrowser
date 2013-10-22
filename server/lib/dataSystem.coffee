@@ -13,6 +13,7 @@ class DataSystem extends CoreClass
     #------------------ PROTOTYPE CONSTANTS ----------------
     #required dependencies
     JSON_CLIENT: require('request-json').JsonClient
+    ASYNC: require 'async'
     ARRAY_HELPER: require './../helpers/oArrayHelper'
 
     #general pathes
@@ -111,6 +112,39 @@ class DataSystem extends CoreClass
     getDoctypes: (callback) ->
         @getData @PATH.doctypes, callback
 
+    getPermissions : (callback) ->
+        @getView @PATH.application.getpermissions, callback
+
+    getDoctypesByApplication: (callback) ->        
+        @getPermissions (error, applications) ->
+            if error?
+                callback error
+            else
+                doctypes = {}
+                for app in applications
+                    appName = app.key.toLowerCase()
+                    doctypes[appName] = []
+                    for objName, obj of app.value
+                        doctypes[appName].push objName.toLowerCase()
+                callback null, doctypes
+
+    getDoctypesByOrigin: (callback) ->        
+        @getDoctypes (error, doctypes) ->
+
+            if error?
+                callback error
+            else
+                doctypes = {}
+                # for doctype in doctypes
+                #     appName = app.key.toLowerCase()
+                #     doctypes[appName] = []
+                #     for objName, obj of app.value
+                #         doctypes[appName].push objName.toLowerCase()
+                console.log '-----------'
+                console.log doctypes
+                console.log '-----------'
+
+
     indexId: (id, aFields, callback = null) ->
         fields = {"fields": aFields}
         @clientDS.post @PATH.index + id, fields, (error, response, body) =>
@@ -188,7 +222,7 @@ class DataSystem extends CoreClass
                 formattedRow['value'] = row
                 formattedBody.push formattedRow
 
-        return formattedBody
+        return formattedBody 
 
     #---- VALIDATION METHODS
     areValidDoctypes: (doctypes, callback = null) ->

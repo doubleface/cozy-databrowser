@@ -1,5 +1,6 @@
 NavView = require 'views/nav_view'
 DoctypesView = require 'views/doctypes_view'
+DoctypeNavCollectionView = require 'views/doctype_nav_collection_view'
 DoctypeCollectionView = require 'views/doctype_collection_view'
 SearchView = require 'views/search_view'
 ResultCollectionView = require 'views/result_collection_view'
@@ -15,6 +16,8 @@ module.exports = class Router extends Backbone.Router
 
     doctypes: ->
         #navView = new NavView()
+        doctypeNavCollectionView = new DoctypeNavCollectionView()
+        doctypeNavCollectionView.render()
         doctypesView = new DoctypesView()
         doctypesView.render()
         dcView = new DoctypeCollectionView()

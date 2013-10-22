@@ -1,16 +1,4 @@
-html {
-  min-height: 100%;
-  position: relative;
-}
-body {
-  padding-bottom: 0;
-  background-color: #e4e6e9;
-  min-height: 100%;
-  font-family: 'Open Sans';
-  font-size: 13px;
-  color: #393939;
-  line-height: 1.5;
-}
+
 body.navbar-fixed {
   padding-top: 45px;
 }
@@ -88,11 +76,6 @@ a:active {
   text-decoration: none;
 }
 /* header sizes */
-h1 {
-  font-size: 32px;
-  font-weight: normal;
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
 h1.smaller {
   font-size: 31px;
 }

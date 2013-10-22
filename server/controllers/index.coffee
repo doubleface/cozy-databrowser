@@ -16,6 +16,14 @@ module.exports.doctypes = (req, res) ->
     #             console.log alarm.id
     #             dataSystem.indexId alarm.id, ['description', 'trigg']
 
+    dataSystem.getDoctypesByApplication (error, doctypes) ->
+        console.log error
+        console.log doctypes
+
+    dataSystem.getDoctypesByOrigin (error, doctypes) ->
+        console.log error
+        console.log doctypes
+
     #------PREPARE REQUESTS
     requests = []
     requests.push (callback) -> #0 -> get the doctypes list
