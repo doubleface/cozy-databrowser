@@ -1,26 +1,72 @@
-// Base Styles
+// Functions
+shadow()
+  -moz-box-shadow: arguments
+  -webkit-box-shadow: arguments
+  box-shadow: arguments
 
-*
-  box-sizing: border-box
+// Variables
+bgcolor = #FCFCFC
+bgshadowcolor = #666688
+bgcolornav = #F5F5F5
+objectbordercolor = #ebe5e2
 
-html,
+orange = #ffa60b
+
+::selection 
+  background: orange
+::-moz-selection 
+  background: orange
+
+// Font
+@font-face
+    font-family: styled
+    src: url('/fonts/maven-pro-light-300.otf');
+
+@font-face
+    font-family: main
+    src: url('/fonts/signika-regular.ttf');
+
+// Base
+html, body 
+  height 100%
+
 body
-    height 100%
-    width 100%
+  font-family: styled, helvetica
+  color: #444
+  background-color bgcolor
+  padding 0px
 
-body
-    text-rendering optimizeLegibility
+a, a:visited
+  color: #F95A5A
+  text-decoration: none
 
-body,
-input
-    color #444
-    font 300 16px Geneva, Verdana, "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif
-    line-height 1.2
+a:focus, a:hover
+  color: #F95A5A
+  text-decoration: underline
 
-a,
-a:visited
-    color #0086cc
-    text-decoration none
+  font: bold 16px "Helvetica Neue", Arial, Helvetica, sans-serif
 
-    &:hover
-        text-decoration underline
+h1, h2, h3, h4, h5
+  font-weight: normal
+  color: #222
+  clear: left
+
+h1
+  font-size: 5em
+  line-height: 1.4
+  margin-bottom: 0.5em
+
+h2
+  font-size: 2em
+  line-height: 1
+  margin-bottom: 0.5em
+
+p
+  margin: 0 0 1.5em
+
+ul, ol
+  margin: 0 1.5em 1.5em 0
+  list-style-type: none
+
+.spacer
+  clear both

@@ -28,10 +28,6 @@ exports.config =
                 before: [
                     'vendor/styles/bootstrap.min.css'
                     'vendor/styles/font-awesome.min.css'
-                    'vendor/styles/ace-fonts.css'
-                    'vendor/styles/ace.min.css'
-                    'vendor/styles/ace-rtl.min.css'
-                    'vendor/styles/ace-skins.min.css'
                 ]
 
         templates:

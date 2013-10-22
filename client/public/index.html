@@ -13,7 +13,12 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
 
         <!-- basic styles -->
-        <link rel="stylesheet" href="stylesheets/app.css"  />
+        <link rel="stylesheet" href="stylesheets/app.css" />
+        <link rel="stylesheet" href="stylesheets/ace-fonts.css" />
+        <link rel="stylesheet" href="stylesheets/ace.css" />
+        <link rel="stylesheet" href="stylesheets/ace-rtl.css" />
+        <link rel="stylesheet" href="stylesheets/ace-skins.css" />
+        <link rel="stylesheet" href="stylesheets/application.css" />
 
         <!--[if IE 7]>
           <link rel="stylesheet" href="stylesheets/font-awesome-ie7.min.css" />
@@ -36,27 +41,8 @@
     </head>
 
     <body class="application">
-        <div class="navbar navbar-default" id="navbar">
-            <script type="text/javascript">
-                try{ace.settings.check('navbar' , 'fixed')}catch(e){}
-            </script>
-
-            <div class="navbar-container" id="navbar-container">
-                <div class="navbar-header pull-left">
-                    <a href="" class="navbar-brand">
-                        <small>
-                            <i class="icon-leaf"></i>
-                            Cozy Databrowser
-                        </small>
-                    </a><!-- /.brand -->
-                </div><!-- /.navbar-header -->
-            </div><!-- /.container -->
-        </div>
-
         <div class="main-container" id="main-container">
-            <script type="text/javascript">
-                try{ace.settings.check('main-container' , 'fixed')}catch(e){}
-            </script>
+
 
             <div class="main-container-inner">
                 <a class="menu-toggler" id="menu-toggler" href="#">
@@ -64,22 +50,6 @@
                 </a>
 
                 <div class="sidebar" id="sidebar">
-                    <script type="text/javascript">
-                        try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
-                    </script>
-
-                    <div class="sidebar-shortcuts" id="sidebar-shortcuts">
-                        <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large" style="text-align:right;">
-                            <button class="btn btn-warning">
-                                <i class="icon-chevron-sign-left"></i>
-                            </button>
-
-                            <button class="btn btn-danger">
-                                <i class="icon-chevron-sign-right"></i>
-                            </button>
-                        </div>
-
-                    </div><!-- #sidebar-shortcuts -->
 
                     <div class="nav-search" id="nav-search" style="padding-bottom:5px;height:40px">
                         <form class="form-search">
@@ -121,7 +91,7 @@
                 </div>
 
                 <div class="main-content">
-                    <div class="breadcrumbs" id="breadcrumbs">
+                    <div class="current-path">
                         &nbsp;&nbsp;Currently exploring : <em>all doctypes</em>
                     </div>
 
