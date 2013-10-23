@@ -24,13 +24,14 @@ class DataSystem extends CoreClass
     #specific paths
     PATH:
         data: '/data/'
-        doctypes: '/doctypes'
         request: '/request/'
         all: '/dball/'
         search: '/data/search/'
         index: '/data/index/'
-        common:
-            getsumsbydoctype: '/request/common/getsumsbydoctype/'
+        doctypes:
+            getall: '/doctypes'
+            getsums: '/request/doctypes/getsums/'
+            getallbyorigin : '/request/doctypes/getallbyorigin/'
         metadoctype:
             getallbyrelated: '/request/metadoctype/getallbyrelated/'
         application:
@@ -110,12 +111,12 @@ class DataSystem extends CoreClass
         @postData path, callback, params
 
     getDoctypes: (callback) ->
-        @getData @PATH.doctypes, callback
+        @getData @PATH.doctypes.getall, callback
 
     getPermissions : (callback) ->
         @getView @PATH.application.getpermissions, callback
 
-    getDoctypesByApplication: (callback) ->        
+    getDoctypesByApplication: (callback) ->
         @getPermissions (error, applications) ->
             if error?
                 callback error
@@ -127,23 +128,6 @@ class DataSystem extends CoreClass
                     for objName, obj of app.value
                         doctypes[appName].push objName.toLowerCase()
                 callback null, doctypes
-
-    getDoctypesByOrigin: (callback) ->        
-        @getDoctypes (error, doctypes) ->
-
-            if error?
-                callback error
-            else
-                doctypes = {}
-                # for doctype in doctypes
-                #     appName = app.key.toLowerCase()
-                #     doctypes[appName] = []
-                #     for objName, obj of app.value
-                #         doctypes[appName].push objName.toLowerCase()
-                console.log '-----------'
-                console.log doctypes
-                console.log '-----------'
-
 
     indexId: (id, aFields, callback = null) ->
         fields = {"fields": aFields}
@@ -222,7 +206,7 @@ class DataSystem extends CoreClass
                 formattedRow['value'] = row
                 formattedBody.push formattedRow
 
-        return formattedBody 
+        return formattedBody
 
     #---- VALIDATION METHODS
     areValidDoctypes: (doctypes, callback = null) ->

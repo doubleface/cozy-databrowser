@@ -16,13 +16,14 @@ module.exports.doctypes = (req, res) ->
     #             console.log alarm.id
     #             dataSystem.indexId alarm.id, ['description', 'trigg']
 
-    dataSystem.getDoctypesByApplication (error, doctypes) ->
+    # dataSystem.getDoctypesByApplication (error, doctypes) ->
+    #     console.log error
+    #     console.log doctypes
+    pathOrigins = dataSystem.PATH.doctypes.getallbyorigin
+    callbackOrigins = (error, doctypes) ->
         console.log error
         console.log doctypes
-
-    dataSystem.getDoctypesByOrigin (error, doctypes) ->
-        console.log error
-        console.log doctypes
+    dataSystem.getView pathOrigins, callbackOrigins, group : true
 
     #------PREPARE REQUESTS
     requests = []
@@ -34,7 +35,7 @@ module.exports.doctypes = (req, res) ->
         dataSystem.getView targetUrl, callback
 
     requests.push (callback) -> #2 -> get the numbers of docs per doctype
-        targetUrl = dataSystem.PATH.common.getsumsbydoctype
+        targetUrl = dataSystem.PATH.doctypes.getsums
         dataSystem.getView targetUrl, callback, group: true
 
     requests.push (callback) -> #3 -> get the permissions
@@ -45,7 +46,7 @@ module.exports.doctypes = (req, res) ->
     #------AGREGATE CALLBACKS
     async.parallel requests, (error, results) ->
         if error?
-            res.send 500, @dataSystem.ERR_MSG.retrieveData
+            res.send 500, dataSystem.ERR_MSG.retrieveData
 
         else
             doctypeList = []

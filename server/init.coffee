@@ -6,13 +6,17 @@ module.exports = (initCallback) ->
 
     #----prepare view functions
     viewFunctions =
-        common:
-            getSumsByDoctype:
+        doctypes:
+            getSums:
                 map: (doc) ->
                     if doc.docType?
                         emit doc.docType, 1
                 reduce: (keys, values, rereduce) ->
                     return sum(values)
+            getAllByOrigins:
+                map: (doc) ->
+                    if(doc.origin and doc.docType)
+                        emit([doc.origin, doc.docType], 1);
         metadoctype:
             getAllByRelated:
                 map: (doc) ->
@@ -29,8 +33,8 @@ module.exports = (initCallback) ->
 
     #sums
     setupRequests.push (callback) ->
-        pathSum = dataSystem.PATH.common.getsumsbydoctype
-        getSum = viewFunctions.common.getSumsByDoctype
+        pathSum = dataSystem.PATH.doctypes.getsums
+        getSum = viewFunctions.doctypes.getsums
         dataSystem.manageRequest pathSum, getSum, callback
 
     #all
@@ -44,6 +48,12 @@ module.exports = (initCallback) ->
         pathPermissions = dataSystem.PATH.application.getpermissions
         getPermissions = viewFunctions.application.getPermissions
         dataSystem.manageRequest pathPermissions, getPermissions, callback
+
+    #origins
+    setupRequests.push (callback) ->
+        pathOrigins = dataSystem.PATH.doctypes.getallbyorigin
+        getOrigins = viewFunctions.doctypes.getAllByOrigins
+        dataSystem.manageRequest pathOrigins, getOrigins, callback
 
     #----agregate callback
     async.parallel setupRequests, (error, results) ->

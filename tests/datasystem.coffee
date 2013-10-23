@@ -104,7 +104,7 @@ describe "Datasystem management", ->
             describe "When use GET method", =>
                 before (done) =>
 
-                    path = @dataSystem.PATH.doctypes
+                    path = @dataSystem.PATH.doctypes.getall
                     @dataSystem.getData path, (err, body) =>
                         @errGetValid = err
                         @bodyGetValid = body
