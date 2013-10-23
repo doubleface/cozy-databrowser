@@ -675,11 +675,13 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
   DoctypeNavCollectionView.prototype.collection = new DoctypeCollection();
 
   DoctypeNavCollectionView.prototype.initialize = function() {
-    console.log('test');
     this.collectionEl = '#doctype-nav-collection-view';
-    console.log($(this.collectionEl).length);
     DoctypeNavCollectionView.__super__.initialize.apply(this, arguments);
-    this.collection.fetch();
+    this.collection.fetch({
+      data: $.param({
+        "menu": true
+      })
+    });
     this.views = {};
     return this.listenTo(this.collection, "reset", this.onReset);
   };
@@ -710,8 +712,10 @@ module.exports = DoctypeNavView = (function(_super) {
   DoctypeNavView.prototype.className = 'doctype-list-item';
 
   DoctypeNavView.prototype.render = function() {
+    console.log(this.model.attributes);
     return DoctypeNavView.__super__.render.call(this, {
-      name: this.model.get("name")
+      name: this.model.get('name'),
+      value: this.model.get('value')
     });
   };
 
@@ -1417,9 +1421,44 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
+ if (value.length) {
+{
+buf.push('<a href="#" class="dropdown-toggle"><span class="menu-text">' + escape((interp = name) == null ? '' : interp) + '</span><b class="arrow icon-angle-down"></b></a><ul class="submenu">');
+ for (var index in value) {
+{
+ if (typeof(value[index]) === "string") {
+{
+buf.push('<li><a');
+buf.push(attrs({ 'href':('#search/all/' + (value[index]) + '') }, {"href":true}));
+buf.push('>' + escape((interp = value[index]) == null ? '' : interp) + '</a></li>');
+}
+ }
+ else {
+{
+buf.push('<li><a href="#" class="dropdown-toggle"><span class="menu-text">' + escape((interp = value[index].key) == null ? '' : interp) + '</span><b class="arrow icon-angle-down"></b></a><ul class="submenu">');
+ subValues = value[index].value
+ for (var subIndex in subValues) {
+{
+buf.push('<li><a');
+buf.push(attrs({ 'href':('#search/all/' + (subValues[subIndex]) + '') }, {"href":true}));
+buf.push('>' + escape((interp = subValues[subIndex]) == null ? '' : interp) + '</a></li>');
+}
+ }
+buf.push('</ul></li>');
+}
+}
+}
+ }
+buf.push('</ul>');
+}
+ }
+ else {
+{
 buf.push('<a');
 buf.push(attrs({ 'href':('#search/all/' + (name) + '') }, {"href":true}));
 buf.push('>' + escape((interp = name) == null ? '' : interp) + '</a>');
+}
+}
 }
 return buf.join("");
 };

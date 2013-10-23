@@ -19,77 +19,107 @@ module.exports.doctypes = (req, res) ->
     # dataSystem.getDoctypesByApplication (error, doctypes) ->
     #     console.log error
     #     console.log doctypes
-    pathOrigins = dataSystem.PATH.doctypes.getallbyorigin
-    callbackOrigins = (error, doctypes) ->
-        console.log error
-        console.log doctypes
-    dataSystem.getView pathOrigins, callbackOrigins, group : true
+    if req.query.menu?
 
-    #------PREPARE REQUESTS
-    requests = []
-    requests.push (callback) -> #0 -> get the doctypes list
-        dataSystem.getDoctypes callback
+          #------PREPARE REQUESTS
+        menuRequests = []
+        menuRequests.push (callback) -> #0 -> all
+            dataSystem.getDoctypes callback
 
-    requests.push (callback) -> #1 -> get all the metadoctypes
-        targetUrl = dataSystem.PATH.metadoctype.getallbyrelated
-        dataSystem.getView targetUrl, callback
+        menuRequests.push (callback) -> #1 -> application
+            dataSystem.getDoctypesByApplication callback
 
-    requests.push (callback) -> #2 -> get the numbers of docs per doctype
-        targetUrl = dataSystem.PATH.doctypes.getsums
-        dataSystem.getView targetUrl, callback, group: true
+        menuRequests.push (callback) -> #2 -> origin
+            targetUrl = dataSystem.PATH.doctypes.getallbyorigin
+            dataSystem.getView targetUrl, callback, group: true
+        async.parallel menuRequests, (error, results) ->
+            if error?
+                res.send 500, dataSystem.ERR_MSG.retrieveData
+            else
+                doctypes = []
+                if results[0].length? and results[0].length > 0
+                    doctypes.push
+                        name : 'all'
+                        value : results[0]
+                if results[1].length? and results[1].length > 0
+                    doctypes.push
+                        name : 'applications'
+                        value : results[1]
+                if results[2].length? and results[2].length > 0
+                    doctypes.push
+                        name : 'origins'
+                        value : results[2]
+                res.send doctypes
 
-    requests.push (callback) -> #3 -> get the permissions
-        targetUrl = dataSystem.PATH.application.getpermissions
-        dataSystem.getView targetUrl, callback
 
 
-    #------AGREGATE CALLBACKS
-    async.parallel requests, (error, results) ->
-        if error?
-            res.send 500, dataSystem.ERR_MSG.retrieveData
 
-        else
-            doctypeList = []
-            doctypes = results[0]
-            metadoctypesByDoctype = results[1]
-            sumsByDoctype = results[2]
-            permissionsByDoctype = results[3]
+    else
+        #------PREPARE REQUESTS
+        requests = []
+        requests.push (callback) -> #0 -> get the doctypes list
+            dataSystem.getDoctypes callback
 
-            for doctypeName in doctypes
+        requests.push (callback) -> #1 -> get all the metadoctypes
+            targetUrl = dataSystem.PATH.metadoctype.getallbyrelated
+            dataSystem.getView targetUrl, callback
 
-                doctypeName = doctypeName.toLowerCase()
+        requests.push (callback) -> #2 -> get the numbers of docs per doctype
+            targetUrl = dataSystem.PATH.doctypes.getsums
+            dataSystem.getView targetUrl, callback, group: true
 
-                # initialize json object
-                agregate =
-                    name: doctypeName
-                    sum: 0
-                    app: []
+        requests.push (callback) -> #3 -> get the permissions
+            targetUrl = dataSystem.PATH.application.getpermissions
+            dataSystem.getView targetUrl, callback
 
-                #add metadoctypes
-                for metadoctype in metadoctypesByDoctype
-                    if metadoctype.key?.toLowerCase() is doctypeName
-                        agregate['metadoctype'] = metadoctype.value
 
-                #add sums
-                for sum in sumsByDoctype
-                    if sum.key?.toLowerCase() is doctypeName
-                        agregate['sum'] = sum.value
+        #------AGREGATE CALLBACKS
+        async.parallel requests, (error, results) ->
+            if error?
+                res.send 500, dataSystem.ERR_MSG.retrieveData
 
-                #add permissions
-                #console.log permissionsByDoctype
-                for permissions in permissionsByDoctype
-                    #ensure permissions keys are in lowercase
-                    permissionKeys = Object.keys permissions.value
-                    permissionKeys = permissionKeys.map (single) ->
-                        return single.toLowerCase()
+            else
+                doctypeList = []
+                doctypes = results[0]
+                metadoctypesByDoctype = results[1]
+                sumsByDoctype = results[2]
+                permissionsByDoctype = results[3]
 
-                    if doctypeName in permissionKeys
-                        agregate['app'].push permissions.key
+                for doctypeName in doctypes
 
-                doctypeList.push agregate
+                    doctypeName = doctypeName.toLowerCase()
 
-            #send json
-            res.send doctypeList
+                    # initialize json object
+                    agregate =
+                        name: doctypeName
+                        sum: 0
+                        app: []
+
+                    #add metadoctypes
+                    for metadoctype in metadoctypesByDoctype
+                        if metadoctype.key?.toLowerCase() is doctypeName
+                            agregate['metadoctype'] = metadoctype.value
+
+                    #add sums
+                    for sum in sumsByDoctype
+                        if sum.key?.toLowerCase() is doctypeName
+                            agregate['sum'] = sum.value
+
+                    #add permissions
+                    #console.log permissionsByDoctype
+                    for permissions in permissionsByDoctype
+                        #ensure permissions keys are in lowercase
+                        permissionKeys = Object.keys permissions.value
+                        permissionKeys = permissionKeys.map (single) ->
+                            return single.toLowerCase()
+
+                        if doctypeName in permissionKeys
+                            agregate['app'].push permissions.key
+
+                    doctypeList.push agregate
+
+                #send json
+                res.send doctypeList
 #search
 module.exports.search = (req, res) ->
     if req.query?

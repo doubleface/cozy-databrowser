@@ -29,7 +29,7 @@ module.exports = class CoreClass
 
         #prepare default values
         info = info || {}
-        errorMsg = error || 'No information'
+        errorMsg =  error || 'No information'
 
         myClass = @constructor.CLASS_NAME || null
         func = info.method || info.name || null

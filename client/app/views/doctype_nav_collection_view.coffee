@@ -8,10 +8,11 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
     collection: new DoctypeCollection()
 
     initialize: ->
-        console.log 'test'
+
         @collectionEl = '#doctype-nav-collection-view'
-        console.log $(@collectionEl).length
         super
-        @collection.fetch()
+        @collection.fetch {
+            data: $.param({"menu" : true})
+        }
         @views = {}
         @listenTo @collection, "reset", @onReset

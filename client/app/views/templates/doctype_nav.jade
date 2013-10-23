@@ -1,1 +1,28 @@
-a(href='#search/all/#{name}') #{name}
+
+- if (value.length) {
+    a.dropdown-toggle(href="#")
+        span.menu-text #{name}
+        b.arrow.icon-angle-down
+    ul.submenu
+        - for (var index in value) {
+                - if (typeof(value[index]) === "string") {
+                    li
+                        a(href='#search/all/#{value[index]}') #{value[index]}
+                - }
+                - else {
+                    li
+                        a.dropdown-toggle(href="#")
+                            span.menu-text #{value[index].key}
+                            b.arrow.icon-angle-down
+                        ul.submenu
+                            - subValues = value[index].value
+                            - for (var subIndex in subValues) {
+                                li
+                                    a(href='#search/all/#{subValues[subIndex]}') #{subValues[subIndex]}
+                            - }
+                -}
+        - }
+- }
+- else {
+    a(href='#search/all/#{name}') #{name}
+-}

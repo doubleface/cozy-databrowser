@@ -121,12 +121,15 @@ class DataSystem extends CoreClass
             if error?
                 callback error
             else
-                doctypes = {}
+                doctypes = []
                 for app in applications
                     appName = app.key.toLowerCase()
-                    doctypes[appName] = []
+                    doctypeName = []
                     for objName, obj of app.value
-                        doctypes[appName].push objName.toLowerCase()
+                            doctypeName.push objName.toLowerCase()
+                    doctypes.push
+                        'key' : appName
+                        'value' : doctypeName
                 callback null, doctypes
 
     indexId: (id, aFields, callback = null) ->
@@ -159,7 +162,6 @@ class DataSystem extends CoreClass
 
     getData: (path, callback) ->
         @clientDS.get path, (error, response, body) =>
-
             if error or response.statusCode isnt 200
                 error = error || new Error body.error
                 unless @silent then @_logErrorInConsole error
@@ -171,7 +173,6 @@ class DataSystem extends CoreClass
 
     postData: (path, callback, params = {}) ->
         @clientDS.post path, params, (error, response, body) =>
-
             if error or response.statusCode isnt 200
                 error = error || new Error body.error
                 unless @silent then @_logErrorInConsole error
