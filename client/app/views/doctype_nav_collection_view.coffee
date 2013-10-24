@@ -5,14 +5,14 @@ DoctypeNavView = require './doctype_nav_view'
 module.exports = class DoctypeNavCollectionView extends ViewCollection
 
     itemview: DoctypeNavView
-    collection: new DoctypeCollection()
 
     initialize: ->
-
+        @collection = new DoctypeCollection()
         @collectionEl = '#doctype-nav-collection-view'
         super
-        @collection.fetch {
+        @collection.fetch
+            reset : true
             data: $.param({"menu" : true})
-        }
         @views = {}
         @listenTo @collection, "reset", @onReset
+

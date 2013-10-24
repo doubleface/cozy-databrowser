@@ -1,6 +1,6 @@
 BaseView = require '../lib/base_view'
 ResultCollectionView = require '../views/result_collection_view'
-DtCddlCollectionView = require '../views/dt_cddl_collection_view'
+#DtCddlCollectionView = require '../views/dt_cddl_collection_view'
 #CheckingDdl = require '../noesis-classes/CheckingDdl'
 
 module.exports = class SearchView extends BaseView
@@ -8,10 +8,10 @@ module.exports = class SearchView extends BaseView
     el: '#content'
     template: require('./templates/search')
 
-    initialize : ->
+    initialize : (options) ->
         that = this
+        @options = options
         @rcView = new ResultCollectionView(@options)
-        @dtCddlCollectionView = new DtCddlCollectionView()
 
         #scroll event trigger next page (infinite scroll)
         if @options.range?
@@ -24,7 +24,7 @@ module.exports = class SearchView extends BaseView
     afterRender : ->
         that = this
         @rcView.render()
-        @dtCddlCollectionView.render()
+        #@dtCddlCollectionView.render()
 
         #resize event trigger 1 or + pages (infinite scroll)
         $(window).bind 'resize', ->
@@ -36,10 +36,10 @@ module.exports = class SearchView extends BaseView
 
 
     loadMore : (isTriggered)->
-        @rcView.loadNextPage(isTriggered)
+        @rcView.loadNextPage isTriggered
 
     events :
         'click #launch-search' : 'launchSearch'
 
-    launchSearch : ->
-        @rcView.search($('#search-field').val())
+    # launchSearch : ->
+    #     @rcView.search($('#search-field').val())

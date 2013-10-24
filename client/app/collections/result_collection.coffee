@@ -4,3 +4,5 @@ module.exports = class ResultCollection extends Backbone.Collection
         return 'search?page=' + @page + '&nbperpage=' + @nbPerPage
     page : 1
     nbPerPage : 10
+    initialize : ->
+        console.log 'result collection initialized'

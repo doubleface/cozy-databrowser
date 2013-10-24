@@ -151,6 +151,10 @@ module.exports = ResultCollection = (function(_super) {
 
   ResultCollection.prototype.nbPerPage = 10;
 
+  ResultCollection.prototype.initialize = function() {
+    return console.log('result collection initialized');
+  };
+
   return ResultCollection;
 
 })(Backbone.Collection);
@@ -401,6 +405,7 @@ module.exports = ViewCollection = (function(_super) {
   ViewCollection.prototype.afterRender = function() {
     var id, view, _ref1;
     this.$collectionEl = $(this.collectionEl);
+    this.$collectionEl.empty();
     _ref1 = this.views;
     for (id in _ref1) {
       view = _ref1[id];
@@ -584,17 +589,17 @@ module.exports = Router = (function(_super) {
   };
 
   Router.prototype.doctypes = function() {
-    var dcView, doctypeNavCollectionView, doctypesView;
+    var doctypeNavCollectionView;
     doctypeNavCollectionView = new DoctypeNavCollectionView();
-    doctypeNavCollectionView.render();
-    doctypesView = new DoctypesView();
-    doctypesView.render();
-    dcView = new DoctypeCollectionView();
-    return dcView.render();
+    return doctypeNavCollectionView.render();
   };
 
   Router.prototype.search = function(doctype) {
-    var options, searchView;
+    var doctypeNavCollectionView, options, searchView;
+    console.log('route : search');
+    console.log(doctype);
+    doctypeNavCollectionView = new DoctypeNavCollectionView();
+    doctypeNavCollectionView.render();
     options = {};
     if (doctype != null) {
       if (!/\|/.test(decodeURIComponent(doctype))) {
@@ -672,12 +677,12 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
 
   DoctypeNavCollectionView.prototype.itemview = DoctypeNavView;
 
-  DoctypeNavCollectionView.prototype.collection = new DoctypeCollection();
-
   DoctypeNavCollectionView.prototype.initialize = function() {
+    this.collection = new DoctypeCollection();
     this.collectionEl = '#doctype-nav-collection-view';
     DoctypeNavCollectionView.__super__.initialize.apply(this, arguments);
     this.collection.fetch({
+      reset: true,
       data: $.param({
         "menu": true
       })
@@ -712,7 +717,6 @@ module.exports = DoctypeNavView = (function(_super) {
   DoctypeNavView.prototype.className = 'doctype-list-item';
 
   DoctypeNavView.prototype.render = function() {
-    console.log(this.model.attributes);
     return DoctypeNavView.__super__.render.call(this, {
       name: this.model.get('name'),
       value: this.model.get('value')
@@ -964,8 +968,9 @@ module.exports = ResultCollectionView = (function(_super) {
 
   ResultCollectionView.prototype.noMoreItems = false;
 
-  ResultCollectionView.prototype.initialize = function() {
+  ResultCollectionView.prototype.initialize = function(options) {
     var that;
+    this.options = options;
     that = this;
     this.collection = new ResultCollection();
     ResultCollectionView.__super__.initialize.apply(this, arguments);
@@ -995,7 +1000,7 @@ module.exports = ResultCollectionView = (function(_super) {
 
   ResultCollectionView.prototype.render = function() {
     var id, loader, view, _ref1;
-    if (this.options.doctype != null) {
+    if ((this.options != null) && (this.options.doctype != null)) {
       loader = '<div class="loading-image">';
       loader += '<img src="images/ajax-loader.gif" />';
       loader += '</div>';
@@ -1186,7 +1191,7 @@ module.exports = ResultView = (function(_super) {
               fields[iCounter]['cdbFieldData'] += newLi;
             } else if ((obj != null) && typeof obj === 'object') {
               newLi = '<li>' + objName + ' : ';
-              newLi += '<i>' + $.stringify(obj) + '</i></li>';
+              newLi += '<i>' + JSON.stringify(obj) + '</i></li>';
               fields[iCounter]['cdbFieldData'] += newLi;
             } else {
               newLi = '<li><i>empty</i></li>';
@@ -1292,15 +1297,13 @@ module.exports = ResultView = (function(_super) {
 });
 
 ;require.register("views/search_view", function(exports, require, module) {
-var BaseView, DtCddlCollectionView, ResultCollectionView, SearchView, _ref,
+var BaseView, ResultCollectionView, SearchView, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 BaseView = require('../lib/base_view');
 
 ResultCollectionView = require('../views/result_collection_view');
-
-DtCddlCollectionView = require('../views/dt_cddl_collection_view');
 
 module.exports = SearchView = (function(_super) {
   __extends(SearchView, _super);
@@ -1314,11 +1317,11 @@ module.exports = SearchView = (function(_super) {
 
   SearchView.prototype.template = require('./templates/search');
 
-  SearchView.prototype.initialize = function() {
+  SearchView.prototype.initialize = function(options) {
     var that;
     that = this;
+    this.options = options;
     this.rcView = new ResultCollectionView(this.options);
-    this.dtCddlCollectionView = new DtCddlCollectionView();
     if (this.options.range != null) {
       return $(window).bind('scroll', function(e, isTriggered) {
         var docHeight;
@@ -1336,7 +1339,6 @@ module.exports = SearchView = (function(_super) {
     var that;
     that = this;
     this.rcView.render();
-    this.dtCddlCollectionView.render();
     return $(window).bind('resize', function() {
       return that.rcView.loopFirstScroll();
     });
@@ -1348,10 +1350,6 @@ module.exports = SearchView = (function(_super) {
 
   SearchView.prototype.events = {
     'click #launch-search': 'launchSearch'
-  };
-
-  SearchView.prototype.launchSearch = function() {
-    return this.rcView.search($('#search-field').val());
   };
 
   return SearchView;
@@ -1546,7 +1544,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div><div class="masthead-text"><span id="search-label" class="search-label">My search</span><input type="text" id="search-field"/><button id="launch-search" class="btn btn-secondary"><i class="icon-search"></i></button></div><div id="search-options" class="masthead-text"><span class="label-search">My options</span><div class="dropdown"><a href="javascript:;" data-toggle="dropdown" class="dropdown-toggle btn classic-toggle btn-secondary">Current doctype&nbsp;<b class="caret"></b></a><ul id="dt-cddl-list" class="dropdown-menu"></ul></div></div></div></div></div><div class="container"><div class="row"><div class="span12">    <h3 class="title">Results of my previous search</h3><div id="all-result"><div id="basic-accordion" class="accordion"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div><div class="load-more-result"> <span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div></div></div></div>');
+buf.push('<div id="all-result"><div id="basic-accordion" class="accordion"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div><div class="load-more-result"><span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div>');
 }
 return buf.join("");
 };

@@ -101,7 +101,7 @@ module.exports = class ResultView extends View
 
                         else if obj? and typeof obj is 'object'
                             newLi = '<li>' + objName + ' : '
-                            newLi += '<i>' + $.stringify(obj) + '</i></li>'
+                            newLi += '<i>' + JSON.stringify(obj) + '</i></li>'
                             fields[iCounter]['cdbFieldData'] += newLi
 
                         else

@@ -9,7 +9,8 @@ module.exports = class ResultCollectionView extends ViewCollection
     isLoading : false
     noMoreItems : false
 
-    initialize: ->
+    initialize: (options) ->
+        @options = options
         that = this
         @collection = new ResultCollection()
         super
@@ -34,7 +35,7 @@ module.exports = class ResultCollectionView extends ViewCollection
             }
 
     render: ->
-        if @options.doctype?
+        if @options? and @options.doctype?
             loader = '<div class="loading-image">'
             loader += '<img src="images/ajax-loader.gif" />'
             loader += '</div>'

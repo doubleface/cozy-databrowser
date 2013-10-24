@@ -116,6 +116,29 @@ class DataSystem extends CoreClass
     getPermissions : (callback) ->
         @getView @PATH.application.getpermissions, callback
 
+    getDoctypesByOrigin : (callback) ->
+        viewCallback = (error, body) ->
+            if error?
+                callback error
+            else
+                newArray = []
+                allObj = {}
+                for couple in body
+                    if couple.key?
+                        if allObj[couple.key[0]]?
+                            allObj[couple.key[0]].push couple.key[1]
+                        else
+                            allObj[couple.key[0]] = []
+                            allObj[couple.key[0]].push couple.key[1]
+                for objName, obj of allObj
+                    newObj = {}
+                    newObj['key'] = objName
+                    newObj['value'] = obj
+                    newArray.push newObj
+                callback null, newArray
+        @getView @PATH.doctypes.getallbyorigin, viewCallback, group: true
+
+
     getDoctypesByApplication: (callback) ->
         @getPermissions (error, applications) ->
             if error?

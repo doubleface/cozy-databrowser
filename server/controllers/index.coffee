@@ -30,8 +30,8 @@ module.exports.doctypes = (req, res) ->
             dataSystem.getDoctypesByApplication callback
 
         menuRequests.push (callback) -> #2 -> origin
-            targetUrl = dataSystem.PATH.doctypes.getallbyorigin
-            dataSystem.getView targetUrl, callback, group: true
+            dataSystem.getDoctypesByOrigin callback
+
         async.parallel menuRequests, (error, results) ->
             if error?
                 res.send 500, dataSystem.ERR_MSG.retrieveData

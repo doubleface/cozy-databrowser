@@ -18,13 +18,17 @@ module.exports = class Router extends Backbone.Router
         #navView = new NavView()
         doctypeNavCollectionView = new DoctypeNavCollectionView()
         doctypeNavCollectionView.render()
-        doctypesView = new DoctypesView()
-        doctypesView.render()
-        dcView = new DoctypeCollectionView()
-        dcView.render()
+        #doctypesView = new DoctypesView()
+        #doctypesView.render()
+        #dcView = new DoctypeCollectionView()
+        #dcView.render()
 
     search : (doctype) ->
         #navView = new NavView()
+        console.log 'route : search'
+        console.log doctype
+        doctypeNavCollectionView = new DoctypeNavCollectionView()
+        doctypeNavCollectionView.render()
         options = {}
         if doctype?
             if not /\|/.test decodeURIComponent(doctype)

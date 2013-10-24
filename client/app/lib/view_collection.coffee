@@ -25,7 +25,7 @@ module.exports = class ViewCollection extends BaseView
 
     collectionEl: null
 
-    
+
     # add 'empty' class to view when there is no subview
     onChange: ->
         @$el.toggleClass 'empty', _.size(@views) is 0
@@ -55,6 +55,7 @@ module.exports = class ViewCollection extends BaseView
     # after render, we reattach the views
     afterRender: ->
         @$collectionEl = $(@collectionEl)
+        @$collectionEl.empty()
         @appendView view.$el for id, view of @views
         @onReset @collection
         @onChange @views
