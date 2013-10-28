@@ -151,10 +151,6 @@ module.exports = ResultCollection = (function(_super) {
 
   ResultCollection.prototype.nbPerPage = 10;
 
-  ResultCollection.prototype.initialize = function() {
-    return console.log('result collection initialized');
-  };
-
   return ResultCollection;
 
 })(Backbone.Collection);
@@ -595,11 +591,7 @@ module.exports = Router = (function(_super) {
   };
 
   Router.prototype.search = function(doctype) {
-    var doctypeNavCollectionView, options, searchView;
-    console.log('route : search');
-    console.log(doctype);
-    doctypeNavCollectionView = new DoctypeNavCollectionView();
-    doctypeNavCollectionView.render();
+    var options, searchView;
     options = {};
     if (doctype != null) {
       if (!/\|/.test(decodeURIComponent(doctype))) {
@@ -678,17 +670,35 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
   DoctypeNavCollectionView.prototype.itemview = DoctypeNavView;
 
   DoctypeNavCollectionView.prototype.initialize = function() {
+    var that;
+    that = this;
     this.collection = new DoctypeCollection();
     this.collectionEl = '#doctype-nav-collection-view';
     DoctypeNavCollectionView.__super__.initialize.apply(this, arguments);
     this.collection.fetch({
-      reset: true,
       data: $.param({
         "menu": true
-      })
+      }),
+      success: function(col, data) {
+        return that.setMenuBehavior();
+      }
     });
     this.views = {};
     return this.listenTo(this.collection, "reset", this.onReset);
+  };
+
+  DoctypeNavCollectionView.prototype.setMenuBehavior = function() {
+    return $('#doctype-nav-collection-view a').click(function() {
+      var openLi, parentLi, parentsLi;
+      $('#doctype-nav-collection-view li').removeClass('active');
+      openLi = $('#doctype-nav-collection-view li.open');
+      parentsLi = $(this).parentsUntil('#doctype-nav-collection-view', 'li');
+      parentLi = $(this).parent('li');
+      if (parentLi.children('.submenu').length === 0) {
+        openLi.addClass('active');
+        return parentLi.addClass('active');
+      }
+    });
   };
 
   return DoctypeNavCollectionView;

@@ -76,7 +76,10 @@ describe "Doctype list management", ->
 
         # load all the fixtures
         before helpers.cleanDB
-        before (done) -> fixtures.load callback: done
+        before (done) -> fixtures.load doctypeTarget: 'alarm', callback: done
+        before (done) -> fixtures.load doctypeTarget: 'metadoctype', callback: done
+        before (done) -> fixtures.load doctypeTarget: 'contact', callback: done
+        before (done) -> fixtures.load doctypeTarget: 'application', callback: done
         after helpers.cleanDB
 
         describe "When we request the doctypes list", (done) =>
@@ -127,7 +130,7 @@ describe "Doctype list management", ->
             it "And alarm should be well formed", =>
                 @alarm.should.have.properties ['name', 'sum', 'app']
 
-            it "And alarm should have have its meta information", =>
+            it "And alarm should have its meta information", =>
                 @alarm.should.have.property 'metadoctype'
                 @alarm.metadoctype.should.have.properties ['related', 'displayName', 'identificationField', 'fields']
                 @alarm.metadoctype.related.should.equal 'Alarm'
@@ -136,16 +139,16 @@ describe "Doctype list management", ->
 
             it "And alarm should have the application 'photos' in its app list", =>
                 @alarm.should.have.property 'app'
-                @alarm.app.should.have.lengthOf 1
-                @alarm.app[0].should.equal 'photos'
+                @alarm.app.should.have.lengthOf 2
+                @alarm.app[1].should.equal 'photos'
 
             it "And contact should be well formed", =>
                 @contact.should.have.properties ['name', 'sum', 'app']
 
             it "And contact should have the application 'photos' in its apps list", =>
                 @contact.should.have.property 'app'
-                @contact.app.should.have.lengthOf 1
-                @contact.app[0].should.equal 'photos'
+                @contact.app.should.have.lengthOf 2
+                @contact.app[1].should.equal 'photos'
 
             it "And contact shouldn't have its meta information", =>
                 @contact.should.not.have.property 'metadoctype'

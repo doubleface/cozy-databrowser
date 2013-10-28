@@ -279,6 +279,38 @@ describe "Datasystem management", ->
                     should.not.exist @errMDSum
                     @bodyMDSum[0].value.should.be.equal 1
 
+            describe "When use GET DOCTYPES BY ORIGIN method", =>
+
+                before (done) =>
+
+                    @dataSystem.getDoctypesByOrigin (err, body) =>
+                        @errOrigin = err
+                        @bodyOrigin = body
+                        done()
+
+                it "The GET DOCTYPES BY ORIGIN method shouln't return an error", =>
+                    should.not.exist @errOrigin
+
+                it "The GET DOCTYPES BY ORIGIN method should return a well formed body", =>
+                    should.exist @bodyOrigin
+                    @bodyOrigin.should.have.type 'object'
+
+             describe "When use GET DOCTYPES BY APPLICATION method", =>
+
+                before (done) =>
+
+                    @dataSystem.getDoctypesByApplication (err, body) =>
+                        @errApp = err
+                        @bodyApp = body
+                        done()
+
+                it "The GET DOCTYPES BY APPLICATION method shouln't return an error", =>
+                    should.not.exist @errApp
+
+                it "The GET DOCTYPES BY APPLICATION method should return a well formed body", =>
+                    should.exist @bodyApp
+                    @bodyApp.should.have.type 'object'
+
         describe "When use preparation methods", =>
 
             describe "When use MANAGE REQUEST method", =>
