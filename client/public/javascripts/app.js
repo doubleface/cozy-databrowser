@@ -689,13 +689,14 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
 
   DoctypeNavCollectionView.prototype.setMenuBehavior = function() {
     return $('#doctype-nav-collection-view a').click(function() {
-      var openLi, parentLi, parentsLi;
-      $('#doctype-nav-collection-view li').removeClass('active');
+      var hasSubmenu, openLi, parentLi, parentsLi;
+      parentLi = $(this).parent('li');
+      hasSubmenu = parentLi.children('.submenu').length > 0;
       openLi = $('#doctype-nav-collection-view li.open');
       parentsLi = $(this).parentsUntil('#doctype-nav-collection-view', 'li');
-      parentLi = $(this).parent('li');
-      if (parentLi.children('.submenu').length === 0) {
-        openLi.addClass('active');
+      if (!hasSubmenu) {
+        $('#doctype-nav-collection-view li').removeClass('active');
+        parentsLi.addClass('active');
         return parentLi.addClass('active');
       }
     });
@@ -1126,7 +1127,7 @@ module.exports = ResultView = (function(_super) {
 
   ResultView.prototype.tagName = 'div';
 
-  ResultView.prototype.className = 'accordion-group';
+  ResultView.prototype.className = 'panel panel-default';
 
   ResultView.prototype.render = function() {
     return ResultView.__super__.render.call(this, {
@@ -1438,12 +1439,12 @@ buf.push('<a href="#" class="dropdown-toggle"><span class="menu-text">' + escape
 {
 buf.push('<li><a');
 buf.push(attrs({ 'href':('#search/all/' + (value[index]) + '') }, {"href":true}));
-buf.push('>' + escape((interp = value[index]) == null ? '' : interp) + '</a></li>');
+buf.push('><i class="icon-double-angle-right"></i>' + escape((interp = value[index]) == null ? '' : interp) + '</a></li>');
 }
  }
  else {
 {
-buf.push('<li><a href="#" class="dropdown-toggle"><span class="menu-text">' + escape((interp = value[index].key) == null ? '' : interp) + '</span><b class="arrow icon-angle-down"></b></a><ul class="submenu">');
+buf.push('<li><a href="#" class="dropdown-toggle"><i class="icon-double-angle-right"></i><span class="menu-text">' + escape((interp = value[index].key) == null ? '' : interp) + '</span><b class="arrow icon-angle-down"></b></a><ul class="submenu">');
  subValues = value[index].value
  for (var subIndex in subValues) {
 {
@@ -1517,31 +1518,35 @@ var buf = [];
 with (locals || {}) {
 var interp;
  if (results['no_result']) {
+{
 buf.push('<em>' + escape((interp = results['no_result_msg']) == null ? '' : interp) + '</em>');
+}
  }
  else {
-buf.push('<div class="accordion-heading"><a');
+{
+buf.push('<div class="panel-heading"><h4 class="panel-title"><a');
 buf.push(attrs({ 'data-toggle':("collapse"), 'data-parent':("#basic-accordion"), 'href':("#collapse" + (results.count) + ""), "class": ('accordion-toggle') }, {"data-toggle":true,"data-parent":true,"href":true}));
-buf.push('><i class="icon-plus-sign"></i><strong>&nbsp;' + escape((interp = results.heading.doctype) == null ? '' : interp) + ' </strong>&nbsp;' + escape((interp = results.heading.field) == null ? '' : interp) + ' :\n&nbsp;' + escape((interp = results.heading.data) == null ? '' : interp) + '</a><div class="remove-result">Remove&nbsp;&nbsp;<i class="icon-remove-sign"></i></div></div><div');
-buf.push(attrs({ 'style':("height: 0px;"), 'id':("collapse" + (results.count) + ""), "class": ('accordion-body') + ' ' + ('collapse') }, {"style":true,"id":true}));
-buf.push('><div class="accordion-inner"><table id="result-list" class="table">');
+buf.push('><i class="icon-plus-sign"></i><strong>&nbsp;' + escape((interp = results.heading.doctype) == null ? '' : interp) + '</strong>&nbsp;' + escape((interp = results.heading.field) == null ? '' : interp) + ' :\n&nbsp;' + escape((interp = results.heading.data) == null ? '' : interp) + '</a><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button class="btn btn-xs btn-danger remove-result"><i class="icon-trash bigger-120"></i></button></div></h4></div><div');
+buf.push(attrs({ 'style':("height: 0px;"), 'id':("collapse" + (results.count) + ""), "class": ('panel-collapse') + ' ' + ('collapse') }, {"style":true,"id":true}));
+buf.push('><div class="panel-body"><div id="result-list" class="profile-user-info profile-user-info-striped">');
  for (var iCount = 0; iCount < results['fields'].length; iCount++) {
 {
-buf.push('<tr>	<td> <span');
+buf.push('<div class="profile-info-row"><div class="profile-info-name"><span');
 buf.push(attrs({ 'data-title':("" + (results['fields'][iCount].cdbFieldDescription) + ""), "class": ('label') + ' ' + ("" + (results['fields'][iCount].cdbLabelClass) + "") }, {"class":true,"data-title":true}));
-buf.push('>&nbsp;' + escape((interp = results['fields'][iCount].cdbFieldName) == null ? '' : interp) + '&nbsp; ');
+buf.push('>' + escape((interp = results['fields'][iCount].cdbFieldName) == null ? '' : interp) + '&nbsp;');
  if (results['fields'][iCount].cdbFieldDescription!== "") {
 {
 buf.push('<i class="icon-question-sign"></i>');
 }
 }
-buf.push('</span></td><td>');
+buf.push('</span></div><div class="profile-info-value">');
 var __val__ = results['fields'][iCount].cdbFieldData
 buf.push(null == __val__ ? "" : __val__);
-buf.push('</td></tr>');
+buf.push('</div></div>');
 }
  }
-buf.push('</table></div></div>');
+buf.push('</div></div></div>');
+}
  }
 }
 return buf.join("");
@@ -1554,7 +1559,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="all-result"><div id="basic-accordion" class="accordion"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div><div class="load-more-result"><span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div>');
+buf.push('<div id="all-result"><div id="basic-accordion" class="accordion-style1 panel-group"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div><div class="load-more-result"><span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div>');
 }
 return buf.join("");
 };

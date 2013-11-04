@@ -3,7 +3,7 @@ View = require './../lib/view'
 module.exports = class ResultView extends View
 
     tagName: 'div'
-    className: 'accordion-group'
+    className: 'panel panel-default'
 
     render: =>
         super

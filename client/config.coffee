@@ -26,8 +26,8 @@ exports.config =
             joinTo: 'stylesheets/app.css'
             order:
                 before: [
-                    'vendor/styles/bootstrap.min.css'
                     'vendor/styles/font-awesome.min.css'
+                    'vendor/styles/bootstrap.min.css'
                 ]
 
         templates:

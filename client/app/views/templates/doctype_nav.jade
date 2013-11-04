@@ -6,11 +6,14 @@
         - for (var index in value) {
                 - if (typeof(value[index]) === "string") {
                     li
-                        a(href='#search/all/#{value[index]}') #{value[index]}
+                        a(href='#search/all/#{value[index]}')
+                            i.icon-double-angle-right
+                            |#{value[index]}
                 - }
                 - else {
                     li
                         a.dropdown-toggle(href="#")
+                            i.icon-double-angle-right
                             span.menu-text #{value[index].key}
                             b.arrow.icon-angle-down
                         ul.submenu

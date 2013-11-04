@@ -20,11 +20,13 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
 
     setMenuBehavior: ->
         $('#doctype-nav-collection-view a').click ->
-            $('#doctype-nav-collection-view li').removeClass 'active'
+            parentLi = $(this).parent('li')
+            hasSubmenu = parentLi.children('.submenu').length > 0
             openLi = $('#doctype-nav-collection-view li.open')
             parentsLi = $(this).parentsUntil '#doctype-nav-collection-view', 'li'
-            parentLi = $(this).parent('li')
-            if parentLi.children('.submenu').length is 0
-                openLi.addClass 'active'
+
+            if not hasSubmenu
+                $('#doctype-nav-collection-view li').removeClass 'active'
+                parentsLi.addClass 'active'
                 parentLi.addClass 'active'
 
