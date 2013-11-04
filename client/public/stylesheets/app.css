@@ -420,7 +420,7 @@ body {
   min-height: 100%;
   font-size: 13px;
 }
-.current-path {
+.results-global-controls {
   position: relative;
   border-bottom: 1px solid #e5e5e5;
   background-color: #f5f5f5;

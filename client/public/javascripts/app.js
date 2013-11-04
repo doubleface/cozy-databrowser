@@ -1307,14 +1307,58 @@ module.exports = ResultView = (function(_super) {
 
 });
 
+;require.register("views/results_global_controls_view", function(exports, require, module) {
+var ResultsGlobalControlsView, View, _ref,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+View = require('./../lib/view');
+
+module.exports = ResultsGlobalControlsView = (function(_super) {
+  __extends(ResultsGlobalControlsView, _super);
+
+  function ResultsGlobalControlsView() {
+    this.render = __bind(this.render, this);
+    _ref = ResultsGlobalControlsView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  ResultsGlobalControlsView.prototype.el = '.results-global-controls';
+
+  ResultsGlobalControlsView.prototype.template = function() {
+    return require('./templates/results_global_controls');
+  };
+
+  ResultsGlobalControlsView.prototype.initialize = function(opt) {
+    return this.render(opt);
+  };
+
+  ResultsGlobalControlsView.prototype.render = function(opt) {
+    console.log(opt);
+    return ResultsGlobalControlsView.__super__.render.call(this, {
+      range: opt.range,
+      doctype: opt.doctype,
+      max: "x"
+    });
+  };
+
+  return ResultsGlobalControlsView;
+
+})(View);
+
+});
+
 ;require.register("views/search_view", function(exports, require, module) {
-var BaseView, ResultCollectionView, SearchView, _ref,
+var BaseView, ResultCollectionView, ResultsGlobalControlsView, SearchView, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 BaseView = require('../lib/base_view');
 
 ResultCollectionView = require('../views/result_collection_view');
+
+ResultsGlobalControlsView = require('../views/results_global_controls_view');
 
 module.exports = SearchView = (function(_super) {
   __extends(SearchView, _super);
@@ -1332,6 +1376,7 @@ module.exports = SearchView = (function(_super) {
     var that;
     that = this;
     this.options = options;
+    this.resultsGlobalControlsView = new ResultsGlobalControlsView(this.options);
     this.rcView = new ResultCollectionView(this.options);
     if (this.options.range != null) {
       return $(window).bind('scroll', function(e, isTriggered) {
@@ -1548,6 +1593,18 @@ buf.push('</div></div>');
 buf.push('</div></div></div>');
 }
  }
+}
+return buf.join("");
+};
+});
+
+;require.register("views/templates/results_global_controls", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<span>&nbsp;&nbsp;Currently exploring :&nbsp;<em>' + escape((interp = doctype[0]) == null ? '' : interp) + ' (' + escape((interp = range) == null ? '' : interp) + ') - results 0 to ' + escape((interp = max) == null ? '' : interp) + '</em></span><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button class="btn btn-xs btn-danger remove-result">Delete All&nbsp;&nbsp;<i class="icon-trash bigger-120"></i></button></div>');
 }
 return buf.join("");
 };

@@ -1,5 +1,6 @@
 BaseView = require '../lib/base_view'
 ResultCollectionView = require '../views/result_collection_view'
+ResultsGlobalControlsView = require '../views/results_global_controls_view'
 #DtCddlCollectionView = require '../views/dt_cddl_collection_view'
 #CheckingDdl = require '../noesis-classes/CheckingDdl'
 
@@ -11,6 +12,7 @@ module.exports = class SearchView extends BaseView
     initialize : (options) ->
         that = this
         @options = options
+        @resultsGlobalControlsView = new ResultsGlobalControlsView(@options)
         @rcView = new ResultCollectionView(@options)
 
         #scroll event trigger next page (infinite scroll)
