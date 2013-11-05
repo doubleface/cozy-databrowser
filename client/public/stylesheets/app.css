@@ -421,13 +421,17 @@ body {
   font-size: 13px;
 }
 .results-global-controls {
-  position: relative;
   border-bottom: 1px solid #e5e5e5;
   background-color: #f5f5f5;
   min-height: 41px;
   line-height: 40px;
   padding: 0 12px 0 0;
   display: block;
+  width: 100%;
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  width: 100%;
 }
 .current-title {
   margin: 0 0 12px;
@@ -458,8 +462,15 @@ body {
   right: 0;
   margin: 5px;
 }
-.remove-result i {
+.results-global-controls .result-buttons {
+  position: fixed;
+}
+.btn-xs > [class*="icon-"],
+.btn-minier > [class*="icon-"] {
   margin-right: 0;
+}
+.page-content {
+  padding-top: 51px;
 }
 
 /* side navigation */
@@ -1283,4 +1294,4 @@ li [class*=" icon-"],
   }
 }
 
-/*# sourceMappingURL=app.css.map*/
+/*@ sourceMappingURL=app.css.map*/

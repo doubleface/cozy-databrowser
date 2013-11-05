@@ -43,20 +43,20 @@
 
   var initModule = function(name, definition) {
     var module = {id: name, exports: {}};
-    cache[name] = module;
     definition(module.exports, localRequire(name), module);
-    return module.exports;
+    var exports = cache[name] = module.exports;
+    return exports;
   };
 
   var require = function(name, loaderPath) {
     var path = expand(name, '.');
     if (loaderPath == null) loaderPath = '/';
 
-    if (has(cache, path)) return cache[path].exports;
+    if (has(cache, path)) return cache[path];
     if (has(modules, path)) return initModule(path, modules[path]);
 
     var dirIndex = expand(path, './index');
-    if (has(cache, dirIndex)) return cache[dirIndex].exports;
+    if (has(cache, dirIndex)) return cache[dirIndex];
     if (has(modules, dirIndex)) return initModule(dirIndex, modules[dirIndex]);
 
     throw new Error('Cannot find module "' + name + '" from '+ '"' + loaderPath + '"');
@@ -1129,6 +1129,29 @@ module.exports = ResultView = (function(_super) {
 
   ResultView.prototype.className = 'panel panel-default';
 
+  ResultView.prototype.templateModal = require('./templates/modal_confirm');
+
+  ResultView.prototype.events = {
+    'click .accordion-toggle': 'blurIt',
+    'mouseenter .label': 'showFieldDescription',
+    'mouseleave .label': 'showFieldDescription',
+    'click .remove-result': 'confirmRemoveResult',
+    'mouseover .remove-result': 'convertButtonToDanger',
+    'mouseout .remove-result': 'convertButtonToClassic'
+  };
+
+  ResultView.prototype.convertButtonToDanger = function(event) {
+    var jqObj;
+    jqObj = $(event.currentTarget);
+    return jqObj.addClass('btn-danger');
+  };
+
+  ResultView.prototype.convertButtonToClassic = function(event) {
+    var jqObj;
+    jqObj = $(event.currentTarget);
+    return jqObj.removeClass('btn-danger');
+  };
+
   ResultView.prototype.render = function() {
     return ResultView.__super__.render.call(this, {
       results: this.manageResultsForView()
@@ -1225,15 +1248,6 @@ module.exports = ResultView = (function(_super) {
     return require('./templates/result');
   };
 
-  ResultView.prototype.templateModal = require('./templates/modal_confirm');
-
-  ResultView.prototype.events = {
-    'click .accordion-toggle': 'blurIt',
-    'mouseenter .label': 'showFieldDescription',
-    'mouseleave .label': 'showFieldDescription',
-    'click .remove-result': 'confirmRemoveResult'
-  };
-
   ResultView.prototype.blurIt = function(e) {
     return $(e.currentTarget).blur();
   };
@@ -1326,6 +1340,25 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
 
   ResultsGlobalControlsView.prototype.el = '.results-global-controls';
 
+  ResultsGlobalControlsView.prototype.events = {
+    'mouseover .remove-result': 'convertButtonToDanger',
+    'mouseout .remove-result': 'convertButtonToClassic'
+  };
+
+  ResultsGlobalControlsView.prototype.convertButtonToDanger = function(event) {
+    var jqObj;
+    jqObj = $(event.currentTarget);
+    jqObj.addClass('btn-danger');
+    return jqObj.children('span').text('Delete all ');
+  };
+
+  ResultsGlobalControlsView.prototype.convertButtonToClassic = function(event) {
+    var jqObj;
+    jqObj = $(event.currentTarget);
+    jqObj.removeClass('btn-danger');
+    return jqObj.children('span').empty();
+  };
+
   ResultsGlobalControlsView.prototype.template = function() {
     return require('./templates/results_global_controls');
   };
@@ -1415,7 +1448,8 @@ module.exports = SearchView = (function(_super) {
 });
 
 ;require.register("views/templates/doctype", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1470,7 +1504,8 @@ return buf.join("");
 });
 
 ;require.register("views/templates/doctype_nav", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1519,7 +1554,8 @@ return buf.join("");
 });
 
 ;require.register("views/templates/doctypes", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1531,7 +1567,8 @@ return buf.join("");
 });
 
 ;require.register("views/templates/dt_cddl_list_item", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1545,7 +1582,8 @@ return buf.join("");
 });
 
 ;require.register("views/templates/modal_confirm", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1557,7 +1595,8 @@ return buf.join("");
 });
 
 ;require.register("views/templates/result", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1571,7 +1610,7 @@ buf.push('<em>' + escape((interp = results['no_result_msg']) == null ? '' : inte
 {
 buf.push('<div class="panel-heading"><h4 class="panel-title"><a');
 buf.push(attrs({ 'data-toggle':("collapse"), 'data-parent':("#basic-accordion"), 'href':("#collapse" + (results.count) + ""), "class": ('accordion-toggle') }, {"data-toggle":true,"data-parent":true,"href":true}));
-buf.push('><i class="icon-plus-sign"></i><strong>&nbsp;' + escape((interp = results.heading.doctype) == null ? '' : interp) + '</strong>&nbsp;' + escape((interp = results.heading.field) == null ? '' : interp) + ' :\n&nbsp;' + escape((interp = results.heading.data) == null ? '' : interp) + '</a><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button class="btn btn-xs btn-danger remove-result"><i class="icon-trash bigger-120"></i></button></div></h4></div><div');
+buf.push('><i class="icon-plus-sign"></i><strong>&nbsp;' + escape((interp = results.heading.doctype) == null ? '' : interp) + '</strong>&nbsp;' + escape((interp = results.heading.field) == null ? '' : interp) + ' :\n&nbsp;' + escape((interp = results.heading.data) == null ? '' : interp) + '</a><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button class="btn btn-xs remove-result"><i class="icon-trash bigger-120"></i></button></div></h4></div><div');
 buf.push(attrs({ 'style':("height: 0px;"), 'id':("collapse" + (results.count) + ""), "class": ('panel-collapse') + ' ' + ('collapse') }, {"style":true,"id":true}));
 buf.push('><div class="panel-body"><div id="result-list" class="profile-user-info profile-user-info-striped">');
  for (var iCount = 0; iCount < results['fields'].length; iCount++) {
@@ -1599,19 +1638,21 @@ return buf.join("");
 });
 
 ;require.register("views/templates/results_global_controls", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<span>&nbsp;&nbsp;Currently exploring :&nbsp;<em>' + escape((interp = doctype[0]) == null ? '' : interp) + ' (' + escape((interp = range) == null ? '' : interp) + ') - results 0 to ' + escape((interp = max) == null ? '' : interp) + '</em></span><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button class="btn btn-xs btn-danger remove-result">Delete All&nbsp;&nbsp;<i class="icon-trash bigger-120"></i></button></div>');
+buf.push('<span>&nbsp;&nbsp;Currently exploring :&nbsp;<em>' + escape((interp = doctype[0]) == null ? '' : interp) + ' (' + escape((interp = range) == null ? '' : interp) + ') - results 0 to ' + escape((interp = max) == null ? '' : interp) + '</em></span><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button class="btn btn-xs remove-result"><span></span><i class="icon-trash bigger-120"></i></button></div>');
 }
 return buf.join("");
 };
 });
 
 ;require.register("views/templates/search", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1623,4 +1664,4 @@ return buf.join("");
 });
 
 ;
-//# sourceMappingURL=app.js.map
+//@ sourceMappingURL=app.js.map

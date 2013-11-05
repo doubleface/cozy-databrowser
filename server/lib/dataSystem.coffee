@@ -28,6 +28,7 @@ class DataSystem extends CoreClass
         all: '/dball/'
         search: '/data/search/'
         index: '/data/index/'
+        destroyAll : '/dball/destroy/'
         doctypes:
             getall: '/doctypes'
             getsums: '/request/doctypes/getsums/'
@@ -169,6 +170,9 @@ class DataSystem extends CoreClass
 
     deleteById: (id, callback) ->
         @deleteData @PATH.data + id + '/', callback
+
+    deleteAllByDoctype : (doctype, callback) ->
+        @putData @PATH.request + doctype + @PATH.destroyAll, {}, callback
 
 
     #---- CRUD HTTTP METHODS

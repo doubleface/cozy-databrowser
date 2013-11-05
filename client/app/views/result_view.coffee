@@ -4,6 +4,22 @@ module.exports = class ResultView extends View
 
     tagName: 'div'
     className: 'panel panel-default'
+    templateModal: require('./templates/modal_confirm')
+    events :
+        'click .accordion-toggle' : 'blurIt'
+        'mouseenter .label' : 'showFieldDescription'
+        'mouseleave .label' : 'showFieldDescription'
+        'click .remove-result' : 'confirmRemoveResult'
+        'mouseover .remove-result' : 'convertButtonToDanger'
+        'mouseout .remove-result' : 'convertButtonToClassic'
+
+    convertButtonToDanger: (event) ->
+        jqObj = $(event.currentTarget)
+        jqObj.addClass 'btn-danger'
+
+    convertButtonToClassic: (event) ->
+        jqObj = $(event.currentTarget)
+        jqObj.removeClass 'btn-danger'
 
     render: =>
         super
@@ -121,14 +137,6 @@ module.exports = class ResultView extends View
 
     template: ->
         require './templates/result'
-
-    templateModal: require('./templates/modal_confirm')
-
-    events :
-        'click .accordion-toggle' : 'blurIt'
-        'mouseenter .label' : 'showFieldDescription'
-        'mouseleave .label' : 'showFieldDescription'
-        'click .remove-result' : 'confirmRemoveResult'
 
     blurIt : (e) ->
         $(e.currentTarget).blur()

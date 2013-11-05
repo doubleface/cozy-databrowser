@@ -245,7 +245,7 @@ describe "Datasystem management", ->
                 it "The DELETE BY ID method shouldn't return an error", =>
                     should.not.exist @errDeleteId
 
-                it "After DELETE BY ID method, sum of alarm must be 0", =>
+                it "After DELETE BY ID method, sum of 'alarm' must be 0", =>
                     should.not.exist @errAlarmSum3
                     @bodyAlarmSum3.should.have.lengthOf 0
 
@@ -265,6 +265,29 @@ describe "Datasystem management", ->
                             @errMDSum = errMDSum
                             @bodyMDSum = bodyMDSum
                             done()
+
+            describe "When use DELETE ALL BY DOCTYPES method", =>
+
+                before (done) =>
+
+                    @dataSystem.deleteAllByDoctype 'contact', (err, body) =>
+                        @errDelAll = err
+                        @bodyDelAll = body
+                        requestPath = '/request/' + 'contact' + '/dball/'
+                        @dataSystem.getView requestPath, (errAlarmDellAll, bodyAlarmDellAll) =>
+                            @errADA = errAlarmDellAll
+                            @bodyADA = bodyAlarmDellAll
+                            done()
+
+                it "The DELETE ALL BY DOCTYPES method shouldn't return an error", =>
+                    should.not.exist @errDelAll
+
+                it "After DELETE BY ID method, sum of 'contact' must be 0", =>
+                    should.not.exist @errADA
+                    @bodyADA.should.have.lengthOf 0
+
+
+
 
             describe "When use MANAGE REQUEST method", =>
 
