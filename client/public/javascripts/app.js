@@ -473,6 +473,27 @@ module.exports = DoctypeModel = (function(_super) {
 
 });
 
+;require.register("models/meta_infos_model", function(exports, require, module) {
+var DoctypeMetaInfosModel, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+module.exports = DoctypeMetaInfosModel = (function(_super) {
+  __extends(DoctypeMetaInfosModel, _super);
+
+  function DoctypeMetaInfosModel() {
+    _ref = DoctypeMetaInfosModel.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  DoctypeMetaInfosModel.prototype.urlRoot = 'doctype_meta_infos';
+
+  return DoctypeMetaInfosModel;
+
+})(Backbone.Model);
+
+});
+
 ;require.register("models/result_model", function(exports, require, module) {
 var ResultModel, _ref,
   __hasProp = {}.hasOwnProperty,
@@ -494,70 +515,10 @@ module.exports = ResultModel = (function(_super) {
 
 });
 
-;require.register("noesis-classes/CheckingDdl", function(exports, require, module) {
-var CheckingDdl;
-
-module.exports = CheckingDdl = (function() {
-  var CSS_CLASSES;
-
-  CheckingDdl.CLASS_NAME = "CheckingDdl";
-
-  CheckingDdl.CLASS_COUNT = 0;
-
-  CSS_CLASSES = {
-    container: "cddl-engine-container",
-    title: "cddl-title",
-    list: "cddl-list",
-    listItem: "cddl-list-item",
-    listItemContent: "cddl-list-item-content",
-    listItemCb: "cddl-list-item-checkbox"
-  };
-
-  function CheckingDdl(sTitle, aStrings, sIdParent) {
-    this.sTitle = sTitle;
-    this.aStrings = aStrings;
-    this.sIdParent = sIdParent;
-    this.sEltUniqId = CSS_CLASSES.container + this.constructor.CLASS_COUNT;
-    this.create();
-    this.constructor.CLASS_COUNT++;
-  }
-
-  CheckingDdl.prototype.create = function() {
-    var eltCb, eltContainer, eltContent, eltListItem, eltTitle, sRow, that, _i, _len, _ref;
-    that = this;
-    eltContainer = $(document.createElement('div'));
-    eltContainer.addClass(CSS_CLASSES.container).attr('id', this.sEltUniqId);
-    eltTitle = $(document.createElement('span'));
-    eltTitle.addClass(CSS_CLASSES.title).text(this.sTitle);
-    this.eltList = $(document.createElement('ul'));
-    _ref = this.aStrings;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      sRow = _ref[_i];
-      eltListItem = $(document.createElement('li'));
-      eltListItem.addClass(CSS_CLASSES.listItem);
-      eltContent = $(document.createElement('span'));
-      eltContent.addClass(CSS_CLASSES.listItemContent).text(sRow);
-      eltCb = $(document.createElement('input')).attr('type', 'checkbox');
-      eltCb.addClass(CSS_CLASSES.listItemCb);
-      eltListItem.append([eltContent, eltCb]);
-      this.eltList.append(eltListItem);
-    }
-    eltContainer.append([eltTitle, this.eltList]);
-    return $(this.sIdParent).append(eltContainer);
-  };
-
-  return CheckingDdl;
-
-})();
-
-});
-
 ;require.register("router", function(exports, require, module) {
-var DoctypeCollectionView, DoctypeNavCollectionView, DoctypesView, NavView, ResultCollectionView, Router, SearchView, _ref,
+var DoctypeCollectionView, DoctypeNavCollectionView, DoctypesView, ResultCollectionView, Router, SearchView, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-NavView = require('views/nav_view');
 
 DoctypesView = require('views/doctypes_view');
 
@@ -578,13 +539,12 @@ module.exports = Router = (function(_super) {
   }
 
   Router.prototype.routes = {
-    '': 'doctypes',
-    'doctypes': 'doctypes',
+    '': 'search',
     'search': 'search',
     'search/all/:doctype': 'search'
   };
 
-  Router.prototype.doctypes = function() {
+  Router.prototype.initialize = function() {
     var doctypeNavCollectionView;
     doctypeNavCollectionView = new DoctypeNavCollectionView();
     return doctypeNavCollectionView.render();
@@ -832,126 +792,6 @@ module.exports = DoctypesView = (function(_super) {
 
 });
 
-;require.register("views/dt_cddl_collection_view", function(exports, require, module) {
-var DoctypeCollection, DtCddlCollectionView, DtCddlView, ViewCollection, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-ViewCollection = require('../lib/view_collection');
-
-DtCddlView = require('./dt_cddl_view');
-
-DoctypeCollection = require('../collections/doctype_collection');
-
-module.exports = DtCddlCollectionView = (function(_super) {
-  __extends(DtCddlCollectionView, _super);
-
-  function DtCddlCollectionView() {
-    _ref = DtCddlCollectionView.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  DtCddlCollectionView.prototype.itemview = DtCddlView;
-
-  DtCddlCollectionView.prototype.collection = new DoctypeCollection();
-
-  DtCddlCollectionView.prototype.initialize = function() {
-    this.collectionEl = '#dt-cddl-list';
-    DtCddlCollectionView.__super__.initialize.apply(this, arguments);
-    this.collection.fetch();
-    this.views = {};
-    return this.listenTo(this.collection, "reset", this.onReset);
-  };
-
-  return DtCddlCollectionView;
-
-})(ViewCollection);
-
-});
-
-;require.register("views/dt_cddl_view", function(exports, require, module) {
-var DtCddlView, View, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-View = require('./../lib/view');
-
-module.exports = DtCddlView = (function(_super) {
-  __extends(DtCddlView, _super);
-
-  function DtCddlView() {
-    _ref = DtCddlView.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  DtCddlView.prototype.tagName = 'li';
-
-  DtCddlView.prototype.className = 'dt-cddl-list-item';
-
-  DtCddlView.prototype.render = function() {
-    return DtCddlView.__super__.render.call(this, {
-      name: this.model.get("name")
-    });
-  };
-
-  DtCddlView.prototype.template = function() {
-    return require('./templates/dt_cddl_list_item');
-  };
-
-  return DtCddlView;
-
-})(View);
-
-});
-
-;require.register("views/nav_view", function(exports, require, module) {
-var BaseView, NavView, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-BaseView = require('../lib/base_view');
-
-module.exports = NavView = (function(_super) {
-  __extends(NavView, _super);
-
-  function NavView() {
-    _ref = NavView.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  NavView.prototype.el = 'body.application';
-
-  NavView.prototype.titles = {
-    '': '#doctypes',
-    'doctypes': '#doctypes',
-    'search': '#search',
-    'searchAllByDoctype': '#search'
-  };
-
-  NavView.prototype.initialize = function() {
-    return Backbone.history.on('route', function(source, path) {
-      return this.render(path);
-    }, this);
-  };
-
-  NavView.prototype.render = function(path) {
-    var that;
-    that = this;
-    return $('.nav > li').each(function() {
-      $(this).removeClass('active');
-      $(this).children('a').blur();
-      if ($(this).children('a').attr('href') === that.titles[path]) {
-        return $(this).addClass('active');
-      }
-    });
-  };
-
-  return NavView;
-
-})(BaseView);
-
-});
-
 ;require.register("views/result_collection_view", function(exports, require, module) {
 var ResultCollection, ResultCollectionView, ResultView, ViewCollection, _ref,
   __hasProp = {}.hasOwnProperty,
@@ -1038,7 +878,6 @@ module.exports = ResultCollectionView = (function(_super) {
     var that;
     that = this;
     this.options['deleted'] = this.deleted;
-    console.log(this.noMoreItems);
     if (!this.noMoreItems) {
       this.isLoading = true;
       this.collection.page++;
@@ -1338,7 +1177,7 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
     return _ref;
   }
 
-  ResultsGlobalControlsView.prototype.el = '.results-global-controls';
+  ResultsGlobalControlsView.prototype.el = '#results-global-controls';
 
   ResultsGlobalControlsView.prototype.events = {
     'mouseover .remove-result': 'convertButtonToDanger',
@@ -1368,7 +1207,6 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
   };
 
   ResultsGlobalControlsView.prototype.render = function(opt) {
-    console.log(opt);
     return ResultsGlobalControlsView.__super__.render.call(this, {
       range: opt.range,
       doctype: opt.doctype,
@@ -1382,8 +1220,35 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
 
 });
 
+;require.register("views/results_meta_infos_view", function(exports, require, module) {
+var ResultsMetaInfosView, View, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+View = require('./../lib/view');
+
+module.exports = ResultsMetaInfosView = (function(_super) {
+  __extends(ResultsMetaInfosView, _super);
+
+  function ResultsMetaInfosView() {
+    _ref = ResultsMetaInfosView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  ResultsMetaInfosView.prototype.el = '#results-meta-infos';
+
+  ResultsMetaInfosView.prototype.template = function() {
+    return require('./templates/results_meta_infos');
+  };
+
+  return ResultsMetaInfosView;
+
+})(View);
+
+});
+
 ;require.register("views/search_view", function(exports, require, module) {
-var BaseView, ResultCollectionView, ResultsGlobalControlsView, SearchView, _ref,
+var BaseView, MetaInfosModel, ResultCollectionView, ResultsGlobalControlsView, ResultsMetaInfosView, SearchView, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -1393,6 +1258,10 @@ ResultCollectionView = require('../views/result_collection_view');
 
 ResultsGlobalControlsView = require('../views/results_global_controls_view');
 
+MetaInfosModel = require('./../models/meta_infos_model');
+
+ResultsMetaInfosView = require('../views/results_meta_infos_view');
+
 module.exports = SearchView = (function(_super) {
   __extends(SearchView, _super);
 
@@ -1401,23 +1270,34 @@ module.exports = SearchView = (function(_super) {
     return _ref;
   }
 
-  SearchView.prototype.el = '#content';
+  SearchView.prototype.el = '#results-list';
 
   SearchView.prototype.template = require('./templates/search');
 
   SearchView.prototype.initialize = function(options) {
-    var that;
-    that = this;
+    var metaInfosModel,
+      _this = this;
     this.options = options;
     this.resultsGlobalControlsView = new ResultsGlobalControlsView(this.options);
-    this.rcView = new ResultCollectionView(this.options);
+    metaInfosModel = new MetaInfosModel();
+    metaInfosModel.fetch({
+      data: $.param({
+        doctype: this.options.doctype[0]
+      }),
+      success: function(col, data) {
+        var resultsMetaInfosView;
+        resultsMetaInfosView = new ResultsMetaInfosView();
+        return resultsMetaInfosView.render(data);
+      }
+    });
+    this.resultCollectionView = new ResultCollectionView(this.options);
     if (this.options.range != null) {
       return $(window).bind('scroll', function(e, isTriggered) {
         var docHeight;
-        if (!that.rcView.isLoading && !that.rcView.noMoreItems) {
+        if (!_this.resultCollectionView.isLoading && !_this.resultCollectionView.noMoreItems) {
           docHeight = $(document).height();
           if ($(window).scrollTop() + $(window).height() === docHeight) {
-            return that.loadMore(isTriggered);
+            return _this.loadMore(isTriggered);
           }
         }
       });
@@ -1425,16 +1305,15 @@ module.exports = SearchView = (function(_super) {
   };
 
   SearchView.prototype.afterRender = function() {
-    var that;
-    that = this;
-    this.rcView.render();
+    var _this = this;
+    this.resultCollectionView.render();
     return $(window).bind('resize', function() {
-      return that.rcView.loopFirstScroll();
+      return _this.resultCollectionView.loopFirstScroll();
     });
   };
 
   SearchView.prototype.loadMore = function(isTriggered) {
-    return this.rcView.loadNextPage(isTriggered);
+    return this.resultCollectionView.loadNextPage(isTriggered);
   };
 
   SearchView.prototype.events = {
@@ -1566,21 +1445,6 @@ return buf.join("");
 };
 });
 
-;require.register("views/templates/dt_cddl_list_item", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge
-/**/) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
-var buf = [];
-with (locals || {}) {
-var interp;
-buf.push('<a');
-buf.push(attrs({ 'href':('#search/all/' + (name) + '') }, {"href":true}));
-buf.push('>' + escape((interp = name) == null ? '' : interp) + '</a>');
-}
-return buf.join("");
-};
-});
-
 ;require.register("views/templates/modal_confirm", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge
 /**/) {
@@ -1615,15 +1479,7 @@ buf.push(attrs({ 'style':("height: 0px;"), 'id':("collapse" + (results.count) + 
 buf.push('><div class="panel-body"><div id="result-list" class="profile-user-info profile-user-info-striped">');
  for (var iCount = 0; iCount < results['fields'].length; iCount++) {
 {
-buf.push('<div class="profile-info-row"><div class="profile-info-name"><span');
-buf.push(attrs({ 'data-title':("" + (results['fields'][iCount].cdbFieldDescription) + ""), "class": ('label') + ' ' + ("" + (results['fields'][iCount].cdbLabelClass) + "") }, {"class":true,"data-title":true}));
-buf.push('>' + escape((interp = results['fields'][iCount].cdbFieldName) == null ? '' : interp) + '&nbsp;');
- if (results['fields'][iCount].cdbFieldDescription!== "") {
-{
-buf.push('<i class="icon-question-sign"></i>');
-}
-}
-buf.push('</span></div><div class="profile-info-value">');
+buf.push('<div class="profile-info-row"><div class="profile-info-name">' + escape((interp = results['fields'][iCount].cdbFieldName) == null ? '' : interp) + '</div><div class="profile-info-value">');
 var __val__ = results['fields'][iCount].cdbFieldData
 buf.push(null == __val__ ? "" : __val__);
 buf.push('</div></div>');
@@ -1644,7 +1500,20 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<span>&nbsp;&nbsp;Currently exploring :&nbsp;<em>' + escape((interp = doctype[0]) == null ? '' : interp) + ' (' + escape((interp = range) == null ? '' : interp) + ') - results 0 to ' + escape((interp = max) == null ? '' : interp) + '</em></span><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button class="btn btn-xs remove-result"><span></span><i class="icon-trash bigger-120"></i></button></div>');
+buf.push('<h4>&nbsp;&nbsp;Currently exploring :&nbsp;<em>' + escape((interp = doctype[0]) == null ? '' : interp) + ' (' + escape((interp = range) == null ? '' : interp) + ')</em></h4><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button class="btn btn-xs remove-result"><span></span><i class="icon-trash bigger-120"></i></button></div>');
+}
+return buf.join("");
+};
+});
+
+;require.register("views/templates/results_meta_infos", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<div class="widget-box"><div class="widget-header widget-header-small header-color-green"><h4 class="lighter"><i class="icon-question-sign"></i>&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h4><div class="widget-toolbar"><a href="#" data-action="collapse"><i class="icon-chevron-up"></i></a><a href="#" data-action="close"><i class="icon-remove"></i></a></div></div><div class="widget-body"><div class="widget-body-inner"><div class="widget-main padding-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque commodo massa sed ipsum porttitor facilisis. Nullam interdum massa vel nisl fringilla sed viverra erat tincidunt. Phasellus in ipsum velit. Maecenas id erat vel sem convallis blandit. Nunc aliquam enim ut arcu aliquet adipiscing. Fusce dignissim volutpat justo non consectetur.</div></div></div></div>');
 }
 return buf.join("");
 };
@@ -1657,7 +1526,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="all-result"><div id="basic-accordion" class="accordion-style1 panel-group"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div><div class="load-more-result"><span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div>');
+buf.push('<div id="all-result"><div id="basic-accordion" class="accordion-style1 panel-group"></div><div class="load-more-result"><span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div>');
 }
 return buf.join("");
 };

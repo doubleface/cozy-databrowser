@@ -2,7 +2,7 @@ View = require './../lib/view'
 
 module.exports = class ResultsGlobalControlsView extends View
 
-    el: '.results-global-controls'
+    el: '#results-global-controls'
 
     events :
         'mouseover .remove-result' : 'convertButtonToDanger'
@@ -25,7 +25,6 @@ module.exports = class ResultsGlobalControlsView extends View
         @render opt
 
     render: (opt) =>
-        console.log opt
         super
             range : opt.range
             doctype : opt.doctype

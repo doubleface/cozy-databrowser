@@ -1,47 +1,47 @@
 BaseView = require '../lib/base_view'
 ResultCollectionView = require '../views/result_collection_view'
 ResultsGlobalControlsView = require '../views/results_global_controls_view'
-#DtCddlCollectionView = require '../views/dt_cddl_collection_view'
-#CheckingDdl = require '../noesis-classes/CheckingDdl'
+MetaInfosModel = require './../models/meta_infos_model'
+ResultsMetaInfosView = require '../views/results_meta_infos_view'
 
 module.exports = class SearchView extends BaseView
 
-    el: '#content'
+    el: '#results-list'
     template: require('./templates/search')
 
     initialize : (options) ->
-        that = this
         @options = options
         @resultsGlobalControlsView = new ResultsGlobalControlsView(@options)
-        @rcView = new ResultCollectionView(@options)
+        metaInfosModel = new MetaInfosModel()
+        metaInfosModel.fetch
+            data: $.param
+                doctype : @options.doctype[0]
+            success : (col, data) ->
+                resultsMetaInfosView = new ResultsMetaInfosView()
+                resultsMetaInfosView.render(data)
+
+        @resultCollectionView = new ResultCollectionView(@options)
 
         #scroll event trigger next page (infinite scroll)
         if @options.range?
-            $(window).bind 'scroll', (e, isTriggered) ->
-                if !that.rcView.isLoading and !that.rcView.noMoreItems
+            $(window).bind 'scroll', (e, isTriggered) =>
+                if !@resultCollectionView.isLoading and !@resultCollectionView.noMoreItems
                     docHeight = $(document).height()
                     if $(window).scrollTop() + $(window).height() is docHeight
-                        that.loadMore(isTriggered)
+                        @loadMore(isTriggered)
 
     afterRender : ->
-        that = this
-        @rcView.render()
-        #@dtCddlCollectionView.render()
+        @resultCollectionView.render()
 
         #resize event trigger 1 or + pages (infinite scroll)
-        $(window).bind 'resize', ->
-            that.rcView.loopFirstScroll()
-
-        #add search options
-        #doctypes = ['test', 'test 2', 'test 3']
-        #optionCddl = new CheckingDdl 'Doctypes : ', doctypes, '#search-options'
-
+        $(window).bind 'resize', =>
+            @resultCollectionView.loopFirstScroll()
 
     loadMore : (isTriggered)->
-        @rcView.loadNextPage isTriggered
+        @resultCollectionView.loadNextPage isTriggered
 
     events :
         'click #launch-search' : 'launchSearch'
 
     # launchSearch : ->
-    #     @rcView.search($('#search-field').val())
+    #     @resultCollectionView.search($('#search-field').val())

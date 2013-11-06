@@ -18,11 +18,11 @@
             .profile-user-info.profile-user-info-striped#result-list
                 - for (var iCount = 0; iCount < results['fields'].length; iCount++) {
                     .profile-info-row
-                        .profile-info-name
-                            span.label(class="#{results['fields'][iCount].cdbLabelClass}", data-title="#{results['fields'][iCount].cdbFieldDescription}") #{results['fields'][iCount].cdbFieldName}&nbsp;
-                                - if (results['fields'][iCount].cdbFieldDescription!== "") {
-                                    i.icon-question-sign
-                                -}
+                        .profile-info-name #{results['fields'][iCount].cdbFieldName}
+                            //- span.label(class="#{results['fields'][iCount].cdbLabelClass}", data-title="#{results['fields'][iCount].cdbFieldDescription}") #{results['fields'][iCount].cdbFieldName}&nbsp;
+                                // - if (results['fields'][iCount].cdbFieldDescription!== "") {
+                                //- i.icon-question-sign
+                                // -}
                         .profile-info-value!= results['fields'][iCount].cdbFieldData
                 - }
 - }

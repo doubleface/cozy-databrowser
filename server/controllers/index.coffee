@@ -5,6 +5,46 @@ searchEngine = require('../lib/searchEngine')(dataSystem)
 #add NPM helpers
 async = require 'async'
 
+module.exports.doctype_meta_infos = (req, res) ->
+    if req.query and req.query.doctype?
+        doctypeName = req.query.doctype
+        requests = []
+        requests.push (callback) -> #0 -> get all the metadoctypes
+            targetUrl = dataSystem.PATH.metadoctype.getallbyrelated
+            dataSystem.getView targetUrl, callback
+
+        requests.push (callback) -> #1 -> get the permissions
+            targetUrl = dataSystem.PATH.application.getpermissions
+            dataSystem.getView targetUrl, callback
+
+        async.parallel requests, (error, results) ->
+            if error?
+                res.send 500, dataSystem.ERR_MSG.retrieveData
+            else
+                metadoctypesByDoctype = results[0]
+                permissionsByDoctype = results[1]
+                metaInfos = {}
+                metaInfos['name'] = doctypeName
+
+                for metadoctype in metadoctypesByDoctype
+                    if metadoctype.key?.toLowerCase() is doctypeName
+                        metaInfos['metadoctype'] = metadoctype.value
+
+                #add permissions
+                for permissions in permissionsByDoctype
+
+                    #ensure permissions keys are in lowercase
+                    permissionKeys = Object.keys permissions.value
+                    permissionKeys = permissionKeys.map (single) ->
+                        return single.toLowerCase()
+
+                    if doctypeName in permissionKeys
+                        metaInfos['applications'] = permissions.key
+
+               res.send metaInfos
+    else
+        res.send 'test'
+
 #doctypes
 module.exports.doctypes = (req, res) ->
 

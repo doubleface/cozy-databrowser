@@ -420,7 +420,7 @@ body {
   min-height: 100%;
   font-size: 13px;
 }
-.results-global-controls {
+#results-global-controls {
   border-bottom: 1px solid #e5e5e5;
   background-color: #f5f5f5;
   min-height: 41px;
@@ -432,6 +432,10 @@ body {
   position: fixed;
   top: 0;
   width: 100%;
+}
+#results-global-controls .result-buttons {
+  margin-top: 9px;
+  position: fixed;
 }
 .current-title {
   margin: 0 0 12px;
@@ -462,15 +466,15 @@ body {
   right: 0;
   margin: 5px;
 }
-.results-global-controls .result-buttons {
-  position: fixed;
-}
 .btn-xs > [class*="icon-"],
 .btn-minier > [class*="icon-"] {
   margin-right: 0;
 }
 .page-content {
   padding-top: 51px;
+}
+#results-meta-infos {
+  margin-bottom: 10px;
 }
 
 /* side navigation */
