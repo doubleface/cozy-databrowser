@@ -183,6 +183,7 @@ module.exports = class ResultView extends View
         $("body").prepend @templateModal(data)
         $("#confirmation-dialog").modal()
         $("#confirmation-dialog").modal("show")
+        $("#confirmation-dialog-confirm").unbind 'click'
         $("#confirmation-dialog-confirm").bind "click", ->
             that.removeResult()
 

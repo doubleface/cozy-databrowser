@@ -452,6 +452,27 @@ module.exports = ViewCollection = (function(_super) {
 
 });
 
+;require.register("models/delete_all_model", function(exports, require, module) {
+var DoctypeDeleteAllModel, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+module.exports = DoctypeDeleteAllModel = (function(_super) {
+  __extends(DoctypeDeleteAllModel, _super);
+
+  function DoctypeDeleteAllModel() {
+    _ref = DoctypeDeleteAllModel.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  DoctypeDeleteAllModel.prototype.urlRoot = 'doctype_delete_all';
+
+  return DoctypeDeleteAllModel;
+
+})(Backbone.Model);
+
+});
+
 ;require.register("models/doctype_model", function(exports, require, module) {
 var DoctypeModel, _ref,
   __hasProp = {}.hasOwnProperty,
@@ -1141,6 +1162,7 @@ module.exports = ResultView = (function(_super) {
     $("body").prepend(this.templateModal(data));
     $("#confirmation-dialog").modal();
     $("#confirmation-dialog").modal("show");
+    $("#confirmation-dialog-confirm").unbind('click');
     return $("#confirmation-dialog-confirm").bind("click", function() {
       return that.removeResult();
     });
@@ -1161,12 +1183,14 @@ module.exports = ResultView = (function(_super) {
 });
 
 ;require.register("views/results_global_controls_view", function(exports, require, module) {
-var ResultsGlobalControlsView, View, _ref,
+var DeleteAllModel, ResultsGlobalControlsView, View, _ref,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 View = require('./../lib/view');
+
+DeleteAllModel = require('./../models/delete_all_model');
 
 module.exports = ResultsGlobalControlsView = (function(_super) {
   __extends(ResultsGlobalControlsView, _super);
@@ -1179,9 +1203,14 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
 
   ResultsGlobalControlsView.prototype.el = '#results-global-controls';
 
+  ResultsGlobalControlsView.prototype.currentDoctype = '';
+
+  ResultsGlobalControlsView.prototype.templateModal = require('./templates/modal_confirm');
+
   ResultsGlobalControlsView.prototype.events = {
-    'mouseover .remove-result': 'convertButtonToDanger',
-    'mouseout .remove-result': 'convertButtonToClassic'
+    'mouseover #delete-all': 'convertButtonToDanger',
+    'mouseout #delete-all': 'convertButtonToClassic',
+    'click #delete-all': 'confirmDeleteAll'
   };
 
   ResultsGlobalControlsView.prototype.convertButtonToDanger = function(event) {
@@ -1203,15 +1232,52 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
   };
 
   ResultsGlobalControlsView.prototype.initialize = function(opt) {
+    $(this.el).undelegate('#delete-all', 'click');
+    if (opt.doctype != null) {
+      this.currentDoctype = opt.doctype[0] || '';
+    }
     return this.render(opt);
   };
 
   ResultsGlobalControlsView.prototype.render = function(opt) {
-    return ResultsGlobalControlsView.__super__.render.call(this, {
-      range: opt.range,
-      doctype: opt.doctype,
-      max: "x"
+    var templateData;
+    templateData = {};
+    templateData['range'] = opt.range ? '(' + opt.range + ')' || '' : void 0;
+    templateData['doctype'] = opt.doctype ? opt.doctype[0] : '';
+    return ResultsGlobalControlsView.__super__.render.call(this, templateData);
+  };
+
+  ResultsGlobalControlsView.prototype.confirmDeleteAll = function(e) {
+    var data, message,
+      _this = this;
+    e.preventDefault();
+    message = 'Are you sure ? This can\'t be undone, ';
+    message += 'and will erase definitly data from the database.';
+    data = {
+      title: 'Confirmation required',
+      body: message,
+      confirm: 'delete permanently'
+    };
+    $("body").prepend(this.templateModal(data));
+    $("#confirmation-dialog").modal();
+    $("#confirmation-dialog").modal("show");
+    $("#confirmation-dialog-confirm").unbind('click');
+    return $("#confirmation-dialog-confirm").bind("click", function() {
+      return _this.deleteAll();
     });
+  };
+
+  ResultsGlobalControlsView.prototype.deleteAll = function() {
+    var deleteAllModel;
+    if ((this.currentDoctype != null) && this.currentDoctype !== '') {
+      deleteAllModel = new DeleteAllModel();
+      deleteAllModel.fetch({
+        data: $.param({
+          doctype: this.currentDoctype
+        })
+      });
+      return location.reload();
+    }
   };
 
   return ResultsGlobalControlsView;
@@ -1274,42 +1340,55 @@ module.exports = SearchView = (function(_super) {
 
   SearchView.prototype.template = require('./templates/search');
 
+  SearchView.prototype.hasDoctype = false;
+
   SearchView.prototype.initialize = function(options) {
     var metaInfosModel,
       _this = this;
     this.options = options;
     this.resultsGlobalControlsView = new ResultsGlobalControlsView(this.options);
-    metaInfosModel = new MetaInfosModel();
-    metaInfosModel.fetch({
-      data: $.param({
-        doctype: this.options.doctype[0]
-      }),
-      success: function(col, data) {
-        var resultsMetaInfosView;
-        resultsMetaInfosView = new ResultsMetaInfosView();
-        return resultsMetaInfosView.render(data);
-      }
-    });
-    this.resultCollectionView = new ResultCollectionView(this.options);
-    if (this.options.range != null) {
-      return $(window).bind('scroll', function(e, isTriggered) {
-        var docHeight;
-        if (!_this.resultCollectionView.isLoading && !_this.resultCollectionView.noMoreItems) {
-          docHeight = $(document).height();
-          if ($(window).scrollTop() + $(window).height() === docHeight) {
-            return _this.loadMore(isTriggered);
+    if (this.options.doctype && this.options.doctype.length > 0) {
+      metaInfosModel = new MetaInfosModel();
+      $('#results-meta-infos').empty();
+      this.hasDoctype = true;
+      metaInfosModel.fetch({
+        data: $.param({
+          doctype: this.options.doctype[0]
+        }),
+        success: function(col, data) {
+          var resultsMetaInfosView;
+          if (data && data.name && (data.application || data.metadoctype)) {
+            resultsMetaInfosView = new ResultsMetaInfosView();
+            return resultsMetaInfosView.render(data);
           }
         }
       });
+      this.resultCollectionView = new ResultCollectionView(this.options);
+      if (this.options.range != null) {
+        return $(window).bind('scroll', function(e, isTriggered) {
+          var docHeight;
+          if (!_this.resultCollectionView.isLoading && !_this.resultCollectionView.noMoreItems) {
+            docHeight = $(document).height();
+            if ($(window).scrollTop() + $(window).height() === docHeight) {
+              return _this.loadMore(isTriggered);
+            }
+          }
+        });
+      }
+    } else {
+      return this.hasDoctype = false;
     }
   };
 
   SearchView.prototype.afterRender = function() {
     var _this = this;
-    this.resultCollectionView.render();
-    return $(window).bind('resize', function() {
-      return _this.resultCollectionView.loopFirstScroll();
-    });
+    if (this.hasDoctype) {
+      this.resultCollectionView.render();
+      return $(window).bind('resize', function() {
+        $('#btn-scroll-up').show();
+        return _this.resultCollectionView.loopFirstScroll();
+      });
+    }
   };
 
   SearchView.prototype.loadMore = function(isTriggered) {
@@ -1500,7 +1579,12 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<h4>&nbsp;&nbsp;Currently exploring :&nbsp;<em>' + escape((interp = doctype[0]) == null ? '' : interp) + ' (' + escape((interp = range) == null ? '' : interp) + ')</em></h4><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button class="btn btn-xs remove-result"><span></span><i class="icon-trash bigger-120"></i></button></div>');
+ if (doctype !== '') {
+{
+buf.push('<h4>&nbsp;&nbsp;Currently exploring :&nbsp;<em>' + escape((interp = doctype) == null ? '' : interp) + ' ' + escape((interp = range) == null ? '' : interp) + '</em></h4>');
+}
+}
+buf.push('<div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button id="delete-all" class="btn btn-xs"><span></span><i class="icon-trash bigger-120"></i></button></div>');
 }
 return buf.join("");
 };
@@ -1513,7 +1597,31 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="widget-box"><div class="widget-header widget-header-small header-color-green"><h4 class="lighter"><i class="icon-question-sign"></i>&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h4><div class="widget-toolbar"><a href="#" data-action="collapse"><i class="icon-chevron-up"></i></a><a href="#" data-action="close"><i class="icon-remove"></i></a></div></div><div class="widget-body"><div class="widget-body-inner"><div class="widget-main padding-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque commodo massa sed ipsum porttitor facilisis. Nullam interdum massa vel nisl fringilla sed viverra erat tincidunt. Phasellus in ipsum velit. Maecenas id erat vel sem convallis blandit. Nunc aliquam enim ut arcu aliquet adipiscing. Fusce dignissim volutpat justo non consectetur.</div></div></div></div>');
+buf.push('<div class="widget-box"><div class="widget-header widget-header-small header-color-green"><h4 class="lighter"><i class="icon-question-sign"></i>&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h4><div class="widget-toolbar"><a href="#" data-action="collapse"><i class="icon-chevron-up"></i></a><a href="#" data-action="close"><i class="icon-remove"></i></a></div></div><div class="widget-body"><div class="widget-body-inner"><div class="widget-main padding-6"><div class="md-desc-wrapper">');
+ if (applications && applications.length > 0) {
+{
+buf.push('<div class="md-desc-container"><strong>Applications using it :</strong><ul class="sober-list">');
+ for (var index in applications) {
+{
+buf.push('<li class="firstLetterUp"><i class="icon-download-alt"></i><span>&nbsp;' + escape((interp = applications[index]) == null ? '' : interp) + '</span></li>');
+}
+ }
+buf.push('</ul></div>');
+}
+}
+ if (typeof(metadoctype) === 'object') {
+{
+buf.push('<div class="md-desc-container"><strong>Fields informations :</strong><ul class="sober-list">');
+ var fields = metadoctype.fields;
+ for (var obj in fields) {
+{
+buf.push('<li><i class="icon-tag"></i><span>&nbsp;' + escape((interp = fields[obj].displayName) == null ? '' : interp) + ' -&nbsp;<i>' + escape((interp = fields[obj].description) == null ? '' : interp) + '</i></span></li>');
+}
+ }
+buf.push('</ul></div>');
+}
+ }
+buf.push('</div></div><div class="clear"></div></div></div></div>');
 }
 return buf.join("");
 };

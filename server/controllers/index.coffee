@@ -5,6 +5,16 @@ searchEngine = require('../lib/searchEngine')(dataSystem)
 #add NPM helpers
 async = require 'async'
 
+module.exports.doctype_delete_all = (req, res) ->
+    if req.query and req.query.doctype?
+        doctypeName = req.query.doctype
+        dataSystem.deleteAllByDoctype doctypeName, (error, body) ->
+            if error
+                res.send(error)
+            else
+                res.send(body)
+
+
 module.exports.doctype_meta_infos = (req, res) ->
     if req.query and req.query.doctype?
         doctypeName = req.query.doctype
@@ -25,6 +35,7 @@ module.exports.doctype_meta_infos = (req, res) ->
                 permissionsByDoctype = results[1]
                 metaInfos = {}
                 metaInfos['name'] = doctypeName
+                metaInfos['applications'] = []
 
                 for metadoctype in metadoctypesByDoctype
                     if metadoctype.key?.toLowerCase() is doctypeName
@@ -39,7 +50,7 @@ module.exports.doctype_meta_infos = (req, res) ->
                         return single.toLowerCase()
 
                     if doctypeName in permissionKeys
-                        metaInfos['applications'] = permissions.key
+                        metaInfos['applications'].push permissions.key
 
                res.send metaInfos
     else

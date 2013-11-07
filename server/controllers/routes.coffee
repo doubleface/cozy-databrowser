@@ -9,3 +9,5 @@ module.exports =
         del: index.delete
     'doctype_meta_infos':
         get: index.doctype_meta_infos
+    'doctype_delete_all' :
+        get: index.doctype_delete_all

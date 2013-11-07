@@ -8,34 +8,45 @@ module.exports = class SearchView extends BaseView
 
     el: '#results-list'
     template: require('./templates/search')
+    hasDoctype : false
 
     initialize : (options) ->
         @options = options
         @resultsGlobalControlsView = new ResultsGlobalControlsView(@options)
-        metaInfosModel = new MetaInfosModel()
-        metaInfosModel.fetch
-            data: $.param
-                doctype : @options.doctype[0]
-            success : (col, data) ->
-                resultsMetaInfosView = new ResultsMetaInfosView()
-                resultsMetaInfosView.render(data)
+        if @options.doctype and @options.doctype.length > 0
+            metaInfosModel = new MetaInfosModel()
+            $('#results-meta-infos').empty()
+            @hasDoctype = true
+            metaInfosModel.fetch
+                data: $.param
+                    doctype : @options.doctype[0]
+                success : (col, data) ->
+                    if data and data.name and (data.application or data.metadoctype)
+                        resultsMetaInfosView = new ResultsMetaInfosView()
+                        resultsMetaInfosView.render(data)
 
-        @resultCollectionView = new ResultCollectionView(@options)
+            @resultCollectionView = new ResultCollectionView(@options)
 
-        #scroll event trigger next page (infinite scroll)
-        if @options.range?
-            $(window).bind 'scroll', (e, isTriggered) =>
-                if !@resultCollectionView.isLoading and !@resultCollectionView.noMoreItems
-                    docHeight = $(document).height()
-                    if $(window).scrollTop() + $(window).height() is docHeight
-                        @loadMore(isTriggered)
+            #scroll event trigger next page (infinite scroll)
+            if @options.range?
+                $(window).bind 'scroll', (e, isTriggered) =>
+                    if !@resultCollectionView.isLoading and !@resultCollectionView.noMoreItems
+                        docHeight = $(document).height()
+                        if $(window).scrollTop() + $(window).height() is docHeight
+                            @loadMore(isTriggered)
+        else
+            @hasDoctype = false
+
 
     afterRender : ->
-        @resultCollectionView.render()
+        if @hasDoctype
+            @resultCollectionView.render()
 
-        #resize event trigger 1 or + pages (infinite scroll)
-        $(window).bind 'resize', =>
-            @resultCollectionView.loopFirstScroll()
+            #resize event trigger 1 or + pages (infinite scroll)
+            $(window).bind 'resize', =>
+                $('#btn-scroll-up').show()
+                @resultCollectionView.loopFirstScroll()
+
 
     loadMore : (isTriggered)->
         @resultCollectionView.loadNextPage isTriggered

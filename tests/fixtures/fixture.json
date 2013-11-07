@@ -20,6 +20,22 @@
         }
     },
     {
+        "docType": "Metadoctype",
+        "related": "Contact",
+        "displayName": "Contact",
+        "identificationField": "description",
+        "fields": {
+            "datapoint": {
+                "displayName": "datapoint",
+                "description": "test 1"
+            },
+            "fn": {
+                "displayName": "fn",
+                "description": "test 2"
+            }
+        }
+    },
+    {
         "docType": "Alarm",
         "action": "DISPLAY",
         "trigg": "Tue Jul 02 2013 16:00:00",
