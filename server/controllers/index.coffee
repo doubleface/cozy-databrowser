@@ -12,7 +12,9 @@ module.exports.doctype_delete_all = (req, res) ->
             if error
                 res.send(error)
             else
-                res.send(body)
+                res.send(true)
+    else
+        res.send 'Doctype needed'
 
 
 module.exports.doctype_meta_infos = (req, res) ->
@@ -54,7 +56,7 @@ module.exports.doctype_meta_infos = (req, res) ->
 
                res.send metaInfos
     else
-        res.send 'test'
+        res.send 'nothing'
 
 #doctypes
 module.exports.doctypes = (req, res) ->

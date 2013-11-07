@@ -1271,12 +1271,14 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
     var deleteAllModel;
     if ((this.currentDoctype != null) && this.currentDoctype !== '') {
       deleteAllModel = new DeleteAllModel();
-      deleteAllModel.fetch({
+      return deleteAllModel.fetch({
         data: $.param({
           doctype: this.currentDoctype
-        })
+        }),
+        success: function(col, data) {
+          return location.reload();
+        }
       });
-      return location.reload();
     }
   };
 
@@ -1581,10 +1583,9 @@ with (locals || {}) {
 var interp;
  if (doctype !== '') {
 {
-buf.push('<h4>&nbsp;&nbsp;Currently exploring :&nbsp;<em>' + escape((interp = doctype) == null ? '' : interp) + ' ' + escape((interp = range) == null ? '' : interp) + '</em></h4>');
+buf.push('<h4>&nbsp;&nbsp;Currently exploring :&nbsp;<em>' + escape((interp = doctype) == null ? '' : interp) + ' ' + escape((interp = range) == null ? '' : interp) + '</em></h4><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button id="delete-all" class="btn btn-xs"><span></span><i class="icon-trash bigger-120"></i></button></div>');
 }
 }
-buf.push('<div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button id="delete-all" class="btn btn-xs"><span></span><i class="icon-trash bigger-120"></i></button></div>');
 }
 return buf.join("");
 };

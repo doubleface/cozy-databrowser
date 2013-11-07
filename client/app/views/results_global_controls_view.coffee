@@ -60,4 +60,5 @@ module.exports = class ResultsGlobalControlsView extends View
             deleteAllModel.fetch
                 data: $.param
                     doctype : @currentDoctype
-            location.reload()
+                success : (col, data) ->
+                    location.reload()

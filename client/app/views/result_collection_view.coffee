@@ -46,9 +46,8 @@ module.exports = class ResultCollectionView extends ViewCollection
     search : (content) ->
         that = this
         @options['query'] = content
-        @collection.fetch {
+        @collection.fetch
             data: $.param(@options)
-        }
 
     loadNextPage : (isTriggered, callback) ->
         that = this
@@ -59,7 +58,7 @@ module.exports = class ResultCollectionView extends ViewCollection
             if !isTriggered
                 $('.load-more-result i, .load-more-result span').hide()
                 $('.load-more-result').spin 'tiny'
-            @collection.fetch {
+            @collection.fetch
                 data: $.param(@options)
                 remove : false
                 success : (col, data) ->
@@ -80,7 +79,7 @@ module.exports = class ResultCollectionView extends ViewCollection
                 error: ->
                     that.noMoreItems = true
                     that.displayLoadingError()
-            }
+
     loopFirstScroll: ->
         that = this
         if !@isLoading and !@noMoreItems
