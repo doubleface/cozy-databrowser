@@ -6,7 +6,6 @@ module.exports = class DoctypeNavView extends View
     className: 'doctype-list-item'
 
     render: ->
-
         super
             name : @model.get('name')
             value : @model.get('value')
@@ -17,6 +16,7 @@ module.exports = class DoctypeNavView extends View
 
     template: ->
         require './templates/doctype_nav'
+
 
     # getActive: ->
     #     console.log @model.get('name')

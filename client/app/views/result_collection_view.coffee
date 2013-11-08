@@ -44,7 +44,6 @@ module.exports = class ResultCollectionView extends ViewCollection
         super
 
     search : (content) ->
-        that = this
         @options['query'] = content
         @collection.fetch
             data: $.param(@options)

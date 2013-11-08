@@ -762,10 +762,6 @@ module.exports = DoctypeView = (function(_super) {
     return require('./templates/doctype');
   };
 
-  DoctypeView.prototype.events = {
-    'click .more-info': 'showDescription'
-  };
-
   DoctypeView.prototype.showDescription = function(e) {
     var descWrapper, jqObj, newTd, newTr;
     jqObj = $(e.currentTarget);
@@ -892,8 +888,6 @@ module.exports = ResultCollectionView = (function(_super) {
   };
 
   ResultCollectionView.prototype.search = function(content) {
-    var that;
-    that = this;
     this.options['query'] = content;
     return this.collection.fetch({
       data: $.param(this.options)
@@ -1401,10 +1395,11 @@ module.exports = SearchView = (function(_super) {
     var _this = this;
     if (this.hasDoctype) {
       this.resultCollectionView.render();
-      return $(window).bind('resize', function() {
+      $(window).bind('resize', function() {
         $('#btn-scroll-up').show();
         return _this.resultCollectionView.loopFirstScroll();
       });
+      return this.bindSearch();
     }
   };
 
@@ -1412,8 +1407,13 @@ module.exports = SearchView = (function(_super) {
     return this.resultCollectionView.loadNextPage(isTriggered);
   };
 
-  SearchView.prototype.events = {
-    'click #launch-search': 'launchSearch'
+  SearchView.prototype.bindSearch = function() {
+    var searchElt,
+      _this = this;
+    searchElt = $('#launch-search');
+    return searchElt.click(function() {
+      return _this.resultCollectionView.search($('#search-field').val());
+    });
   };
 
   return SearchView;

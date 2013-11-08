@@ -15,9 +15,6 @@ module.exports = class DoctypeView extends View
     template: ->
         require './templates/doctype'
 
-    events :
-        'click .more-info' : 'showDescription'
-
 
     showDescription: (e) ->
         jqObj = $(e.currentTarget)

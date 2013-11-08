@@ -537,6 +537,9 @@ body {
     left: auto !important;
   }
 }
+#launch-search {
+  cursor: pointer;
+}
 
 /* side navigation */
 li [class^="icon-"],

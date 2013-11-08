@@ -46,13 +46,14 @@ module.exports = class SearchView extends BaseView
             $(window).bind 'resize', =>
                 $('#btn-scroll-up').show()
                 @resultCollectionView.loopFirstScroll()
+            @bindSearch()
 
 
     loadMore : (isTriggered)->
         @resultCollectionView.loadNextPage isTriggered
 
-    events :
-        'click #launch-search' : 'launchSearch'
 
-    # launchSearch : ->
-    #     @resultCollectionView.search($('#search-field').val())
+    bindSearch: ->
+        searchElt = $('#launch-search')
+        searchElt.click =>
+            @resultCollectionView.search($('#search-field').val())

@@ -69,9 +69,6 @@ module.exports.doctypes = (req, res) ->
     #             console.log alarm.id
     #             dataSystem.indexId alarm.id, ['description', 'trigg']
 
-    # dataSystem.getDoctypesByApplication (error, doctypes) ->
-    #     console.log error
-    #     console.log doctypes
     if req.query.menu?
 
           #------PREPARE REQUESTS
