@@ -711,7 +711,12 @@ module.exports = DoctypeNavView = (function(_super) {
   DoctypeNavView.prototype.render = function() {
     return DoctypeNavView.__super__.render.call(this, {
       name: this.model.get('name'),
-      value: this.model.get('value')
+      value: this.model.get('value'),
+      icons: {
+        all: 'icon-list',
+        applications: 'icon-download-alt',
+        origins: 'icon-map-marker'
+      }
     });
   };
 
@@ -1040,13 +1045,14 @@ module.exports = ResultView = (function(_super) {
         'field': attr.idField != null ? attr.idField : 'id',
         'data': attr.idField != null ? attr[attr.idField] : attr._id
       };
-      results['fields'] = this.prepareResultFields(attr);
-      return results;
+      this.results = results;
+      this.results['fields'] = this.prepareResultFields(attr);
+      return this.results;
     }
   };
 
   ResultView.prototype.prepareResultFields = function(attr) {
-    var description, field, fieldName, fields, iCounter, isNativField, isSimpleObj, isSimpleType, newLi, obj, objName, settedField, simpleTypes, typeOfField, typeOfObj;
+    var descField, description, displayName, field, fieldName, fields, hasDisplayName, iCounter, isNativField, isSimpleObj, isSimpleType, newLi, obj, objName, settedField, simpleTypes, typeOfField, typeOfObj;
     iCounter = 0;
     fields = [];
     settedField = ['idField', 'count', 'descField'];
@@ -1066,6 +1072,15 @@ module.exports = ResultView = (function(_super) {
           if (attr.descField[fieldName].description != null) {
             description = attr.descField[fieldName].description;
             fields[iCounter]['cdbFieldDescription'] = description;
+          }
+          descField = attr.descField[fieldName];
+          hasDisplayName = descField.displayName != null;
+          if (hasDisplayName && descField.displayName !== "") {
+            displayName = descField.displayName;
+            fields[iCounter]['cdbFieldName'] = displayName;
+            if (field === this.results['heading']['field']) {
+              this.results['heading']['field'] = displayName;
+            }
           }
         }
         typeOfField = typeof field;
@@ -1472,7 +1487,15 @@ with (locals || {}) {
 var interp;
  if (value.length) {
 {
-buf.push('<a href="#" class="dropdown-toggle"><span class="menu-text">' + escape((interp = name) == null ? '' : interp) + '</span><b class="arrow icon-angle-down"></b></a><ul class="submenu">');
+buf.push('<a href="#" class="dropdown-toggle">');
+ if (icons[name]) {
+{
+buf.push('<i');
+buf.push(attrs({ "class": ("" + (icons[name]) + "") }, {"class":true}));
+buf.push('></i>');
+}
+}
+buf.push('<span class="menu-text firstLetterUp">' + escape((interp = name) == null ? '' : interp) + '</span><b class="arrow icon-angle-down"></b></a><ul class="submenu">');
  for (var index in value) {
 {
  if (typeof(value[index]) === "string") {

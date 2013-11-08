@@ -23,7 +23,7 @@
         "docType": "Metadoctype",
         "related": "Contact",
         "displayName": "Contact",
-        "identificationField": "description",
+        "identificationField": "fn",
         "fields": {
             "datapoint": {
                 "displayName": "datapoint",

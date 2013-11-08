@@ -420,6 +420,9 @@ body {
   min-height: 100%;
   font-size: 13px;
 }
+#sidebar {
+  z-index: 20;
+}
 #results-global-controls {
   border-bottom: 1px solid #e5e5e5;
   background-color: #f5f5f5;
@@ -507,6 +510,32 @@ body {
 .loading-image img {
   margin: auto;
   text-align: center;
+}
+.firstLetterUp {
+  text-transform: capitalize;
+}
+.profile-info-name {
+  width: 180px;
+}
+.profile-info-value {
+  margin-left: 180px;
+}
+.menu-toggler {
+  right: 0 !important;
+  left: auto !important;
+}
+.menu-toggler:after,
+.menu-toggler:before {
+  border: none !important;
+}
+.menu-toggler > .menu-text::after {
+  left: -18px !important;
+}
+@media only screen and (max-width: 991px) {
+  .sidebar {
+    right: 0 !important;
+    left: auto !important;
+  }
 }
 
 /* side navigation */

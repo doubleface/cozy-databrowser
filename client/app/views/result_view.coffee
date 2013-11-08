@@ -58,10 +58,11 @@ module.exports = class ResultView extends View
                 'data' : if attr.idField? then attr[attr.idField] else attr._id
 
             #fields
-            results['fields'] = @prepareResultFields attr
+            @results = results
+            @results['fields'] = @prepareResultFields attr
 
 
-            return results
+            return @results
 
     prepareResultFields: (attr) ->
         iCounter = 0
@@ -82,18 +83,20 @@ module.exports = class ResultView extends View
                     'cdbFieldData' : ""
                     'cdbLabelClass' : "label-secondary"
 
-                #add description and name
+                #add description and displayName
                 if attr.descField? and attr.descField[fieldName]?
                     if attr.descField[fieldName].description?
                         description = attr.descField[fieldName].description
                         fields[iCounter]['cdbFieldDescription'] = description
-                    # hasDisplayName = attr.descField[field].displayName?
-                    # descField = attr.descField[field]
-                    # if hasDisplayName and descField.displayName isnt ""
-                    #     displayName = attr.descField[field].displayName
-                    #     fields[iCounter]['cdbFieldName'] = displayName
-                    #     if field is results['heading']['field']
-                    #         results['heading']['field'] = displayName
+
+                    descField = attr.descField[fieldName]
+                    hasDisplayName = descField.displayName?
+
+                    if hasDisplayName and descField.displayName isnt ""
+                        displayName = descField.displayName
+                        fields[iCounter]['cdbFieldName'] = displayName
+                        if field is @results['heading']['field']
+                            @results['heading']['field'] = displayName
 
                 #add data according to typeof
                 #field isn't an object  : display text
