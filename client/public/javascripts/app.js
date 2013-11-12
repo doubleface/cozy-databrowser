@@ -1219,7 +1219,20 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
   ResultsGlobalControlsView.prototype.events = {
     'mouseover #delete-all': 'convertButtonToDanger',
     'mouseout #delete-all': 'convertButtonToClassic',
-    'click #delete-all': 'confirmDeleteAll'
+    'click #delete-all': 'confirmDeleteAll',
+    'click .about-doctype': 'showMetaInfos'
+  };
+
+  ResultsGlobalControlsView.prototype.showMetaInfos = function(event) {
+    var jqObj;
+    jqObj = $(event.currentTarget);
+    if (jqObj.hasClass('white-and-green')) {
+      jqObj.removeClass('white-and-green');
+      return $('#results-meta-infos').hide();
+    } else {
+      jqObj.addClass('white-and-green');
+      return $('#results-meta-infos').show();
+    }
   };
 
   ResultsGlobalControlsView.prototype.convertButtonToDanger = function(event) {
@@ -1241,6 +1254,7 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
   };
 
   ResultsGlobalControlsView.prototype.initialize = function(opt) {
+    $(this.el).undelegate('.about-doctype', 'click');
     $(this.el).undelegate('#delete-all', 'click');
     if (opt.doctype != null) {
       this.currentDoctype = opt.doctype[0] || '';
@@ -1249,10 +1263,13 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
   };
 
   ResultsGlobalControlsView.prototype.render = function(opt) {
-    var templateData;
+    var jqMetaInfos, templateData;
     templateData = {};
     templateData['range'] = opt.range ? '(' + opt.range + ')' || '' : void 0;
     templateData['doctype'] = opt.doctype ? opt.doctype[0] : '';
+    templateData['hasMetainfos'] = opt.hasMetaInfos ? true : void 0;
+    jqMetaInfos = $('#results-meta-infos');
+    templateData['isVisible'] = jqMetaInfos.is(':visible') ? true : void 0;
     return ResultsGlobalControlsView.__super__.render.call(this, templateData);
   };
 
@@ -1314,6 +1331,17 @@ module.exports = ResultsMetaInfosView = (function(_super) {
 
   ResultsMetaInfosView.prototype.el = '#results-meta-infos';
 
+  ResultsMetaInfosView.prototype.events = {
+    'click #close-about-doctype': 'showMetaInfos'
+  };
+
+  ResultsMetaInfosView.prototype.showMetaInfos = function(event) {
+    var jqObj;
+    jqObj = $('.about-doctype');
+    jqObj.removeClass('white-and-green');
+    return $('#results-meta-infos').hide();
+  };
+
   ResultsMetaInfosView.prototype.template = function() {
     return require('./templates/results_meta_infos');
   };
@@ -1357,7 +1385,6 @@ module.exports = SearchView = (function(_super) {
     var metaInfosModel,
       _this = this;
     this.options = options;
-    this.resultsGlobalControlsView = new ResultsGlobalControlsView(this.options);
     if (this.options.doctype && this.options.doctype.length > 0) {
       metaInfosModel = new MetaInfosModel();
       $('#results-meta-infos').empty();
@@ -1370,8 +1397,10 @@ module.exports = SearchView = (function(_super) {
           var resultsMetaInfosView;
           if (data && data.name && (data.application || data.metadoctype)) {
             resultsMetaInfosView = new ResultsMetaInfosView();
-            return resultsMetaInfosView.render(data);
+            resultsMetaInfosView.render(data);
+            _this.options['hasMetaInfos'] = true;
           }
+          return _this.resultsGlobalControlsView = new ResultsGlobalControlsView(_this.options);
         }
       });
       this.resultCollectionView = new ResultCollectionView(this.options);
@@ -1606,7 +1635,22 @@ with (locals || {}) {
 var interp;
  if (doctype !== '') {
 {
-buf.push('<h4>&nbsp;&nbsp;Currently exploring :&nbsp;<em>' + escape((interp = doctype) == null ? '' : interp) + ' ' + escape((interp = range) == null ? '' : interp) + '</em></h4><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button id="delete-all" class="btn btn-xs"><span></span><i class="icon-trash bigger-120"></i></button></div>');
+buf.push('<h4>&nbsp;&nbsp;Currently exploring :&nbsp;<em>' + escape((interp = doctype) == null ? '' : interp) + ' ' + escape((interp = range) == null ? '' : interp) + ' &nbsp;</em>');
+ if (hasMetainfos) {
+{
+ if (isVisible) {
+{
+buf.push('<i class="about-doctype icon-question-sign white-and-green"></i>');
+}
+}
+ else {
+{
+buf.push('<i class="about-doctype icon-question-sign"></i>');
+}
+}
+}
+ }
+buf.push('</h4><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button id="delete-all" class="btn btn-xs"><span></span><i class="icon-trash bigger-120"></i></button></div>');
 }
 }
 }
@@ -1621,7 +1665,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="widget-box"><div class="widget-header widget-header-small header-color-green"><h4 class="lighter"><i class="icon-question-sign"></i>&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h4><div class="widget-toolbar"><a href="#" data-action="collapse"><i class="icon-chevron-up"></i></a><a href="#" data-action="close"><i class="icon-remove"></i></a></div></div><div class="widget-body"><div class="widget-body-inner"><div class="widget-main padding-6"><div class="md-desc-wrapper">');
+buf.push('<div class="widget-box"><div class="widget-header widget-header-small header-color-green"><h4 class="lighter"><i class="icon-question-sign"></i>&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h4><div class="widget-toolbar"><span id="close-about-doctype"><i class="icon-remove"></i></span></div></div><div class="widget-body"><div class="widget-body-inner"><div class="widget-main padding-6"><div class="md-desc-wrapper">');
  if (applications && applications.length > 0) {
 {
 buf.push('<div class="md-desc-container"><strong>Applications using it :</strong><ul class="sober-list">');

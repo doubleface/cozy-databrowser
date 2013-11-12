@@ -12,7 +12,6 @@ module.exports = class SearchView extends BaseView
 
     initialize : (options) ->
         @options = options
-        @resultsGlobalControlsView = new ResultsGlobalControlsView(@options)
         if @options.doctype and @options.doctype.length > 0
             metaInfosModel = new MetaInfosModel()
             $('#results-meta-infos').empty()
@@ -20,10 +19,12 @@ module.exports = class SearchView extends BaseView
             metaInfosModel.fetch
                 data: $.param
                     doctype : @options.doctype[0]
-                success : (col, data) ->
+                success : (col, data) =>
                     if data and data.name and (data.application or data.metadoctype)
                         resultsMetaInfosView = new ResultsMetaInfosView()
                         resultsMetaInfosView.render(data)
+                        @options['hasMetaInfos'] = true
+                    @resultsGlobalControlsView = new ResultsGlobalControlsView(@options)
 
             @resultCollectionView = new ResultCollectionView(@options)
 

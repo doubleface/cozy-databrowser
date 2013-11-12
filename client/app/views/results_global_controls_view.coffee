@@ -11,6 +11,16 @@ module.exports = class ResultsGlobalControlsView extends View
         'mouseover #delete-all' : 'convertButtonToDanger'
         'mouseout #delete-all' : 'convertButtonToClassic'
         'click #delete-all' : 'confirmDeleteAll'
+        'click .about-doctype' : 'showMetaInfos'
+
+    showMetaInfos: (event) ->
+        jqObj = $(event.currentTarget)
+        if jqObj.hasClass 'white-and-green'
+            jqObj.removeClass('white-and-green')
+            $('#results-meta-infos').hide()
+        else
+            jqObj.addClass('white-and-green')
+            $('#results-meta-infos').show()
 
     convertButtonToDanger: (event) ->
         jqObj = $(event.currentTarget)
@@ -26,6 +36,7 @@ module.exports = class ResultsGlobalControlsView extends View
         require './templates/results_global_controls'
 
     initialize : (opt) ->
+        $(@el).undelegate '.about-doctype', 'click'
         $(@el).undelegate '#delete-all', 'click'
         if opt.doctype?
             @currentDoctype = opt.doctype[0] || ''
@@ -35,6 +46,11 @@ module.exports = class ResultsGlobalControlsView extends View
         templateData = {}
         templateData['range'] = if opt.range then '(' + opt.range + ')' || ''
         templateData['doctype'] = if opt.doctype then opt.doctype[0] else ''
+        templateData['hasMetainfos'] = if opt.hasMetaInfos then true
+        jqMetaInfos = $('#results-meta-infos')
+        templateData['isVisible'] = if jqMetaInfos.is ':visible' then true
+
+
 
         super templateData
 
