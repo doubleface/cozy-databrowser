@@ -300,7 +300,7 @@ describe "Datasystem management", ->
 
                 it "After the MANAGE REQUEST action, new request must be usable and return sum of metadoctypes", =>
                     should.not.exist @errMDSum
-                    @bodyMDSum[0].value.should.be.equal 1
+                    @bodyMDSum[0].value.should.be.equal 2
 
             describe "When use GET DOCTYPES BY ORIGIN method", =>
 

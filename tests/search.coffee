@@ -140,8 +140,6 @@ describe "Search management", ->
                     path = @dataSystem.PATH.request + 'alarm' + @dataSystem.PATH.all
                     @dataSystem.postData path, (err, body) =>
                         if not err?
-                            console.log body[0].id
-                            console.log body[1].id
                             @dataSystem.indexId body[0].id, ['description'], (errIndex, bodyIndex) =>
                                 @dataSystem.indexId body[1].id, ['description'], (errIndex2, bodyIndex2) =>
                                     searchPath = @dataSystem.PATH.search + 'alarm'
