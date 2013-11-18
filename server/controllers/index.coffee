@@ -82,11 +82,22 @@ module.exports.doctypes = (req, res) ->
         menuRequests.push (callback) -> #2 -> origin
             dataSystem.getDoctypesByOrigin callback
 
+        menuRequests.push (callback) -> #3 -> sums
+            targetUrl = dataSystem.PATH.doctypes.getsums
+            dataSystem.getView targetUrl, callback, group: true
+
         async.parallel menuRequests, (error, results) ->
             if error?
                 res.send 500, dataSystem.ERR_MSG.retrieveData
             else
                 doctypes = []
+                sums = {}
+
+                #compact sums
+                for sum in results[3]
+                    sums[sum.key.toLowerCase()] = sum.value
+
+                #prepare categories
                 if results[0].length? and results[0].length > 0
                     doctypes.push
                         name : 'all'
@@ -99,6 +110,20 @@ module.exports.doctypes = (req, res) ->
                     doctypes.push
                         name : 'origins'
                         value : results[2]
+
+                #add sums
+                for category, index in doctypes
+                    for data, index in category.value
+                        if (typeof data) is 'string'
+                            category.value[index] =
+                                doctype: data
+                                sum: sums[data.toLowerCase()] || 0
+                        else
+                            for subdata, index in data.value
+                                data.value[index] =
+                                    doctype : subdata
+                                    sum : sums[subdata.toLowerCase()] || 0
+
                 res.send doctypes
 
 
@@ -174,7 +199,7 @@ module.exports.doctypes = (req, res) ->
 module.exports.search = (req, res) ->
     if req.query?
 
-        doctypes = req.query.doctype || null
+        doctypes = req.query.doctypes || null
         range = req.query.range || null
         deleted = req.query.deleted || null
 

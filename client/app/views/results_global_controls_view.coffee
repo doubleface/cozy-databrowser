@@ -8,8 +8,8 @@ module.exports = class ResultsGlobalControlsView extends View
     templateModal: require('./templates/modal_confirm')
 
     events :
-        'mouseover #delete-all' : 'convertButtonToDanger'
-        'mouseout #delete-all' : 'convertButtonToClassic'
+        'mouseover #delete-all' : 'switchStyleOfDeleteButton'
+        'mouseout #delete-all' : 'switchStyleOfDeleteButton'
         'click #delete-all' : 'confirmDeleteAll'
         'click .about-doctype' : 'showMetaInfos'
 
@@ -22,30 +22,32 @@ module.exports = class ResultsGlobalControlsView extends View
             jqObj.addClass('white-and-green')
             $('#results-meta-infos').show()
 
-    convertButtonToDanger: (event) ->
+    switchStyleOfDeleteButton: (event) ->
         jqObj = $(event.currentTarget)
-        jqObj.addClass 'btn-danger'
-        jqObj.children('span').text('Delete all ')
+        if not jqObj.hasClass 'btn-danger'
+            jqObj.addClass 'btn-danger'
+            jqObj.children('span').text('Delete all ')
+        else
+            jqObj.removeClass 'btn-danger'
+            jqObj.children('span').empty()
 
-    convertButtonToClassic: (event) ->
-        jqObj = $(event.currentTarget)
-        jqObj.removeClass 'btn-danger'
-        jqObj.children('span').empty()
 
     template: ->
         require './templates/results_global_controls'
 
     initialize : (opt) ->
         $(@el).undelegate '.about-doctype', 'click'
+        $(@el).undelegate '#delete-all', 'mouseover'
+        $(@el).undelegate '#delete-all', 'mouseout'
         $(@el).undelegate '#delete-all', 'click'
-        if opt.doctype?
-            @currentDoctype = opt.doctype[0] || ''
+        if opt.doctypes?
+            @currentDoctype = opt.doctypes[0] || ''
         @render opt
 
     render: (opt) =>
         templateData = {}
         templateData['range'] = if opt.range then '(' + opt.range + ')' || ''
-        templateData['doctype'] = if opt.doctype then opt.doctype[0] else ''
+        templateData['doctype'] = if opt.doctypes then opt.doctypes[0] else ''
         templateData['hasMetainfos'] = if opt.hasMetaInfos then true
         jqMetaInfos = $('#results-meta-infos')
         templateData['isVisible'] = if jqMetaInfos.is ':visible' then true
@@ -56,8 +58,8 @@ module.exports = class ResultsGlobalControlsView extends View
 
     confirmDeleteAll : (e) ->
         e.preventDefault()
-        message = 'Are you sure ? This can\'t be undone, '
-        message += 'and will erase definitly data from the database.'
+        message = 'Are you ABSOLUTELY sure ? '
+        message += 'It could lead to IRREVERSIBLE DAMAGES to your cozy environment.'
         data =
             title: 'Confirmation required'
             body: message

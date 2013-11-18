@@ -176,8 +176,8 @@ module.exports = class ResultView extends View
     confirmRemoveResult : (e) ->
         that = this
         e.preventDefault()
-        message = 'Are you sure ? This can\'t be undone, '
-        message += 'and will erase definitly the data from the database.'
+        message = 'Are you ABSOLUTELY sure ? '
+        message += 'It could lead to IRREVERSIBLE DAMAGES to your cozy environment.'
         data =
             title: 'Confirmation required'
             body: message

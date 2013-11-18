@@ -11,31 +11,30 @@ module.exports = class ResultCollectionView extends ViewCollection
 
     initialize: (options) ->
         @options = options
-        that = this
         @collection = new ResultCollection()
         super
-        if @options.doctype?
+        if @options.doctypes?
             @collection.fetch {
                 data: $.param(@options)
-                success : (col, data) ->
+                success : (col, data) =>
                     $('.loading-image').remove()
                     #native size of the window can trigger next pages and scroll
-                    if that.options.range? and that.options.doctype?
-                        if data.length is that.collection.nbPerPage
-                            that.loopFirstScroll()
+                    if @options.range? and @options.doctypes?
+                        if data.length is @collection.nbPerPage
+                            @loopFirstScroll()
                             $('.load-more-result').show()
 
                         else
-                            that.noMoreItems = true
+                            @noMoreItems = true
                             $('.load-more-result').hide()
-                error : ->
+                error : =>
                     $('.loading-image').remove()
-                    that.noMoreItems = true
-                    that.displayLoadingError()
+                    @noMoreItems = true
+                    @displayLoadingError()
             }
 
     render: ->
-        if @options? and @options.doctype?
+        if @options? and @options.doctypes?
             loader = '<div class="loading-image">'
             loader += '<img src="images/ajax-loader.gif" />'
             loader += '</div>'
@@ -49,7 +48,6 @@ module.exports = class ResultCollectionView extends ViewCollection
             data: $.param(@options)
 
     loadNextPage : (isTriggered, callback) ->
-        that = this
         @options['deleted'] = @deleted
         if !@noMoreItems
             @isLoading = true
@@ -60,32 +58,31 @@ module.exports = class ResultCollectionView extends ViewCollection
             @collection.fetch
                 data: $.param(@options)
                 remove : false
-                success : (col, data) ->
+                success : (col, data) =>
                     if data.length?
                         if !isTriggered
                             $('.load-more-result .spinner').hide()
                             $('.load-more-result i').show()
                             $('.load-more-result span').show()
-                        isDone = data.length < that.collection.nbPerPage
-                        that.noMoreItems = isDone
-                        if that.noMoreItems
+                        isDone = data.length < @collection.nbPerPage
+                        @noMoreItems = isDone
+                        if @noMoreItems
                             $('.load-more-result').hide()
-                        that.isLoading = false
+                        @isLoading = false
                         if callback?
                             callback()
                     else
-                        that.noMoreItems = true
+                        @noMoreItems = true
                 error: ->
-                    that.noMoreItems = true
-                    that.displayLoadingError()
+                    @noMoreItems = true
+                    @displayLoadingError()
 
     loopFirstScroll: ->
-        that = this
         if !@isLoading and !@noMoreItems
             firstScroll = $(document).height() is $(window).height()
             if (firstScroll)
-                @loadNextPage true, ->
-                    that.loopFirstScroll()
+                @loadNextPage true, =>
+                    @loopFirstScroll()
 
     displayLoadingError: ->
         $('.load-more-result').css {'color' : '#AF4434'}
