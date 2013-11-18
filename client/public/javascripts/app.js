@@ -1321,13 +1321,20 @@ module.exports = SearchView = (function(_super) {
   };
 
   SearchView.prototype.bindSearch = function() {
-    var searchElt,
+    var searchElt, searchField,
       _this = this;
     searchElt = $('#launch-search');
+    searchField = $('#search-field');
     searchElt.unbind('click');
-    return searchElt.click(function() {
-      console.log($('#search-field').val());
-      return _this.resultCollectionView.search($('#search-field').val());
+    searchField.unbind('keypress');
+    searchElt.click(function() {
+      return _this.resultCollectionView.search(searchField.val());
+    });
+    return searchField.keypress(function(event) {
+      if (event.which === 13) {
+        event.preventDefault();
+        return searchElt.click();
+      }
     });
   };
 

@@ -57,7 +57,6 @@ class SearchEngine extends CoreClass
 
                 #for result, index in results
                     #if index > 0
-                console.log results[1]
                 for doc in results[1]
                     if doc.key? and doc.value?
                         myDoctype = doc.value['docType'].toLowerCase()

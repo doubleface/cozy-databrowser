@@ -168,6 +168,9 @@ class DataSystem extends CoreClass
             else
                 if callback? then callback null, body
 
+    clearIndexer: (callback) ->
+        @deleteData '/data/index/clear-all/', callback
+
     deleteById: (id, callback) ->
         @deleteData @PATH.data + id + '/', callback
 
@@ -213,8 +216,8 @@ class DataSystem extends CoreClass
 
     deleteData: (path, callback) ->
         @clientDS.del path, (error, response, body) =>
-
-            if error or response.statusCode isnt 204
+            status = response.statusCode
+            if error or (status isnt 204 and status isnt 200)
                 error = error || new Error body.error
                 unless @silent then @_logErrorInConsole error
                 callback error

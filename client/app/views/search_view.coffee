@@ -74,7 +74,12 @@ module.exports = class SearchView extends BaseView
 
     bindSearch: ->
         searchElt = $('#launch-search')
+        searchField = $('#search-field')
         searchElt.unbind 'click'
+        searchField.unbind 'keypress'
         searchElt.click =>
-            console.log $('#search-field').val()
-            @resultCollectionView.search($('#search-field').val())
+            @resultCollectionView.search(searchField.val())
+        searchField.keypress (event) =>
+            if event.which is 13
+                event.preventDefault()
+                searchElt.click()

@@ -62,12 +62,14 @@ module.exports.doctype_meta_infos = (req, res) ->
 module.exports.doctypes = (req, res) ->
 
     #------INDEX SEVERAL ID FOR TEST
-    # path = dataSystem.PATH.request + 'alarm' + dataSystem.PATH.all
-    # dataSystem.postData path, (err, body) ->
-    #     if not err?
-    #         for alarm in body
-    #             console.log alarm.id
-    #             dataSystem.indexId alarm.id, ['description', 'trigg']
+    # afterClear = ->
+    #     path = dataSystem.PATH.request + 'alarm' + dataSystem.PATH.all
+    #     dataSystem.postData path, (err, body) ->
+    #         if not err?
+    #             for alarm in body
+    #                 console.log alarm.id
+    #                 dataSystem.indexId alarm.id, ['description', 'trigg']
+    # dataSystem.clearIndexer afterClear
 
     if req.query.menu?
 
