@@ -1050,10 +1050,12 @@ module.exports = ResultView = (function(_super) {
 
   ResultView.prototype.removeResult = function() {
     this.model.set('id', this.model.get('_id'));
-    this.model.destroy({
-      data: 'id=' + this.model.get('id')
+    return this.model.destroy({
+      data: 'id=' + this.model.get('id'),
+      success: function() {
+        return location.reload();
+      }
     });
-    return $(window).resize();
   };
 
   return ResultView;

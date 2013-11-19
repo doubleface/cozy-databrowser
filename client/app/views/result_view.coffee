@@ -196,5 +196,7 @@ module.exports = class ResultView extends View
         @model.set('id', @model.get('_id'))
 
         #remove
-        @model.destroy { data : 'id=' + @model.get('id') }
-        $(window).resize()
+        @model.destroy
+            data : 'id=' + @model.get('id')
+            success: ->
+                location.reload()
