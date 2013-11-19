@@ -6,13 +6,32 @@ module.exports = (initCallback) ->
 
     #----prepare view functions
     viewFunctions =
-        common:
-            getSumsByDoctype:
+        doctypes:
+            getSums:
                 map: (doc) ->
                     if doc.docType?
                         emit doc.docType, 1
                 reduce: (keys, values, rereduce) ->
                     return sum(values)
+            getAllByOrigin:
+                map: (doc) ->
+                    if doc.origin? and doc.docType?
+                        emit [doc.origin, doc.docType], null
+                reduce: (keys, values, rereduce) ->
+                    return null
+                    # registeredValues = {}
+                    # uniqueValues = []
+                    # values.forEach (val) ->
+                    #     if val? and typeof(val) is 'object'
+                    #         val.forEach (subVal) ->
+                    #             if not registeredValues[subVal]
+                    #                 registeredValues[subVal] = true
+                    #                 uniqueValues.push subVal
+                    #     else if typeof(val) is 'string'
+                    #         if not registeredValues[val]
+                    #             registeredValues[val] = true
+                    #             uniqueValues.push val
+                    # return uniqueValues
         metadoctype:
             getAllByRelated:
                 map: (doc) ->
@@ -29,8 +48,8 @@ module.exports = (initCallback) ->
 
     #sums
     setupRequests.push (callback) ->
-        pathSum = dataSystem.PATH.common.getsumsbydoctype
-        getSum = viewFunctions.common.getSumsByDoctype
+        pathSum = dataSystem.PATH.doctypes.getsums
+        getSum = viewFunctions.doctypes.getSums
         dataSystem.manageRequest pathSum, getSum, callback
 
     #all
@@ -44,6 +63,12 @@ module.exports = (initCallback) ->
         pathPermissions = dataSystem.PATH.application.getpermissions
         getPermissions = viewFunctions.application.getPermissions
         dataSystem.manageRequest pathPermissions, getPermissions, callback
+
+    #origins
+    setupRequests.push (callback) ->
+        pathOrigins = dataSystem.PATH.doctypes.getallbyorigin
+        getOrigins = viewFunctions.doctypes.getAllByOrigin
+        dataSystem.manageRequest pathOrigins, getOrigins, callback
 
     #----agregate callback
     async.parallel setupRequests, (error, results) ->

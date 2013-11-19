@@ -46,7 +46,7 @@ runTests = (fileList) ->
         env = 'NODE_ENV=development'
     else
         env = 'NODE_ENV=test'
-    command = "#{env} ./node_modules/mocha/bin/mocha " + fileList.join(" ") + " "
+    command = "mocha " + fileList.join(" ") + " "
     if options['debug-brk']
         command += "--debug-brk --forward-io --profile "
     if options.debug

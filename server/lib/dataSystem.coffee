@@ -13,6 +13,7 @@ class DataSystem extends CoreClass
     #------------------ PROTOTYPE CONSTANTS ----------------
     #required dependencies
     JSON_CLIENT: require('request-json').JsonClient
+    ASYNC: require 'async'
     ARRAY_HELPER: require './../helpers/oArrayHelper'
 
     #general pathes
@@ -23,13 +24,15 @@ class DataSystem extends CoreClass
     #specific paths
     PATH:
         data: '/data/'
-        doctypes: '/doctypes'
         request: '/request/'
         all: '/dball/'
         search: '/data/search/'
         index: '/data/index/'
-        common:
-            getsumsbydoctype: '/request/common/getsumsbydoctype/'
+        destroyAll : '/dball/destroy/'
+        doctypes:
+            getall: '/doctypes'
+            getsums: '/request/doctypes/getsums/'
+            getallbyorigin : '/request/doctypes/getallbyorigin/'
         metadoctype:
             getallbyrelated: '/request/metadoctype/getallbyrelated/'
         application:
@@ -109,7 +112,49 @@ class DataSystem extends CoreClass
         @postData path, callback, params
 
     getDoctypes: (callback) ->
-        @getData @PATH.doctypes, callback
+        @getData @PATH.doctypes.getall, callback
+
+    getPermissions : (callback) ->
+        @getView @PATH.application.getpermissions, callback
+
+    getDoctypesByOrigin : (callback) ->
+        viewCallback = (error, body) ->
+            if error?
+                callback error
+            else
+                newArray = []
+                allObj = {}
+                for couple in body
+                    if couple.key?
+                        if allObj[couple.key[0]]?
+                            allObj[couple.key[0]].push couple.key[1]
+                        else
+                            allObj[couple.key[0]] = []
+                            allObj[couple.key[0]].push couple.key[1]
+                for objName, obj of allObj
+                    newObj = {}
+                    newObj['key'] = objName
+                    newObj['value'] = obj
+                    newArray.push newObj
+                callback null, newArray
+        @getView @PATH.doctypes.getallbyorigin, viewCallback, group: true
+
+
+    getDoctypesByApplication: (callback) ->
+        @getPermissions (error, applications) ->
+            if error?
+                callback error
+            else
+                doctypes = []
+                for app in applications
+                    appName = app.key.toLowerCase()
+                    doctypeName = []
+                    for objName, obj of app.value
+                            doctypeName.push objName.toLowerCase()
+                    doctypes.push
+                        'key' : appName
+                        'value' : doctypeName
+                callback null, doctypes
 
     indexId: (id, aFields, callback = null) ->
         fields = {"fields": aFields}
@@ -123,8 +168,14 @@ class DataSystem extends CoreClass
             else
                 if callback? then callback null, body
 
+    clearIndexer: (callback) ->
+        @deleteData '/data/index/clear-all/', callback
+
     deleteById: (id, callback) ->
         @deleteData @PATH.data + id + '/', callback
+
+    deleteAllByDoctype : (doctype, callback) ->
+        @putData @PATH.request + doctype + @PATH.destroyAll, {}, callback
 
 
     #---- CRUD HTTTP METHODS
@@ -141,7 +192,6 @@ class DataSystem extends CoreClass
 
     getData: (path, callback) ->
         @clientDS.get path, (error, response, body) =>
-
             if error or response.statusCode isnt 200
                 error = error || new Error body.error
                 unless @silent then @_logErrorInConsole error
@@ -153,7 +203,6 @@ class DataSystem extends CoreClass
 
     postData: (path, callback, params = {}) ->
         @clientDS.post path, params, (error, response, body) =>
-
             if error or response.statusCode isnt 200
                 error = error || new Error body.error
                 unless @silent then @_logErrorInConsole error
@@ -167,8 +216,8 @@ class DataSystem extends CoreClass
 
     deleteData: (path, callback) ->
         @clientDS.del path, (error, response, body) =>
-
-            if error or response.statusCode isnt 204
+            status = response.statusCode
+            if error or (status isnt 204 and status isnt 200)
                 error = error || new Error body.error
                 unless @silent then @_logErrorInConsole error
                 callback error

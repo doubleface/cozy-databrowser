@@ -1,0 +1,38 @@
+- if (value.length) {
+    a.dropdown-toggle(href="#")
+        - if (icons[name]) {
+            i(class="#{icons[name]}")
+        -}
+        span.menu-text.firstLetterUp #{name}
+        b.arrow.icon-angle-down
+    ul.submenu
+        - for (var index in value) {
+                - if (value[index].doctype) {
+                    li
+                        a(href='#search/all/#{value[index].doctype}')
+                            i.icon-double-angle-right
+                            |#{value[index].doctype}
+                            span.menu-little-text &nbsp;(#{value[index].sum})
+                - }
+                - else {
+                    li
+                        a.dropdown-toggle(href="#")
+                            i.icon-double-angle-right
+                            span.menu-text #{value[index].key}
+                            b.arrow.icon-angle-down
+                        ul.submenu
+                            - subValues = value[index].value
+                            - for (var subIndex in subValues) {
+                                - doctype = subValues[subIndex].doctype
+                                - sum = subValues[subIndex].sum
+                                li
+                                    a(href='#search/all/#{doctype}') #{doctype}
+                                        span.menu-little-text &nbsp;(#{sum})
+
+                            - }
+                -}
+        - }
+- }
+- else {
+    a(href='#search/all/#{name}') #{name}
+-}

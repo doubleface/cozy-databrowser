@@ -142,18 +142,13 @@ describe "Search management", ->
                         if not err?
                             @dataSystem.indexId body[0].id, ['description'], (errIndex, bodyIndex) =>
                                 @dataSystem.indexId body[1].id, ['description'], (errIndex2, bodyIndex2) =>
-                                    done()
-
-                #search data
-                before (done) =>
-                    searchPath = @dataSystem.PATH.search + 'alarm'
-                    searchCallback = (err, body) =>
-                        @errSearch = err
-                        @bodySearch = body
-                        done()
-
-                    @dataSystem.getView searchPath, searchCallback, { query : "scopyleft"}
-
+                                    searchPath = @dataSystem.PATH.search + 'alarm'
+                                    searchCallback = (err, body) =>
+                                        @errSearch = err
+                                        @bodySearch = body
+                                        console.log body
+                                        done()
+                                    @dataSystem.getView searchPath, searchCallback, { query : "scopyleft"}
 
 
                 it "The search action 'scopyleft' on 'alarm' shouldn't return an error", =>

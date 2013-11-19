@@ -104,7 +104,7 @@ describe "Datasystem management", ->
             describe "When use GET method", =>
                 before (done) =>
 
-                    path = @dataSystem.PATH.doctypes
+                    path = @dataSystem.PATH.doctypes.getall
                     @dataSystem.getData path, (err, body) =>
                         @errGetValid = err
                         @bodyGetValid = body
@@ -245,7 +245,7 @@ describe "Datasystem management", ->
                 it "The DELETE BY ID method shouldn't return an error", =>
                     should.not.exist @errDeleteId
 
-                it "After DELETE BY ID method, sum of alarm must be 0", =>
+                it "After DELETE BY ID method, sum of 'alarm' must be 0", =>
                     should.not.exist @errAlarmSum3
                     @bodyAlarmSum3.should.have.lengthOf 0
 
@@ -266,6 +266,29 @@ describe "Datasystem management", ->
                             @bodyMDSum = bodyMDSum
                             done()
 
+            describe "When use DELETE ALL BY DOCTYPES method", =>
+
+                before (done) =>
+
+                    @dataSystem.deleteAllByDoctype 'contact', (err, body) =>
+                        @errDelAll = err
+                        @bodyDelAll = body
+                        requestPath = '/request/' + 'contact' + '/dball/'
+                        @dataSystem.getView requestPath, (errAlarmDellAll, bodyAlarmDellAll) =>
+                            @errADA = errAlarmDellAll
+                            @bodyADA = bodyAlarmDellAll
+                            done()
+
+                it "The DELETE ALL BY DOCTYPES method shouldn't return an error", =>
+                    should.not.exist @errDelAll
+
+                it "After DELETE BY ID method, sum of 'contact' must be 0", =>
+                    should.not.exist @errADA
+                    @bodyADA.should.have.lengthOf 0
+
+
+
+
             describe "When use MANAGE REQUEST method", =>
 
                 it "The MANAGE REQUEST method shouldn't return an error", =>
@@ -277,7 +300,39 @@ describe "Datasystem management", ->
 
                 it "After the MANAGE REQUEST action, new request must be usable and return sum of metadoctypes", =>
                     should.not.exist @errMDSum
-                    @bodyMDSum[0].value.should.be.equal 1
+                    @bodyMDSum[0].value.should.be.equal 2
+
+            describe "When use GET DOCTYPES BY ORIGIN method", =>
+
+                before (done) =>
+
+                    @dataSystem.getDoctypesByOrigin (err, body) =>
+                        @errOrigin = err
+                        @bodyOrigin = body
+                        done()
+
+                it "The GET DOCTYPES BY ORIGIN method shouln't return an error", =>
+                    should.not.exist @errOrigin
+
+                it "The GET DOCTYPES BY ORIGIN method should return a well formed body", =>
+                    should.exist @bodyOrigin
+                    @bodyOrigin.should.have.type 'object'
+
+             describe "When use GET DOCTYPES BY APPLICATION method", =>
+
+                before (done) =>
+
+                    @dataSystem.getDoctypesByApplication (err, body) =>
+                        @errApp = err
+                        @bodyApp = body
+                        done()
+
+                it "The GET DOCTYPES BY APPLICATION method shouln't return an error", =>
+                    should.not.exist @errApp
+
+                it "The GET DOCTYPES BY APPLICATION method should return a well formed body", =>
+                    should.exist @bodyApp
+                    @bodyApp.should.have.type 'object'
 
         describe "When use preparation methods", =>
 

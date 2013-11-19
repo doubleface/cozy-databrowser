@@ -3,7 +3,23 @@ View = require './../lib/view'
 module.exports = class ResultView extends View
 
     tagName: 'div'
-    className: 'accordion-group'
+    className: 'panel panel-default'
+    templateModal: require('./templates/modal_confirm')
+    events :
+        'click .accordion-toggle' : 'blurIt'
+        'mouseenter .label' : 'showFieldDescription'
+        'mouseleave .label' : 'showFieldDescription'
+        'click .remove-result' : 'confirmRemoveResult'
+        'mouseover .remove-result' : 'convertButtonToDanger'
+        'mouseout .remove-result' : 'convertButtonToClassic'
+
+    convertButtonToDanger: (event) ->
+        jqObj = $(event.currentTarget)
+        jqObj.addClass 'btn-danger'
+
+    convertButtonToClassic: (event) ->
+        jqObj = $(event.currentTarget)
+        jqObj.removeClass 'btn-danger'
 
     render: =>
         super
@@ -42,10 +58,11 @@ module.exports = class ResultView extends View
                 'data' : if attr.idField? then attr[attr.idField] else attr._id
 
             #fields
-            results['fields'] = @prepareResultFields attr
+            @results = results
+            @results['fields'] = @prepareResultFields attr
 
 
-            return results
+            return @results
 
     prepareResultFields: (attr) ->
         iCounter = 0
@@ -66,18 +83,20 @@ module.exports = class ResultView extends View
                     'cdbFieldData' : ""
                     'cdbLabelClass' : "label-secondary"
 
-                #add description and name
+                #add description and displayName
                 if attr.descField? and attr.descField[fieldName]?
                     if attr.descField[fieldName].description?
                         description = attr.descField[fieldName].description
                         fields[iCounter]['cdbFieldDescription'] = description
-                    # hasDisplayName = attr.descField[field].displayName?
-                    # descField = attr.descField[field]
-                    # if hasDisplayName and descField.displayName isnt ""
-                    #     displayName = attr.descField[field].displayName
-                    #     fields[iCounter]['cdbFieldName'] = displayName
-                    #     if field is results['heading']['field']
-                    #         results['heading']['field'] = displayName
+
+                    descField = attr.descField[fieldName]
+                    hasDisplayName = descField.displayName?
+
+                    if hasDisplayName and descField.displayName isnt ""
+                        displayName = descField.displayName
+                        fields[iCounter]['cdbFieldName'] = displayName
+                        if field is @results['heading']['field']
+                            @results['heading']['field'] = displayName
 
                 #add data according to typeof
                 #field isn't an object  : display text
@@ -101,7 +120,7 @@ module.exports = class ResultView extends View
 
                         else if obj? and typeof obj is 'object'
                             newLi = '<li>' + objName + ' : '
-                            newLi += '<i>' + $.stringify(obj) + '</i></li>'
+                            newLi += '<i>' + JSON.stringify(obj) + '</i></li>'
                             fields[iCounter]['cdbFieldData'] += newLi
 
                         else
@@ -121,14 +140,6 @@ module.exports = class ResultView extends View
 
     template: ->
         require './templates/result'
-
-    templateModal: require('./templates/modal_confirm')
-
-    events :
-        'click .accordion-toggle' : 'blurIt'
-        'mouseenter .label' : 'showFieldDescription'
-        'mouseleave .label' : 'showFieldDescription'
-        'click .remove-result' : 'confirmRemoveResult'
 
     blurIt : (e) ->
         $(e.currentTarget).blur()
@@ -165,8 +176,8 @@ module.exports = class ResultView extends View
     confirmRemoveResult : (e) ->
         that = this
         e.preventDefault()
-        message = 'Are you sure ? This can\'t be undone, '
-        message += 'and will erase definitly the data from the database.'
+        message = 'Are you ABSOLUTELY sure ? '
+        message += 'It could lead to IRREVERSIBLE DAMAGES to your cozy environment.'
         data =
             title: 'Confirmation required'
             body: message
@@ -175,6 +186,7 @@ module.exports = class ResultView extends View
         $("body").prepend @templateModal(data)
         $("#confirmation-dialog").modal()
         $("#confirmation-dialog").modal("show")
+        $("#confirmation-dialog-confirm").unbind 'click'
         $("#confirmation-dialog-confirm").bind "click", ->
             that.removeResult()
 
@@ -184,5 +196,7 @@ module.exports = class ResultView extends View
         @model.set('id', @model.get('_id'))
 
         #remove
-        @model.destroy { data : 'id=' + @model.get('id') }
-        $(window).resize()
+        @model.destroy
+            data : 'id=' + @model.get('id')
+            success: ->
+                location.reload()

@@ -6,8 +6,8 @@
         h4.modal-title
           | #{title}
       .modal-body
-        p
+        p.modal-confirm-text
           | #{body}
       .modal-footer
         span.btn.btn-link(data-dismiss='modal') cancel
-        span#confirmation-dialog-confirm.btn.btn-cozy(data-dismiss='modal') #{confirm}
+        span#confirmation-dialog-confirm.btn.btn-danger(data-dismiss='modal') #{confirm}

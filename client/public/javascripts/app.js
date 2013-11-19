@@ -401,6 +401,7 @@ module.exports = ViewCollection = (function(_super) {
   ViewCollection.prototype.afterRender = function() {
     var id, view, _ref1;
     this.$collectionEl = $(this.collectionEl);
+    this.$collectionEl.empty();
     _ref1 = this.views;
     for (id in _ref1) {
       view = _ref1[id];
@@ -451,6 +452,27 @@ module.exports = ViewCollection = (function(_super) {
 
 });
 
+;require.register("models/delete_all_model", function(exports, require, module) {
+var DoctypeDeleteAllModel, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+module.exports = DoctypeDeleteAllModel = (function(_super) {
+  __extends(DoctypeDeleteAllModel, _super);
+
+  function DoctypeDeleteAllModel() {
+    _ref = DoctypeDeleteAllModel.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  DoctypeDeleteAllModel.prototype.urlRoot = 'doctype_delete_all';
+
+  return DoctypeDeleteAllModel;
+
+})(Backbone.Model);
+
+});
+
 ;require.register("models/doctype_model", function(exports, require, module) {
 var DoctypeModel, _ref,
   __hasProp = {}.hasOwnProperty,
@@ -467,6 +489,27 @@ module.exports = DoctypeModel = (function(_super) {
   DoctypeModel.prototype.rootUrl = "doctypes";
 
   return DoctypeModel;
+
+})(Backbone.Model);
+
+});
+
+;require.register("models/meta_infos_model", function(exports, require, module) {
+var DoctypeMetaInfosModel, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+module.exports = DoctypeMetaInfosModel = (function(_super) {
+  __extends(DoctypeMetaInfosModel, _super);
+
+  function DoctypeMetaInfosModel() {
+    _ref = DoctypeMetaInfosModel.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  DoctypeMetaInfosModel.prototype.urlRoot = 'doctype_meta_infos';
+
+  return DoctypeMetaInfosModel;
 
 })(Backbone.Model);
 
@@ -493,78 +536,14 @@ module.exports = ResultModel = (function(_super) {
 
 });
 
-;require.register("noesis-classes/CheckingDdl", function(exports, require, module) {
-var CheckingDdl;
-
-module.exports = CheckingDdl = (function() {
-  var CSS_CLASSES;
-
-  CheckingDdl.CLASS_NAME = "CheckingDdl";
-
-  CheckingDdl.CLASS_COUNT = 0;
-
-  CSS_CLASSES = {
-    container: "cddl-engine-container",
-    title: "cddl-title",
-    list: "cddl-list",
-    listItem: "cddl-list-item",
-    listItemContent: "cddl-list-item-content",
-    listItemCb: "cddl-list-item-checkbox"
-  };
-
-  function CheckingDdl(sTitle, aStrings, sIdParent) {
-    this.sTitle = sTitle;
-    this.aStrings = aStrings;
-    this.sIdParent = sIdParent;
-    this.sEltUniqId = CSS_CLASSES.container + this.constructor.CLASS_COUNT;
-    this.create();
-    this.constructor.CLASS_COUNT++;
-  }
-
-  CheckingDdl.prototype.create = function() {
-    var eltCb, eltContainer, eltContent, eltListItem, eltTitle, sRow, that, _i, _len, _ref;
-    that = this;
-    eltContainer = $(document.createElement('div'));
-    eltContainer.addClass(CSS_CLASSES.container).attr('id', this.sEltUniqId);
-    eltTitle = $(document.createElement('span'));
-    eltTitle.addClass(CSS_CLASSES.title).text(this.sTitle);
-    this.eltList = $(document.createElement('ul'));
-    _ref = this.aStrings;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      sRow = _ref[_i];
-      eltListItem = $(document.createElement('li'));
-      eltListItem.addClass(CSS_CLASSES.listItem);
-      eltContent = $(document.createElement('span'));
-      eltContent.addClass(CSS_CLASSES.listItemContent).text(sRow);
-      eltCb = $(document.createElement('input')).attr('type', 'checkbox');
-      eltCb.addClass(CSS_CLASSES.listItemCb);
-      eltListItem.append([eltContent, eltCb]);
-      this.eltList.append(eltListItem);
-    }
-    eltContainer.append([eltTitle, this.eltList]);
-    return $(this.sIdParent).append(eltContainer);
-  };
-
-  return CheckingDdl;
-
-})();
-
-});
-
 ;require.register("router", function(exports, require, module) {
-var DoctypeCollectionView, DoctypesView, NavView, ResultCollectionView, Router, SearchView, _ref,
+var DoctypeNavCollectionView, Router, SearchView, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-NavView = require('views/nav_view');
-
-DoctypesView = require('views/doctypes_view');
-
-DoctypeCollectionView = require('views/doctype_collection_view');
+DoctypeNavCollectionView = require('views/doctype_nav_collection_view');
 
 SearchView = require('views/search_view');
-
-ResultCollectionView = require('views/result_collection_view');
 
 module.exports = Router = (function(_super) {
   __extends(Router, _super);
@@ -575,30 +554,25 @@ module.exports = Router = (function(_super) {
   }
 
   Router.prototype.routes = {
-    '': 'doctypes',
-    'doctypes': 'doctypes',
+    '': 'search',
     'search': 'search',
     'search/all/:doctype': 'search'
   };
 
-  Router.prototype.doctypes = function() {
-    var dcView, doctypesView, navView;
-    navView = new NavView();
-    doctypesView = new DoctypesView();
-    doctypesView.render();
-    dcView = new DoctypeCollectionView();
-    return dcView.render();
+  Router.prototype.initialize = function() {
+    var doctypeNavCollectionView;
+    doctypeNavCollectionView = new DoctypeNavCollectionView();
+    return doctypeNavCollectionView.render();
   };
 
-  Router.prototype.search = function(doctype) {
-    var navView, options, searchView;
-    navView = new NavView();
+  Router.prototype.search = function(doctypePattern) {
+    var options, searchView;
     options = {};
-    if (doctype != null) {
-      if (!/\|/.test(decodeURIComponent(doctype))) {
-        options['doctype'] = [doctype];
+    if (doctypePattern != null) {
+      if (!/\|/.test(decodeURIComponent(doctypePattern))) {
+        options['doctypes'] = [doctypePattern];
       } else {
-        options['doctype'] = decodeURIComponent(doctype).split(/\|/);
+        options['doctypes'] = decodeURIComponent(doctypePattern).split(/\|/);
       }
       options['range'] = 'all';
     }
@@ -612,8 +586,8 @@ module.exports = Router = (function(_super) {
 
 });
 
-;require.register("views/doctype_collection_view", function(exports, require, module) {
-var DoctypeCollection, DoctypeCollectionView, DoctypeView, ViewCollection, _ref,
+;require.register("views/doctype_nav_collection_view", function(exports, require, module) {
+var DoctypeCollection, DoctypeNavCollectionView, DoctypeNavView, ViewCollection, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -621,239 +595,95 @@ ViewCollection = require('../lib/view_collection');
 
 DoctypeCollection = require('../collections/doctype_collection');
 
-DoctypeView = require('./doctype_view');
+DoctypeNavView = require('./doctype_nav_view');
 
-module.exports = DoctypeCollectionView = (function(_super) {
-  __extends(DoctypeCollectionView, _super);
+module.exports = DoctypeNavCollectionView = (function(_super) {
+  __extends(DoctypeNavCollectionView, _super);
 
-  function DoctypeCollectionView() {
-    _ref = DoctypeCollectionView.__super__.constructor.apply(this, arguments);
+  function DoctypeNavCollectionView() {
+    _ref = DoctypeNavCollectionView.__super__.constructor.apply(this, arguments);
     return _ref;
   }
 
-  DoctypeCollectionView.prototype.itemview = DoctypeView;
+  DoctypeNavCollectionView.prototype.itemview = DoctypeNavView;
 
-  DoctypeCollectionView.prototype.collection = new DoctypeCollection();
-
-  DoctypeCollectionView.prototype.initialize = function() {
-    this.collectionEl = '#doctypes-list';
-    DoctypeCollectionView.__super__.initialize.apply(this, arguments);
-    this.collection.fetch();
-    this.views = {};
-    return this.listenTo(this.collection, "reset", this.onReset);
-  };
-
-  return DoctypeCollectionView;
-
-})(ViewCollection);
-
-});
-
-;require.register("views/doctype_view", function(exports, require, module) {
-var DoctypeView, View, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-View = require('./../lib/view');
-
-module.exports = DoctypeView = (function(_super) {
-  __extends(DoctypeView, _super);
-
-  function DoctypeView() {
-    _ref = DoctypeView.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  DoctypeView.prototype.tagName = 'tr';
-
-  DoctypeView.prototype.className = 'doctype-list-item';
-
-  DoctypeView.prototype.render = function() {
-    return DoctypeView.__super__.render.call(this, {
-      name: this.model.get("name"),
-      metadoctype: this.model.get("metadoctype"),
-      sum: this.model.get("sum"),
-      app: this.model.get("app")
-    });
-  };
-
-  DoctypeView.prototype.template = function() {
-    return require('./templates/doctype');
-  };
-
-  DoctypeView.prototype.events = {
-    'click .more-info': 'showDescription'
-  };
-
-  DoctypeView.prototype.showDescription = function(e) {
-    var descWrapper, jqObj, newTd, newTr;
-    jqObj = $(e.currentTarget);
-    if (jqObj.hasClass('label-primary')) {
-      descWrapper = jqObj.parent().children('.md-desc-wrapper');
-      newTd = $(document.createElement('td')).attr('colspan', '3');
-      newTr = $(document.createElement('tr')).addClass('bg-gray');
-      descWrapper.appendTo(newTd).show();
-      newTd.appendTo(newTr);
-      jqObj.closest("." + this.className).after(newTr);
-      jqObj.removeClass('label-primary').addClass('label-danger').empty();
-      return jqObj.append(' Hide info <i class="icon-minus-sign"></i> ');
-    } else {
-      descWrapper = jqObj.closest("." + this.className).next("tr").find('.md-desc-wrapper').hide();
-      jqObj.parent().append(descWrapper);
-      jqObj.closest("." + this.className).next("tr").remove();
-      jqObj.removeClass('label-danger').addClass('label-primary').empty();
-      return jqObj.append(' More info <i class="icon-plus-sign"></i> ');
-    }
-  };
-
-  return DoctypeView;
-
-})(View);
-
-});
-
-;require.register("views/doctypes_view", function(exports, require, module) {
-var BaseView, DoctypesView, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-BaseView = require('../lib/base_view');
-
-module.exports = DoctypesView = (function(_super) {
-  __extends(DoctypesView, _super);
-
-  function DoctypesView() {
-    _ref = DoctypesView.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  DoctypesView.prototype.el = '#content';
-
-  DoctypesView.prototype.template = require('./templates/doctypes');
-
-  return DoctypesView;
-
-})(BaseView);
-
-});
-
-;require.register("views/dt_cddl_collection_view", function(exports, require, module) {
-var DoctypeCollection, DtCddlCollectionView, DtCddlView, ViewCollection, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-ViewCollection = require('../lib/view_collection');
-
-DtCddlView = require('./dt_cddl_view');
-
-DoctypeCollection = require('../collections/doctype_collection');
-
-module.exports = DtCddlCollectionView = (function(_super) {
-  __extends(DtCddlCollectionView, _super);
-
-  function DtCddlCollectionView() {
-    _ref = DtCddlCollectionView.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  DtCddlCollectionView.prototype.itemview = DtCddlView;
-
-  DtCddlCollectionView.prototype.collection = new DoctypeCollection();
-
-  DtCddlCollectionView.prototype.initialize = function() {
-    this.collectionEl = '#dt-cddl-list';
-    DtCddlCollectionView.__super__.initialize.apply(this, arguments);
-    this.collection.fetch();
-    this.views = {};
-    return this.listenTo(this.collection, "reset", this.onReset);
-  };
-
-  return DtCddlCollectionView;
-
-})(ViewCollection);
-
-});
-
-;require.register("views/dt_cddl_view", function(exports, require, module) {
-var DtCddlView, View, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-View = require('./../lib/view');
-
-module.exports = DtCddlView = (function(_super) {
-  __extends(DtCddlView, _super);
-
-  function DtCddlView() {
-    _ref = DtCddlView.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  DtCddlView.prototype.tagName = 'li';
-
-  DtCddlView.prototype.className = 'dt-cddl-list-item';
-
-  DtCddlView.prototype.render = function() {
-    return DtCddlView.__super__.render.call(this, {
-      name: this.model.get("name")
-    });
-  };
-
-  DtCddlView.prototype.template = function() {
-    return require('./templates/dt_cddl_list_item');
-  };
-
-  return DtCddlView;
-
-})(View);
-
-});
-
-;require.register("views/nav_view", function(exports, require, module) {
-var BaseView, NavView, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-BaseView = require('../lib/base_view');
-
-module.exports = NavView = (function(_super) {
-  __extends(NavView, _super);
-
-  function NavView() {
-    _ref = NavView.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  NavView.prototype.el = 'body.application';
-
-  NavView.prototype.titles = {
-    '': '#doctypes',
-    'doctypes': '#doctypes',
-    'search': '#search',
-    'searchAllByDoctype': '#search'
-  };
-
-  NavView.prototype.initialize = function() {
-    return Backbone.history.on('route', function(source, path) {
-      return this.render(path);
-    }, this);
-  };
-
-  NavView.prototype.render = function(path) {
+  DoctypeNavCollectionView.prototype.initialize = function() {
     var that;
     that = this;
-    return $('.nav > li').each(function() {
-      $(this).removeClass('active');
-      $(this).children('a').blur();
-      if ($(this).children('a').attr('href') === that.titles[path]) {
-        return $(this).addClass('active');
+    this.collection = new DoctypeCollection();
+    this.collectionEl = '#doctype-nav-collection-view';
+    DoctypeNavCollectionView.__super__.initialize.apply(this, arguments);
+    this.collection.fetch({
+      data: $.param({
+        "menu": true
+      }),
+      success: function(col, data) {
+        return that.setMenuBehavior();
+      }
+    });
+    this.views = {};
+    return this.listenTo(this.collection, "reset", this.onReset);
+  };
+
+  DoctypeNavCollectionView.prototype.setMenuBehavior = function() {
+    return $('#doctype-nav-collection-view a').click(function() {
+      var hasSubmenu, openLi, parentLi, parentsLi;
+      parentLi = $(this).parent('li');
+      hasSubmenu = parentLi.children('.submenu').length > 0;
+      openLi = $('#doctype-nav-collection-view li.open');
+      parentsLi = $(this).parentsUntil('#doctype-nav-collection-view', 'li');
+      if (!hasSubmenu) {
+        $('#doctype-nav-collection-view li').removeClass('active');
+        parentsLi.addClass('active');
+        return parentLi.addClass('active');
       }
     });
   };
 
-  return NavView;
+  return DoctypeNavCollectionView;
 
-})(BaseView);
+})(ViewCollection);
+
+});
+
+;require.register("views/doctype_nav_view", function(exports, require, module) {
+var DoctypeNavView, View, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+View = require('./../lib/view');
+
+module.exports = DoctypeNavView = (function(_super) {
+  __extends(DoctypeNavView, _super);
+
+  function DoctypeNavView() {
+    _ref = DoctypeNavView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  DoctypeNavView.prototype.tagName = 'li';
+
+  DoctypeNavView.prototype.className = 'doctype-list-item';
+
+  DoctypeNavView.prototype.render = function() {
+    return DoctypeNavView.__super__.render.call(this, {
+      name: this.model.get('name'),
+      value: this.model.get('value'),
+      icons: {
+        all: 'icon-list',
+        applications: 'icon-download-alt',
+        origins: 'icon-map-marker'
+      }
+    });
+  };
+
+  DoctypeNavView.prototype.template = function() {
+    return require('./templates/doctype_nav');
+  };
+
+  return DoctypeNavView;
+
+})(View);
 
 });
 
@@ -884,30 +714,30 @@ module.exports = ResultCollectionView = (function(_super) {
 
   ResultCollectionView.prototype.noMoreItems = false;
 
-  ResultCollectionView.prototype.initialize = function() {
-    var that;
-    that = this;
+  ResultCollectionView.prototype.initialize = function(options) {
+    var _this = this;
+    this.options = options;
     this.collection = new ResultCollection();
     ResultCollectionView.__super__.initialize.apply(this, arguments);
-    if (this.options.doctype != null) {
+    if (this.options.doctypes != null) {
       return this.collection.fetch({
         data: $.param(this.options),
         success: function(col, data) {
           $('.loading-image').remove();
-          if ((that.options.range != null) && (that.options.doctype != null)) {
-            if (data.length === that.collection.nbPerPage) {
-              that.loopFirstScroll();
+          if ((_this.options.range != null) && (_this.options.doctypes != null)) {
+            if (data.length === _this.collection.nbPerPage) {
+              _this.loopFirstScroll();
               return $('.load-more-result').show();
             } else {
-              that.noMoreItems = true;
+              _this.noMoreItems = true;
               return $('.load-more-result').hide();
             }
           }
         },
         error: function() {
           $('.loading-image').remove();
-          that.noMoreItems = true;
-          return that.displayLoadingError();
+          _this.noMoreItems = true;
+          return _this.displayLoadingError();
         }
       });
     }
@@ -915,7 +745,7 @@ module.exports = ResultCollectionView = (function(_super) {
 
   ResultCollectionView.prototype.render = function() {
     var id, loader, view, _ref1;
-    if (this.options.doctype != null) {
+    if ((this.options != null) && (this.options.doctypes != null)) {
       loader = '<div class="loading-image">';
       loader += '<img src="images/ajax-loader.gif" />';
       loader += '</div>';
@@ -930,8 +760,6 @@ module.exports = ResultCollectionView = (function(_super) {
   };
 
   ResultCollectionView.prototype.search = function(content) {
-    var that;
-    that = this;
     this.options['query'] = content;
     return this.collection.fetch({
       data: $.param(this.options)
@@ -939,10 +767,8 @@ module.exports = ResultCollectionView = (function(_super) {
   };
 
   ResultCollectionView.prototype.loadNextPage = function(isTriggered, callback) {
-    var that;
-    that = this;
+    var _this = this;
     this.options['deleted'] = this.deleted;
-    console.log(this.noMoreItems);
     if (!this.noMoreItems) {
       this.isLoading = true;
       this.collection.page++;
@@ -961,35 +787,35 @@ module.exports = ResultCollectionView = (function(_super) {
               $('.load-more-result i').show();
               $('.load-more-result span').show();
             }
-            isDone = data.length < that.collection.nbPerPage;
-            that.noMoreItems = isDone;
-            if (that.noMoreItems) {
+            isDone = data.length < _this.collection.nbPerPage;
+            _this.noMoreItems = isDone;
+            if (_this.noMoreItems) {
               $('.load-more-result').hide();
             }
-            that.isLoading = false;
+            _this.isLoading = false;
             if (callback != null) {
               return callback();
             }
           } else {
-            return that.noMoreItems = true;
+            return _this.noMoreItems = true;
           }
         },
         error: function() {
-          that.noMoreItems = true;
-          return that.displayLoadingError();
+          this.noMoreItems = true;
+          return this.displayLoadingError();
         }
       });
     }
   };
 
   ResultCollectionView.prototype.loopFirstScroll = function() {
-    var firstScroll, that;
-    that = this;
+    var firstScroll,
+      _this = this;
     if (!this.isLoading && !this.noMoreItems) {
       firstScroll = $(document).height() === $(window).height();
       if (firstScroll) {
         return this.loadNextPage(true, function() {
-          return that.loopFirstScroll();
+          return _this.loopFirstScroll();
         });
       }
     }
@@ -1031,7 +857,30 @@ module.exports = ResultView = (function(_super) {
 
   ResultView.prototype.tagName = 'div';
 
-  ResultView.prototype.className = 'accordion-group';
+  ResultView.prototype.className = 'panel panel-default';
+
+  ResultView.prototype.templateModal = require('./templates/modal_confirm');
+
+  ResultView.prototype.events = {
+    'click .accordion-toggle': 'blurIt',
+    'mouseenter .label': 'showFieldDescription',
+    'mouseleave .label': 'showFieldDescription',
+    'click .remove-result': 'confirmRemoveResult',
+    'mouseover .remove-result': 'convertButtonToDanger',
+    'mouseout .remove-result': 'convertButtonToClassic'
+  };
+
+  ResultView.prototype.convertButtonToDanger = function(event) {
+    var jqObj;
+    jqObj = $(event.currentTarget);
+    return jqObj.addClass('btn-danger');
+  };
+
+  ResultView.prototype.convertButtonToClassic = function(event) {
+    var jqObj;
+    jqObj = $(event.currentTarget);
+    return jqObj.removeClass('btn-danger');
+  };
 
   ResultView.prototype.render = function() {
     return ResultView.__super__.render.call(this, {
@@ -1061,13 +910,14 @@ module.exports = ResultView = (function(_super) {
         'field': attr.idField != null ? attr.idField : 'id',
         'data': attr.idField != null ? attr[attr.idField] : attr._id
       };
-      results['fields'] = this.prepareResultFields(attr);
-      return results;
+      this.results = results;
+      this.results['fields'] = this.prepareResultFields(attr);
+      return this.results;
     }
   };
 
   ResultView.prototype.prepareResultFields = function(attr) {
-    var description, field, fieldName, fields, iCounter, isNativField, isSimpleObj, isSimpleType, newLi, obj, objName, settedField, simpleTypes, typeOfField, typeOfObj;
+    var descField, description, displayName, field, fieldName, fields, hasDisplayName, iCounter, isNativField, isSimpleObj, isSimpleType, newLi, obj, objName, settedField, simpleTypes, typeOfField, typeOfObj;
     iCounter = 0;
     fields = [];
     settedField = ['idField', 'count', 'descField'];
@@ -1088,6 +938,15 @@ module.exports = ResultView = (function(_super) {
             description = attr.descField[fieldName].description;
             fields[iCounter]['cdbFieldDescription'] = description;
           }
+          descField = attr.descField[fieldName];
+          hasDisplayName = descField.displayName != null;
+          if (hasDisplayName && descField.displayName !== "") {
+            displayName = descField.displayName;
+            fields[iCounter]['cdbFieldName'] = displayName;
+            if (field === this.results['heading']['field']) {
+              this.results['heading']['field'] = displayName;
+            }
+          }
         }
         typeOfField = typeof field;
         isSimpleType = ($.inArray(typeOfField, simpleTypes)) !== -1;
@@ -1106,7 +965,7 @@ module.exports = ResultView = (function(_super) {
               fields[iCounter]['cdbFieldData'] += newLi;
             } else if ((obj != null) && typeof obj === 'object') {
               newLi = '<li>' + objName + ' : ';
-              newLi += '<i>' + $.stringify(obj) + '</i></li>';
+              newLi += '<i>' + JSON.stringify(obj) + '</i></li>';
               fields[iCounter]['cdbFieldData'] += newLi;
             } else {
               newLi = '<li><i>empty</i></li>';
@@ -1127,15 +986,6 @@ module.exports = ResultView = (function(_super) {
 
   ResultView.prototype.template = function() {
     return require('./templates/result');
-  };
-
-  ResultView.prototype.templateModal = require('./templates/modal_confirm');
-
-  ResultView.prototype.events = {
-    'click .accordion-toggle': 'blurIt',
-    'mouseenter .label': 'showFieldDescription',
-    'mouseleave .label': 'showFieldDescription',
-    'click .remove-result': 'confirmRemoveResult'
   };
 
   ResultView.prototype.blurIt = function(e) {
@@ -1182,8 +1032,8 @@ module.exports = ResultView = (function(_super) {
     var data, message, that;
     that = this;
     e.preventDefault();
-    message = 'Are you sure ? This can\'t be undone, ';
-    message += 'and will erase definitly the data from the database.';
+    message = 'Are you ABSOLUTELY sure ? ';
+    message += 'It could lead to IRREVERSIBLE DAMAGES to your cozy environment.';
     data = {
       title: 'Confirmation required',
       body: message,
@@ -1192,6 +1042,7 @@ module.exports = ResultView = (function(_super) {
     $("body").prepend(this.templateModal(data));
     $("#confirmation-dialog").modal();
     $("#confirmation-dialog").modal("show");
+    $("#confirmation-dialog-confirm").unbind('click');
     return $("#confirmation-dialog-confirm").bind("click", function() {
       return that.removeResult();
     });
@@ -1199,10 +1050,12 @@ module.exports = ResultView = (function(_super) {
 
   ResultView.prototype.removeResult = function() {
     this.model.set('id', this.model.get('_id'));
-    this.model.destroy({
-      data: 'id=' + this.model.get('id')
+    return this.model.destroy({
+      data: 'id=' + this.model.get('id'),
+      success: function() {
+        return location.reload();
+      }
     });
-    return $(window).resize();
   };
 
   return ResultView;
@@ -1211,8 +1064,169 @@ module.exports = ResultView = (function(_super) {
 
 });
 
+;require.register("views/results_global_controls_view", function(exports, require, module) {
+var DeleteAllModel, ResultsGlobalControlsView, View, _ref,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+View = require('./../lib/view');
+
+DeleteAllModel = require('./../models/delete_all_model');
+
+module.exports = ResultsGlobalControlsView = (function(_super) {
+  __extends(ResultsGlobalControlsView, _super);
+
+  function ResultsGlobalControlsView() {
+    this.render = __bind(this.render, this);
+    _ref = ResultsGlobalControlsView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  ResultsGlobalControlsView.prototype.el = '#results-global-controls';
+
+  ResultsGlobalControlsView.prototype.currentDoctype = '';
+
+  ResultsGlobalControlsView.prototype.templateModal = require('./templates/modal_confirm');
+
+  ResultsGlobalControlsView.prototype.events = {
+    'mouseover #delete-all': 'switchStyleOfDeleteButton',
+    'mouseout #delete-all': 'switchStyleOfDeleteButton',
+    'click #delete-all': 'confirmDeleteAll',
+    'click .about-doctype': 'showMetaInfos'
+  };
+
+  ResultsGlobalControlsView.prototype.showMetaInfos = function(event) {
+    var jqObj;
+    jqObj = $(event.currentTarget);
+    if (jqObj.hasClass('white-and-green')) {
+      jqObj.removeClass('white-and-green');
+      return $('#results-meta-infos').hide();
+    } else {
+      jqObj.addClass('white-and-green');
+      return $('#results-meta-infos').show();
+    }
+  };
+
+  ResultsGlobalControlsView.prototype.switchStyleOfDeleteButton = function(event) {
+    var jqObj;
+    jqObj = $(event.currentTarget);
+    if (!jqObj.hasClass('btn-danger')) {
+      jqObj.addClass('btn-danger');
+      return jqObj.children('span').text('Delete all ');
+    } else {
+      jqObj.removeClass('btn-danger');
+      return jqObj.children('span').empty();
+    }
+  };
+
+  ResultsGlobalControlsView.prototype.template = function() {
+    return require('./templates/results_global_controls');
+  };
+
+  ResultsGlobalControlsView.prototype.initialize = function(opt) {
+    $(this.el).undelegate('.about-doctype', 'click');
+    $(this.el).undelegate('#delete-all', 'mouseover');
+    $(this.el).undelegate('#delete-all', 'mouseout');
+    $(this.el).undelegate('#delete-all', 'click');
+    if (opt.doctypes != null) {
+      this.currentDoctype = opt.doctypes[0] || '';
+    }
+    return this.render(opt);
+  };
+
+  ResultsGlobalControlsView.prototype.render = function(opt) {
+    var jqMetaInfos, templateData;
+    templateData = {};
+    templateData['range'] = opt.range ? '(' + opt.range + ')' || '' : void 0;
+    templateData['doctype'] = opt.doctypes ? opt.doctypes[0] : '';
+    templateData['hasMetainfos'] = opt.hasMetaInfos ? true : void 0;
+    jqMetaInfos = $('#results-meta-infos');
+    templateData['isVisible'] = jqMetaInfos.is(':visible') ? true : void 0;
+    return ResultsGlobalControlsView.__super__.render.call(this, templateData);
+  };
+
+  ResultsGlobalControlsView.prototype.confirmDeleteAll = function(e) {
+    var data, message,
+      _this = this;
+    e.preventDefault();
+    message = 'Are you ABSOLUTELY sure ? ';
+    message += 'It could lead to IRREVERSIBLE DAMAGES to your cozy environment.';
+    data = {
+      title: 'Confirmation required',
+      body: message,
+      confirm: 'delete permanently'
+    };
+    $("body").prepend(this.templateModal(data));
+    $("#confirmation-dialog").modal();
+    $("#confirmation-dialog").modal("show");
+    $("#confirmation-dialog-confirm").unbind('click');
+    return $("#confirmation-dialog-confirm").bind("click", function() {
+      return _this.deleteAll();
+    });
+  };
+
+  ResultsGlobalControlsView.prototype.deleteAll = function() {
+    var deleteAllModel;
+    if ((this.currentDoctype != null) && this.currentDoctype !== '') {
+      deleteAllModel = new DeleteAllModel();
+      return deleteAllModel.fetch({
+        data: $.param({
+          doctype: this.currentDoctype
+        }),
+        success: function(col, data) {
+          return location.reload();
+        }
+      });
+    }
+  };
+
+  return ResultsGlobalControlsView;
+
+})(View);
+
+});
+
+;require.register("views/results_meta_infos_view", function(exports, require, module) {
+var ResultsMetaInfosView, View, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+View = require('./../lib/view');
+
+module.exports = ResultsMetaInfosView = (function(_super) {
+  __extends(ResultsMetaInfosView, _super);
+
+  function ResultsMetaInfosView() {
+    _ref = ResultsMetaInfosView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  ResultsMetaInfosView.prototype.el = '#results-meta-infos';
+
+  ResultsMetaInfosView.prototype.events = {
+    'click #close-about-doctype': 'showMetaInfos'
+  };
+
+  ResultsMetaInfosView.prototype.showMetaInfos = function(event) {
+    var jqObj;
+    jqObj = $('.about-doctype');
+    jqObj.removeClass('white-and-green');
+    return $('#results-meta-infos').hide();
+  };
+
+  ResultsMetaInfosView.prototype.template = function() {
+    return require('./templates/results_meta_infos');
+  };
+
+  return ResultsMetaInfosView;
+
+})(View);
+
+});
+
 ;require.register("views/search_view", function(exports, require, module) {
-var BaseView, DtCddlCollectionView, ResultCollectionView, SearchView, _ref,
+var BaseView, MetaInfosModel, ResultCollectionView, ResultsGlobalControlsView, ResultsMetaInfosView, SearchView, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -1220,7 +1234,11 @@ BaseView = require('../lib/base_view');
 
 ResultCollectionView = require('../views/result_collection_view');
 
-DtCddlCollectionView = require('../views/dt_cddl_collection_view');
+ResultsGlobalControlsView = require('../views/results_global_controls_view');
+
+MetaInfosModel = require('./../models/meta_infos_model');
+
+ResultsMetaInfosView = require('../views/results_meta_infos_view');
 
 module.exports = SearchView = (function(_super) {
   __extends(SearchView, _super);
@@ -1230,48 +1248,96 @@ module.exports = SearchView = (function(_super) {
     return _ref;
   }
 
-  SearchView.prototype.el = '#content';
+  SearchView.prototype.el = '#results-list';
 
   SearchView.prototype.template = require('./templates/search');
 
-  SearchView.prototype.initialize = function() {
-    var that;
-    that = this;
-    this.rcView = new ResultCollectionView(this.options);
-    this.dtCddlCollectionView = new DtCddlCollectionView();
-    if (this.options.range != null) {
-      return $(window).bind('scroll', function(e, isTriggered) {
-        var docHeight;
-        if (!that.rcView.isLoading && !that.rcView.noMoreItems) {
-          docHeight = $(document).height();
-          if ($(window).scrollTop() + $(window).height() === docHeight) {
-            return that.loadMore(isTriggered);
+  SearchView.prototype.hasDoctype = false;
+
+  SearchView.prototype.events = {
+    'click #btn-scroll-up': 'hideThis'
+  };
+
+  SearchView.prototype.hideThis = function(event) {
+    var jqObj;
+    jqObj = $(event.currentTarget);
+    return jqObj.hide();
+  };
+
+  SearchView.prototype.initialize = function(options) {
+    var metaInfosModel,
+      _this = this;
+    this.options = options;
+    this.hasDoctype = this.options.doctypes && this.options.doctypes.length > 0;
+    this.bindSearch();
+    if (this.hasDoctype) {
+      metaInfosModel = new MetaInfosModel();
+      $('#results-meta-infos').empty();
+      metaInfosModel.fetch({
+        data: $.param({
+          doctype: this.options.doctypes[0]
+        }),
+        success: function(col, data) {
+          var resultsMetaInfosView;
+          if (data && data.name && (data.application || data.metadoctype)) {
+            resultsMetaInfosView = new ResultsMetaInfosView();
+            resultsMetaInfosView.render(data);
+            _this.options['hasMetaInfos'] = true;
           }
+          return _this.resultsGlobalControlsView = new ResultsGlobalControlsView(_this.options);
         }
       });
+      this.resultCollectionView = new ResultCollectionView(this.options);
+      if (this.options.range != null) {
+        return $(window).bind('scroll', function(e, isTriggered) {
+          var docHeight;
+          docHeight = $(document).height();
+          if (!_this.resultCollectionView.isLoading && !_this.resultCollectionView.noMoreItems) {
+            if ($(window).scrollTop() + $(window).height() === docHeight) {
+              _this.loadMore(isTriggered);
+            }
+          }
+          if ($(window).scrollTop() > 0) {
+            return $('#btn-scroll-up').show();
+          } else {
+            return $('#btn-scroll-up').hide();
+          }
+        });
+      }
     }
   };
 
   SearchView.prototype.afterRender = function() {
-    var that;
-    that = this;
-    this.rcView.render();
-    this.dtCddlCollectionView.render();
-    return $(window).bind('resize', function() {
-      return that.rcView.loopFirstScroll();
-    });
+    var _this = this;
+    if (this.hasDoctype) {
+      this.resultCollectionView.render();
+      $(window).bind('resize', function() {
+        return _this.resultCollectionView.loopFirstScroll();
+      });
+      return this.bindSearch();
+    }
   };
 
   SearchView.prototype.loadMore = function(isTriggered) {
-    return this.rcView.loadNextPage(isTriggered);
+    return this.resultCollectionView.loadNextPage(isTriggered);
   };
 
-  SearchView.prototype.events = {
-    'click #launch-search': 'launchSearch'
-  };
-
-  SearchView.prototype.launchSearch = function() {
-    return this.rcView.search($('#search-field').val());
+  SearchView.prototype.bindSearch = function() {
+    var searchElt, searchField,
+      _this = this;
+    searchElt = $('#launch-search');
+    searchField = $('#search-field');
+    searchElt.unbind('click');
+    searchField.unbind('keypress');
+    searchElt.click(function() {
+      return _this.resultCollectionView.search(searchField.val());
+    });
+    return searchField.keypress(function(event) {
+      if (event.which === 13) {
+        event.preventDefault();
+        return searchElt.click();
+      }
+    });
   };
 
   return SearchView;
@@ -1280,85 +1346,61 @@ module.exports = SearchView = (function(_super) {
 
 });
 
-;require.register("views/templates/doctype", function(exports, require, module) {
+;require.register("views/templates/doctype_nav", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge
 /**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<td class="full firstLetterUp"><a');
-buf.push(attrs({ 'href':('#search/all/' + (name) + '') }, {"href":true}));
-buf.push('>' + escape((interp = name) == null ? '' : interp) + '</a></td><td>');
- if (typeof(sum) === 'number'){
+ if (value.length) {
 {
-buf.push('<span>' + escape((interp = sum) == null ? '' : interp) + '</span>');
-}
- }
-buf.push('</td><td>');
- if (typeof(metadoctype) === 'object' || app.length > 0){
+buf.push('<a href="#" class="dropdown-toggle">');
+ if (icons[name]) {
 {
-buf.push('<span class="label label-primary more-info">More info&nbsp;<i class="icon-plus-sign"></i></span><div class="md-desc-wrapper"><h5><i class="icon-question-sign"></i>&nbsp;&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h5>');
- if (app.length > 0) {
-{
-buf.push('<div class="md-desc-container"><strong>Applications using it :</strong><ul class="sober-list">');
- for (var index in app) {
-{
-buf.push('<li class="firstLetterUp"><i class="icon-download-alt"></i><span>' + escape((interp = app[index]) == null ? '' : interp) + '</span></li>');
-}
- }
-buf.push('</ul></div>');
+buf.push('<i');
+buf.push(attrs({ "class": ("" + (icons[name]) + "") }, {"class":true}));
+buf.push('></i>');
 }
 }
- if (typeof(metadoctype) === 'object') {
+buf.push('<span class="menu-text firstLetterUp">' + escape((interp = name) == null ? '' : interp) + '</span><b class="arrow icon-angle-down"></b></a><ul class="submenu">');
+ for (var index in value) {
 {
-buf.push('<div class="md-desc-container"><strong>Fields informations :</strong><ul class="sober-list">');
- var fields = metadoctype.fields;
- for (var obj in fields) {
+ if (value[index].doctype) {
 {
-buf.push('<li><i class="icon-tag"></i><span>' + escape((interp = fields[obj].displayName) == null ? '' : interp) + ' -&nbsp;<i>' + escape((interp = fields[obj].description) == null ? '' : interp) + '</i></span></li>');
-}
- }
-buf.push('</ul></div>');
-}
- }
-buf.push('</div>');
+buf.push('<li><a');
+buf.push(attrs({ 'href':('#search/all/' + (value[index].doctype) + '') }, {"href":true}));
+buf.push('><i class="icon-double-angle-right"></i>' + escape((interp = value[index].doctype) == null ? '' : interp) + '<span class="menu-little-text">&nbsp;(' + escape((interp = value[index].sum) == null ? '' : interp) + ')</span></a></li>');
 }
  }
  else {
 {
-buf.push('<i>No information available</i>');
+buf.push('<li><a href="#" class="dropdown-toggle"><i class="icon-double-angle-right"></i><span class="menu-text">' + escape((interp = value[index].key) == null ? '' : interp) + '</span><b class="arrow icon-angle-down"></b></a><ul class="submenu">');
+ subValues = value[index].value
+ for (var subIndex in subValues) {
+{
+ doctype = subValues[subIndex].doctype
+ sum = subValues[subIndex].sum
+buf.push('<li><a');
+buf.push(attrs({ 'href':('#search/all/' + (doctype) + '') }, {"href":true}));
+buf.push('>' + escape((interp = doctype) == null ? '' : interp) + '<span class="menu-little-text">&nbsp;(' + escape((interp = sum) == null ? '' : interp) + ')</span></a></li>');
 }
  }
-buf.push('</td>');
+buf.push('</ul></li>');
 }
-return buf.join("");
-};
-});
-
-;require.register("views/templates/doctypes", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge
-/**/) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
-var buf = [];
-with (locals || {}) {
-var interp;
-buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Doctypes</h2><p>Here you can find the full list of document types present on your cozy</p></div></div></div></div><div class="container"><div class="row"><div class="span12"><h3 class="title">My current doctype list	</h3></div><div class="span11 offset1">	<div id="doctypes-container"><table class="table"><thead>						<th>Name</th><th>Number of documents</th><th>About that doctype</th></thead><tbody id="doctypes-list"></tbody></table></div></div></div></div>');
 }
-return buf.join("");
-};
-});
-
-;require.register("views/templates/dt_cddl_list_item", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge
-/**/) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
-var buf = [];
-with (locals || {}) {
-var interp;
+}
+ }
+buf.push('</ul>');
+}
+ }
+ else {
+{
 buf.push('<a');
 buf.push(attrs({ 'href':('#search/all/' + (name) + '') }, {"href":true}));
 buf.push('>' + escape((interp = name) == null ? '' : interp) + '</a>');
+}
+}
 }
 return buf.join("");
 };
@@ -1371,7 +1413,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="confirmation-dialog" class="modal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-hidden="true" class="close">x</button><h4 class="modal-title">' + escape((interp = title) == null ? '' : interp) + '</h4></div><div class="modal-body"><p>' + escape((interp = body) == null ? '' : interp) + '</p></div><div class="modal-footer"><span data-dismiss="modal" class="btn btn-link">cancel</span><span id="confirmation-dialog-confirm" data-dismiss="modal" class="btn btn-cozy">' + escape((interp = confirm) == null ? '' : interp) + '</span></div></div></div></div>');
+buf.push('<div id="confirmation-dialog" class="modal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-hidden="true" class="close">x</button><h4 class="modal-title">' + escape((interp = title) == null ? '' : interp) + '</h4></div><div class="modal-body"><p class="modal-confirm-text">' + escape((interp = body) == null ? '' : interp) + '</p></div><div class="modal-footer"><span data-dismiss="modal" class="btn btn-link">cancel</span><span id="confirmation-dialog-confirm" data-dismiss="modal" class="btn btn-danger">' + escape((interp = confirm) == null ? '' : interp) + '</span></div></div></div></div>');
 }
 return buf.join("");
 };
@@ -1385,32 +1427,97 @@ var buf = [];
 with (locals || {}) {
 var interp;
  if (results['no_result']) {
+{
 buf.push('<em>' + escape((interp = results['no_result_msg']) == null ? '' : interp) + '</em>');
+}
  }
  else {
-buf.push('<div class="accordion-heading"><a');
+{
+buf.push('<div class="panel-heading"><h4 class="panel-title"><a');
 buf.push(attrs({ 'data-toggle':("collapse"), 'data-parent':("#basic-accordion"), 'href':("#collapse" + (results.count) + ""), "class": ('accordion-toggle') }, {"data-toggle":true,"data-parent":true,"href":true}));
-buf.push('><i class="icon-plus-sign"></i><strong>&nbsp;' + escape((interp = results.heading.doctype) == null ? '' : interp) + ' </strong>&nbsp;' + escape((interp = results.heading.field) == null ? '' : interp) + ' :\n&nbsp;' + escape((interp = results.heading.data) == null ? '' : interp) + '</a><div class="remove-result">Remove&nbsp;&nbsp;<i class="icon-remove-sign"></i></div></div><div');
-buf.push(attrs({ 'style':("height: 0px;"), 'id':("collapse" + (results.count) + ""), "class": ('accordion-body') + ' ' + ('collapse') }, {"style":true,"id":true}));
-buf.push('><div class="accordion-inner"><table id="result-list" class="table">');
+buf.push('><i class="icon-plus-sign"></i><strong>&nbsp;' + escape((interp = results.heading.doctype) == null ? '' : interp) + '</strong>&nbsp;' + escape((interp = results.heading.field) == null ? '' : interp) + ' :\n&nbsp;' + escape((interp = results.heading.data) == null ? '' : interp) + '</a><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button class="btn btn-xs remove-result"><i class="icon-trash bigger-120"></i></button></div></h4></div><div');
+buf.push(attrs({ 'style':("height: 0px;"), 'id':("collapse" + (results.count) + ""), "class": ('panel-collapse') + ' ' + ('collapse') }, {"style":true,"id":true}));
+buf.push('><div class="panel-body"><div id="result-list" class="profile-user-info profile-user-info-striped">');
  for (var iCount = 0; iCount < results['fields'].length; iCount++) {
 {
-buf.push('<tr>	<td> <span');
-buf.push(attrs({ 'data-title':("" + (results['fields'][iCount].cdbFieldDescription) + ""), "class": ('label') + ' ' + ("" + (results['fields'][iCount].cdbLabelClass) + "") }, {"class":true,"data-title":true}));
-buf.push('>&nbsp;' + escape((interp = results['fields'][iCount].cdbFieldName) == null ? '' : interp) + '&nbsp; ');
- if (results['fields'][iCount].cdbFieldDescription!== "") {
-{
-buf.push('<i class="icon-question-sign"></i>');
-}
-}
-buf.push('</span></td><td>');
+buf.push('<div class="profile-info-row"><div class="profile-info-name">' + escape((interp = results['fields'][iCount].cdbFieldName) == null ? '' : interp) + '</div><div class="profile-info-value">');
 var __val__ = results['fields'][iCount].cdbFieldData
 buf.push(null == __val__ ? "" : __val__);
-buf.push('</td></tr>');
+buf.push('</div></div>');
 }
  }
-buf.push('</table></div></div>');
+buf.push('</div></div></div>');
+}
  }
+}
+return buf.join("");
+};
+});
+
+;require.register("views/templates/results_global_controls", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+ if (doctype !== '') {
+{
+buf.push('<h4>&nbsp;&nbsp;Currently exploring :&nbsp;<em>' + escape((interp = doctype) == null ? '' : interp) + ' ' + escape((interp = range) == null ? '' : interp) + ' &nbsp;</em>');
+ if (hasMetainfos) {
+{
+ if (isVisible) {
+{
+buf.push('<i class="about-doctype icon-question-sign white-and-green"></i>');
+}
+}
+ else {
+{
+buf.push('<i class="about-doctype icon-question-sign"></i>');
+}
+}
+}
+ }
+buf.push('</h4><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button id="delete-all" class="btn btn-xs"><span></span><i class="icon-trash bigger-120"></i></button></div>');
+}
+}
+}
+return buf.join("");
+};
+});
+
+;require.register("views/templates/results_meta_infos", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<div class="widget-box"><div class="widget-header widget-header-small header-color-green"><h4 class="lighter"><i class="icon-question-sign"></i>&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h4><div class="widget-toolbar"><span id="close-about-doctype"><i class="icon-remove"></i></span></div></div><div class="widget-body"><div class="widget-body-inner"><div class="widget-main padding-6"><div class="md-desc-wrapper">');
+ if (applications && applications.length > 0) {
+{
+buf.push('<div class="md-desc-container"><strong>Applications using it :</strong><ul class="sober-list">');
+ for (var index in applications) {
+{
+buf.push('<li class="firstLetterUp"><i class="icon-download-alt"></i><span>&nbsp;' + escape((interp = applications[index]) == null ? '' : interp) + '</span></li>');
+}
+ }
+buf.push('</ul></div>');
+}
+}
+ if (typeof(metadoctype) === 'object') {
+{
+buf.push('<div class="md-desc-container"><strong>Fields informations :</strong><ul class="sober-list">');
+ var fields = metadoctype.fields;
+ for (var obj in fields) {
+{
+buf.push('<li><i class="icon-tag"></i><span>&nbsp;' + escape((interp = fields[obj].displayName) == null ? '' : interp) + ' -&nbsp;<i>' + escape((interp = fields[obj].description) == null ? '' : interp) + '</i></span></li>');
+}
+ }
+buf.push('</ul></div>');
+}
+ }
+buf.push('</div></div><div class="clear"></div></div></div></div>');
 }
 return buf.join("");
 };
@@ -1423,7 +1530,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="masthead"><div class="container"><div class="masthead-pad">           <div class="masthead-text"><h2>Search Engine</h2><p>Here you can prepare and launch your search</p></div><div class="masthead-text"><span id="search-label" class="search-label">My search</span><input type="text" id="search-field"/><button id="launch-search" class="btn btn-secondary"><i class="icon-search"></i></button></div><div id="search-options" class="masthead-text"><span class="label-search">My options</span><div class="dropdown"><a href="javascript:;" data-toggle="dropdown" class="dropdown-toggle btn classic-toggle btn-secondary">Current doctype&nbsp;<b class="caret"></b></a><ul id="dt-cddl-list" class="dropdown-menu"></ul></div></div></div></div></div><div class="container"><div class="row"><div class="span12">    <h3 class="title">Results of my previous search</h3><div id="all-result"><div id="basic-accordion" class="accordion"></div><div class="info-box"><span class="field-title">&nbsp;About this field</span><span class="field-description"><em>no information</em></span></div><div class="load-more-result"> <span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div></div></div></div>');
+buf.push('<div id="all-result"><div id="basic-accordion" class="accordion-style1 panel-group"></div><div class="load-more-result"><span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div>');
 }
 return buf.join("");
 };

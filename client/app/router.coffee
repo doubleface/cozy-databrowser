@@ -1,32 +1,35 @@
-NavView = require 'views/nav_view'
-DoctypesView = require 'views/doctypes_view'
-DoctypeCollectionView = require 'views/doctype_collection_view'
+#Required backbone classes
+DoctypeNavCollectionView = require 'views/doctype_nav_collection_view'
 SearchView = require 'views/search_view'
-ResultCollectionView = require 'views/result_collection_view'
 
+#Define Router class
 module.exports = class Router extends Backbone.Router
 
     routes:
-        '': 'doctypes'
-        'doctypes' : 'doctypes'
+        '': 'search'
         'search' : 'search'
         'search/all/:doctype' : 'search'
 
-    doctypes: ->
-        navView = new NavView()
-        doctypesView = new DoctypesView()
-        doctypesView.render()
-        dcView = new DoctypeCollectionView()
-        dcView.render()
+    initialize: ->
 
-    search : (doctype) ->
-        navView = new NavView()
+        #Initialize the left menu 'doctype nav'
+        doctypeNavCollectionView = new DoctypeNavCollectionView()
+        doctypeNavCollectionView.render()
+
+    search : (doctypePattern) ->
         options = {}
-        if doctype?
-            if not /\|/.test decodeURIComponent(doctype)
-                options['doctype'] = [doctype]
+
+        if doctypePattern?
+
+            #Add doctypePattern as an array
+            if not /\|/.test decodeURIComponent(doctypePattern)
+                options['doctypes'] = [doctypePattern]
             else
-                options['doctype'] = decodeURIComponent(doctype).split /\|/
+                options['doctypes'] = decodeURIComponent(doctypePattern).split /\|/
+
+            #Add the range 'all'
             options['range'] = 'all'
+
+        #Create Search view (with option) and render
         searchView = new SearchView(options)
         searchView.render()

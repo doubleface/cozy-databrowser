@@ -1,28 +1,28 @@
 - if (results['no_result']) {
-
-em #{results['no_result_msg']}
-
+    em #{results['no_result_msg']}
 - }
 - else {
+    .panel-heading
+        h4.panel-title
+            a.accordion-toggle(data-toggle="collapse", data-parent="#basic-accordion", href="#collapse#{results.count}")
+                i.icon-plus-sign
+                strong &nbsp;#{results.heading.doctype}
+                |&nbsp;#{results.heading.field} :
+                |&nbsp;#{results.heading.data}
+            .visible-md.visible-lg.hidden-sm.hidden-xs.btn-group.result-buttons
+                button.btn.btn-xs.remove-result
+                        i.icon-trash.bigger-120
+    .panel-collapse.collapse(style="height: 0px;", id="collapse#{results.count}")
+        .panel-body
 
-.accordion-heading
-	a.accordion-toggle(data-toggle="collapse", data-parent="#basic-accordion", href="#collapse#{results.count}")
-		i.icon-plus-sign
-		strong &nbsp;#{results.heading.doctype} 
-		|&nbsp;#{results.heading.field} :
-		|&nbsp;#{results.heading.data}
-	div.remove-result Remove&nbsp;&nbsp;
-		i.icon-remove-sign
-.accordion-body.collapse(style="height: 0px;", id="collapse#{results.count}")
-	.accordion-inner
-		table.table#result-list
-			- for (var iCount = 0; iCount < results['fields'].length; iCount++) {
-				tr 	
-					td 
-						span.label(class="#{results['fields'][iCount].cdbLabelClass}", data-title="#{results['fields'][iCount].cdbFieldDescription}") &nbsp;#{results['fields'][iCount].cdbFieldName}&nbsp; 
-							- if (results['fields'][iCount].cdbFieldDescription!== "") {
-								i.icon-question-sign
-							-}
-					td!= results['fields'][iCount].cdbFieldData
-			- }
+            .profile-user-info.profile-user-info-striped#result-list
+                - for (var iCount = 0; iCount < results['fields'].length; iCount++) {
+                    .profile-info-row
+                        .profile-info-name #{results['fields'][iCount].cdbFieldName}
+                            //- span.label(class="#{results['fields'][iCount].cdbLabelClass}", data-title="#{results['fields'][iCount].cdbFieldDescription}") #{results['fields'][iCount].cdbFieldName}&nbsp;
+                                // - if (results['fields'][iCount].cdbFieldDescription!== "") {
+                                //- i.icon-question-sign
+                                // -}
+                        .profile-info-value!= results['fields'][iCount].cdbFieldData
+                - }
 - }

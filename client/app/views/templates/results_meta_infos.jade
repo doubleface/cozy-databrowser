@@ -1,0 +1,37 @@
+.widget-box
+    .widget-header.widget-header-small.header-color-green
+        h4.lighter
+            i.icon-question-sign
+            | &nbsp;About #{name}
+
+        .widget-toolbar
+            span#close-about-doctype
+                i.icon-remove
+
+    .widget-body
+        .widget-body-inner
+            .widget-main.padding-6
+                div.md-desc-wrapper
+                    - if (applications && applications.length > 0) {
+                        div.md-desc-container
+                            strong Applications using it :
+                            ul.sober-list
+                                - for (var index in applications) {
+                                    li.firstLetterUp
+                                        i.icon-download-alt
+                                        span &nbsp;#{applications[index]}
+                                - }
+                    -}
+                    - if (typeof(metadoctype) === 'object') {
+                        div.md-desc-container
+                            strong Fields informations :
+                            ul.sober-list
+                                - var fields = metadoctype.fields;
+                                - for (var obj in fields) {
+                                    li
+                                        i.icon-tag
+                                        span &nbsp;#{fields[obj].displayName} -&nbsp;
+                                            i #{fields[obj].description}
+                                - }
+                    - }
+            .clear
