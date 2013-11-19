@@ -1171,7 +1171,6 @@ li [class*=" icon-"],
 .menu-min .nav-list > li.active > .submenu {
   border-left-color: #2b7dbc;
 }
-<<<<<<< HEAD
 .menu-min .sidebar-shortcuts {
   position: relative;
 }
@@ -1196,13 +1195,6 @@ li [class*=" icon-"],
 }
 .menu-min .sidebar-collapse {
   /* minimized collapse button */
-=======
-#launch-search,
-#launch-search:hover,
-#launch-search:focus {
-  background-position: 0 0;
-}
->>>>>>> 60f533b4256c8a4de8d5e795900dbb6de6115182
 
 }
 .menu-min .sidebar-collapse:before {
@@ -1394,4 +1386,4 @@ li [class*=" icon-"],
   }
 }
 
-/*# sourceMappingURL=app.css.map*/
+/*@ sourceMappingURL=app.css.map*/
