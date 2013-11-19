@@ -7,7 +7,7 @@ async = require 'async'
 
 module.exports.doctype_delete_all = (req, res) ->
     if req.query and req.query.doctype?
-        doctypeName = req.query.doctype
+        doctypeName = req.query.doctype.toLowerCase()
         dataSystem.deleteAllByDoctype doctypeName, (error, body) ->
             if error
                 res.send(error)

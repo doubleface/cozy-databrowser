@@ -1173,10 +1173,7 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
       return deleteAllModel.fetch({
         data: $.param({
           doctype: this.currentDoctype
-        }),
-        success: function(col, data) {
-          return location.reload();
-        }
+        })
       });
     }
   };
