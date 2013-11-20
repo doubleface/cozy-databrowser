@@ -48,6 +48,8 @@ module.exports = class ResultsGlobalControlsView extends View
         templateData = {}
         templateData['range'] = if opt.range then '(' + opt.range + ')' || ''
         templateData['doctype'] = if opt.doctypes then opt.doctypes[0] else ''
+        if opt.displayName and (opt.displayName isnt '')
+            templateData['doctype'] = opt.displayName
         templateData['hasMetainfos'] = if opt.hasMetaInfos then true
         jqMetaInfos = $('#results-meta-infos')
         templateData['isVisible'] = if jqMetaInfos.is ':visible' then true

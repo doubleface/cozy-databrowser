@@ -1,9 +1,9 @@
 - if (value.length) {
     a.dropdown-toggle(href="#")
-        - if (icons[name]) {
-            i(class="#{icons[name]}")
+        - if (icons[category]) {
+            i(class="#{icons[category]}")
         -}
-        span.menu-text.firstLetterUp #{name}
+        span.menu-text.firstLetterUp #{category}
         b.arrow.icon-angle-down
     ul.submenu
         - for (var index in value) {

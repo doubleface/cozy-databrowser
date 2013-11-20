@@ -16,11 +16,3 @@ module.exports = class ResultsMetaInfosView extends View
         require './templates/results_meta_infos'
 
 
-    # initialize : (model) ->
-    #     @render model
-
-    # render: (model) ->
-    #     super
-    #         name: model.name
-
-

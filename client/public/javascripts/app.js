@@ -607,37 +607,38 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
 
   DoctypeNavCollectionView.prototype.itemview = DoctypeNavView;
 
-  DoctypeNavCollectionView.prototype.initialize = function() {
-    var that;
-    that = this;
-    this.collection = new DoctypeCollection();
-    this.collectionEl = '#doctype-nav-collection-view';
-    DoctypeNavCollectionView.__super__.initialize.apply(this, arguments);
-    this.collection.fetch({
-      data: $.param({
-        "menu": true
-      }),
-      success: function(col, data) {
-        return that.setMenuBehavior();
-      }
-    });
-    this.views = {};
-    return this.listenTo(this.collection, "reset", this.onReset);
+  DoctypeNavCollectionView.prototype.collection = new DoctypeCollection();
+
+  DoctypeNavCollectionView.prototype.collectionEl = '#doctype-nav-collection-view';
+
+  DoctypeNavCollectionView.prototype.el = '#doctype-nav-collection-view';
+
+  DoctypeNavCollectionView.prototype.events = {
+    'click a': 'changeActivePosition'
   };
 
-  DoctypeNavCollectionView.prototype.setMenuBehavior = function() {
-    return $('#doctype-nav-collection-view a').click(function() {
-      var hasSubmenu, openLi, parentLi, parentsLi;
-      parentLi = $(this).parent('li');
-      hasSubmenu = parentLi.children('.submenu').length > 0;
-      openLi = $('#doctype-nav-collection-view li.open');
-      parentsLi = $(this).parentsUntil('#doctype-nav-collection-view', 'li');
-      if (!hasSubmenu) {
-        $('#doctype-nav-collection-view li').removeClass('active');
-        parentsLi.addClass('active');
-        return parentLi.addClass('active');
-      }
+  DoctypeNavCollectionView.prototype.initialize = function() {
+    this.collection.fetch({
+      data: $.param({
+        'menu': true
+      })
     });
+    this.views = {};
+    this.listenTo(this.collection, "reset", this.onReset);
+    return DoctypeNavCollectionView.__super__.initialize.apply(this, arguments);
+  };
+
+  DoctypeNavCollectionView.prototype.changeActivePosition = function(event) {
+    var hasSubmenu, jqMenuLink, parentLi, parentsLi;
+    jqMenuLink = $(event.currentTarget);
+    parentLi = jqMenuLink.parent('li');
+    hasSubmenu = parentLi.children('.submenu').length > 0;
+    parentsLi = jqMenuLink.parentsUntil('#doctype-nav-collection-view', 'li');
+    if (!hasSubmenu) {
+      $('#doctype-nav-collection-view li').removeClass('active');
+      parentsLi.addClass('active');
+      return parentLi.addClass('active');
+    }
   };
 
   return DoctypeNavCollectionView;
@@ -667,7 +668,7 @@ module.exports = DoctypeNavView = (function(_super) {
 
   DoctypeNavView.prototype.render = function() {
     return DoctypeNavView.__super__.render.call(this, {
-      name: this.model.get('name'),
+      category: this.model.get('name'),
       value: this.model.get('value'),
       icons: {
         all: 'icon-list',
@@ -906,7 +907,7 @@ module.exports = ResultView = (function(_super) {
       results['no_result'] = false;
       results['count'] = count;
       results['heading'] = {
-        'doctype': attr.docType,
+        'doctype': attr.displayName || attr.docType,
         'field': attr.idField != null ? attr.idField : 'id',
         'data': attr.idField != null ? attr[attr.idField] : attr._id
       };
@@ -920,7 +921,7 @@ module.exports = ResultView = (function(_super) {
     var descField, description, displayName, field, fieldName, fields, hasDisplayName, iCounter, isNativField, isSimpleObj, isSimpleType, newLi, obj, objName, settedField, simpleTypes, typeOfField, typeOfObj;
     iCounter = 0;
     fields = [];
-    settedField = ['idField', 'count', 'descField'];
+    settedField = ['idField', 'count', 'descField', 'displayName'];
     simpleTypes = ['string', 'number', 'boolean'];
     for (fieldName in attr) {
       field = attr[fieldName];
@@ -951,7 +952,11 @@ module.exports = ResultView = (function(_super) {
         typeOfField = typeof field;
         isSimpleType = ($.inArray(typeOfField, simpleTypes)) !== -1;
         if (isSimpleType) {
-          fields[iCounter]['cdbFieldData'] = field;
+          if (fieldName === 'docType') {
+            fields[iCounter]['cdbFieldData'] = attr.displayName || field;
+          } else {
+            fields[iCounter]['cdbFieldData'] = field;
+          }
         } else if ((field != null) && typeOfField === 'object') {
           fields[iCounter]['cdbFieldData'] = '<ul class="sober-list">';
           for (objName in field) {
@@ -1140,6 +1145,9 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
     templateData = {};
     templateData['range'] = opt.range ? '(' + opt.range + ')' || '' : void 0;
     templateData['doctype'] = opt.doctypes ? opt.doctypes[0] : '';
+    if (opt.displayName && (opt.displayName !== '')) {
+      templateData['doctype'] = opt.displayName;
+    }
     templateData['hasMetainfos'] = opt.hasMetaInfos ? true : void 0;
     jqMetaInfos = $('#results-meta-infos');
     templateData['isVisible'] = jqMetaInfos.is(':visible') ? true : void 0;
@@ -1280,6 +1288,7 @@ module.exports = SearchView = (function(_super) {
             resultsMetaInfosView = new ResultsMetaInfosView();
             resultsMetaInfosView.render(data);
             _this.options['hasMetaInfos'] = true;
+            _this.options['displayName'] = data.displayName;
           }
           return _this.resultsGlobalControlsView = new ResultsGlobalControlsView(_this.options);
         }
@@ -1353,14 +1362,14 @@ var interp;
  if (value.length) {
 {
 buf.push('<a href="#" class="dropdown-toggle">');
- if (icons[name]) {
+ if (icons[category]) {
 {
 buf.push('<i');
-buf.push(attrs({ "class": ("" + (icons[name]) + "") }, {"class":true}));
+buf.push(attrs({ "class": ("" + (icons[category]) + "") }, {"class":true}));
 buf.push('></i>');
 }
 }
-buf.push('<span class="menu-text firstLetterUp">' + escape((interp = name) == null ? '' : interp) + '</span><b class="arrow icon-angle-down"></b></a><ul class="submenu">');
+buf.push('<span class="menu-text firstLetterUp">' + escape((interp = category) == null ? '' : interp) + '</span><b class="arrow icon-angle-down"></b></a><ul class="submenu">');
  for (var index in value) {
 {
  if (value[index].doctype) {
@@ -1492,7 +1501,9 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="widget-box"><div class="widget-header widget-header-small header-color-green"><h4 class="lighter"><i class="icon-question-sign"></i>&nbsp;About ' + escape((interp = name) == null ? '' : interp) + '</h4><div class="widget-toolbar"><span id="close-about-doctype"><i class="icon-remove"></i></span></div></div><div class="widget-body"><div class="widget-body-inner"><div class="widget-main padding-6"><div class="md-desc-wrapper">');
+buf.push('<div class="widget-box"><div class="widget-header widget-header-small header-color-green"><h4 class="lighter"><i class="icon-question-sign"></i>');
+ displayedDoctype = displayName !== '' ? displayName : name;
+buf.push('&nbsp;About ' + escape((interp = displayedDoctype) == null ? '' : interp) + '</h4><div class="widget-toolbar"><span id="close-about-doctype"><i class="icon-remove"></i></span></div></div><div class="widget-body"><div class="widget-body-inner"><div class="widget-main padding-6"><div class="md-desc-wrapper">');
  if (applications && applications.length > 0) {
 {
 buf.push('<div class="md-desc-container"><strong>Applications using it :</strong><ul class="sober-list">');

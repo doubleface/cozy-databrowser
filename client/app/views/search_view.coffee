@@ -39,6 +39,7 @@ module.exports = class SearchView extends BaseView
                         resultsMetaInfosView = new ResultsMetaInfosView()
                         resultsMetaInfosView.render(data)
                         @options['hasMetaInfos'] = true
+                        @options['displayName'] = data.displayName
 
                     #Add the top bar Global Controls
                     @resultsGlobalControlsView = new ResultsGlobalControlsView(@options)

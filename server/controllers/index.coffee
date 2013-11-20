@@ -35,13 +35,17 @@ module.exports.doctype_meta_infos = (req, res) ->
             else
                 metadoctypesByDoctype = results[0]
                 permissionsByDoctype = results[1]
-                metaInfos = {}
-                metaInfos['name'] = doctypeName
-                metaInfos['applications'] = []
+                metaInfos =
+                    name : doctypeName
+                    applications : []
+                    displayName : ''
 
                 for metadoctype in metadoctypesByDoctype
-                    if metadoctype.key?.toLowerCase() is doctypeName
-                        metaInfos['metadoctype'] = metadoctype.value
+                    key = metadoctype.key.toLowerCase()
+                    value = metadoctype.value
+                    if key is doctypeName.toLowerCase()
+                        metaInfos['metadoctype'] = value
+                        metaInfos['displayName'] = value.displayName || ''
 
                 #add permissions
                 for permissions in permissionsByDoctype

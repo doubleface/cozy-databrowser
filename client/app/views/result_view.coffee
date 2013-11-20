@@ -53,7 +53,7 @@ module.exports = class ResultView extends View
 
             #heading
             results['heading'] =
-                'doctype' : attr.docType
+                'doctype' : attr.displayName || attr.docType
                 'field' : if attr.idField? then attr.idField else 'id'
                 'data' : if attr.idField? then attr[attr.idField] else attr._id
 
@@ -67,7 +67,7 @@ module.exports = class ResultView extends View
     prepareResultFields: (attr) ->
         iCounter = 0
         fields = []
-        settedField = ['idField', 'count', 'descField']
+        settedField = ['idField', 'count', 'descField', 'displayName']
         simpleTypes = ['string', 'number', 'boolean']
 
         for fieldName, field of attr
@@ -103,7 +103,10 @@ module.exports = class ResultView extends View
                 typeOfField = typeof field
                 isSimpleType = ($.inArray typeOfField, simpleTypes) isnt -1
                 if isSimpleType
-                    fields[iCounter]['cdbFieldData'] = field
+                    if fieldName is 'docType'
+                        fields[iCounter]['cdbFieldData'] = attr.displayName || field
+                    else
+                        fields[iCounter]['cdbFieldData'] = field
 
                 #field is an object : display list
                 else if field? and typeOfField is 'object'

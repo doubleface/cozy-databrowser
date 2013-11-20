@@ -7,7 +7,7 @@ module.exports = class DoctypeNavView extends View
 
     render: ->
         super
-            name : @model.get('name')
+            category : @model.get('name')
             value : @model.get('value')
             icons :
                 all : 'icon-list'

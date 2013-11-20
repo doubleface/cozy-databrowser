@@ -59,23 +59,29 @@ class SearchEngine extends CoreClass
                     #if index > 0
                 for doc in results[1]
                     if doc.key? and doc.value?
-                        myDoctype = doc.value['docType'].toLowerCase()
-                        doc.value['idField'] = newFields.idField[myDoctype]
-                        doc.value['descField'] = newFields.descField[myDoctype]
+                        doctype = doc.value['docType'].toLowerCase()
+                        doc.value['idField'] = newFields.idField[doctype]
+                        doc.value['descField'] = newFields.descField[doctype]
+                        doc.value['displayName'] = newFields.displayName[doctype]
                         documents.push doc.value
 
                 res.send(documents)
 
     prepareMetadoctypeInfo : (metadoctypes, currentDoctype) ->
         newFields =
-            idField : [],
+            idField : []
             descField : []
+            displayName : []
 
         for metadoctype in metadoctypes
 
             if metadoctype.key?
                 identifier = metadoctype.value.identificationField || null
+                displayName = metadoctype.value.displayName|| null
                 key = metadoctype.key.toLowerCase() || null
+
+                if displayName? and key is currentDoctype
+                    newFields.displayName[currentDoctype] = displayName
 
                 if identifier? and key is currentDoctype
                     newFields.idField[currentDoctype] = identifier

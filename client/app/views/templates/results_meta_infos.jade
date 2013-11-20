@@ -2,7 +2,8 @@
     .widget-header.widget-header-small.header-color-green
         h4.lighter
             i.icon-question-sign
-            | &nbsp;About #{name}
+            - displayedDoctype = displayName !== '' ? displayName : name;
+            | &nbsp;About #{displayedDoctype}
 
         .widget-toolbar
             span#close-about-doctype
