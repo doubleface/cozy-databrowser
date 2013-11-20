@@ -1365,9 +1365,10 @@ buf.push('<span class="menu-text firstLetterUp">' + escape((interp = name) == nu
 {
  if (value[index].doctype) {
 {
+ displayName = value[index].displayName !== ''? value[index].displayName : value[index].doctype
 buf.push('<li><a');
 buf.push(attrs({ 'href':('#search/all/' + (value[index].doctype) + '') }, {"href":true}));
-buf.push('><i class="icon-double-angle-right"></i>' + escape((interp = value[index].doctype) == null ? '' : interp) + '<span class="menu-little-text">&nbsp;(' + escape((interp = value[index].sum) == null ? '' : interp) + ')</span></a></li>');
+buf.push('><i class="icon-double-angle-right"></i>' + escape((interp = displayName) == null ? '' : interp) + '<span class="menu-little-text">&nbsp;(' + escape((interp = value[index].sum) == null ? '' : interp) + ')</span></a></li>');
 }
  }
  else {
@@ -1377,10 +1378,11 @@ buf.push('<li><a href="#" class="dropdown-toggle"><i class="icon-double-angle-ri
  for (var subIndex in subValues) {
 {
  doctype = subValues[subIndex].doctype
+ displayName = subValues[subIndex].displayName !== ''? subValues[subIndex].displayName : doctype
  sum = subValues[subIndex].sum
 buf.push('<li><a');
 buf.push(attrs({ 'href':('#search/all/' + (doctype) + '') }, {"href":true}));
-buf.push('>' + escape((interp = doctype) == null ? '' : interp) + '<span class="menu-little-text">&nbsp;(' + escape((interp = sum) == null ? '' : interp) + ')</span></a></li>');
+buf.push('>' + escape((interp = displayName) == null ? '' : interp) + '<span class="menu-little-text">&nbsp;(' + escape((interp = sum) == null ? '' : interp) + ')</span></a></li>');
 }
  }
 buf.push('</ul></li>');

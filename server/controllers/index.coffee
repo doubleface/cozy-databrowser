@@ -54,7 +54,7 @@ module.exports.doctype_meta_infos = (req, res) ->
                     if doctypeName in permissionKeys
                         metaInfos['applications'].push permissions.key
 
-               res.send metaInfos
+                res.send metaInfos
     else
         res.send 'nothing'
 
@@ -88,16 +88,28 @@ module.exports.doctypes = (req, res) ->
             targetUrl = dataSystem.PATH.doctypes.getsums
             dataSystem.getView targetUrl, callback, group: true
 
+        menuRequests.push (callback) -> #4 -> metadoctypes
+            targetUrl = dataSystem.PATH.metadoctype.getallbyrelated
+            dataSystem.getView targetUrl, callback
+
         async.parallel menuRequests, (error, results) ->
             if error?
                 res.send 500, dataSystem.ERR_MSG.retrieveData
             else
                 doctypes = []
                 sums = {}
+                displayNames = {}
 
                 #compact sums
                 for sum in results[3]
                     sums[sum.key.toLowerCase()] = sum.value
+                #compact displayNames
+                for metadoctype in results[4]
+                    if metadoctype.value.displayName?
+                        key = metadoctype.key.toLowerCase()
+                        displayName = metadoctype.value.displayName
+                        displayNames[key] = displayName
+
 
                 #prepare categories
                 if results[0].length? and results[0].length > 0
@@ -117,14 +129,18 @@ module.exports.doctypes = (req, res) ->
                 for category, index in doctypes
                     for data, index in category.value
                         if (typeof data) is 'string'
+                            dataLow = data.toLowerCase()
                             category.value[index] =
                                 doctype: data
-                                sum: sums[data.toLowerCase()] || 0
+                                sum: sums[dataLow] || 0
+                                displayName: displayNames[dataLow] || ""
                         else
                             for subdata, index in data.value
+                                subdataLow = subdata.toLowerCase()
                                 data.value[index] =
                                     doctype : subdata
-                                    sum : sums[subdata.toLowerCase()] || 0
+                                    sum : sums[subdataLow] || 0
+                                    displayName: displayNames[subdataLow] || ""
 
                 res.send doctypes
 

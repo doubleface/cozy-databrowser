@@ -8,10 +8,11 @@
     ul.submenu
         - for (var index in value) {
                 - if (value[index].doctype) {
+                    - displayName = value[index].displayName !== ''? value[index].displayName : value[index].doctype
                     li
                         a(href='#search/all/#{value[index].doctype}')
                             i.icon-double-angle-right
-                            |#{value[index].doctype}
+                            |#{displayName}
                             span.menu-little-text &nbsp;(#{value[index].sum})
                 - }
                 - else {
@@ -24,9 +25,10 @@
                             - subValues = value[index].value
                             - for (var subIndex in subValues) {
                                 - doctype = subValues[subIndex].doctype
+                                - displayName = subValues[subIndex].displayName !== ''? subValues[subIndex].displayName : doctype
                                 - sum = subValues[subIndex].sum
                                 li
-                                    a(href='#search/all/#{doctype}') #{doctype}
+                                    a(href='#search/all/#{doctype}') #{displayName}
                                         span.menu-little-text &nbsp;(#{sum})
 
                             - }
