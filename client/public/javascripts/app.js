@@ -613,11 +613,14 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
 
   DoctypeNavCollectionView.prototype.el = '#doctype-nav-collection-view';
 
+  DoctypeNavCollectionView.prototype.isMenuMinimized = false;
+
   DoctypeNavCollectionView.prototype.events = {
     'click a': 'changeActivePosition'
   };
 
   DoctypeNavCollectionView.prototype.initialize = function() {
+    this.bindInteractiveSubmenu();
     this.collection.fetch({
       data: $.param({
         'menu': true
@@ -639,6 +642,56 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
       parentsLi.addClass('active');
       return parentLi.addClass('active');
     }
+  };
+
+  DoctypeNavCollectionView.prototype.collapseSidebar = function(collpase) {
+    var icon, icon1, icon2, sidebar;
+    collpase = collpase || false;
+    sidebar = $('#sidebar');
+    icon = document.getElementById('sidebar-collapse').querySelector('[class*="icon-"]');
+    icon1 = icon.getAttribute('data-icon1');
+    icon2 = icon.getAttribute('data-icon2');
+    if (collpase) {
+      sidebar.addClass('menu-min');
+      $(icon).removeClass(icon1);
+      $(icon).addClass(icon2);
+      return this.isMenuMinimized = true;
+    } else {
+      sidebar.removeClass('menu-min');
+      $(icon).removeClass(icon2);
+      $(icon).addClass(icon1);
+      return this.isMenuMinimized = false;
+    }
+  };
+
+  DoctypeNavCollectionView.prototype.bindInteractiveSubmenu = function() {
+    var _this = this;
+    $('#sidebar-collapse').on('click', function() {
+      _this.isMenuMinimized = $('#sidebar').hasClass('menu-min');
+      return _this.collapseSidebar(!_this.isMenuMinimized);
+    });
+    return $('.nav-list').on('click', function(event) {
+      var link_element, parent_ul, sub;
+      link_element = $(event.target).closest('a');
+      if (!link_element || link_element.length === 0) {
+        return;
+      }
+      if (!link_element.hasClass('dropdown-toggle')) {
+        return;
+      }
+      this.isMenuMinimized = $('#sidebar').hasClass('menu-min');
+      sub = link_element.next().get(0);
+      if (!$(sub).is(':visible')) {
+        parent_ul = $(sub.parentNode).closest('ul');
+        parent_ul.find('> .open > .submenu').each(function() {
+          if (this !== sub && !$(this.parentNode).hasClass('active')) {
+            return $(this).slideUp(200).parent().removeClass('open');
+          }
+        });
+      }
+      $(sub).slideToggle(200).parent().toggleClass('open');
+      return false;
+    });
   };
 
   return DoctypeNavCollectionView;

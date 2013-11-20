@@ -8,11 +8,13 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
     collection : new DoctypeCollection()
     collectionEl : '#doctype-nav-collection-view'
     el : '#doctype-nav-collection-view'
+    isMenuMinimized : false
 
     events:
         'click a' : 'changeActivePosition'
 
     initialize: ->
+        @bindInteractiveSubmenu()
         @collection.fetch
             data: $.param
                 'menu' : true
@@ -30,6 +32,56 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
             $('#doctype-nav-collection-view li').removeClass 'active'
             parentsLi.addClass 'active'
             parentLi.addClass 'active'
+
+    collapseSidebar : (collpase) ->
+        collpase = collpase || false
+        sidebar = $('#sidebar')
+        icon = document.getElementById('sidebar-collapse').querySelector('[class*="icon-"]')
+        icon1 = icon.getAttribute('data-icon1')
+        icon2 = icon.getAttribute('data-icon2')
+
+        if collpase
+            sidebar.addClass('menu-min')
+            $(icon).removeClass(icon1)
+            $(icon).addClass(icon2)
+            @isMenuMinimized = true
+        else
+            sidebar.removeClass('menu-min')
+            $(icon).removeClass(icon2)
+            $(icon).addClass(icon1)
+            @isMenuMinimized = false
+
+    bindInteractiveSubmenu: ->
+
+        $('#sidebar-collapse').on 'click', =>
+            @isMenuMinimized = $('#sidebar').hasClass('menu-min')
+            @collapseSidebar !@isMenuMinimized
+            #ace.settings.sidebar_collapsed(!$minimized);//@ ace-extra.js
+
+
+        $('.nav-list').on 'click', (event) ->
+            link_element = $(event.target).closest 'a'
+            if not link_element or link_element.length is 0 then return
+            if not link_element.hasClass 'dropdown-toggle' then return
+            @isMenuMinimized = $('#sidebar').hasClass 'menu-min'
+            sub = link_element.next().get 0
+            if not $(sub).is ':visible'
+                parent_ul = $(sub.parentNode).closest 'ul'
+                #if parent_ul.hasClass 'nav-list' then return
+                parent_ul.find('> .open > .submenu').each ->
+                    if this isnt sub and not $(this.parentNode).hasClass 'active'
+                        $(this).slideUp(200).parent().removeClass 'open'
+
+            #if $(sub.parentNode.parentNode).hasClass 'nav-list' then return false
+            $(sub).slideToggle(200).parent().toggleClass 'open'
+            return false
+
+#                 //uncomment the following line to close all submenus on deeper levels when closing a submenu
+#                 //$(this).find('.open > .submenu').slideUp(0).parent().removeClass('open');
+#             }
+#           });
+
+
 
 # ace.handle_side_menu = function($) {
 #     $('#menu-toggler').on(ace.click_event, function() {
