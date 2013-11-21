@@ -11,10 +11,10 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
     isMenuMinimized : false
 
     events:
-        'click a' : 'changeActivePosition'
+        'click a' : 'activateMenuElement'
 
     initialize: ->
-        @bindInteractiveSubmenu()
+        @bindMenuCollapser()
         @collection.fetch
             data: $.param
                 'menu' : true
@@ -22,16 +22,62 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         @listenTo @collection, "reset", @onReset
         super
 
-    changeActivePosition: (event) ->
-        jqMenuLink = $(event.currentTarget)
-        parentLi = jqMenuLink.parent('li')
-        hasSubmenu = parentLi.children('.submenu').length > 0
-        parentsLi = jqMenuLink.parentsUntil '#doctype-nav-collection-view', 'li'
+    activateMenuElement: (event) ->
+        that = this
 
+        #needed elements
+        jqMenuLink = $(event.currentTarget)
+        parentLi = jqMenuLink.parent 'li'
+        parentsLi = jqMenuLink.parentsUntil '#doctype-nav-collection-view', 'li'
+        jqSubmenu = parentLi.children '.submenu'
+        jqParentUl = jqSubmenu.parent().closest 'ul'
+
+        #needed booleans
+        isDirectLink = not jqMenuLink.hasClass 'dropdown-toggle'
+        hasSubmenu = jqSubmenu.length > 0
+        isFirstSubmenu = hasSubmenu and jqMenuLink.closest('.submenu').length is 0
+
+        #clean slimscrolls
+        if not isDirectLink and isFirstSubmenu
+            $('.slimScrollDiv').each ->
+                that.destroySlimscroll $(this).children('ul')
+
+        #activate the all tree
         if not hasSubmenu
             $('#doctype-nav-collection-view li').removeClass 'active'
             parentsLi.addClass 'active'
             parentLi.addClass 'active'
+
+        #verify class
+        if isDirectLink then return
+
+        #verify if minimized
+        @isMenuMinimized = $('#sidebar').hasClass 'menu-min'
+
+        #close other submenu
+        submenuIsVisible = jqSubmenu.is ':visible'
+        if not submenuIsVisible
+            if @isMenuMinimized and jqParentUl.hasClass 'nav-list' then return
+            jqParentUl.find('.open:eq(0)').find(' .submenu:eq(0)').each ->
+                if $(this) isnt jqSubmenu #and not $(this.parentNode).hasClass 'active'
+                    $(this).slideUp(200).closest('li').removeClass 'open'
+
+            #apply slimscroll
+            navHeight = $('.nav-list > li').length * 46 + $('#sidebar-collapse').height() + $('.nav-search:eq(0)').height()
+            menuHeight = jqSubmenu.height()
+            fullHeight = navHeight + menuHeight
+            winHeight = $(window).height()
+
+            if isFirstSubmenu and fullHeight > winHeight #and @isMenuTooLong
+                mawHeightOfMenu = winHeight - navHeight
+                jqSubmenu.slimScroll
+                    height: mawHeightOfMenu + 'px'
+
+        if @isMenuMinimized and jqParentUl.hasClass 'nav-list' then return false
+        jqSubmenu.slideToggle 200
+        parentLi.addClass 'open'
+
+        return false
 
     collapseSidebar : (collpase) ->
         collpase = collpase || false
@@ -51,103 +97,17 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
             $(icon).addClass(icon1)
             @isMenuMinimized = false
 
-    bindInteractiveSubmenu: ->
+    bindMenuCollapser: ->
 
+        #sidebar menu collapser
         $('#sidebar-collapse').on 'click', =>
             @isMenuMinimized = $('#sidebar').hasClass('menu-min')
             @collapseSidebar !@isMenuMinimized
-            #ace.settings.sidebar_collapsed(!$minimized);//@ ace-extra.js
 
-
-        $('.nav-list').on 'click', (event) ->
-            link_element = $(event.target).closest 'a'
-            if not link_element or link_element.length is 0 then return
-            if not link_element.hasClass 'dropdown-toggle' then return
-            @isMenuMinimized = $('#sidebar').hasClass 'menu-min'
-            sub = link_element.next().get 0
-            if not $(sub).is ':visible'
-                parent_ul = $(sub.parentNode).closest 'ul'
-                #if parent_ul.hasClass 'nav-list' then return
-                parent_ul.find('> .open > .submenu').each ->
-                    if this isnt sub and not $(this.parentNode).hasClass 'active'
-                        $(this).slideUp(200).parent().removeClass 'open'
-
-            #if $(sub.parentNode.parentNode).hasClass 'nav-list' then return false
-            $(sub).slideToggle(200).parent().toggleClass 'open'
-            return false
-
-#                 //uncomment the following line to close all submenus on deeper levels when closing a submenu
-#                 //$(this).find('.open > .submenu').slideUp(0).parent().removeClass('open');
-#             }
-#           });
-
-
-
-# ace.handle_side_menu = function($) {
-#     $('#menu-toggler').on(ace.click_event, function() {
-#         $('#sidebar').toggleClass('display');
-#         $(this).toggleClass('display');
-#         return false;
-#     });
-#     //mini
-#     var $minimized = $('#sidebar').hasClass('menu-min');
-#     $('#sidebar-collapse').on(ace.click_event, function(){
-#         $minimized = $('#sidebar').hasClass('menu-min');
-#         ace.settings.sidebar_collapsed(!$minimized);//@ ace-extra.js
-#     });
-
-#     var touch = "ontouchend" in document;
-#     //opening submenu
-#     $('.nav-list').on(ace.click_event, function(e){
-#         //check to see if we have clicked on an element which is inside a .dropdown-toggle element?!
-#         //if so, it means we should toggle a submenu
-#         var link_element = $(e.target).closest('a');
-#         if(!link_element || link_element.length == 0) return;//if not clicked inside a link element
-
-#         $minimized = $('#sidebar').hasClass('menu-min');
-
-#         if(! link_element.hasClass('dropdown-toggle') ) {//it doesn't have a submenu return
-#             //just one thing before we return
-#             //if sidebar is collapsed(minimized) and we click on a first level menu item
-#             //and the click is on the icon, not on the menu text then let's cancel event and cancel navigation
-#             //Good for touch devices, that when the icon is tapped to see the menu text, navigation is cancelled
-#             //navigation is only done when menu text is tapped
-#             if($minimized && ace.click_event == "tap" &&
-#                 link_element.get(0).parentNode.parentNode == this /*.nav-list*/ )//i.e. only level-1 links
-#             {
-#                     var text = link_element.find('.menu-text').get(0);
-#                     if( e.target != text && !$.contains(text , e.target) )//not clicking on the text or its children
-#                       return false;
-#             }
-
-#             return;
-#         }
-#         //
-#         var sub = link_element.next().get(0);
-
-#         //if we are opening this submenu, close all other submenus except the ".active" one
-#         if(! $(sub).is(':visible') ) {//if not open and visible, let's open it and make it visible
-#           var parent_ul = $(sub.parentNode).closest('ul');
-#           if($minimized && parent_ul.hasClass('nav-list')) return;
-
-#           parent_ul.find('> .open > .submenu').each(function(){
-#             //close all other open submenus except for the active one
-#             if(this != sub && !$(this.parentNode).hasClass('active')) {
-#                 $(this).slideUp(200).parent().removeClass('open');
-
-#                 //uncomment the following line to close all submenus on deeper levels when closing a submenu
-#                 //$(this).find('.open > .submenu').slideUp(0).parent().removeClass('open');
-#             }
-#           });
-#         } else {
-#             //uncomment the following line to close all submenus on deeper levels when closing a submenu
-#             //$(sub).find('.open > .submenu').slideUp(0).parent().removeClass('open');
-#         }
-
-#         if($minimized && $(sub.parentNode.parentNode).hasClass('nav-list')) return false;
-
-#         $(sub).slideToggle(200).parent().toggleClass('open');
-#         return false;
-#      })
-# }
+    destroySlimscroll: (jqObj)->
+        jqObj.css
+            'height':'auto'
+        jqObj.parent().unbind()
+        jqObj.parent().undelegate()
+        jqObj.parent().replaceWith jqObj
 

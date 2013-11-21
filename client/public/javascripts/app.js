@@ -561,6 +561,7 @@ module.exports = Router = (function(_super) {
 
   Router.prototype.initialize = function() {
     var doctypeNavCollectionView;
+    console.log('test');
     doctypeNavCollectionView = new DoctypeNavCollectionView();
     return doctypeNavCollectionView.render();
   };
@@ -616,11 +617,11 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
   DoctypeNavCollectionView.prototype.isMenuMinimized = false;
 
   DoctypeNavCollectionView.prototype.events = {
-    'click a': 'changeActivePosition'
+    'click a': 'activateMenuElement'
   };
 
   DoctypeNavCollectionView.prototype.initialize = function() {
-    this.bindInteractiveSubmenu();
+    this.bindMenuCollapser();
     this.collection.fetch({
       data: $.param({
         'menu': true
@@ -631,17 +632,58 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     return DoctypeNavCollectionView.__super__.initialize.apply(this, arguments);
   };
 
-  DoctypeNavCollectionView.prototype.changeActivePosition = function(event) {
-    var hasSubmenu, jqMenuLink, parentLi, parentsLi;
+  DoctypeNavCollectionView.prototype.activateMenuElement = function(event) {
+    var fullHeight, hasSubmenu, isDirectLink, isFirstSubmenu, jqMenuLink, jqParentUl, jqSubmenu, mawHeightOfMenu, menuHeight, navHeight, parentLi, parentsLi, submenuIsVisible, that, winHeight;
+    that = this;
     jqMenuLink = $(event.currentTarget);
     parentLi = jqMenuLink.parent('li');
-    hasSubmenu = parentLi.children('.submenu').length > 0;
     parentsLi = jqMenuLink.parentsUntil('#doctype-nav-collection-view', 'li');
+    jqSubmenu = parentLi.children('.submenu');
+    jqParentUl = jqSubmenu.parent().closest('ul');
+    isDirectLink = !jqMenuLink.hasClass('dropdown-toggle');
+    hasSubmenu = jqSubmenu.length > 0;
+    isFirstSubmenu = hasSubmenu && jqMenuLink.closest('.submenu').length === 0;
+    if (!isDirectLink && isFirstSubmenu) {
+      $('.slimScrollDiv').each(function() {
+        return that.destroySlimscroll($(this).children('ul'));
+      });
+    }
     if (!hasSubmenu) {
       $('#doctype-nav-collection-view li').removeClass('active');
       parentsLi.addClass('active');
-      return parentLi.addClass('active');
+      parentLi.addClass('active');
     }
+    if (isDirectLink) {
+      return;
+    }
+    this.isMenuMinimized = $('#sidebar').hasClass('menu-min');
+    submenuIsVisible = jqSubmenu.is(':visible');
+    if (!submenuIsVisible) {
+      if (this.isMenuMinimized && jqParentUl.hasClass('nav-list')) {
+        return;
+      }
+      jqParentUl.find('.open:eq(0)').find(' .submenu:eq(0)').each(function() {
+        if ($(this) !== jqSubmenu) {
+          return $(this).slideUp(200).closest('li').removeClass('open');
+        }
+      });
+      navHeight = $('.nav-list > li').length * 46 + $('#sidebar-collapse').height() + $('.nav-search:eq(0)').height();
+      menuHeight = jqSubmenu.height();
+      fullHeight = navHeight + menuHeight;
+      winHeight = $(window).height();
+      if (isFirstSubmenu && fullHeight > winHeight) {
+        mawHeightOfMenu = winHeight - navHeight;
+        jqSubmenu.slimScroll({
+          height: mawHeightOfMenu + 'px'
+        });
+      }
+    }
+    if (this.isMenuMinimized && jqParentUl.hasClass('nav-list')) {
+      return false;
+    }
+    jqSubmenu.slideToggle(200);
+    parentLi.addClass('open');
+    return false;
   };
 
   DoctypeNavCollectionView.prototype.collapseSidebar = function(collpase) {
@@ -664,34 +706,21 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     }
   };
 
-  DoctypeNavCollectionView.prototype.bindInteractiveSubmenu = function() {
+  DoctypeNavCollectionView.prototype.bindMenuCollapser = function() {
     var _this = this;
-    $('#sidebar-collapse').on('click', function() {
+    return $('#sidebar-collapse').on('click', function() {
       _this.isMenuMinimized = $('#sidebar').hasClass('menu-min');
       return _this.collapseSidebar(!_this.isMenuMinimized);
     });
-    return $('.nav-list').on('click', function(event) {
-      var link_element, parent_ul, sub;
-      link_element = $(event.target).closest('a');
-      if (!link_element || link_element.length === 0) {
-        return;
-      }
-      if (!link_element.hasClass('dropdown-toggle')) {
-        return;
-      }
-      this.isMenuMinimized = $('#sidebar').hasClass('menu-min');
-      sub = link_element.next().get(0);
-      if (!$(sub).is(':visible')) {
-        parent_ul = $(sub.parentNode).closest('ul');
-        parent_ul.find('> .open > .submenu').each(function() {
-          if (this !== sub && !$(this.parentNode).hasClass('active')) {
-            return $(this).slideUp(200).parent().removeClass('open');
-          }
-        });
-      }
-      $(sub).slideToggle(200).parent().toggleClass('open');
-      return false;
+  };
+
+  DoctypeNavCollectionView.prototype.destroySlimscroll = function(jqObj) {
+    jqObj.css({
+      'height': 'auto'
     });
+    jqObj.parent().unbind();
+    jqObj.parent().undelegate();
+    return jqObj.parent().replaceWith(jqObj);
   };
 
   return DoctypeNavCollectionView;

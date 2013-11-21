@@ -14002,9 +14002,9 @@ th[aria-selected=true] .ui-jqgrid-sortable {
   background-color: #F7F7F7 !important;
 }
 /* scrollbar */
-.slimScrollBar {
+/*.slimScrollBar {
   border-radius: 0 !important;
-}
+}*/
 .slimScrollRail {
   border-radius: 0 !important;
 }
