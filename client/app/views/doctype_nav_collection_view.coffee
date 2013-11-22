@@ -29,7 +29,7 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         jqMenuLink = $(event.currentTarget)
         parentLi = jqMenuLink.parent 'li'
         parentsLi = jqMenuLink.parentsUntil '#doctype-nav-collection-view', 'li'
-        jqSubmenu = parentLi.children '.submenu'
+        jqSubmenu = parentLi.find(' .submenu:eq(0)')
         jqParentUl = jqSubmenu.parent().closest 'ul'
 
         #needed booleans
@@ -38,7 +38,7 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         isFirstSubmenu = hasSubmenu and jqMenuLink.closest('.submenu').length is 0
 
         #clean slimscrolls
-        if not isDirectLink and isFirstSubmenu
+        if not isDirectLink
             $('.slimScrollDiv').each ->
                 that.destroySlimscroll $(this).children('ul')
 
@@ -48,7 +48,7 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
             parentsLi.addClass 'active'
             parentLi.addClass 'active'
 
-        #verify class
+        #stop here if it's a link
         if isDirectLink then return
 
         #verify if minimized
@@ -67,11 +67,25 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
             menuHeight = jqSubmenu.height()
             fullHeight = navHeight + menuHeight
             winHeight = $(window).height()
+            maxHeightOfMenu = winHeight - navHeight
+            parentSubmenu = jqSubmenu.parent().closest('.submenu')
 
             if isFirstSubmenu and fullHeight > winHeight #and @isMenuTooLong
-                mawHeightOfMenu = winHeight - navHeight
+
                 jqSubmenu.slimScroll
-                    height: mawHeightOfMenu + 'px'
+                    height: maxHeightOfMenu + 'px'
+            else if parentSubmenu.length > 0 and not isFirstSubmenu
+                if fullHeight + parentSubmenu.height() > winHeight
+                    parentSubmenu.slimScroll
+                        height: maxHeightOfMenu + 'px'
+
+                    #recaclculate height after slideup
+                    triggerEnter = ->
+                        parentSubmenu.mouseenter()
+                    setTimeout triggerEnter, 200
+
+
+
 
         if @isMenuMinimized and jqParentUl.hasClass 'nav-list' then return false
         jqSubmenu.slideToggle 200

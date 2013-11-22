@@ -561,7 +561,6 @@ module.exports = Router = (function(_super) {
 
   Router.prototype.initialize = function() {
     var doctypeNavCollectionView;
-    console.log('test');
     doctypeNavCollectionView = new DoctypeNavCollectionView();
     return doctypeNavCollectionView.render();
   };
@@ -633,17 +632,17 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
   };
 
   DoctypeNavCollectionView.prototype.activateMenuElement = function(event) {
-    var fullHeight, hasSubmenu, isDirectLink, isFirstSubmenu, jqMenuLink, jqParentUl, jqSubmenu, mawHeightOfMenu, menuHeight, navHeight, parentLi, parentsLi, submenuIsVisible, that, winHeight;
+    var fullHeight, hasSubmenu, isDirectLink, isFirstSubmenu, jqMenuLink, jqParentUl, jqSubmenu, maxHeightOfMenu, menuHeight, navHeight, parentLi, parentSubmenu, parentsLi, submenuIsVisible, that, triggerEnter, winHeight;
     that = this;
     jqMenuLink = $(event.currentTarget);
     parentLi = jqMenuLink.parent('li');
     parentsLi = jqMenuLink.parentsUntil('#doctype-nav-collection-view', 'li');
-    jqSubmenu = parentLi.children('.submenu');
+    jqSubmenu = parentLi.find(' .submenu:eq(0)');
     jqParentUl = jqSubmenu.parent().closest('ul');
     isDirectLink = !jqMenuLink.hasClass('dropdown-toggle');
     hasSubmenu = jqSubmenu.length > 0;
     isFirstSubmenu = hasSubmenu && jqMenuLink.closest('.submenu').length === 0;
-    if (!isDirectLink && isFirstSubmenu) {
+    if (!isDirectLink) {
       $('.slimScrollDiv').each(function() {
         return that.destroySlimscroll($(this).children('ul'));
       });
@@ -671,11 +670,22 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
       menuHeight = jqSubmenu.height();
       fullHeight = navHeight + menuHeight;
       winHeight = $(window).height();
+      maxHeightOfMenu = winHeight - navHeight;
+      parentSubmenu = jqSubmenu.parent().closest('.submenu');
       if (isFirstSubmenu && fullHeight > winHeight) {
-        mawHeightOfMenu = winHeight - navHeight;
         jqSubmenu.slimScroll({
-          height: mawHeightOfMenu + 'px'
+          height: maxHeightOfMenu + 'px'
         });
+      } else if (parentSubmenu.length > 0 && !isFirstSubmenu) {
+        if (fullHeight + parentSubmenu.height() > winHeight) {
+          parentSubmenu.slimScroll({
+            height: maxHeightOfMenu + 'px'
+          });
+          triggerEnter = function() {
+            return parentSubmenu.mouseenter();
+          };
+          setTimeout(triggerEnter, 200);
+        }
       }
     }
     if (this.isMenuMinimized && jqParentUl.hasClass('nav-list')) {

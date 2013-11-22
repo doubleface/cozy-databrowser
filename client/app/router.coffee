@@ -13,7 +13,6 @@ module.exports = class Router extends Backbone.Router
     initialize: ->
 
         #Initialize the left menu 'doctype nav'
-        console.log 'test'
         doctypeNavCollectionView = new DoctypeNavCollectionView()
         doctypeNavCollectionView.render()
 
