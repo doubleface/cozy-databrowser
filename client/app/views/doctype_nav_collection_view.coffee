@@ -84,12 +84,15 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
                         parentSubmenu.mouseenter()
                     setTimeout triggerEnter, 200
 
-
-
-
         if @isMenuMinimized and jqParentUl.hasClass 'nav-list' then return false
         jqSubmenu.slideToggle 200
-        parentLi.addClass 'open'
+        parentLi.toggleClass 'open'
+
+
+
+        #Add arrow icon behavior
+        $('.icon-angle-down').addClass('icon-angle-right').removeClass('icon-angle-down')
+        $('.open > a > .icon-angle-right').addClass('icon-angle-down').removeClass('icon-angle-right')
 
         return false
 

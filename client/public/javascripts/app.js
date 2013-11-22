@@ -692,7 +692,9 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
       return false;
     }
     jqSubmenu.slideToggle(200);
-    parentLi.addClass('open');
+    parentLi.toggleClass('open');
+    $('.icon-angle-down').addClass('icon-angle-right').removeClass('icon-angle-down');
+    $('.open > a > .icon-angle-right').addClass('icon-angle-down').removeClass('icon-angle-right');
     return false;
   };
 
@@ -1461,7 +1463,7 @@ buf.push(attrs({ "class": ("" + (icons[category]) + "") }, {"class":true}));
 buf.push('></i>');
 }
 }
-buf.push('<span class="menu-text firstLetterUp">' + escape((interp = category) == null ? '' : interp) + '</span><b class="arrow icon-angle-down"></b></a><ul class="submenu">');
+buf.push('<span class="menu-text firstLetterUp">' + escape((interp = category) == null ? '' : interp) + '</span><b class="arrow icon-angle-right"></b></a><ul class="submenu">');
  for (var index in value) {
 {
  if (value[index].doctype) {
@@ -1474,7 +1476,7 @@ buf.push('><i class="icon-double-angle-right"></i>' + escape((interp = displayNa
  }
  else {
 {
-buf.push('<li><a href="#" class="dropdown-toggle"><i class="icon-double-angle-right"></i><span class="menu-text">' + escape((interp = value[index].key) == null ? '' : interp) + '</span><b class="arrow icon-angle-down"></b></a><ul class="submenu">');
+buf.push('<li><a href="#" class="dropdown-toggle"><i class="icon-double-angle-right"></i><span class="menu-text">' + escape((interp = value[index].key) == null ? '' : interp) + '</span><b class="arrow icon-angle-right"></b></a><ul class="submenu">');
  subValues = value[index].value
  for (var subIndex in subValues) {
 {

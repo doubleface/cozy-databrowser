@@ -4,7 +4,7 @@
             i(class="#{icons[category]}")
         -}
         span.menu-text.firstLetterUp #{category}
-        b.arrow.icon-angle-down
+        b.arrow.icon-angle-right
     ul.submenu
         - for (var index in value) {
                 - if (value[index].doctype) {
@@ -20,7 +20,7 @@
                         a.dropdown-toggle(href="#")
                             i.icon-double-angle-right
                             span.menu-text #{value[index].key}
-                            b.arrow.icon-angle-down
+                            b.arrow.icon-angle-right
                         ul.submenu
                             - subValues = value[index].value
                             - for (var subIndex in subValues) {
