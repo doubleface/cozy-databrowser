@@ -15,6 +15,7 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
 
     initialize: ->
         @bindMenuCollapser()
+        @bindMenuResponsive()
         @collection.fetch
             data: $.param
                 'menu' : true
@@ -120,6 +121,13 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         $('#sidebar-collapse').on 'click', =>
             @isMenuMinimized = $('#sidebar').hasClass('menu-min')
             @collapseSidebar !@isMenuMinimized
+
+    bindMenuResponsive: ->
+        $('#menu-toggler').on 'click', ->
+            $('#sidebar').toggleClass('display')
+            $(this).toggleClass('display')
+            return false
+
 
     destroySlimscroll: (jqObj)->
         jqObj.css

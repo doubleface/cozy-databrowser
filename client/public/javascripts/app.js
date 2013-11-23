@@ -621,6 +621,7 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
 
   DoctypeNavCollectionView.prototype.initialize = function() {
     this.bindMenuCollapser();
+    this.bindMenuResponsive();
     this.collection.fetch({
       data: $.param({
         'menu': true
@@ -723,6 +724,14 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     return $('#sidebar-collapse').on('click', function() {
       _this.isMenuMinimized = $('#sidebar').hasClass('menu-min');
       return _this.collapseSidebar(!_this.isMenuMinimized);
+    });
+  };
+
+  DoctypeNavCollectionView.prototype.bindMenuResponsive = function() {
+    return $('#menu-toggler').on('click', function() {
+      $('#sidebar').toggleClass('display');
+      $(this).toggleClass('display');
+      return false;
     });
   };
 
