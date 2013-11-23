@@ -43,20 +43,20 @@
 
   var initModule = function(name, definition) {
     var module = {id: name, exports: {}};
+    cache[name] = module;
     definition(module.exports, localRequire(name), module);
-    var exports = cache[name] = module.exports;
-    return exports;
+    return module.exports;
   };
 
   var require = function(name, loaderPath) {
     var path = expand(name, '.');
     if (loaderPath == null) loaderPath = '/';
 
-    if (has(cache, path)) return cache[path];
+    if (has(cache, path)) return cache[path].exports;
     if (has(modules, path)) return initModule(path, modules[path]);
 
     var dirIndex = expand(path, './index');
-    if (has(cache, dirIndex)) return cache[dirIndex];
+    if (has(cache, dirIndex)) return cache[dirIndex].exports;
     if (has(modules, dirIndex)) return initModule(dirIndex, modules[dirIndex]);
 
     throw new Error('Cannot find module "' + name + '" from '+ '"' + loaderPath + '"');
@@ -616,7 +616,8 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
   DoctypeNavCollectionView.prototype.isMenuMinimized = false;
 
   DoctypeNavCollectionView.prototype.events = {
-    'click a': 'activateMenuElement'
+    'click a': 'activateMenuElement',
+    'mouseenter .doctype-list-item': 'showMinimizedMenu'
   };
 
   DoctypeNavCollectionView.prototype.initialize = function() {
@@ -632,9 +633,10 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     return DoctypeNavCollectionView.__super__.initialize.apply(this, arguments);
   };
 
+  DoctypeNavCollectionView.prototype.showMinimizedMenu = function() {};
+
   DoctypeNavCollectionView.prototype.activateMenuElement = function(event) {
-    var fullHeight, hasSubmenu, isDirectLink, isFirstSubmenu, jqMenuLink, jqParentUl, jqSubmenu, maxHeightOfMenu, menuHeight, navHeight, parentLi, parentSubmenu, parentsLi, submenuIsVisible, that, triggerEnter, winHeight;
-    that = this;
+    var hasSubmenu, isDirectLink, isFirstSubmenu, jqMenuLink, jqParentUl, jqSubmenu, parentLi, parentsLi, submenuIsVisible;
     jqMenuLink = $(event.currentTarget);
     parentLi = jqMenuLink.parent('li');
     parentsLi = jqMenuLink.parentsUntil('#doctype-nav-collection-view', 'li');
@@ -644,9 +646,7 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     hasSubmenu = jqSubmenu.length > 0;
     isFirstSubmenu = hasSubmenu && jqMenuLink.closest('.submenu').length === 0;
     if (!isDirectLink) {
-      $('.slimScrollDiv').each(function() {
-        return that.destroySlimscroll($(this).children('ul'));
-      });
+      this.destroySlimscrolls();
     }
     if (!hasSubmenu) {
       $('#doctype-nav-collection-view li').removeClass('active');
@@ -667,27 +667,7 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
           return $(this).slideUp(200).closest('li').removeClass('open');
         }
       });
-      navHeight = $('.nav-list > li').length * 46 + $('#sidebar-collapse').height() + $('.nav-search:eq(0)').height();
-      menuHeight = jqSubmenu.height();
-      fullHeight = navHeight + menuHeight;
-      winHeight = $(window).height();
-      maxHeightOfMenu = winHeight - navHeight;
-      parentSubmenu = jqSubmenu.parent().closest('.submenu');
-      if (isFirstSubmenu && fullHeight > winHeight) {
-        jqSubmenu.slimScroll({
-          height: maxHeightOfMenu + 'px'
-        });
-      } else if (parentSubmenu.length > 0 && !isFirstSubmenu) {
-        if (fullHeight + parentSubmenu.height() > winHeight) {
-          parentSubmenu.slimScroll({
-            height: maxHeightOfMenu + 'px'
-          });
-          triggerEnter = function() {
-            return parentSubmenu.mouseenter();
-          };
-          setTimeout(triggerEnter, 200);
-        }
-      }
+      this.applySlimscroll(jqSubmenu, isFirstSubmenu);
     }
     if (this.isMenuMinimized && jqParentUl.hasClass('nav-list')) {
       return false;
@@ -699,8 +679,37 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     return false;
   };
 
+  DoctypeNavCollectionView.prototype.applySlimscroll = function(jqSubmenu, isFirstSubmenu) {
+    var fullHeight, maxHeightOfMenu, menuHeight, navHeight, parentSubmenu, triggerEnter, winHeight;
+    navHeight = $('.nav-list > li').length * 46 + $('#sidebar-collapse').height() + $('.nav-search:eq(0)').height();
+    if (this.isMenuMinimized) {
+      navHeight = $('.nav-search:eq(0)').height();
+    }
+    menuHeight = jqSubmenu.height();
+    fullHeight = navHeight + menuHeight;
+    winHeight = $(window).height();
+    maxHeightOfMenu = winHeight - navHeight;
+    parentSubmenu = jqSubmenu.parent().closest('.submenu');
+    if (isFirstSubmenu && fullHeight > winHeight) {
+      return jqSubmenu.slimScroll({
+        height: maxHeightOfMenu + 'px'
+      });
+    } else if (parentSubmenu.length > 0 && !isFirstSubmenu) {
+      if (fullHeight + parentSubmenu.height() > winHeight) {
+        parentSubmenu.slimScroll({
+          height: maxHeightOfMenu + 'px'
+        });
+        triggerEnter = function() {
+          return parentSubmenu.mouseenter();
+        };
+        return setTimeout(triggerEnter, 200);
+      }
+    }
+  };
+
   DoctypeNavCollectionView.prototype.collapseSidebar = function(collpase) {
     var icon, icon1, icon2, sidebar;
+    this.destroySlimscrolls();
     collpase = collpase || false;
     sidebar = $('#sidebar');
     icon = document.getElementById('sidebar-collapse').querySelector('[class*="icon-"]');
@@ -735,13 +744,17 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     });
   };
 
-  DoctypeNavCollectionView.prototype.destroySlimscroll = function(jqObj) {
-    jqObj.css({
-      'height': 'auto'
+  DoctypeNavCollectionView.prototype.destroySlimscrolls = function() {
+    return $('.slimScrollDiv').each(function() {
+      var jqObj;
+      jqObj = $(this).children('ul');
+      jqObj.css({
+        'height': 'auto'
+      });
+      jqObj.parent().unbind();
+      jqObj.parent().undelegate();
+      return jqObj.parent().replaceWith(jqObj);
     });
-    jqObj.parent().unbind();
-    jqObj.parent().undelegate();
-    return jqObj.parent().replaceWith(jqObj);
   };
 
   return DoctypeNavCollectionView;
@@ -1456,8 +1469,7 @@ module.exports = SearchView = (function(_super) {
 });
 
 ;require.register("views/templates/doctype_nav", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge
-/**/) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1518,8 +1530,7 @@ return buf.join("");
 });
 
 ;require.register("views/templates/modal_confirm", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge
-/**/) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1531,8 +1542,7 @@ return buf.join("");
 });
 
 ;require.register("views/templates/result", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge
-/**/) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1566,8 +1576,7 @@ return buf.join("");
 });
 
 ;require.register("views/templates/results_global_controls", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge
-/**/) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1598,8 +1607,7 @@ return buf.join("");
 });
 
 ;require.register("views/templates/results_meta_infos", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge
-/**/) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1637,8 +1645,7 @@ return buf.join("");
 });
 
 ;require.register("views/templates/search", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge
-/**/) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1650,4 +1657,4 @@ return buf.join("");
 });
 
 ;
-//@ sourceMappingURL=app.js.map
+//# sourceMappingURL=app.js.map
