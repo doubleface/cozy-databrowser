@@ -1245,7 +1245,12 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
     'mouseover #delete-all': 'switchStyleOfDeleteButton',
     'mouseout #delete-all': 'switchStyleOfDeleteButton',
     'click #delete-all': 'confirmDeleteAll',
-    'click .about-doctype': 'showMetaInfos'
+    'click .about-doctype': 'showMetaInfos',
+    'click .table-view': 'switchToTableView'
+  };
+
+  ResultsGlobalControlsView.prototype.switchToTableView = function(event) {
+    return console.log('switch');
   };
 
   ResultsGlobalControlsView.prototype.showMetaInfos = function(event) {

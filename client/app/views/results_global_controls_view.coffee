@@ -12,6 +12,10 @@ module.exports = class ResultsGlobalControlsView extends View
         'mouseout #delete-all' : 'switchStyleOfDeleteButton'
         'click #delete-all' : 'confirmDeleteAll'
         'click .about-doctype' : 'showMetaInfos'
+        'click .table-view' : 'switchToTableView'
+
+    switchToTableView:  (event) ->
+        console.log 'switch'
 
     showMetaInfos: (event) ->
         jqObj = $(event.currentTarget)
