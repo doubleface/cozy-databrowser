@@ -583,25 +583,42 @@ li [class*=" icon-"],
   padding-bottom: 2px;
   display: none !important;
 }
-.menu-min .nav-list > li > .submenu:before {
+.menu-min .nav-list > li > .slimScrollDiv > .submenu {
+  background: #ffffff;
+  width: 176px;
+  border: 1px solid #cccccc;
+  -webkit-box-shadow: 2px 1px 2px 0 rgba(0,0,0,0.2);
+  box-shadow: 2px 1px 2px 0 rgba(0,0,0,0.2);
+  padding-top: 40px;
+  padding-bottom: 2px;
+}
+.menu-min .nav-list > li > .slimScrollDiv {
+  /*display: none !important; */
+  position: absolute !important;
+  z-index: 120;
+  left: 42px;
+  top: -2px;
+
+}
+.menu-min .nav-list > li > .submenu:before, .menu-min .nav-list > li > .slimScrollDiv > .submenu:before {
   /* hide the tree like submenu in minimized mode */
 
   display: none;
 }
-.menu-min .nav-list > li > .submenu li:before {
+.menu-min .nav-list > li > .submenu li:before, .menu-min .nav-list > li > .slimScrollDiv >.submenu li:before {
   display: none;
 }
-.menu-min .nav-list > li > .submenu li > a {
+.menu-min .nav-list > li > .submenu li > a, .menu-min .nav-list > li > .slimScrollDiv > .submenu li > a {
   margin-left: 0;
   padding-left: 24px;
 }
-.menu-min .nav-list > li > .submenu li > a > [class*="icon-"]:first-child {
+.menu-min .nav-list > li > .submenu li > a > [class*="icon-"]:first-child, .menu-min .nav-list > li > .slimScrollDiv > .submenu li > a > [class*="icon-"]:first-child  {
   left: 4px;
 }
-.menu-min .nav-list > li:hover > .submenu {
+.menu-min .nav-list > li:hover > .submenu, .menu-min .nav-list > li:hover > .slimScrollDiv, .menu-min .nav-list > li:hover > .slimScrollDiv > .submenu {
   display: block !important;
 }
-.menu-min .nav-list > li.active > .submenu {
+.menu-min .nav-list > li.active > .submenu, .menu-min .nav-list > li.active > .slimScrollDiv > .submenu  {
   border-left-color: #2b7dbc;
 }
 .menu-min .sidebar-shortcuts {

@@ -43,20 +43,20 @@
 
   var initModule = function(name, definition) {
     var module = {id: name, exports: {}};
-    cache[name] = module;
     definition(module.exports, localRequire(name), module);
-    return module.exports;
+    var exports = cache[name] = module.exports;
+    return exports;
   };
 
   var require = function(name, loaderPath) {
     var path = expand(name, '.');
     if (loaderPath == null) loaderPath = '/';
 
-    if (has(cache, path)) return cache[path].exports;
+    if (has(cache, path)) return cache[path];
     if (has(modules, path)) return initModule(path, modules[path]);
 
     var dirIndex = expand(path, './index');
-    if (has(cache, dirIndex)) return cache[dirIndex].exports;
+    if (has(cache, dirIndex)) return cache[dirIndex];
     if (has(modules, dirIndex)) return initModule(dirIndex, modules[dirIndex]);
 
     throw new Error('Cannot find module "' + name + '" from '+ '"' + loaderPath + '"');
@@ -615,8 +615,11 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
 
   DoctypeNavCollectionView.prototype.isMenuMinimized = false;
 
+  DoctypeNavCollectionView.prototype.lastSlimScrolled = null;
+
   DoctypeNavCollectionView.prototype.events = {
-    'click a': 'activateMenuElement'
+    'click a': 'activateMenuElement',
+    'mouseenter .doctype-list-item': 'showMinimizedMenu'
   };
 
   DoctypeNavCollectionView.prototype.initialize = function() {
@@ -632,18 +635,33 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     return DoctypeNavCollectionView.__super__.initialize.apply(this, arguments);
   };
 
+  DoctypeNavCollectionView.prototype.showMinimizedMenu = function() {
+    var jqLiContainer, jqScrollDiv, jqSubmenu;
+    jqLiContainer = $(event.currentTarget);
+    jqSubmenu = jqLiContainer.find(' .submenu:eq(0)');
+    if (this.isMenuMinimized) {
+      this.destroySlimscrolls;
+      this.applySlimscroll(jqSubmenu, true);
+      return jqScrollDiv = jqLiContainer.find('.slimScrollDiv');
+    }
+  };
+
   DoctypeNavCollectionView.prototype.activateMenuElement = function(event) {
-    var hasSubmenu, isDirectLink, isFirstSubmenu, jqMenuLink, jqParentUl, jqSubmenu, parentLi, parentsLi, submenuIsVisible;
+    var hasSubmenu, isDirectLink, jqMenuLink, jqParentUl, jqSubmenu, parentLi, parentsLi, submenuIsVisible;
     jqMenuLink = $(event.currentTarget);
     parentLi = jqMenuLink.parent('li');
     parentsLi = jqMenuLink.parentsUntil('#doctype-nav-collection-view', 'li');
-    jqSubmenu = parentLi.find(' .submenu:eq(0)');
+    jqSubmenu = parentLi.find('.submenu:eq(0)');
     jqParentUl = jqSubmenu.parent().closest('ul');
     isDirectLink = !jqMenuLink.hasClass('dropdown-toggle');
     hasSubmenu = jqSubmenu.length > 0;
-    isFirstSubmenu = hasSubmenu && jqMenuLink.closest('.submenu').length === 0;
     if (!isDirectLink) {
       this.destroySlimscrolls();
+      if ((this.lastSlimScrolled != null) && (this.lastSlimScrolled !== jqSubmenu)) {
+        this.lastSlimScrolled = null;
+      } else {
+        this.lastSlimScrolled = jqSubmenu;
+      }
     }
     if (!hasSubmenu) {
       $('#doctype-nav-collection-view li').removeClass('active');
@@ -657,7 +675,6 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     submenuIsVisible = jqSubmenu.is(':visible');
     if (!submenuIsVisible) {
       if (this.isMenuMinimized && jqParentUl.hasClass('nav-list')) {
-        console.log('catch');
         return;
       }
       jqParentUl.find('.open:eq(0)').find(' .submenu:eq(0)').each(function() {
@@ -665,10 +682,7 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
           return $(this).slideUp(200).closest('li').removeClass('open');
         }
       });
-      this.applySlimscroll(jqSubmenu, isFirstSubmenu);
-    } else {
-      this.applySlimscroll(jqSubmenu, isFirstSubmenu);
-      return;
+      this.applySlimscroll(jqSubmenu);
     }
     if (this.isMenuMinimized && jqParentUl.hasClass('nav-list')) {
       return false;
@@ -680,11 +694,14 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     return false;
   };
 
-  DoctypeNavCollectionView.prototype.applySlimscroll = function(jqSubmenu, isFirstSubmenu) {
-    var bSlimScollExist, fullHeight, maxHeightOfMenu, menuHeight, navHeight, parentSubmenu, triggerEnter, winHeight;
+  DoctypeNavCollectionView.prototype.applySlimscroll = function(jqSubmenu) {
+    var bSlimScollExist, fullHeight, hasSubmenu, isFirstSubmenu, maxHeightOfMenu, menuHeight, navHeight, parentSubmenu, triggerEnter, winHeight;
+    this.destroySlimscrolls();
+    hasSubmenu = jqSubmenu.length > 0;
+    isFirstSubmenu = hasSubmenu && jqSubmenu.parent().closest('.submenu').length === 0;
     navHeight = $('.nav-list > li').length * 46 + $('#sidebar-collapse').height() + $('.nav-search:eq(0)').height();
     if (this.isMenuMinimized) {
-      navHeight = $('.nav-search:eq(0)').height();
+      navHeight = $('.nav-search:eq(0)').height() + 25;
     }
     menuHeight = jqSubmenu.height();
     fullHeight = navHeight + menuHeight;
@@ -696,7 +713,7 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
       jqSubmenu.slimScroll({
         height: maxHeightOfMenu + 'px'
       });
-      return bSlimScollExist = true;
+      bSlimScollExist = true;
     } else if (parentSubmenu.length > 0 && !isFirstSubmenu) {
       if (fullHeight + parentSubmenu.height() > winHeight) {
         parentSubmenu.slimScroll({
@@ -706,8 +723,11 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
           return parentSubmenu.mouseenter();
         };
         setTimeout(triggerEnter, 200);
-        return bSlimScollExist = true;
+        bSlimScollExist = true;
       }
+    }
+    if (bSlimScollExist) {
+      return this.lastSlimScrolled = jqSubmenu;
     }
   };
 
@@ -741,10 +761,16 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
   };
 
   DoctypeNavCollectionView.prototype.bindMenuResponsive = function() {
-    return $('#menu-toggler').on('click', function() {
+    var _this = this;
+    $('#menu-toggler').on('click', function() {
       $('#sidebar').toggleClass('display');
       $(this).toggleClass('display');
       return false;
+    });
+    return $(window).resize(function() {
+      if (_this.lastSlimScrolled != null) {
+        return _this.applySlimscroll(_this.lastSlimScrolled);
+      }
     });
   };
 
@@ -1473,7 +1499,8 @@ module.exports = SearchView = (function(_super) {
 });
 
 ;require.register("views/templates/doctype_nav", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1534,7 +1561,8 @@ return buf.join("");
 });
 
 ;require.register("views/templates/modal_confirm", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1546,7 +1574,8 @@ return buf.join("");
 });
 
 ;require.register("views/templates/result", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1580,7 +1609,8 @@ return buf.join("");
 });
 
 ;require.register("views/templates/results_global_controls", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1611,7 +1641,8 @@ return buf.join("");
 });
 
 ;require.register("views/templates/results_meta_infos", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1649,7 +1680,8 @@ return buf.join("");
 });
 
 ;require.register("views/templates/search", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1661,4 +1693,4 @@ return buf.join("");
 });
 
 ;
-//# sourceMappingURL=app.js.map
+//@ sourceMappingURL=app.js.map

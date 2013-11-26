@@ -9,10 +9,11 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
     collectionEl : '#doctype-nav-collection-view'
     el : '#doctype-nav-collection-view'
     isMenuMinimized : false
+    lastSlimScrolled : null
 
     events:
         'click a' : 'activateMenuElement'
-        #'mouseenter .doctype-list-item' : 'showMinimizedMenu'
+        'mouseenter .doctype-list-item' : 'showMinimizedMenu'
 
     initialize: ->
         @bindMenuCollapser()
@@ -24,19 +25,13 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         @listenTo @collection, "reset", @onReset
         super
 
-    # showMinimizedMenu: () ->
-    #     jqLiContainer = $(event.currentTarget)
-    #     jqSubmenu = jqLiContainer.find(' .submenu:eq(0)')
-    #     if @isMenuMinimized
-    #         @destroySlimscrolls
-    #         @applySlimscroll(jqSubmenu, true)
-    #         jqScrollDiv = jqLiContainer.find('.slimScrollDiv')
-    #         console.log jqScrollDiv.length
-    #         jqLiContainer.find('.slimScrollDiv').css
-    #             'position' : 'absolute'
-    #             'left' : '42px'
-    #             'z-index' : '120'
-    #             'top' : '-2'
+    showMinimizedMenu: () ->
+        jqLiContainer = $(event.currentTarget)
+        jqSubmenu = jqLiContainer.find(' .submenu:eq(0)')
+        if @isMenuMinimized
+            @destroySlimscrolls
+            @applySlimscroll(jqSubmenu, true)
+            jqScrollDiv = jqLiContainer.find('.slimScrollDiv')
 
     activateMenuElement: (event) ->
 
@@ -44,17 +39,23 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         jqMenuLink = $(event.currentTarget)
         parentLi = jqMenuLink.parent 'li'
         parentsLi = jqMenuLink.parentsUntil '#doctype-nav-collection-view', 'li'
-        jqSubmenu = parentLi.find(' .submenu:eq(0)')
+        jqSubmenu = parentLi.find('.submenu:eq(0)')
         jqParentUl = jqSubmenu.parent().closest 'ul'
 
         #needed booleans
         isDirectLink = not jqMenuLink.hasClass 'dropdown-toggle'
         hasSubmenu = jqSubmenu.length > 0
-        isFirstSubmenu = hasSubmenu and jqMenuLink.closest('.submenu').length is 0
 
         #clean slimscrolls
         if not isDirectLink
             @destroySlimscrolls()
+
+            #clean last slimscrolled
+            if @lastSlimScrolled? and (@lastSlimScrolled isnt jqSubmenu)
+                @lastSlimScrolled = null
+            else
+                @lastSlimScrolled = jqSubmenu
+
 
         #activate the all tree
         if not hasSubmenu
@@ -71,18 +72,12 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         #close other submenu
         submenuIsVisible = jqSubmenu.is ':visible'
         if not submenuIsVisible
-            if @isMenuMinimized and jqParentUl.hasClass 'nav-list'
-                console.log 'catch'
-                #@applySlimscroll(jqSubmenu, isFirstSubmenu)
-                return
+            if @isMenuMinimized and jqParentUl.hasClass 'nav-list' then return
             jqParentUl.find('.open:eq(0)').find(' .submenu:eq(0)').each ->
                 if $(this) isnt jqSubmenu #and not $(this.parentNode).hasClass 'active'
                     $(this).slideUp(200).closest('li').removeClass 'open'
 
-            @applySlimscroll(jqSubmenu, isFirstSubmenu)
-        else
-            @applySlimscroll(jqSubmenu, isFirstSubmenu)
-            return
+            @applySlimscroll jqSubmenu
 
         if @isMenuMinimized and jqParentUl.hasClass 'nav-list' then return false
         jqSubmenu.slideToggle 200
@@ -96,11 +91,13 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
 
         return false
 
-    applySlimscroll : (jqSubmenu, isFirstSubmenu)->
+    applySlimscroll : (jqSubmenu)->
+        @destroySlimscrolls()
+        hasSubmenu = jqSubmenu.length > 0
+        isFirstSubmenu = hasSubmenu and jqSubmenu.parent().closest('.submenu').length is 0
         navHeight = $('.nav-list > li').length * 46 + $('#sidebar-collapse').height() + $('.nav-search:eq(0)').height()
         if @isMenuMinimized
-            navHeight = $('.nav-search:eq(0)').height()
-
+            navHeight = $('.nav-search:eq(0)').height() + 25
         menuHeight = jqSubmenu.height()
         fullHeight = navHeight + menuHeight
         winHeight = $(window).height()
@@ -124,12 +121,9 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
                     parentSubmenu.mouseenter()
                 setTimeout triggerEnter, 200
                 bSlimScollExist = true
-        # if bSlimScollExist and @isMenuMinimized
-        #     scrollDiv =  jqSubmenu.closest('.slimScrollDiv')
-        #     scrollDiv.css
-        #         'position' : 'absolute'
-        #         'left' : '42px'
-        #     jqSubmenu.show()
+        if bSlimScollExist
+            @lastSlimScrolled = jqSubmenu
+
 
     collapseSidebar : (collpase) ->
 
@@ -165,6 +159,10 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
             $('#sidebar').toggleClass('display')
             $(this).toggleClass('display')
             return false
+        $(window).resize =>
+            if @lastSlimScrolled?
+                @applySlimscroll @lastSlimScrolled
+
 
 
     destroySlimscrolls: ->
