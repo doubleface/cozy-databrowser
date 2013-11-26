@@ -565,19 +565,50 @@ module.exports = Router = (function(_super) {
     return doctypeNavCollectionView.render();
   };
 
-  Router.prototype.search = function(doctypePattern) {
-    var options, searchView;
+  Router.prototype.search = function(query) {
+    var doctypePattern, options, parsedQuery, searchView, splittedQuery;
     options = {};
-    if (doctypePattern != null) {
+    if (query != null) {
+      splittedQuery = query.split('&&');
+      doctypePattern = splittedQuery[0];
       if (!/\|/.test(decodeURIComponent(doctypePattern))) {
         options['doctypes'] = [doctypePattern];
       } else {
         options['doctypes'] = decodeURIComponent(doctypePattern).split(/\|/);
       }
       options['range'] = 'all';
+      if (splittedQuery.length > 1) {
+        parsedQuery = this.parseQueryString(splittedQuery[1]);
+        if (parsedQuery.presentation != null) {
+          options['presentation'] = parsedQuery.presentation;
+        }
+      }
     }
     searchView = new SearchView(options);
     return searchView.render();
+  };
+
+  Router.prototype.parseQueryString = function(queryString) {
+    var params;
+    params = {};
+    if (queryString) {
+      _.each(_.map(decodeURI(queryString).split(/&/g), function(el, i) {
+        var aux, o, val;
+        aux = el.split("=");
+        o = {};
+        if (aux.length >= 1) {
+          val = 'undefined';
+          if (aux.length === 2) {
+            val = aux[1];
+          }
+          o[aux[0]] = val;
+        }
+        return o;
+      }), function(o) {
+        return _.extend(params, o);
+      });
+    }
+    return params;
   };
 
   return Router;
@@ -835,7 +866,7 @@ module.exports = DoctypeNavView = (function(_super) {
 });
 
 ;require.register("views/result_collection_view", function(exports, require, module) {
-var ResultCollection, ResultCollectionView, ResultView, ViewCollection, _ref,
+var ResultCollection, ResultCollectionView, ResultView, TableResultView, ViewCollection, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -844,6 +875,8 @@ ViewCollection = require('../lib/view_collection');
 ResultCollection = require('../collections/result_collection');
 
 ResultView = require('./result_view');
+
+TableResultView = require('./result_table_view');
 
 module.exports = ResultCollectionView = (function(_super) {
   __extends(ResultCollectionView, _super);
@@ -865,6 +898,21 @@ module.exports = ResultCollectionView = (function(_super) {
     var _this = this;
     this.options = options;
     this.collection = new ResultCollection();
+    if (this.options.presentation != null) {
+      switch (this.options.presentation) {
+        case 'list':
+          this.itemview = ResultView;
+          this.collectionEl = '#basic-accordion';
+          break;
+        case 'table':
+          this.itemview = TableResultView;
+          this.collectionEl = '#result-view-as-table';
+          break;
+        default:
+          this.itemview = ResultView;
+          this.collectionEl = '#basic-accordion';
+      }
+    }
     ResultCollectionView.__super__.initialize.apply(this, arguments);
     if (this.options.doctypes != null) {
       return this.collection.fetch({
@@ -982,6 +1030,254 @@ module.exports = ResultCollectionView = (function(_super) {
   return ResultCollectionView;
 
 })(ViewCollection);
+
+});
+
+;require.register("views/result_table_view", function(exports, require, module) {
+var ResultTableView, View, _ref,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+View = require('./../lib/view');
+
+module.exports = ResultTableView = (function(_super) {
+  __extends(ResultTableView, _super);
+
+  function ResultTableView() {
+    this.render = __bind(this.render, this);
+    _ref = ResultTableView.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  ResultTableView.prototype.tagName = 'tr';
+
+  ResultTableView.prototype.templateModal = require('./templates/modal_confirm');
+
+  ResultTableView.prototype.events = {
+    'click .accordion-toggle': 'blurIt',
+    'mouseenter .label': 'showFieldDescription',
+    'mouseleave .label': 'showFieldDescription',
+    'click .remove-result': 'confirmRemoveResult',
+    'mouseover .remove-result': 'convertButtonToDanger',
+    'mouseout .remove-result': 'convertButtonToClassic'
+  };
+
+  ResultTableView.prototype.injectThead = function(results) {
+    var htmlThead, result, _i, _len, _ref1;
+    htmlThead = '<thead>';
+    htmlThead += '<tr>';
+    _ref1 = results['fields'];
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      result = _ref1[_i];
+      htmlThead += '<th>' + result.cdbFieldName + '</th>';
+    }
+    htmlThead += '</tr>';
+    htmlThead += '</thead>';
+    return $('#result-view-as-table').prepend(htmlThead);
+  };
+
+  ResultTableView.prototype.convertButtonToDanger = function(event) {
+    var jqObj;
+    jqObj = $(event.currentTarget);
+    return jqObj.addClass('btn-danger');
+  };
+
+  ResultTableView.prototype.convertButtonToClassic = function(event) {
+    var jqObj;
+    jqObj = $(event.currentTarget);
+    return jqObj.removeClass('btn-danger');
+  };
+
+  ResultTableView.prototype.render = function() {
+    var currentResults;
+    currentResults = this.manageResultsForView();
+    if (currentResults.count === 1) {
+      this.injectThead(currentResults);
+    }
+    return ResultTableView.__super__.render.call(this, {
+      results: currentResults
+    });
+  };
+
+  ResultTableView.prototype.manageResultsForView = function() {
+    var attr, count, results;
+    attr = this.model.attributes;
+    count = this.model.get('count');
+    results = {};
+    if (attr.no_result != null) {
+      $('#all-result .accordion').empty();
+      results['no_result'] = true;
+      results['no_result_msg'] = attr.no_result;
+      return results;
+    } else if (count === 0) {
+      results['no_result'] = true;
+      results['no_result_msg'] = 'No results.';
+      return results;
+    } else {
+      results['no_result'] = false;
+      results['count'] = count;
+      results['heading'] = {
+        'doctype': attr.displayName || attr.docType,
+        'field': attr.idField != null ? attr.idField : 'id',
+        'data': attr.idField != null ? attr[attr.idField] : attr._id
+      };
+      this.results = results;
+      this.results['fields'] = this.prepareResultFields(attr);
+      return this.results;
+    }
+  };
+
+  ResultTableView.prototype.prepareResultFields = function(attr) {
+    var descField, description, displayName, field, fieldName, fields, hasDisplayName, iCounter, isNativField, isSimpleObj, isSimpleType, newLi, obj, objName, settedField, simpleTypes, typeOfField, typeOfObj;
+    iCounter = 0;
+    fields = [];
+    settedField = ['idField', 'count', 'descField', 'displayName'];
+    simpleTypes = ['string', 'number', 'boolean'];
+    for (fieldName in attr) {
+      field = attr[fieldName];
+      description = "";
+      isNativField = ($.inArray(fieldName, settedField)) === -1;
+      if (isNativField) {
+        fields[iCounter] = {
+          'cdbFieldDescription': "",
+          'cdbFieldName': fieldName,
+          'cdbFieldData': "",
+          'cdbLabelClass': "label-secondary"
+        };
+        if ((attr.descField != null) && (attr.descField[fieldName] != null)) {
+          if (attr.descField[fieldName].description != null) {
+            description = attr.descField[fieldName].description;
+            fields[iCounter]['cdbFieldDescription'] = description;
+          }
+          descField = attr.descField[fieldName];
+          hasDisplayName = descField.displayName != null;
+          if (hasDisplayName && descField.displayName !== "") {
+            displayName = descField.displayName;
+            fields[iCounter]['cdbFieldName'] = displayName;
+            if (field === this.results['heading']['field']) {
+              this.results['heading']['field'] = displayName;
+            }
+          }
+        }
+        typeOfField = typeof field;
+        isSimpleType = ($.inArray(typeOfField, simpleTypes)) !== -1;
+        if (isSimpleType) {
+          if (fieldName === 'docType') {
+            fields[iCounter]['cdbFieldData'] = attr.displayName || field;
+          } else {
+            fields[iCounter]['cdbFieldData'] = field;
+          }
+        } else if ((field != null) && typeOfField === 'object') {
+          fields[iCounter]['cdbFieldData'] = '<ul class="sober-list">';
+          for (objName in field) {
+            obj = field[objName];
+            newLi = '';
+            typeOfObj = typeof obj;
+            isSimpleObj = ($.inArray(typeOfObj, simpleTypes)) !== -1;
+            if (isSimpleObj) {
+              newLi = '<li>' + objName + ' : ';
+              newLi += '<i>' + obj + '</i></li>';
+              fields[iCounter]['cdbFieldData'] += newLi;
+            } else if ((obj != null) && typeof obj === 'object') {
+              newLi = '<li>' + objName + ' : ';
+              newLi += '<i>' + JSON.stringify(obj) + '</i></li>';
+              fields[iCounter]['cdbFieldData'] += newLi;
+            } else {
+              newLi = '<li><i>empty</i></li>';
+              fields[iCounter]['cdbFieldData'] += newLi;
+              fields[iCounter]['cdbLabelClass'] = 'label-danger';
+            }
+          }
+          fields[iCounter]['cdbFieldData'] += '</ul>';
+        } else {
+          fields[iCounter]['cdbFieldData'] = '<i>empty</i>';
+          fields[iCounter]['cdbLabelClass'] = 'label-danger';
+        }
+      }
+      iCounter++;
+    }
+    return fields;
+  };
+
+  ResultTableView.prototype.template = function() {
+    return require('./templates/result_table');
+  };
+
+  ResultTableView.prototype.blurIt = function(e) {
+    return $(e.currentTarget).blur();
+  };
+
+  ResultTableView.prototype.showFieldDescription = function(e) {
+    var accordionOffsetLeft, accordionOffsetTop, infoBoxCss, jqObj, left, offsetLeft, offsetTop, title, top, width;
+    jqObj = $(e.currentTarget);
+    if (jqObj.attr("data-title") !== "") {
+      if (e.type === 'mouseenter') {
+        offsetLeft = jqObj.offset().left;
+        offsetTop = jqObj.offset().top;
+        accordionOffsetLeft = $('#basic-accordion.accordion').offset().left;
+        accordionOffsetTop = $('#basic-accordion.accordion').offset().top;
+        left = offsetLeft - accordionOffsetLeft - 5;
+        top = offsetTop - accordionOffsetTop - 7;
+        width = jqObj.width();
+        $('.info-box .field-title').css({
+          'padding-left': width + 18
+        });
+        title = jqObj.attr("data-title");
+        $('.info-box .field-description').empty().html(title);
+        infoBoxCss = {
+          'z-index': '5',
+          'left': left,
+          'top': top
+        };
+        $('.info-box').css(infoBoxCss);
+        $('.accordion .label').css({
+          'z-index': 'inherit'
+        });
+        jqObj.css({
+          'z-index': '10'
+        });
+        return $('.info-box').stop().fadeTo(200, 1);
+      } else {
+        return $('.info-box').stop().fadeTo(200, 0);
+      }
+    }
+  };
+
+  ResultTableView.prototype.confirmRemoveResult = function(e) {
+    var data, message, that;
+    that = this;
+    e.preventDefault();
+    message = 'Are you ABSOLUTELY sure ? ';
+    message += 'It could lead to IRREVERSIBLE DAMAGES to your cozy environment.';
+    data = {
+      title: 'Confirmation required',
+      body: message,
+      confirm: 'delete permanently'
+    };
+    $("body").prepend(this.templateModal(data));
+    $("#confirmation-dialog").modal();
+    $("#confirmation-dialog").modal("show");
+    $("#confirmation-dialog-confirm").unbind('click');
+    return $("#confirmation-dialog-confirm").bind("click", function() {
+      return that.removeResult();
+    });
+  };
+
+  ResultTableView.prototype.removeResult = function() {
+    var _this = this;
+    this.model.set('id', this.model.get('_id'));
+    return this.model.destroy({
+      data: 'id=' + this.model.get('id'),
+      success: function() {
+        return _this.render;
+      }
+    });
+  };
+
+  return ResultTableView;
+
+})(View);
 
 });
 
@@ -1217,7 +1513,7 @@ module.exports = ResultView = (function(_super) {
 });
 
 ;require.register("views/results_global_controls_view", function(exports, require, module) {
-var DeleteAllModel, ResultsGlobalControlsView, View, _ref,
+var DeleteAllModel, ResultsGlobalControlsView, View, app, _ref,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1226,11 +1522,14 @@ View = require('./../lib/view');
 
 DeleteAllModel = require('./../models/delete_all_model');
 
+app = require('application');
+
 module.exports = ResultsGlobalControlsView = (function(_super) {
   __extends(ResultsGlobalControlsView, _super);
 
   function ResultsGlobalControlsView() {
     this.render = __bind(this.render, this);
+    this.switchToTableView = __bind(this.switchToTableView, this);
     _ref = ResultsGlobalControlsView.__super__.constructor.apply(this, arguments);
     return _ref;
   }
@@ -1246,11 +1545,28 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
     'mouseout #delete-all': 'switchStyleOfDeleteButton',
     'click #delete-all': 'confirmDeleteAll',
     'click .about-doctype': 'showMetaInfos',
-    'click .table-view': 'switchToTableView'
+    'click .view-switcher': 'switchToTableView'
   };
 
   ResultsGlobalControlsView.prototype.switchToTableView = function(event) {
-    return console.log('switch');
+    var presentation, tableRoute, viewSwitcher;
+    viewSwitcher = $(event.currentTarget);
+    presentation = 'list';
+    if (this.currentDoctype) {
+      if (viewSwitcher.hasClass('icon-th')) {
+        presentation = 'table';
+        viewSwitcher.removeClass('icon-th').addClass('icon-list-alt');
+      } else {
+        presentation = 'list';
+        viewSwitcher.removeClass('icon-list-alt').addClass('icon-th');
+      }
+      tableRoute = 'search/all/' + this.currentDoctype + '&&presentation=' + presentation;
+      console.log(tableRoute);
+      return app.router.navigate(tableRoute, {
+        replace: true,
+        trigger: true
+      });
+    }
   };
 
   ResultsGlobalControlsView.prototype.showMetaInfos = function(event) {
@@ -1282,7 +1598,9 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
   };
 
   ResultsGlobalControlsView.prototype.initialize = function(opt) {
+    this.opt = opt;
     $(this.el).undelegate('.about-doctype', 'click');
+    $(this.el).undelegate('.view-switcher', 'click');
     $(this.el).undelegate('#delete-all', 'mouseover');
     $(this.el).undelegate('#delete-all', 'mouseout');
     $(this.el).undelegate('#delete-all', 'click');
@@ -1295,6 +1613,7 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
   ResultsGlobalControlsView.prototype.render = function(opt) {
     var jqMetaInfos, templateData;
     templateData = {};
+    templateData['icon_presentation'] = opt.presentation && (opt.presentation === 'table') ? 'icon-list-alt' : 'icon-th';
     templateData['range'] = opt.range ? '(' + opt.range + ')' || '' : void 0;
     templateData['doctype'] = opt.doctypes ? opt.doctypes[0] : '';
     if (opt.displayName && (opt.displayName !== '')) {
@@ -1388,6 +1707,7 @@ module.exports = ResultsMetaInfosView = (function(_super) {
 
 ;require.register("views/search_view", function(exports, require, module) {
 var BaseView, MetaInfosModel, ResultCollectionView, ResultsGlobalControlsView, ResultsMetaInfosView, SearchView, _ref,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -1405,6 +1725,7 @@ module.exports = SearchView = (function(_super) {
   __extends(SearchView, _super);
 
   function SearchView() {
+    this.initialize = __bind(this.initialize, this);
     _ref = SearchView.__super__.constructor.apply(this, arguments);
     return _ref;
   }
@@ -1432,6 +1753,7 @@ module.exports = SearchView = (function(_super) {
     this.hasDoctype = this.options.doctypes && this.options.doctypes.length > 0;
     this.bindSearch();
     if (this.hasDoctype) {
+      this.resultCollectionView = new ResultCollectionView(this.options);
       metaInfosModel = new MetaInfosModel();
       $('#results-meta-infos').empty();
       metaInfosModel.fetch({
@@ -1445,11 +1767,11 @@ module.exports = SearchView = (function(_super) {
             resultsMetaInfosView.render(data);
             _this.options['hasMetaInfos'] = true;
             _this.options['displayName'] = data.displayName;
+            _this.options['resultsCollection'] = _this.resultCollectionView;
           }
           return _this.resultsGlobalControlsView = new ResultsGlobalControlsView(_this.options);
         }
       });
-      this.resultCollectionView = new ResultCollectionView(this.options);
       if (this.options.range != null) {
         return $(window).bind('scroll', function(e, isTriggered) {
           var docHeight;
@@ -1618,6 +1940,37 @@ return buf.join("");
 };
 });
 
+;require.register("views/templates/result_table", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge
+/**/) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+ if (results['no_result']) {
+{
+buf.push('<em>' + escape((interp = results['no_result_msg']) == null ? '' : interp) + '</em>');
+}
+ }
+ else {
+{
+ for (iCount2 = 0; iCount2 < results['fields'].length; iCount2++) {
+{
+buf.push('<td>');
+var __val__ = results['fields'][iCount2].cdbFieldData
+buf.push(null == __val__ ? "" : __val__);
+buf.push('</td>');
+}
+}
+}
+ }
+{
+}
+}
+return buf.join("");
+};
+});
+
 ;require.register("views/templates/results_global_controls", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge
 /**/) {
@@ -1642,7 +1995,9 @@ buf.push('<i class="about-doctype icon-question-sign"></i>');
 }
 }
  }
-buf.push('</h4><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button id="delete-all" class="btn btn-xs"><span></span><i class="icon-trash bigger-120"></i></button></div>');
+buf.push('&nbsp;<i');
+buf.push(attrs({ "class": ('view-switcher') + ' ' + (icon_presentation) }, {"class":true}));
+buf.push('></i></h4><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button id="delete-all" class="btn btn-xs"><span></span><i class="icon-trash bigger-120"></i></button></div>');
 }
 }
 }
@@ -1696,7 +2051,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="all-result"><div id="basic-accordion" class="accordion-style1 panel-group"></div><div class="load-more-result"><span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div>');
+buf.push('<div id="all-result"><div id="basic-accordion" class="accordion-style1 panel-group"></div><div id="basic-table" class="table-responsive"><table id="result-view-as-table" class="table table-striped table-bordered table-hover"><tbody></tbody></table></div><div class="load-more-result"><span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div>');
 }
 return buf.join("");
 };

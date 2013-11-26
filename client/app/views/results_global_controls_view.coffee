@@ -1,5 +1,6 @@
 View = require './../lib/view'
 DeleteAllModel = require './../models/delete_all_model'
+app = require 'application'
 
 module.exports = class ResultsGlobalControlsView extends View
 
@@ -12,10 +13,21 @@ module.exports = class ResultsGlobalControlsView extends View
         'mouseout #delete-all' : 'switchStyleOfDeleteButton'
         'click #delete-all' : 'confirmDeleteAll'
         'click .about-doctype' : 'showMetaInfos'
-        'click .table-view' : 'switchToTableView'
+        'click .view-switcher' : 'switchToTableView'
 
-    switchToTableView:  (event) ->
-        console.log 'switch'
+    switchToTableView:  (event) =>
+        viewSwitcher = $(event.currentTarget)
+        presentation = 'list'
+        if @currentDoctype
+            if viewSwitcher.hasClass('icon-th')
+                presentation = 'table'
+                viewSwitcher.removeClass('icon-th').addClass('icon-list-alt')
+            else
+                presentation = 'list'
+                viewSwitcher.removeClass('icon-list-alt').addClass('icon-th')
+            tableRoute =  'search/all/' + @currentDoctype + '&&presentation=' + presentation
+            console.log tableRoute
+            app.router.navigate tableRoute, {replace: true, trigger : true}
 
     showMetaInfos: (event) ->
         jqObj = $(event.currentTarget)
@@ -40,7 +52,9 @@ module.exports = class ResultsGlobalControlsView extends View
         require './templates/results_global_controls'
 
     initialize : (opt) ->
+        @opt = opt
         $(@el).undelegate '.about-doctype', 'click'
+        $(@el).undelegate '.view-switcher', 'click'
         $(@el).undelegate '#delete-all', 'mouseover'
         $(@el).undelegate '#delete-all', 'mouseout'
         $(@el).undelegate '#delete-all', 'click'
@@ -50,6 +64,7 @@ module.exports = class ResultsGlobalControlsView extends View
 
     render: (opt) =>
         templateData = {}
+        templateData['icon_presentation'] = if opt.presentation and (opt.presentation is 'table') then 'icon-list-alt' else 'icon-th'
         templateData['range'] = if opt.range then '(' + opt.range + ')' || ''
         templateData['doctype'] = if opt.doctypes then opt.doctypes[0] else ''
         if opt.displayName and (opt.displayName isnt '')
