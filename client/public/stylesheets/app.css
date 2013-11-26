@@ -1275,13 +1275,13 @@ li [class*=" icon-"],
     position: absolute;
     left: 0;
     z-index: 998;
-    width: 52px;
-    height: 32px;
+    width: 32px;
+    height: 20px;
     margin-right: 2px;
     line-height: normal;
     padding-left: 33px;
-    padding-top: 7px;
-    padding-bottom: 1px;
+    padding-top: 0;
+    padding-bottom: 0;
     font-size: 13px;
     font-weight: bold;
     text-transform: uppercase;
@@ -1294,7 +1294,7 @@ li [class*=" icon-"],
   .menu-toggler:hover {
     text-decoration: none;
   }
-  .menu-toggler:before {
+/*  .menu-toggler:before {
     border-top: 1px solid #87B87F;
     border-bottom: 1px solid #6FB3E0;
     height: 2px;
@@ -1336,14 +1336,14 @@ li [class*=" icon-"],
     height: 4px;
     top: 20px;
     border-width: 2px;
-  }
+  }*/
   .menu-toggler > .menu-text {
     display: block;
     position: absolute;
-    bottom: -18px;
+    bottom: -10px;
     left: 0;
     border: 1px solid transparent;
-    border-width: 9px 42px;
+    border-width: 5px 32px;
     border-top-color: #444;
   }
   .menu-toggler > .menu-text:after {
@@ -1351,8 +1351,8 @@ li [class*=" icon-"],
     color: #FFF;
     content: "MENU";
     position: absolute;
-    left: -8px;
-    top: -41px;
+    left: 10px;
+    top: -23px;
   }
   .nav-list > li.active:after {
     display: none;
@@ -1370,7 +1370,7 @@ li [class*=" icon-"],
     display: block;
   }
 }
-@media only screen and (max-width: 320px) {
+/*@media only screen and (max-width: 320px) {
   .menu-toggler {
     width: 0;
   }
@@ -1401,6 +1401,6 @@ li [class*=" icon-"],
   .menu-toggler.display:after {
     top: 19px;
   }
-}
+}*/
 
 /*@ sourceMappingURL=app.css.map*/
