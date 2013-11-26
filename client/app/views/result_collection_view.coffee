@@ -1,6 +1,7 @@
 ViewCollection = require '../lib/view_collection'
 ResultCollection = require '../collections/result_collection'
 ResultView = require './result_view'
+TableResultView = require './result_table_view'
 
 module.exports = class ResultCollectionView extends ViewCollection
 
@@ -12,9 +13,21 @@ module.exports = class ResultCollectionView extends ViewCollection
     initialize: (options) ->
         @options = options
         @collection = new ResultCollection()
+        if @options.presentation?
+            switch @options.presentation
+                when 'list'
+                    @itemview = ResultView
+                    @collectionEl ='#basic-accordion'
+                when 'table'
+                    @itemview = TableResultView
+                    @collectionEl = '#result-view-as-table'
+                else
+                    @itemview = ResultView
+                    @collectionEl ='#basic-accordion'
+
         super
         if @options.doctypes?
-            @collection.fetch {
+            @collection.fetch
                 data: $.param(@options)
                 success : (col, data) =>
                     $('.loading-image').remove()
@@ -31,7 +44,7 @@ module.exports = class ResultCollectionView extends ViewCollection
                     $('.loading-image').remove()
                     @noMoreItems = true
                     @displayLoadingError()
-            }
+
 
     render: ->
         if @options? and @options.doctypes?

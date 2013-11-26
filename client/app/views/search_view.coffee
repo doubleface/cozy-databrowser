@@ -19,16 +19,20 @@ module.exports = class SearchView extends BaseView
         jqObj.hide()
 
 
-    initialize : (options) ->
+    initialize : (options) =>
         @options = options
         @hasDoctype = @options.doctypes and @options.doctypes.length > 0
         @bindSearch()
 
         if @hasDoctype
 
+            #Add the results
+            @resultCollectionView = new ResultCollectionView(@options)
+
             #Prepare meta-informations
             metaInfosModel = new MetaInfosModel()
             $('#results-meta-infos').empty()
+
             metaInfosModel.fetch
                 data: $.param
                     doctype : @options.doctypes[0]
@@ -40,12 +44,12 @@ module.exports = class SearchView extends BaseView
                         resultsMetaInfosView.render(data)
                         @options['hasMetaInfos'] = true
                         @options['displayName'] = data.displayName
+                        @options['resultsCollection'] = @resultCollectionView
 
                     #Add the top bar Global Controls
                     @resultsGlobalControlsView = new ResultsGlobalControlsView(@options)
 
-            #Add the results
-            @resultCollectionView = new ResultCollectionView(@options)
+
 
             #scroll event trigger next page (infinite scroll)
             if @options.range?
