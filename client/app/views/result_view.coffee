@@ -201,5 +201,5 @@ module.exports = class ResultView extends View
         #remove
         @model.destroy
             data : 'id=' + @model.get('id')
-            success: ->
-                location.reload()
+            success: =>
+                @render

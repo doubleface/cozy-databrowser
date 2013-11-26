@@ -78,7 +78,8 @@ module.exports = class ResultsGlobalControlsView extends View
         if @currentDoctype? and @currentDoctype isnt ''
             deleteAllModel = new DeleteAllModel()
             deleteAllModel.fetch
-                data: $.param
+                type: 'DELETE'
+                url : deleteAllModel.urlRoot + '?' + $.param
                     doctype : @currentDoctype
-                # success : (col, data) ->
-                #     location.reload()
+                success : (col, data) ->
+                    location.reload()

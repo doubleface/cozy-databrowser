@@ -1200,11 +1200,12 @@ module.exports = ResultView = (function(_super) {
   };
 
   ResultView.prototype.removeResult = function() {
+    var _this = this;
     this.model.set('id', this.model.get('_id'));
     return this.model.destroy({
       data: 'id=' + this.model.get('id'),
       success: function() {
-        return location.reload();
+        return _this.render;
       }
     });
   };
@@ -1325,9 +1326,13 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
     if ((this.currentDoctype != null) && this.currentDoctype !== '') {
       deleteAllModel = new DeleteAllModel();
       return deleteAllModel.fetch({
-        data: $.param({
+        type: 'DELETE',
+        url: deleteAllModel.urlRoot + '?' + $.param({
           doctype: this.currentDoctype
-        })
+        }),
+        success: function(col, data) {
+          return location.reload();
+        }
       });
     }
   };
