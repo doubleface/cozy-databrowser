@@ -616,8 +616,7 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
   DoctypeNavCollectionView.prototype.isMenuMinimized = false;
 
   DoctypeNavCollectionView.prototype.events = {
-    'click a': 'activateMenuElement',
-    'mouseenter .doctype-list-item': 'showMinimizedMenu'
+    'click a': 'activateMenuElement'
   };
 
   DoctypeNavCollectionView.prototype.initialize = function() {
@@ -632,8 +631,6 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     this.listenTo(this.collection, "reset", this.onReset);
     return DoctypeNavCollectionView.__super__.initialize.apply(this, arguments);
   };
-
-  DoctypeNavCollectionView.prototype.showMinimizedMenu = function() {};
 
   DoctypeNavCollectionView.prototype.activateMenuElement = function(event) {
     var hasSubmenu, isDirectLink, isFirstSubmenu, jqMenuLink, jqParentUl, jqSubmenu, parentLi, parentsLi, submenuIsVisible;
@@ -660,6 +657,7 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     submenuIsVisible = jqSubmenu.is(':visible');
     if (!submenuIsVisible) {
       if (this.isMenuMinimized && jqParentUl.hasClass('nav-list')) {
+        console.log('catch');
         return;
       }
       jqParentUl.find('.open:eq(0)').find(' .submenu:eq(0)').each(function() {
@@ -668,6 +666,9 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
         }
       });
       this.applySlimscroll(jqSubmenu, isFirstSubmenu);
+    } else {
+      this.applySlimscroll(jqSubmenu, isFirstSubmenu);
+      return;
     }
     if (this.isMenuMinimized && jqParentUl.hasClass('nav-list')) {
       return false;
@@ -680,7 +681,7 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
   };
 
   DoctypeNavCollectionView.prototype.applySlimscroll = function(jqSubmenu, isFirstSubmenu) {
-    var fullHeight, maxHeightOfMenu, menuHeight, navHeight, parentSubmenu, triggerEnter, winHeight;
+    var bSlimScollExist, fullHeight, maxHeightOfMenu, menuHeight, navHeight, parentSubmenu, triggerEnter, winHeight;
     navHeight = $('.nav-list > li').length * 46 + $('#sidebar-collapse').height() + $('.nav-search:eq(0)').height();
     if (this.isMenuMinimized) {
       navHeight = $('.nav-search:eq(0)').height();
@@ -690,10 +691,12 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     winHeight = $(window).height();
     maxHeightOfMenu = winHeight - navHeight;
     parentSubmenu = jqSubmenu.parent().closest('.submenu');
+    bSlimScollExist = false;
     if (isFirstSubmenu && fullHeight > winHeight) {
-      return jqSubmenu.slimScroll({
+      jqSubmenu.slimScroll({
         height: maxHeightOfMenu + 'px'
       });
+      return bSlimScollExist = true;
     } else if (parentSubmenu.length > 0 && !isFirstSubmenu) {
       if (fullHeight + parentSubmenu.height() > winHeight) {
         parentSubmenu.slimScroll({
@@ -702,7 +705,8 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
         triggerEnter = function() {
           return parentSubmenu.mouseenter();
         };
-        return setTimeout(triggerEnter, 200);
+        setTimeout(triggerEnter, 200);
+        return bSlimScollExist = true;
       }
     }
   };
