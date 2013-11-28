@@ -3,8 +3,15 @@
 - }
 - else {
     - for (iCount2 = 0; iCount2 < results['fields'].length; iCount2++) {
-        td!= results['fields'][iCount2].cdbFieldData
+        - if (results['fields'][iCount2].cdbFieldTitle !== '') {
+            td(title="#{results['fields'][iCount2].cdbFieldTitle}")!= results['fields'][iCount2].cdbFieldData
+        -} else {
+            td!= results['fields'][iCount2].cdbFieldData
+            -}
     -}
+        //- td
+        //-     button.btn.btn-xs.remove-result
+        //-         i.icon-trash.bigger-120
 
 - }
 

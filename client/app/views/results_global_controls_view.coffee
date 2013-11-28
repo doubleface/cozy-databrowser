@@ -16,6 +16,8 @@ module.exports = class ResultsGlobalControlsView extends View
         'click .view-switcher' : 'switchToTableView'
 
     switchToTableView:  (event) =>
+        $('#results-list').undelegate 'th .icon-eye-close', 'click'
+        $('#results-list').undelegate 'button.show-col', 'click'
         viewSwitcher = $(event.currentTarget)
         presentation = 'list'
         if @currentDoctype
@@ -26,7 +28,6 @@ module.exports = class ResultsGlobalControlsView extends View
                 presentation = 'list'
                 viewSwitcher.removeClass('icon-list-alt').addClass('icon-th')
             tableRoute =  'search/all/' + @currentDoctype + '&&presentation=' + presentation
-            console.log tableRoute
             app.router.navigate tableRoute, {replace: true, trigger : true}
 
     showMetaInfos: (event) ->
