@@ -246,20 +246,21 @@ module.exports.search = (req, res) ->
         range = req.query.range || null
         deleted = req.query.deleted || null
 
-        if doctypes? and range? and req.query.page? and req.query.nbperpage?
+        if doctypes? and range?
 
             #----PEPARE PARAMS
             params = {}
 
-            #page params
-            page = parseInt(req.query.page, 10)
-            nbPerPage = parseInt(req.query.nbperpage, 10)
+            if req.query.page? and req.query.nbperpage?
+                #page params
+                page = parseInt(req.query.page, 10)
+                nbPerPage = parseInt(req.query.nbperpage, 10)
 
-            #skip & limit + deleted lines params
-            nbDeleted = if deleted? then parseInt(deleted, 10) else 0
-            params['limit'] = nbPerPage
-            if page > 1
-                params['skip'] = (nbPerPage * (page - 1)) - nbDeleted
+                #skip & limit + deleted lines params
+                nbDeleted = if deleted? then parseInt(deleted, 10) else 0
+                params['limit'] = nbPerPage
+                if page > 1
+                    params['skip'] = (nbPerPage * (page - 1)) - nbDeleted
 
             #query param
             if req.query.query? and req.query.query isnt ""

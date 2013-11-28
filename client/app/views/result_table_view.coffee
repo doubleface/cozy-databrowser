@@ -13,14 +13,16 @@ module.exports = class ResultTableView extends View
         'mouseout .remove-result' : 'convertButtonToClassic'
 
     injectThead: (results) ->
+        countCols = 0
         htmlThead = '<thead>'
         htmlThead += '<tr>'
         for result in results['fields']
-            htmlThead += '<th>' + result.cdbFieldName + '</th>'
+            htmlThead += '<th id="countcols_' + countCols + '"><i class="icon-eye-close"></i>&nbsp;' + result.cdbFieldName + '</th>'
+            countCols++
+        # htmlThead += '<th>&nbsp;</th>'
         htmlThead += '</tr>'
         htmlThead += '</thead>'
         $('#result-view-as-table').prepend htmlThead
-
 
     convertButtonToDanger: (event) ->
         jqObj = $(event.currentTarget)
@@ -79,21 +81,24 @@ module.exports = class ResultTableView extends View
     prepareResultFields: (attr) ->
         iCounter = 0
         fields = []
-        settedField = ['idField', 'count', 'descField', 'displayName']
+        settedFields = ['idField', 'count', 'descField', 'displayName']
+        #specialFields = ['_id']
         simpleTypes = ['string', 'number', 'boolean']
 
         for fieldName, field of attr
 
             description = ""
-            isNativField = ($.inArray fieldName, settedField) is -1
+            isNativField = ($.inArray fieldName, settedFields) is -1
+            #isSpecialField = ($.inArray fieldName, specialFields) is 0
             if isNativField
 
                 #prepare new fields
                 fields[iCounter] =
                     'cdbFieldDescription' : ""
                     'cdbFieldName' : fieldName
-                    'cdbFieldData' : ""
-                    'cdbLabelClass' : "label-secondary"
+                    'cdbFieldTitle' : ''
+                    'cdbFieldData' : ''
+                    'cdbLabelClass' : 'label-secondary'
 
                 #add description and displayName
                 if attr.descField? and attr.descField[fieldName]?
@@ -117,6 +122,9 @@ module.exports = class ResultTableView extends View
                 if isSimpleType
                     if fieldName is 'docType'
                         fields[iCounter]['cdbFieldData'] = attr.displayName || field
+                    else if fieldName is '_id'
+                        fields[iCounter]['cdbFieldData'] = '...' + field.substr field.length - 5
+                        fields[iCounter]['cdbFieldTitle'] = field
                     else
                         fields[iCounter]['cdbFieldData'] = field
 

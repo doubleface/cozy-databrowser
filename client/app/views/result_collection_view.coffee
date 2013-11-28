@@ -1,6 +1,6 @@
 ViewCollection = require '../lib/view_collection'
 ResultCollection = require '../collections/result_collection'
-ResultView = require './result_view'
+ResultView = require './result_list_view'
 TableResultView = require './result_table_view'
 
 module.exports = class ResultCollectionView extends ViewCollection
@@ -27,6 +27,8 @@ module.exports = class ResultCollectionView extends ViewCollection
 
         super
         if @options.doctypes?
+            if @options.presentation is 'table'
+                @collection.nbPerPage = 0
             @collection.fetch
                 data: $.param(@options)
                 success : (col, data) =>
@@ -40,6 +42,12 @@ module.exports = class ResultCollectionView extends ViewCollection
                         else
                             @noMoreItems = true
                             $('.load-more-result').hide()
+                    if @options.presentation is 'table'
+                        $('#result-view-as-table').dataTable
+                            "iDisplayLength" : -1
+                            "iPaginate" : false
+                            "sDom": '<"top">rt<"bottom"><"clear">'
+
                 error : =>
                     $('.loading-image').remove()
                     @noMoreItems = true

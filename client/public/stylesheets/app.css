@@ -540,7 +540,8 @@ body {
 }
 #launch-search,
 .about-doctype,
-#close-about-doctype {
+#close-about-doctype,
+.view-switcher {
   cursor: pointer;
 }
 .white-and-green {

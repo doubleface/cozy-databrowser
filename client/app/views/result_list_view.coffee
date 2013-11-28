@@ -142,7 +142,7 @@ module.exports = class ResultView extends View
 
 
     template: ->
-        require './templates/result'
+        require './templates/result_list'
 
     blurIt : (e) ->
         $(e.currentTarget).blur()

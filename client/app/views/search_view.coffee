@@ -13,6 +13,32 @@ module.exports = class SearchView extends BaseView
     hasDoctype : false
     events :
         'click #btn-scroll-up' : 'hideThis'
+        'click th .icon-eye-close' : 'fnHideCol'
+        'click button.show-col' : 'fnShowCol'
+
+    fnHideCol: (event)->
+        event.stopPropagation()
+        event.preventDefault()
+        jqTh = $(event.currentTarget).parent('th')
+        jqThId = jqTh.attr('id')
+        jqThIndex = jqThId.split('_')[1]
+        jqThContent = jqTh.text()
+        oTable = $('#result-view-as-table').dataTable()
+        oTable.fnSetColumnVis jqThIndex, false
+        newButton = $('<button>' + jqThContent + '&nbsp;</button>')
+        newButton.prepend $('<i class="icon-eye-open">&nbsp;')
+        newButton.addClass 'show-col'
+        newButton.attr 'id', jqThId
+        $('#result-view-as-table').before newButton
+
+    fnShowCol: (event)->
+        jqBtn = $(event.currentTarget)
+        jqBtnId = jqBtn.attr('id')
+        jqBtnIndex = jqBtnId.split('_')[1]
+        oTable = $('#result-view-as-table').dataTable()
+        oTable.fnSetColumnVis jqBtnIndex, true
+        jqBtn.remove()
+
 
     hideThis : (event) ->
         jqObj = $(event.currentTarget)
@@ -71,6 +97,7 @@ module.exports = class SearchView extends BaseView
             $(window).bind 'resize', =>
                 @resultCollectionView.loopFirstScroll()
             @bindSearch()
+
 
 
     loadMore : (isTriggered)->
