@@ -943,15 +943,16 @@ module.exports = ResultCollectionView = (function(_super) {
           }
           if (_this.options.presentation === 'table') {
             return $('#result-view-as-table').dataTable({
-              "iDisplayLength": -1,
-              "iPaginate": false,
-              "sDom": '<"top">Rt<"bottom"><"clear">',
               "aoColumnDefs": [
                 {
                   bSortable: false,
                   aTargets: [-1]
                 }
-              ]
+              ],
+              "oColVis": {
+                "iOverlayFade": 200
+              },
+              "sDom": '<"left"C>Rt'
             });
           }
         },
@@ -1328,7 +1329,7 @@ module.exports = ResultTableView = (function(_super) {
     _ref1 = results['fields'];
     for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
       result = _ref1[_i];
-      htmlThead += '<th id="countcols_' + countCols + '"><i class="icon-eye-close"></i>&nbsp;' + result.cdbFieldName + '</th>';
+      htmlThead += '<th>' + result.cdbFieldName + '</th>';
       countCols++;
     }
     htmlThead += '<th>&nbsp;</th>';
@@ -1769,35 +1770,7 @@ module.exports = SearchView = (function(_super) {
   SearchView.prototype.hasDoctype = false;
 
   SearchView.prototype.events = {
-    'click #btn-scroll-up': 'hideThis',
-    'click th .icon-eye-close': 'fnHideCol',
-    'click button.show-col': 'fnShowCol'
-  };
-
-  SearchView.prototype.fnHideCol = function(event) {
-    var jqTh, jqThContent, jqThIndex, newButton, oTable;
-    event.stopPropagation();
-    event.preventDefault();
-    jqTh = $(event.currentTarget).parent('th');
-    jqThIndex = jqTh.index() + $('.show-col').length;
-    jqThContent = jqTh.text();
-    oTable = $('#result-view-as-table').dataTable();
-    oTable.fnSetColumnVis(jqThIndex, false);
-    newButton = $('<button>' + jqThContent + '&nbsp;</button>');
-    newButton.prepend($('<i class="icon-eye-open">&nbsp;'));
-    newButton.addClass('show-col');
-    newButton.attr('id', 'show-col_' + jqThIndex);
-    return $('#result-view-as-table').before(newButton);
-  };
-
-  SearchView.prototype.fnShowCol = function(event) {
-    var jqBtn, jqBtnId, jqBtnIndex, oTable;
-    jqBtn = $(event.currentTarget);
-    jqBtnId = jqBtn.attr('id');
-    jqBtnIndex = jqBtnId.split('_')[1];
-    oTable = $('#result-view-as-table').dataTable();
-    oTable.fnSetColumnVis(jqBtnIndex, true);
-    return jqBtn.remove();
+    'click #btn-scroll-up': 'hideThis'
   };
 
   SearchView.prototype.hideThis = function(event) {
@@ -2040,8 +2013,6 @@ buf.push('<td><button class="btn btn-xs remove-result"><i class="icon-trash bigg
 }
 }
  }
-{
-}
 }
 return buf.join("");
 };
