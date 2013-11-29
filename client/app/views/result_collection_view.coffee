@@ -46,15 +46,15 @@ module.exports = class ResultCollectionView extends ViewCollection
                             $('.load-more-result').hide()
                     if @options.presentation is 'table'
                         $('#result-view-as-table').dataTable
-                            "iDisplayLength" : -1
-                            "iPaginate" : false
-                            "sDom": '<"top">Rt<"bottom"><"clear">'
                             "aoColumnDefs": [
                                 {
-                                    bSortable: false,
+                                    bSortable: false
                                     aTargets: [ -1 ]
                                 }
                             ]
+                            "oColVis":
+                                "iOverlayFade": 200
+                            "sDom": '<"left"C>Rt'
 
                 error : =>
                     $('.loading-image').remove()

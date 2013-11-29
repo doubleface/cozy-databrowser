@@ -17,7 +17,7 @@ module.exports = class ResultTableView extends View
         htmlThead = '<thead>'
         htmlThead += '<tr>'
         for result in results['fields']
-            htmlThead += '<th id="countcols_' + countCols + '"><i class="icon-eye-close"></i>&nbsp;' + result.cdbFieldName + '</th>'
+            htmlThead += '<th>' + result.cdbFieldName + '</th>' #'<th id="countcols_' + countCols + '"><i class="icon-eye-close"></i>&nbsp;' + result.cdbFieldName + '</th>'
             countCols++
         htmlThead += '<th>&nbsp;</th>'
         htmlThead += '</tr>'

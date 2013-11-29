@@ -13,30 +13,38 @@ module.exports = class SearchView extends BaseView
     hasDoctype : false
     events :
         'click #btn-scroll-up' : 'hideThis'
-        'click th .icon-eye-close' : 'fnHideCol'
-        'click button.show-col' : 'fnShowCol'
+    #     'click th .icon-eye-close' : 'fnHideCol'
+    #     'click button.show-col' : 'fnShowCol'
 
-    fnHideCol: (event)->
-        event.stopPropagation()
-        event.preventDefault()
-        jqTh = $(event.currentTarget).parent('th')
-        jqThIndex = jqTh.index() + $('.show-col').length
-        jqThContent = jqTh.text()
-        oTable = $('#result-view-as-table').dataTable()
-        oTable.fnSetColumnVis jqThIndex, false
-        newButton = $('<button>' + jqThContent + '&nbsp;</button>')
-        newButton.prepend $('<i class="icon-eye-open">&nbsp;')
-        newButton.addClass 'show-col'
-        newButton.attr 'id', 'show-col_' + jqThIndex
-        $('#result-view-as-table').before newButton
+    # fnHideCol: (event)->
+    #     event.stopPropagation()
+    #     event.preventDefault()
+    #     jqTh = $(event.currentTarget).parent('th')
+    #     indexModifier = 0
+    #     $('.show-col').each ->
+    #         console.log $(this).attr('id').split('_')[1]
+    #         if $(this).attr('id').split('_')[1] <= jqTh.index()
+    #             indexModifier++
+    #     console.log 'index :' + jqTh.index()
+    #     jqThIndex = jqTh.index() + indexModifier
+    #     console.log 'index modified :' + jqThIndex
 
-    fnShowCol: (event)->
-        jqBtn = $(event.currentTarget)
-        jqBtnId = jqBtn.attr('id')
-        jqBtnIndex = jqBtnId.split('_')[1]
-        oTable = $('#result-view-as-table').dataTable()
-        oTable.fnSetColumnVis jqBtnIndex, true
-        jqBtn.remove()
+    #     jqThContent = jqTh.text()
+    #     oTable = $('#result-view-as-table').dataTable()
+    #     oTable.fnSetColumnVis jqThIndex, false
+    #     newButton = $('<button>' + jqThContent + '&nbsp;</button>')
+    #     newButton.prepend $('<i class="icon-eye-open">&nbsp;')
+    #     newButton.addClass 'show-col'
+    #     newButton.attr 'id', 'show-col_' + jqThIndex
+    #     $('#result-view-as-table').before newButton
+
+    # fnShowCol: (event)->
+    #     jqBtn = $(event.currentTarget)
+    #     jqBtnId = jqBtn.attr('id')
+    #     jqBtnIndex = jqBtnId.split('_')[1]
+    #     oTable = $('#result-view-as-table').dataTable()
+    #     oTable.fnSetColumnVis jqBtnIndex, true
+    #     jqBtn.remove()
 
 
     hideThis : (event) ->
