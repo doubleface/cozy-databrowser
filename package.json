@@ -28,7 +28,7 @@
     "test": "cake tests",
     "start": "coffee server.coffee"
   },
-  "cozy-displayName": "Navigateur de données",
+  "cozy-displayName": "ToutesMesDonnées",
   "cozy-permissions": {
     "All": {
       "description": "The application needs all the permission because it allows you to browse through all your data."
