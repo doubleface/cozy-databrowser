@@ -3,7 +3,7 @@
         - if (icons[category]) {
             i(class="#{icons[category]}")
         -}
-        span.menu-text.firstLetterUp #{category}
+        span.menu-text.firstLetterUp= t(category)
         b.arrow.icon-angle-right
     ul.submenu
         - for (var index in value) {

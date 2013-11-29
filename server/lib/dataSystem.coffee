@@ -261,6 +261,14 @@ class DataSystem extends CoreClass
             areValid = not bError
             if callback? then callback areValid, errorMsg
 
+
+    #---- GET LOCALE
+    getLocale: (callback = null) ->
+        defaultLocale = 'en'
+        @getView @PATH.request + 'cozyinstance' + @PATH.all, (err, instances) ->
+            locale = instances?[0]?.value.locale or defaultLocale
+            callback null, locale
+
 #********************************************************
 
 module.exports = new DataSystem()

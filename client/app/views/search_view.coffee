@@ -80,6 +80,7 @@ module.exports = class SearchView extends BaseView
         searchField.unbind 'keypress'
         searchElt.click =>
             @resultCollectionView.search(searchField.val())
+        searchField.attr 'placeholder', t 'search-placeholder'
         searchField.keypress (event) =>
             if event.which is 13
                 event.preventDefault()

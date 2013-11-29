@@ -26,7 +26,7 @@ module.exports = class ResultsGlobalControlsView extends View
         jqObj = $(event.currentTarget)
         if not jqObj.hasClass 'btn-danger'
             jqObj.addClass 'btn-danger'
-            jqObj.children('span').text('Delete all ')
+            jqObj.children('span').text t('delete all') + ' '
         else
             jqObj.removeClass 'btn-danger'
             jqObj.children('span').empty()
@@ -63,9 +63,9 @@ module.exports = class ResultsGlobalControlsView extends View
         message = 'Are you ABSOLUTELY sure ? '
         message += 'It could lead to IRREVERSIBLE DAMAGES to your cozy environment.'
         data =
-            title: 'Confirmation required'
-            body: message
-            confirm: 'delete permanently'
+            title: t 'Confirmation required'
+            body: t 'are you absolutely sure'
+            confirm: t 'delete permanently'
 
         $("body").prepend @templateModal(data)
         $("#confirmation-dialog").modal()
