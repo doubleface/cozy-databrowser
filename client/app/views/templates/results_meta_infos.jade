@@ -3,7 +3,7 @@
         h4.lighter
             i.icon-question-sign
             - displayedDoctype = displayName !== '' ? displayName : name;
-            | &nbsp;About #{displayedDoctype}
+            | &nbsp;#{t('about')} #{displayedDoctype}
 
         .widget-toolbar
             span#close-about-doctype
@@ -15,7 +15,7 @@
                 div.md-desc-wrapper
                     - if (applications && applications.length > 0) {
                         div.md-desc-container
-                            strong Applications using it :
+                            strong= t('applications using it') + ' :'
                             ul.sober-list
                                 - for (var index in applications) {
                                     li.firstLetterUp
@@ -25,7 +25,7 @@
                     -}
                     - if (typeof(metadoctype) === 'object') {
                         div.md-desc-container
-                            strong Fields informations :
+                            strong= t('fields information') + ' :'
                             ul.sober-list
                                 - var fields = metadoctype.fields;
                                 - for (var obj in fields) {

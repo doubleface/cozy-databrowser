@@ -5,6 +5,27 @@ searchEngine = require('../lib/searchEngine')(dataSystem)
 #add NPM helpers
 async = require 'async'
 
+module.exports.initvalues = (req, res, next) ->
+    async.parallel [
+        (cb) => module.exports.doctypes {query:menu:true}, send: (code, msg) ->
+            if code is 500 then cb new Error msg
+            else cb null, code
+
+        (cb) => dataSystem.getLocale cb
+
+    ], (err, results) ->
+        return next err if err
+        [doctypes, locale] = results
+
+        imports = """
+            window.initDoctypes = #{JSON.stringify(doctypes)}
+            window.locale = #{JSON.stringify(locale)}
+        """
+
+        res.type 'application/javascript'
+        res.send imports
+
+
 module.exports.doctype_delete_all = (req, res) ->
     if req.query and req.query.doctype?
         doctypeName = req.query.doctype.toLowerCase()
