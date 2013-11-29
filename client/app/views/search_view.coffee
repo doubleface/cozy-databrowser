@@ -20,15 +20,14 @@ module.exports = class SearchView extends BaseView
         event.stopPropagation()
         event.preventDefault()
         jqTh = $(event.currentTarget).parent('th')
-        jqThId = jqTh.attr('id')
-        jqThIndex = jqThId.split('_')[1]
+        jqThIndex = jqTh.index() + $('.show-col').length
         jqThContent = jqTh.text()
         oTable = $('#result-view-as-table').dataTable()
         oTable.fnSetColumnVis jqThIndex, false
         newButton = $('<button>' + jqThContent + '&nbsp;</button>')
         newButton.prepend $('<i class="icon-eye-open">&nbsp;')
         newButton.addClass 'show-col'
-        newButton.attr 'id', jqThId
+        newButton.attr 'id', 'show-col_' + jqThIndex
         $('#result-view-as-table').before newButton
 
     fnShowCol: (event)->

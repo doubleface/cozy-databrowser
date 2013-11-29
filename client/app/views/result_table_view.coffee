@@ -19,7 +19,7 @@ module.exports = class ResultTableView extends View
         for result in results['fields']
             htmlThead += '<th id="countcols_' + countCols + '"><i class="icon-eye-close"></i>&nbsp;' + result.cdbFieldName + '</th>'
             countCols++
-        # htmlThead += '<th>&nbsp;</th>'
+        htmlThead += '<th>&nbsp;</th>'
         htmlThead += '</tr>'
         htmlThead += '</thead>'
         $('#result-view-as-table').prepend htmlThead

@@ -16,10 +16,8 @@ module.exports = class ResultsGlobalControlsView extends View
         'click .view-switcher' : 'switchToTableView'
 
     switchToTableView:  (event) =>
-        $('#results-list').undelegate 'th .icon-eye-close', 'click'
-        $('#results-list').undelegate 'button.show-col', 'click'
         viewSwitcher = $(event.currentTarget)
-        presentation = 'list'
+        presentation = 'table'
         if @currentDoctype
             if viewSwitcher.hasClass('icon-th')
                 presentation = 'table'
@@ -65,7 +63,7 @@ module.exports = class ResultsGlobalControlsView extends View
 
     render: (opt) =>
         templateData = {}
-        templateData['icon_presentation'] = if opt.presentation and (opt.presentation is 'table') then 'icon-list-alt' else 'icon-th'
+        templateData['icon_presentation'] = if opt.presentation and (opt.presentation is 'list') then 'icon-th' else 'icon-list-alt'
         templateData['range'] = if opt.range then '(' + opt.range + ')' || ''
         templateData['doctype'] = if opt.doctypes then opt.doctypes[0] else ''
         if opt.displayName and (opt.displayName isnt '')
