@@ -137,6 +137,10 @@ module.exports.doctypes = (req, res) ->
 
 
                 #prepare categories
+                if results[2].length? and results[2].length > 0
+                    doctypes.push
+                        name : 'sources'
+                        value : results[2]
                 if results[0].length? and results[0].length > 0
                     doctypes.push
                         name : 'all'
@@ -145,10 +149,6 @@ module.exports.doctypes = (req, res) ->
                     doctypes.push
                         name : 'applications'
                         value : results[1]
-                if results[2].length? and results[2].length > 0
-                    doctypes.push
-                        name : 'origins'
-                        value : results[2]
 
                 #add sums
                 for category, index in doctypes
