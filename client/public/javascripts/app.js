@@ -93,13 +93,21 @@
 require.register("application", function(exports, require, module) {
 module.exports = {
   initialize: function() {
-    var Router;
+    var Router, e, locales;
     Router = require('router');
     this.router = new Router();
-    Backbone.history.start();
-    if (typeof Object.freeze === 'function') {
-      return Object.freeze(this);
+    this.locale = window.locale;
+    delete window.locale;
+    this.polyglot = new Polyglot();
+    try {
+      locales = require('locales/' + this.locale);
+    } catch (_error) {
+      e = _error;
+      locales = require('locales/en');
     }
+    this.polyglot.extend(locales);
+    window.t = this.polyglot.t.bind(this.polyglot);
+    return Backbone.history.start();
   }
 };
 
@@ -449,6 +457,44 @@ module.exports = ViewCollection = (function(_super) {
   return ViewCollection;
 
 })(BaseView);
+
+});
+
+;require.register("locales/en", function(exports, require, module) {
+module.exports = {
+  "all": "All",
+  "applications": "Applications",
+  "currently exploring": "Currently exploring",
+  "confirmation required": "Confirmation required",
+  "are you absolutely sure": "Are you ABSOLUTELY sure ?\nIt could lead to IRREVERSIBLE DAMAGES to your cozy environment.",
+  "delete permanently": "Delete permanently",
+  "cancel": "Cancel",
+  "load more results": "load more results",
+  "delete all": "Delete all",
+  "search-placeholder": "Search ...",
+  "about": "About",
+  "applications using it": "Applications using it",
+  "fields information": "Fields information"
+};
+
+});
+
+;require.register("locales/fr", function(exports, require, module) {
+module.exports = {
+  "all": "Tous",
+  "applications": "Applications",
+  "currently exploring": "Vue actuelle",
+  "confirmation required": "Confirmation requise",
+  "are you absolutely sure": "Etes vous VRAIMENT sur ?\nCela peut causer des DOMMAGES IRREVERSIBLES a votre cozy.",
+  "delete permanently": "Supprimer définitivement",
+  "cancel": "Annuler",
+  "load more results": "Charger plus de résultats",
+  "delete all": "Tout supprimer",
+  "search-placeholder": "Recherche ...",
+  "A propos": "About",
+  "applications using it": "Applications l'utilisant",
+  "fields information": "Information sur les champs"
+};
 
 });
 
@@ -1180,15 +1226,13 @@ module.exports = ResultView = (function(_super) {
   };
 
   ResultView.prototype.confirmRemoveResult = function(e) {
-    var data, message, that;
+    var data, that;
     that = this;
     e.preventDefault();
-    message = 'Are you ABSOLUTELY sure ? ';
-    message += 'It could lead to IRREVERSIBLE DAMAGES to your cozy environment.';
     data = {
-      title: 'Confirmation required',
-      body: message,
-      confirm: 'delete permanently'
+      title: t('Confirmation required'),
+      body: t('are you absolutely sure'),
+      confirm: t('delete permanently')
     };
     $("body").prepend(this.templateModal(data));
     $("#confirmation-dialog").modal();
@@ -1265,7 +1309,7 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
     jqObj = $(event.currentTarget);
     if (!jqObj.hasClass('btn-danger')) {
       jqObj.addClass('btn-danger');
-      return jqObj.children('span').text('Delete all ');
+      return jqObj.children('span').text(t('delete all') + ' ');
     } else {
       jqObj.removeClass('btn-danger');
       return jqObj.children('span').empty();
@@ -1308,9 +1352,9 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
     message = 'Are you ABSOLUTELY sure ? ';
     message += 'It could lead to IRREVERSIBLE DAMAGES to your cozy environment.';
     data = {
-      title: 'Confirmation required',
-      body: message,
-      confirm: 'delete permanently'
+      title: t('Confirmation required'),
+      body: t('are you absolutely sure'),
+      confirm: t('delete permanently')
     };
     $("body").prepend(this.templateModal(data));
     $("#confirmation-dialog").modal();
@@ -1489,6 +1533,7 @@ module.exports = SearchView = (function(_super) {
     searchElt.click(function() {
       return _this.resultCollectionView.search(searchField.val());
     });
+    searchField.attr('placeholder', t('search-placeholder'));
     return searchField.keypress(function(event) {
       if (event.which === 13) {
         event.preventDefault();
@@ -1504,8 +1549,7 @@ module.exports = SearchView = (function(_super) {
 });
 
 ;require.register("views/templates/doctype_nav", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge
-/**/) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1520,7 +1564,10 @@ buf.push(attrs({ "class": ("" + (icons[category]) + "") }, {"class":true}));
 buf.push('></i>');
 }
 }
-buf.push('<span class="menu-text firstLetterUp">' + escape((interp = category) == null ? '' : interp) + '</span><b class="arrow icon-angle-right"></b></a><ul class="submenu">');
+buf.push('<span class="menu-text firstLetterUp">');
+var __val__ = t(category)
+buf.push(escape(null == __val__ ? "" : __val__));
+buf.push('</span><b class="arrow icon-angle-right"></b></a><ul class="submenu">');
  for (var index in value) {
 {
  if (value[index].doctype) {
@@ -1566,21 +1613,22 @@ return buf.join("");
 });
 
 ;require.register("views/templates/modal_confirm", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge
-/**/) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="confirmation-dialog" class="modal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-hidden="true" class="close">x</button><h4 class="modal-title">' + escape((interp = title) == null ? '' : interp) + '</h4></div><div class="modal-body"><p class="modal-confirm-text">' + escape((interp = body) == null ? '' : interp) + '</p></div><div class="modal-footer"><span data-dismiss="modal" class="btn btn-link">cancel</span><span id="confirmation-dialog-confirm" data-dismiss="modal" class="btn btn-danger">' + escape((interp = confirm) == null ? '' : interp) + '</span></div></div></div></div>');
+buf.push('<div id="confirmation-dialog" class="modal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-hidden="true" class="close">x</button><h4 class="modal-title">' + escape((interp = title) == null ? '' : interp) + '</h4></div><div class="modal-body"><p class="modal-confirm-text">' + escape((interp = body) == null ? '' : interp) + '</p></div><div class="modal-footer"><span data-dismiss="modal" class="btn btn-link">');
+var __val__ = t('cancel')
+buf.push(escape(null == __val__ ? "" : __val__));
+buf.push('</span><span id="confirmation-dialog-confirm" data-dismiss="modal" class="btn btn-danger">' + escape((interp = confirm) == null ? '' : interp) + '</span></div></div></div></div>');
 }
 return buf.join("");
 };
 });
 
 ;require.register("views/templates/result", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge
-/**/) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
@@ -1614,15 +1662,14 @@ return buf.join("");
 });
 
 ;require.register("views/templates/results_global_controls", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge
-/**/) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
 var interp;
  if (doctype !== '') {
 {
-buf.push('<h4>&nbsp;&nbsp;Currently exploring :&nbsp;<em>' + escape((interp = doctype) == null ? '' : interp) + ' ' + escape((interp = range) == null ? '' : interp) + ' &nbsp;</em>');
+buf.push('<h4>&nbsp;&nbsp;' + escape((interp = t('currently exploring')) == null ? '' : interp) + ' :&nbsp;<em>' + escape((interp = doctype) == null ? '' : interp) + ' ' + escape((interp = range) == null ? '' : interp) + ' &nbsp;</em>');
  if (hasMetainfos) {
 {
  if (isVisible) {
@@ -1646,18 +1693,20 @@ return buf.join("");
 });
 
 ;require.register("views/templates/results_meta_infos", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge
-/**/) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
 var interp;
 buf.push('<div class="widget-box"><div class="widget-header widget-header-small header-color-green"><h4 class="lighter"><i class="icon-question-sign"></i>');
  displayedDoctype = displayName !== '' ? displayName : name;
-buf.push('&nbsp;About ' + escape((interp = displayedDoctype) == null ? '' : interp) + '</h4><div class="widget-toolbar"><span id="close-about-doctype"><i class="icon-remove"></i></span></div></div><div class="widget-body"><div class="widget-body-inner"><div class="widget-main padding-6"><div class="md-desc-wrapper">');
+buf.push('&nbsp;' + escape((interp = t('about')) == null ? '' : interp) + ' ' + escape((interp = displayedDoctype) == null ? '' : interp) + '</h4><div class="widget-toolbar"><span id="close-about-doctype"><i class="icon-remove"></i></span></div></div><div class="widget-body"><div class="widget-body-inner"><div class="widget-main padding-6"><div class="md-desc-wrapper">');
  if (applications && applications.length > 0) {
 {
-buf.push('<div class="md-desc-container"><strong>Applications using it :</strong><ul class="sober-list">');
+buf.push('<div class="md-desc-container"><strong>');
+var __val__ = t('applications using it') + ' :'
+buf.push(escape(null == __val__ ? "" : __val__));
+buf.push('</strong><ul class="sober-list">');
  for (var index in applications) {
 {
 buf.push('<li class="firstLetterUp"><i class="icon-download-alt"></i><span>&nbsp;' + escape((interp = applications[index]) == null ? '' : interp) + '</span></li>');
@@ -1668,7 +1717,10 @@ buf.push('</ul></div>');
 }
  if (typeof(metadoctype) === 'object') {
 {
-buf.push('<div class="md-desc-container"><strong>Fields informations :</strong><ul class="sober-list">');
+buf.push('<div class="md-desc-container"><strong>');
+var __val__ = t('fields information') + ' :'
+buf.push(escape(null == __val__ ? "" : __val__));
+buf.push('</strong><ul class="sober-list">');
  var fields = metadoctype.fields;
  for (var obj in fields) {
 {
@@ -1685,13 +1737,12 @@ return buf.join("");
 });
 
 ;require.register("views/templates/search", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge
-/**/) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="all-result"><div id="basic-accordion" class="accordion-style1 panel-group"></div><div class="load-more-result"><span>load more results&nbsp</span><br/><i class="icon-circle-arrow-down"></i></div></div>');
+buf.push('<div id="all-result"><div id="basic-accordion" class="accordion-style1 panel-group"></div><div class="load-more-result"><span>' + escape((interp = t('load more results')) == null ? '' : interp) + '&nbsp;</span><br/><i class="icon-circle-arrow-down"></i></div></div>');
 }
 return buf.join("");
 };
