@@ -5,8 +5,8 @@ TableResultView = require './result_table_view'
 
 module.exports = class ResultCollectionView extends ViewCollection
 
-    itemview: ResultView
-    collectionEl :'#basic-accordion'
+    itemview: TableResultView
+    collectionEl :'#result-view-as-table'
     isLoading : false
     noMoreItems : false
 
@@ -22,13 +22,15 @@ module.exports = class ResultCollectionView extends ViewCollection
                     @itemview = TableResultView
                     @collectionEl = '#result-view-as-table'
                 else
-                    @itemview = ResultView
-                    @collectionEl ='#basic-accordion'
+                    @itemview = TableResultView
+                    @collectionEl = '#result-view-as-table'
 
         super
         if @options.doctypes?
             if @options.presentation is 'table'
                 @collection.nbPerPage = 0
+                $('#results-list').undelegate 'th .icon-eye-close', 'click'
+                $('#results-list').undelegate 'button.show-col', 'click'
             @collection.fetch
                 data: $.param(@options)
                 success : (col, data) =>
@@ -46,7 +48,13 @@ module.exports = class ResultCollectionView extends ViewCollection
                         $('#result-view-as-table').dataTable
                             "iDisplayLength" : -1
                             "iPaginate" : false
-                            "sDom": '<"top">rt<"bottom"><"clear">'
+                            "sDom": '<"top">Rt<"bottom"><"clear">'
+                            "aoColumnDefs": [
+                                {
+                                    bSortable: false,
+                                    aTargets: [ -1 ]
+                                }
+                            ]
 
                 error : =>
                     $('.loading-image').remove()

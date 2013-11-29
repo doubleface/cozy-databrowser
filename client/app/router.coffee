@@ -18,6 +18,7 @@ module.exports = class Router extends Backbone.Router
 
     search : (query) ->
         options = {}
+        options['presentation'] = 'table'
 
         if query?
             splittedQuery = query.split('&&')

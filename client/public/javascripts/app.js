@@ -575,6 +575,7 @@ module.exports = Router = (function(_super) {
   Router.prototype.search = function(query) {
     var doctypePattern, options, parsedQuery, searchView, splittedQuery;
     options = {};
+    options['presentation'] = 'table';
     if (query != null) {
       splittedQuery = query.split('&&');
       doctypePattern = splittedQuery[0];
@@ -893,9 +894,9 @@ module.exports = ResultCollectionView = (function(_super) {
     return _ref;
   }
 
-  ResultCollectionView.prototype.itemview = ResultView;
+  ResultCollectionView.prototype.itemview = TableResultView;
 
-  ResultCollectionView.prototype.collectionEl = '#basic-accordion';
+  ResultCollectionView.prototype.collectionEl = '#result-view-as-table';
 
   ResultCollectionView.prototype.isLoading = false;
 
@@ -916,14 +917,16 @@ module.exports = ResultCollectionView = (function(_super) {
           this.collectionEl = '#result-view-as-table';
           break;
         default:
-          this.itemview = ResultView;
-          this.collectionEl = '#basic-accordion';
+          this.itemview = TableResultView;
+          this.collectionEl = '#result-view-as-table';
       }
     }
     ResultCollectionView.__super__.initialize.apply(this, arguments);
     if (this.options.doctypes != null) {
       if (this.options.presentation === 'table') {
         this.collection.nbPerPage = 0;
+        $('#results-list').undelegate('th .icon-eye-close', 'click');
+        $('#results-list').undelegate('button.show-col', 'click');
       }
       return this.collection.fetch({
         data: $.param(this.options),
@@ -942,7 +945,13 @@ module.exports = ResultCollectionView = (function(_super) {
             return $('#result-view-as-table').dataTable({
               "iDisplayLength": -1,
               "iPaginate": false,
-              "sDom": '<"top">rt<"bottom"><"clear">'
+              "sDom": '<"top">Rt<"bottom"><"clear">',
+              "aoColumnDefs": [
+                {
+                  bSortable: false,
+                  aTargets: [-1]
+                }
+              ]
             });
           }
         },
@@ -1322,6 +1331,7 @@ module.exports = ResultTableView = (function(_super) {
       htmlThead += '<th id="countcols_' + countCols + '"><i class="icon-eye-close"></i>&nbsp;' + result.cdbFieldName + '</th>';
       countCols++;
     }
+    htmlThead += '<th>&nbsp;</th>';
     htmlThead += '</tr>';
     htmlThead += '</thead>';
     return $('#result-view-as-table').prepend(htmlThead);
@@ -1573,10 +1583,8 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
 
   ResultsGlobalControlsView.prototype.switchToTableView = function(event) {
     var presentation, tableRoute, viewSwitcher;
-    $('#results-list').undelegate('th .icon-eye-close', 'click');
-    $('#results-list').undelegate('button.show-col', 'click');
     viewSwitcher = $(event.currentTarget);
-    presentation = 'list';
+    presentation = 'table';
     if (this.currentDoctype) {
       if (viewSwitcher.hasClass('icon-th')) {
         presentation = 'table';
@@ -1637,7 +1645,7 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
   ResultsGlobalControlsView.prototype.render = function(opt) {
     var jqMetaInfos, templateData;
     templateData = {};
-    templateData['icon_presentation'] = opt.presentation && (opt.presentation === 'table') ? 'icon-list-alt' : 'icon-th';
+    templateData['icon_presentation'] = opt.presentation && (opt.presentation === 'list') ? 'icon-th' : 'icon-list-alt';
     templateData['range'] = opt.range ? '(' + opt.range + ')' || '' : void 0;
     templateData['doctype'] = opt.doctypes ? opt.doctypes[0] : '';
     if (opt.displayName && (opt.displayName !== '')) {
@@ -1767,19 +1775,18 @@ module.exports = SearchView = (function(_super) {
   };
 
   SearchView.prototype.fnHideCol = function(event) {
-    var jqTh, jqThContent, jqThId, jqThIndex, newButton, oTable;
+    var jqTh, jqThContent, jqThIndex, newButton, oTable;
     event.stopPropagation();
     event.preventDefault();
     jqTh = $(event.currentTarget).parent('th');
-    jqThId = jqTh.attr('id');
-    jqThIndex = jqThId.split('_')[1];
+    jqThIndex = jqTh.index() + $('.show-col').length;
     jqThContent = jqTh.text();
     oTable = $('#result-view-as-table').dataTable();
     oTable.fnSetColumnVis(jqThIndex, false);
     newButton = $('<button>' + jqThContent + '&nbsp;</button>');
     newButton.prepend($('<i class="icon-eye-open">&nbsp;'));
     newButton.addClass('show-col');
-    newButton.attr('id', jqThId);
+    newButton.attr('id', 'show-col_' + jqThIndex);
     return $('#result-view-as-table').before(newButton);
   };
 
@@ -2029,6 +2036,7 @@ buf.push('</td>');
 }
 }
 {
+buf.push('<td><button class="btn btn-xs remove-result"><i class="icon-trash bigger-120"></i></button></td>');
 }
 }
  }
