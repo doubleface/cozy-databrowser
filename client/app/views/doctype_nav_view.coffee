@@ -12,7 +12,7 @@ module.exports = class DoctypeNavView extends View
             icons :
                 all : 'icon-list'
                 applications : 'icon-download-alt'
-                origins : 'icon-map-marker'
+                sources : 'icon-map-marker'
 
     template: ->
         require './templates/doctype_nav'

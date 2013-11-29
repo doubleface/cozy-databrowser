@@ -139,7 +139,7 @@ module.exports.doctypes = (req, res) ->
                 #prepare categories
                 if results[2].length? and results[2].length > 0
                     doctypes.push
-                        name : 'origins'
+                        name : 'sources'
                         value : results[2]
                 if results[0].length? and results[0].length > 0
                     doctypes.push
