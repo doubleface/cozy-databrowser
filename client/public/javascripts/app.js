@@ -164,6 +164,31 @@ module.exports = ResultCollection = (function(_super) {
 
 });
 
+;require.register("helpers/oLocalStorageHelper", function(exports, require, module) {
+module.exports = {
+  keys: {
+    isMetaInfoVisible: 'ismetainfovisible'
+  },
+  getBoolean: function(key) {
+    var value;
+    value = localStorage.getItem(key);
+    if (value && JSON.parse(value)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+  setBoolean: function(key, value) {
+    if (typeof value === 'boolean') {
+      return localStorage.setItem(key, JSON.stringify(value));
+    } else {
+      return localStorage.setItem(key("false"));
+    }
+  }
+};
+
+});
+
 ;require.register("initialize", function(exports, require, module) {
 var app;
 
@@ -1547,7 +1572,7 @@ module.exports = ResultTableView = (function(_super) {
 });
 
 ;require.register("views/results_global_controls_view", function(exports, require, module) {
-var DeleteAllModel, ResultsGlobalControlsView, View, app, _ref,
+var DeleteAllModel, ResultsGlobalControlsView, View, app, localStore, _ref,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1558,12 +1583,14 @@ DeleteAllModel = require('./../models/delete_all_model');
 
 app = require('application');
 
+localStore = require('./../helpers/oLocalStorageHelper');
+
 module.exports = ResultsGlobalControlsView = (function(_super) {
   __extends(ResultsGlobalControlsView, _super);
 
   function ResultsGlobalControlsView() {
-    this.render = __bind(this.render, this);
     this.switchToTableView = __bind(this.switchToTableView, this);
+    this.render = __bind(this.render, this);
     _ref = ResultsGlobalControlsView.__super__.constructor.apply(this, arguments);
     return _ref;
   }
@@ -1578,52 +1605,8 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
     'mouseover #delete-all': 'switchStyleOfDeleteButton',
     'mouseout #delete-all': 'switchStyleOfDeleteButton',
     'click #delete-all': 'confirmDeleteAll',
-    'click .about-doctype': 'showMetaInfos',
+    'click .about-doctype': 'toogleMetaInfos',
     'click .view-switcher': 'switchToTableView'
-  };
-
-  ResultsGlobalControlsView.prototype.switchToTableView = function(event) {
-    var presentation, tableRoute, viewSwitcher;
-    viewSwitcher = $(event.currentTarget);
-    presentation = 'table';
-    if (this.currentDoctype) {
-      if (viewSwitcher.hasClass('icon-th')) {
-        presentation = 'table';
-        viewSwitcher.removeClass('icon-th').addClass('icon-list-alt');
-      } else {
-        presentation = 'list';
-        viewSwitcher.removeClass('icon-list-alt').addClass('icon-th');
-      }
-      tableRoute = 'search/all/' + this.currentDoctype + '&&presentation=' + presentation;
-      return app.router.navigate(tableRoute, {
-        replace: true,
-        trigger: true
-      });
-    }
-  };
-
-  ResultsGlobalControlsView.prototype.showMetaInfos = function(event) {
-    var jqObj;
-    jqObj = $(event.currentTarget);
-    if (jqObj.hasClass('white-and-green')) {
-      jqObj.removeClass('white-and-green');
-      return $('#results-meta-infos').hide();
-    } else {
-      jqObj.addClass('white-and-green');
-      return $('#results-meta-infos').show();
-    }
-  };
-
-  ResultsGlobalControlsView.prototype.switchStyleOfDeleteButton = function(event) {
-    var jqObj;
-    jqObj = $(event.currentTarget);
-    if (!jqObj.hasClass('btn-danger')) {
-      jqObj.addClass('btn-danger');
-      return jqObj.children('span').text('Delete all ');
-    } else {
-      jqObj.removeClass('btn-danger');
-      return jqObj.children('span').empty();
-    }
   };
 
   ResultsGlobalControlsView.prototype.template = function() {
@@ -1644,18 +1627,74 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
   };
 
   ResultsGlobalControlsView.prototype.render = function(opt) {
-    var jqMetaInfos, templateData;
+    var iconPresentation, isList, isMetaInfoVisible, templateData;
     templateData = {};
-    templateData['icon_presentation'] = opt.presentation && (opt.presentation === 'list') ? 'icon-th' : 'icon-list-alt';
+    isList = opt.presentation && (opt.presentation === 'list');
+    iconPresentation = isList ? 'icon-th' : 'icon-list-alt';
+    templateData['icon_presentation'] = iconPresentation;
     templateData['range'] = opt.range ? '(' + opt.range + ')' || '' : void 0;
     templateData['doctype'] = opt.doctypes ? opt.doctypes[0] : '';
     if (opt.displayName && (opt.displayName !== '')) {
       templateData['doctype'] = opt.displayName;
     }
     templateData['hasMetainfos'] = opt.hasMetaInfos ? true : void 0;
-    jqMetaInfos = $('#results-meta-infos');
-    templateData['isVisible'] = jqMetaInfos.is(':visible') ? true : void 0;
+    isMetaInfoVisible = this.isMetaInfoVisible();
+    templateData['isVisible'] = isMetaInfoVisible;
+    if (isMetaInfoVisible) {
+      $('#results-meta-infos').show();
+    }
     return ResultsGlobalControlsView.__super__.render.call(this, templateData);
+  };
+
+  ResultsGlobalControlsView.prototype.switchToTableView = function(event) {
+    var presentation, presentationQuery, tableRoute, viewSwitcher;
+    viewSwitcher = $(event.currentTarget);
+    presentation = 'table';
+    if (this.currentDoctype) {
+      if (viewSwitcher.hasClass('icon-th')) {
+        presentation = 'table';
+        viewSwitcher.removeClass('icon-th').addClass('icon-list-alt');
+      } else {
+        presentation = 'list';
+        viewSwitcher.removeClass('icon-list-alt').addClass('icon-th');
+      }
+      presentationQuery = '&&presentation=' + presentation;
+      tableRoute = 'search/all/' + this.currentDoctype + presentationQuery;
+      return app.router.navigate(tableRoute, {
+        replace: true,
+        trigger: true
+      });
+    }
+  };
+
+  ResultsGlobalControlsView.prototype.isMetaInfoVisible = function() {
+    return localStore.getBoolean(localStore.keys.isMetaInfoVisible);
+  };
+
+  ResultsGlobalControlsView.prototype.toogleMetaInfos = function(event) {
+    var jqObj;
+    jqObj = $(event.currentTarget);
+    if (jqObj.hasClass('white-and-green')) {
+      jqObj.removeClass('white-and-green');
+      $('#results-meta-infos').hide();
+      return localStore.setBoolean(localStore.keys.isMetaInfoVisible, false);
+    } else {
+      jqObj.addClass('white-and-green');
+      $('#results-meta-infos').show();
+      return localStore.setBoolean(localStore.keys.isMetaInfoVisible, true);
+    }
+  };
+
+  ResultsGlobalControlsView.prototype.switchStyleOfDeleteButton = function(event) {
+    var jqObj;
+    jqObj = $(event.currentTarget);
+    if (!jqObj.hasClass('btn-danger')) {
+      jqObj.addClass('btn-danger');
+      return jqObj.children('span').text('Delete all ');
+    } else {
+      jqObj.removeClass('btn-danger');
+      return jqObj.children('span').empty();
+    }
   };
 
   ResultsGlobalControlsView.prototype.confirmDeleteAll = function(e) {
@@ -1663,7 +1702,8 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
       _this = this;
     e.preventDefault();
     message = 'Are you ABSOLUTELY sure ? ';
-    message += 'It could lead to IRREVERSIBLE DAMAGES to your cozy environment.';
+    message += 'It could lead to IRREVERSIBLE DAMAGES ';
+    message += 'to your cozy environment.';
     data = {
       title: 'Confirmation required',
       body: message,
@@ -1701,11 +1741,13 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
 });
 
 ;require.register("views/results_meta_infos_view", function(exports, require, module) {
-var ResultsMetaInfosView, View, _ref,
+var ResultsMetaInfosView, View, localStore, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 View = require('./../lib/view');
+
+localStore = require('./../helpers/oLocalStorageHelper');
 
 module.exports = ResultsMetaInfosView = (function(_super) {
   __extends(ResultsMetaInfosView, _super);
@@ -1718,14 +1760,15 @@ module.exports = ResultsMetaInfosView = (function(_super) {
   ResultsMetaInfosView.prototype.el = '#results-meta-infos';
 
   ResultsMetaInfosView.prototype.events = {
-    'click #close-about-doctype': 'showMetaInfos'
+    'click #close-about-doctype': 'hideMetaInfos'
   };
 
-  ResultsMetaInfosView.prototype.showMetaInfos = function(event) {
+  ResultsMetaInfosView.prototype.hideMetaInfos = function(event) {
     var jqObj;
     jqObj = $('.about-doctype');
     jqObj.removeClass('white-and-green');
-    return $('#results-meta-infos').hide();
+    $('#results-meta-infos').hide();
+    return localStore.setBoolean(localStore.keys.isMetaInfoVisible, false);
   };
 
   ResultsMetaInfosView.prototype.template = function() {

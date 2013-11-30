@@ -1,6 +1,7 @@
 View = require './../lib/view'
 DeleteAllModel = require './../models/delete_all_model'
 app = require 'application'
+localStore = require './../helpers/oLocalStorageHelper'
 
 module.exports = class ResultsGlobalControlsView extends View
 
@@ -12,41 +13,10 @@ module.exports = class ResultsGlobalControlsView extends View
         'mouseover #delete-all' : 'switchStyleOfDeleteButton'
         'mouseout #delete-all' : 'switchStyleOfDeleteButton'
         'click #delete-all' : 'confirmDeleteAll'
-        'click .about-doctype' : 'showMetaInfos'
+        'click .about-doctype' : 'toogleMetaInfos'
         'click .view-switcher' : 'switchToTableView'
 
-    switchToTableView:  (event) =>
-        viewSwitcher = $(event.currentTarget)
-        presentation = 'table'
-        if @currentDoctype
-            if viewSwitcher.hasClass('icon-th')
-                presentation = 'table'
-                viewSwitcher.removeClass('icon-th').addClass('icon-list-alt')
-            else
-                presentation = 'list'
-                viewSwitcher.removeClass('icon-list-alt').addClass('icon-th')
-            tableRoute =  'search/all/' + @currentDoctype + '&&presentation=' + presentation
-            app.router.navigate tableRoute, {replace: true, trigger : true}
-
-    showMetaInfos: (event) ->
-        jqObj = $(event.currentTarget)
-        if jqObj.hasClass 'white-and-green'
-            jqObj.removeClass('white-and-green')
-            $('#results-meta-infos').hide()
-        else
-            jqObj.addClass('white-and-green')
-            $('#results-meta-infos').show()
-
-    switchStyleOfDeleteButton: (event) ->
-        jqObj = $(event.currentTarget)
-        if not jqObj.hasClass 'btn-danger'
-            jqObj.addClass 'btn-danger'
-            jqObj.children('span').text('Delete all ')
-        else
-            jqObj.removeClass 'btn-danger'
-            jqObj.children('span').empty()
-
-
+    #-------------------------BEGIN VIEW BEHAVIOR-------------------------------
     template: ->
         require './templates/results_global_controls'
 
@@ -63,23 +33,68 @@ module.exports = class ResultsGlobalControlsView extends View
 
     render: (opt) =>
         templateData = {}
-        templateData['icon_presentation'] = if opt.presentation and (opt.presentation is 'list') then 'icon-th' else 'icon-list-alt'
+        isList = opt.presentation and (opt.presentation is 'list')
+        iconPresentation = if isList then 'icon-th' else 'icon-list-alt'
+        templateData['icon_presentation'] = iconPresentation
         templateData['range'] = if opt.range then '(' + opt.range + ')' || ''
         templateData['doctype'] = if opt.doctypes then opt.doctypes[0] else ''
         if opt.displayName and (opt.displayName isnt '')
             templateData['doctype'] = opt.displayName
         templateData['hasMetainfos'] = if opt.hasMetaInfos then true
-        jqMetaInfos = $('#results-meta-infos')
-        templateData['isVisible'] = if jqMetaInfos.is ':visible' then true
-
-
-
+        isMetaInfoVisible = @isMetaInfoVisible()
+        templateData['isVisible'] = isMetaInfoVisible
+        if isMetaInfoVisible then $('#results-meta-infos').show()
         super templateData
+    #-------------------------BEGIN VIEW BEHAVIOR-------------------------------
+
+    #----------------------BEGIN TABLE/LIST VIEW SWITCHER-----------------------
+    switchToTableView:  (event) =>
+        viewSwitcher = $(event.currentTarget)
+        presentation = 'table'
+        if @currentDoctype
+            if viewSwitcher.hasClass('icon-th')
+                presentation = 'table'
+                viewSwitcher.removeClass('icon-th').addClass('icon-list-alt')
+            else
+                presentation = 'list'
+                viewSwitcher.removeClass('icon-list-alt').addClass('icon-th')
+            presentationQuery = '&&presentation=' + presentation
+            tableRoute = 'search/all/' + @currentDoctype + presentationQuery
+            app.router.navigate tableRoute, {replace: true, trigger : true}
+    #-----------------------END TABLE/LIST VIEW SWITCHER------------------------
+
+
+    #--------------------------BEGIN META INFORMATION---------------------------
+    isMetaInfoVisible : ->
+        return localStore.getBoolean localStore.keys.isMetaInfoVisible
+
+    toogleMetaInfos: (event) ->
+        jqObj = $(event.currentTarget)
+        if jqObj.hasClass 'white-and-green'
+            jqObj.removeClass('white-and-green')
+            $('#results-meta-infos').hide()
+            localStore.setBoolean localStore.keys.isMetaInfoVisible, false
+        else
+            jqObj.addClass('white-and-green')
+            $('#results-meta-infos').show()
+            localStore.setBoolean localStore.keys.isMetaInfoVisible, true
+    #---------------------------END META INFORMATION ---------------------------
+
+    #----------------------------BEGIN DELETE ALL-------------------------------
+    switchStyleOfDeleteButton: (event) ->
+        jqObj = $(event.currentTarget)
+        if not jqObj.hasClass 'btn-danger'
+            jqObj.addClass 'btn-danger'
+            jqObj.children('span').text('Delete all ')
+        else
+            jqObj.removeClass 'btn-danger'
+            jqObj.children('span').empty()
 
     confirmDeleteAll : (e) ->
         e.preventDefault()
         message = 'Are you ABSOLUTELY sure ? '
-        message += 'It could lead to IRREVERSIBLE DAMAGES to your cozy environment.'
+        message += 'It could lead to IRREVERSIBLE DAMAGES '
+        message += 'to your cozy environment.'
         data =
             title: 'Confirmation required'
             body: message
@@ -101,3 +116,5 @@ module.exports = class ResultsGlobalControlsView extends View
                     doctype : @currentDoctype
                 success : (col, data) ->
                     location.reload()
+    #-----------------------------END DELETE ALL--------------------------------
+
