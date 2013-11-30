@@ -1,6 +1,9 @@
 module.exports =
     keys:
         isMetaInfoVisible : 'ismetainfovisible'
+        isListPresentation : 'istablepresentation'
+        separator : '.'
+
     getBoolean: (key) ->
         value = localStorage.getItem key
         if value and JSON.parse value

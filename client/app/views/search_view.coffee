@@ -5,6 +5,9 @@ ResultsGlobalControlsView = require '../views/results_global_controls_view'
 MetaInfosModel = require './../models/meta_infos_model'
 ResultsMetaInfosView = require '../views/results_meta_infos_view'
 
+#Required helpers objects
+localStore = require './../helpers/oLocalStorageHelper'
+
 #Define SearchView class
 module.exports = class SearchView extends BaseView
 
@@ -18,9 +21,15 @@ module.exports = class SearchView extends BaseView
     initialize : (options) =>
         @options = options
         @hasDoctype = @options.doctypes and @options.doctypes.length > 0
+        @hasPresentation = @options.presentation?
         @bindSearch()
 
         if @hasDoctype
+
+            #apply stored presentation
+            if not @hasPresentation
+                @applyStoredPresentation()
+
 
             #Add the results
             @resultCollectionView = new ResultCollectionView @options
@@ -95,6 +104,12 @@ module.exports = class SearchView extends BaseView
     #-----------------------------BEGIN COLLECTION------------------------------
     loadMore : (isTriggered)->
         @resultCollectionView.loadNextPage isTriggered
+
+    applyStoredPresentation : ->
+        key = @options.doctypes[0].toLowerCase()
+        key += localStore.keys.separation + localStore.keys.isListPresentation
+        if localStore.getBoolean key
+            @options['presentation'] = 'list'
     #------------------------------END COLLECTION-------------------------------
 
 

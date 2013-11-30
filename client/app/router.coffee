@@ -18,7 +18,6 @@ module.exports = class Router extends Backbone.Router
 
     search : (query) ->
         options = {}
-        options['presentation'] = 'table'
 
         if query?
             splittedQuery = query.split('&&')
@@ -40,7 +39,7 @@ module.exports = class Router extends Backbone.Router
 
 
         #Create Search view (with option) and render
-        searchView = new SearchView(options)
+        searchView = new SearchView options
         searchView.render()
 
     parseQueryString: (queryString) ->
