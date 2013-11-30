@@ -74,11 +74,25 @@ module.exports = class ResultsGlobalControlsView extends View
             else
                 presentation = 'list'
                 viewSwitcher.removeClass('icon-list-alt').addClass('icon-th')
+            @storePresentation presentation
             presentationQuery = '&&presentation=' + presentation
             tableRoute = 'search/all/' + @currentDoctype + presentationQuery
             app.router.navigate tableRoute,
                 replace: true
                 trigger : true
+
+    prepareStoragePresentationKey: ->
+        key = @currentDoctype.toLowerCase()
+        key += localStore.keys.separation + localStore.keys.isListPresentation
+        return key
+    isListPresentation: ->
+        key = @prepareStoragePresentationKey()
+        return localStore.getBoolean key
+
+    storePresentation: (presentation) ->
+        isList = if presentation isnt 'table' then true else false
+        key = @prepareStoragePresentationKey()
+        localStore.setBoolean key, isList
     #-----------------------END TABLE/LIST VIEW SWITCHER------------------------
 
 

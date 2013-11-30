@@ -167,7 +167,9 @@ module.exports = ResultCollection = (function(_super) {
 ;require.register("helpers/oLocalStorageHelper", function(exports, require, module) {
 module.exports = {
   keys: {
-    isMetaInfoVisible: 'ismetainfovisible'
+    isMetaInfoVisible: 'ismetainfovisible',
+    isListPresentation: 'istablepresentation',
+    separator: '.'
   },
   getBoolean: function(key) {
     var value;
@@ -600,7 +602,6 @@ module.exports = Router = (function(_super) {
   Router.prototype.search = function(query) {
     var doctypePattern, options, parsedQuery, searchView, splittedQuery;
     options = {};
-    options['presentation'] = 'table';
     if (query != null) {
       splittedQuery = query.split('&&');
       doctypePattern = splittedQuery[0];
@@ -1658,6 +1659,7 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
         presentation = 'list';
         viewSwitcher.removeClass('icon-list-alt').addClass('icon-th');
       }
+      this.storePresentation(presentation);
       presentationQuery = '&&presentation=' + presentation;
       tableRoute = 'search/all/' + this.currentDoctype + presentationQuery;
       return app.router.navigate(tableRoute, {
@@ -1665,6 +1667,26 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
         trigger: true
       });
     }
+  };
+
+  ResultsGlobalControlsView.prototype.prepareStoragePresentationKey = function() {
+    var key;
+    key = this.currentDoctype.toLowerCase();
+    key += localStore.keys.separation + localStore.keys.isListPresentation;
+    return key;
+  };
+
+  ResultsGlobalControlsView.prototype.isListPresentation = function() {
+    var key;
+    key = this.prepareStoragePresentationKey();
+    return localStore.getBoolean(key);
+  };
+
+  ResultsGlobalControlsView.prototype.storePresentation = function(presentation) {
+    var isList, key;
+    isList = presentation !== 'table' ? true : false;
+    key = this.prepareStoragePresentationKey();
+    return localStore.setBoolean(key, isList);
   };
 
   ResultsGlobalControlsView.prototype.isMetaInfoVisible = function() {
@@ -1782,7 +1804,7 @@ module.exports = ResultsMetaInfosView = (function(_super) {
 });
 
 ;require.register("views/search_view", function(exports, require, module) {
-var BaseView, MetaInfosModel, ResultCollectionView, ResultsGlobalControlsView, ResultsMetaInfosView, SearchView, _ref,
+var BaseView, MetaInfosModel, ResultCollectionView, ResultsGlobalControlsView, ResultsMetaInfosView, SearchView, localStore, _ref,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1796,6 +1818,8 @@ ResultsGlobalControlsView = require('../views/results_global_controls_view');
 MetaInfosModel = require('./../models/meta_infos_model');
 
 ResultsMetaInfosView = require('../views/results_meta_infos_view');
+
+localStore = require('./../helpers/oLocalStorageHelper');
 
 module.exports = SearchView = (function(_super) {
   __extends(SearchView, _super);
@@ -1821,8 +1845,12 @@ module.exports = SearchView = (function(_super) {
       _this = this;
     this.options = options;
     this.hasDoctype = this.options.doctypes && this.options.doctypes.length > 0;
+    this.hasPresentation = this.options.presentation != null;
     this.bindSearch();
     if (this.hasDoctype) {
+      if (!this.hasPresentation) {
+        this.applyStoredPresentation();
+      }
       this.resultCollectionView = new ResultCollectionView(this.options);
       metaInfosModel = new MetaInfosModel();
       $('#results-meta-infos').empty();
@@ -1890,6 +1918,15 @@ module.exports = SearchView = (function(_super) {
 
   SearchView.prototype.loadMore = function(isTriggered) {
     return this.resultCollectionView.loadNextPage(isTriggered);
+  };
+
+  SearchView.prototype.applyStoredPresentation = function() {
+    var key;
+    key = this.options.doctypes[0].toLowerCase();
+    key += localStore.keys.separation + localStore.keys.isListPresentation;
+    if (localStore.getBoolean(key)) {
+      return this.options['presentation'] = 'list';
+    }
   };
 
   SearchView.prototype.bindSearch = function() {
