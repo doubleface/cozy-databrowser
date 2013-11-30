@@ -1597,9 +1597,9 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
 
   ResultsGlobalControlsView.prototype.el = '#results-global-controls';
 
-  ResultsGlobalControlsView.prototype.currentDoctype = '';
-
   ResultsGlobalControlsView.prototype.templateModal = require('./templates/modal_confirm');
+
+  ResultsGlobalControlsView.prototype.currentDoctype = '';
 
   ResultsGlobalControlsView.prototype.events = {
     'mouseover #delete-all': 'switchStyleOfDeleteButton',
@@ -1620,10 +1620,10 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
     $(this.el).undelegate('#delete-all', 'mouseover');
     $(this.el).undelegate('#delete-all', 'mouseout');
     $(this.el).undelegate('#delete-all', 'click');
-    if (opt.doctypes != null) {
-      this.currentDoctype = opt.doctypes[0] || '';
+    if (this.opt.doctypes != null) {
+      this.currentDoctype = this.opt.doctypes[0] || '';
     }
-    return this.render(opt);
+    return this.render(this.opt);
   };
 
   ResultsGlobalControlsView.prototype.render = function(opt) {
@@ -1763,16 +1763,16 @@ module.exports = ResultsMetaInfosView = (function(_super) {
     'click #close-about-doctype': 'hideMetaInfos'
   };
 
+  ResultsMetaInfosView.prototype.template = function() {
+    return require('./templates/results_meta_infos');
+  };
+
   ResultsMetaInfosView.prototype.hideMetaInfos = function(event) {
     var jqObj;
     jqObj = $('.about-doctype');
     jqObj.removeClass('white-and-green');
     $('#results-meta-infos').hide();
     return localStore.setBoolean(localStore.keys.isMetaInfoVisible, false);
-  };
-
-  ResultsMetaInfosView.prototype.template = function() {
-    return require('./templates/results_meta_infos');
   };
 
   return ResultsMetaInfosView;
@@ -1816,12 +1816,6 @@ module.exports = SearchView = (function(_super) {
     'click #btn-scroll-up': 'hideThis'
   };
 
-  SearchView.prototype.hideThis = function(event) {
-    var jqObj;
-    jqObj = $(event.currentTarget);
-    return jqObj.hide();
-  };
-
   SearchView.prototype.initialize = function(options) {
     var metaInfosModel,
       _this = this;
@@ -1837,23 +1831,18 @@ module.exports = SearchView = (function(_super) {
           doctype: this.options.doctypes[0]
         }),
         success: function(col, data) {
-          var resultsMetaInfosView;
-          if (data && data.name && (data.application || data.metadoctype)) {
-            resultsMetaInfosView = new ResultsMetaInfosView();
-            resultsMetaInfosView.render(data);
-            _this.options['hasMetaInfos'] = true;
-            _this.options['displayName'] = data.displayName;
-            _this.options['resultsCollection'] = _this.resultCollectionView;
-          }
-          return _this.resultsGlobalControlsView = new ResultsGlobalControlsView(_this.options);
+          _this.applyMetaInformation(data);
+          return _this.applyGlobalControls();
         }
       });
       if (this.options.range != null) {
         return $(window).bind('scroll', function(e, isTriggered) {
-          var docHeight;
+          var docHeight, noMoreItems, winHeight;
           docHeight = $(document).height();
-          if (!_this.resultCollectionView.isLoading && !_this.resultCollectionView.noMoreItems) {
-            if ($(window).scrollTop() + $(window).height() === docHeight) {
+          noMoreItems = _this.resultCollectionView.noMoreItems;
+          if (!_this.resultCollectionView.isLoading && !noMoreItems) {
+            winHeight = $(window).scrollTop() + $(window).height();
+            if (winHeight === docHeight) {
               _this.loadMore(isTriggered);
             }
           }
@@ -1876,6 +1865,27 @@ module.exports = SearchView = (function(_super) {
       });
       return this.bindSearch();
     }
+  };
+
+  SearchView.prototype.applyMetaInformation = function(data) {
+    var resultsMetaInfosView;
+    if (data && data.name && (data.application || data.metadoctype)) {
+      resultsMetaInfosView = new ResultsMetaInfosView();
+      resultsMetaInfosView.render(data);
+      this.options['hasMetaInfos'] = true;
+      this.options['displayName'] = data.displayName;
+      return this.options['resultsCollection'] = this.resultCollectionView;
+    }
+  };
+
+  SearchView.prototype.applyGlobalControls = function() {
+    return this.resultsGlobalControlsView = new ResultsGlobalControlsView(this.options);
+  };
+
+  SearchView.prototype.hideThis = function(event) {
+    var jqObj;
+    jqObj = $(event.currentTarget);
+    return jqObj.hide();
   };
 
   SearchView.prototype.loadMore = function(isTriggered) {

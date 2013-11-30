@@ -8,13 +8,24 @@ module.exports = class ResultsMetaInfosView extends View
     events :
         'click #close-about-doctype': 'hideMetaInfos'
 
+    #-------------------------BEGIN VIEW BEHAVIOR-------------------------------
+    template: ->
+        require './templates/results_meta_infos'
+    #--------------------------END VIEW BEHAVIOR--------------------------------
+
+
+    #--------------------------BEGIN META INFORMATION---------------------------
     hideMetaInfos: (event) ->
+
+        #---Hide element
         jqObj = $('.about-doctype')
         jqObj.removeClass('white-and-green')
         $('#results-meta-infos').hide()
-        localStore.setBoolean localStore.keys.isMetaInfoVisible, false
 
-    template: ->
-        require './templates/results_meta_infos'
+        #----Local store hidden status
+        localStore.setBoolean localStore.keys.isMetaInfoVisible, false
+    #---------------------------END META INFORMATION ---------------------------
+
+
 
 

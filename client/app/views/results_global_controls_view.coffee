@@ -6,8 +6,8 @@ localStore = require './../helpers/oLocalStorageHelper'
 module.exports = class ResultsGlobalControlsView extends View
 
     el: '#results-global-controls'
-    currentDoctype: ''
     templateModal: require('./templates/modal_confirm')
+    currentDoctype: ''
 
     events :
         'mouseover #delete-all' : 'switchStyleOfDeleteButton'
@@ -22,30 +22,46 @@ module.exports = class ResultsGlobalControlsView extends View
 
     initialize : (opt) ->
         @opt = opt
+
+        #---- Clean and ensure that all methods are re-delegate to new controls
         $(@el).undelegate '.about-doctype', 'click'
         $(@el).undelegate '.view-switcher', 'click'
         $(@el).undelegate '#delete-all', 'mouseover'
         $(@el).undelegate '#delete-all', 'mouseout'
         $(@el).undelegate '#delete-all', 'click'
-        if opt.doctypes?
-            @currentDoctype = opt.doctypes[0] || ''
-        @render opt
+
+        #---- set current doctypes (waiting multiple doctype)
+        if @opt.doctypes?
+            @currentDoctype = @opt.doctypes[0] || ''
+
+        #render view with options
+        @render @opt
 
     render: (opt) =>
+
+        #----Prepare template datas
         templateData = {}
+
+        #--icon associate to presentation
         isList = opt.presentation and (opt.presentation is 'list')
         iconPresentation = if isList then 'icon-th' else 'icon-list-alt'
         templateData['icon_presentation'] = iconPresentation
+
+        #--general infos for 'currently exploring'
         templateData['range'] = if opt.range then '(' + opt.range + ')' || ''
         templateData['doctype'] = if opt.doctypes then opt.doctypes[0] else ''
         if opt.displayName and (opt.displayName isnt '')
             templateData['doctype'] = opt.displayName
+
+        #--visibility of metainfos
         templateData['hasMetainfos'] = if opt.hasMetaInfos then true
         isMetaInfoVisible = @isMetaInfoVisible()
         templateData['isVisible'] = isMetaInfoVisible
         if isMetaInfoVisible then $('#results-meta-infos').show()
+
+        #----apply ancestor method
         super templateData
-    #-------------------------BEGIN VIEW BEHAVIOR-------------------------------
+    #--------------------------END VIEW BEHAVIOR--------------------------------
 
     #----------------------BEGIN TABLE/LIST VIEW SWITCHER-----------------------
     switchToTableView:  (event) =>
@@ -60,7 +76,9 @@ module.exports = class ResultsGlobalControlsView extends View
                 viewSwitcher.removeClass('icon-list-alt').addClass('icon-th')
             presentationQuery = '&&presentation=' + presentation
             tableRoute = 'search/all/' + @currentDoctype + presentationQuery
-            app.router.navigate tableRoute, {replace: true, trigger : true}
+            app.router.navigate tableRoute,
+                replace: true
+                trigger : true
     #-----------------------END TABLE/LIST VIEW SWITCHER------------------------
 
 
