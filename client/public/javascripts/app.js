@@ -838,7 +838,7 @@ window.require.register("views/doctype_nav_view", function(exports, require, mod
         icons: {
           all: 'icon-list',
           applications: 'icon-download-alt',
-          sources: 'icon-map-marker'
+          sources: 'icon-book'
         }
       });
     };
@@ -1000,6 +1000,235 @@ window.require.register("views/result_collection_view", function(exports, requir
     return ResultCollectionView;
 
   })(ViewCollection);
+  
+});
+window.require.register("views/result_list_view", function(exports, require, module) {
+  var ResultView, View, _ref,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  View = require('./../lib/view');
+
+  module.exports = ResultView = (function(_super) {
+    __extends(ResultView, _super);
+
+    function ResultView() {
+      this.render = __bind(this.render, this);
+      _ref = ResultView.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    ResultView.prototype.tagName = 'div';
+
+    ResultView.prototype.className = 'panel panel-default';
+
+    ResultView.prototype.templateModal = require('./templates/modal_confirm');
+
+    ResultView.prototype.events = {
+      'click .accordion-toggle': 'blurIt',
+      'mouseenter .label': 'showFieldDescription',
+      'mouseleave .label': 'showFieldDescription',
+      'click .remove-result': 'confirmRemoveResult',
+      'mouseover .remove-result': 'convertButtonToDanger',
+      'mouseout .remove-result': 'convertButtonToClassic'
+    };
+
+    ResultView.prototype.convertButtonToDanger = function(event) {
+      var jqObj;
+      jqObj = $(event.currentTarget);
+      return jqObj.addClass('btn-danger');
+    };
+
+    ResultView.prototype.convertButtonToClassic = function(event) {
+      var jqObj;
+      jqObj = $(event.currentTarget);
+      return jqObj.removeClass('btn-danger');
+    };
+
+    ResultView.prototype.render = function() {
+      return ResultView.__super__.render.call(this, {
+        results: this.manageResultsForView()
+      });
+    };
+
+    ResultView.prototype.manageResultsForView = function() {
+      var attr, count, results;
+      attr = this.model.attributes;
+      count = this.model.get('count');
+      results = {};
+      if (attr.no_result != null) {
+        $('#all-result .accordion').empty();
+        results['no_result'] = true;
+        results['no_result_msg'] = attr.no_result;
+        return results;
+      } else if (count === 0) {
+        results['no_result'] = true;
+        results['no_result_msg'] = 'No results.';
+        return results;
+      } else {
+        results['no_result'] = false;
+        results['count'] = count;
+        results['heading'] = {
+          'doctype': attr.displayName || attr.docType,
+          'field': attr.idField != null ? attr.idField : 'id',
+          'data': attr.idField != null ? attr[attr.idField] : attr._id
+        };
+        this.results = results;
+        this.results['fields'] = this.prepareResultFields(attr);
+        return this.results;
+      }
+    };
+
+    ResultView.prototype.prepareResultFields = function(attr) {
+      var dataId, descField, description, displayName, field, fieldName, fields, hasDisplayName, iCounter, isNativField, isSimpleObj, isSimpleType, newLi, obj, objName, settedField, simpleTypes, typeOfField, typeOfObj;
+      iCounter = 0;
+      fields = [];
+      settedField = ['idField', 'count', 'descField', 'displayName'];
+      simpleTypes = ['string', 'number', 'boolean'];
+      for (fieldName in attr) {
+        field = attr[fieldName];
+        description = "";
+        isNativField = ($.inArray(fieldName, settedField)) === -1;
+        if (isNativField) {
+          fields[iCounter] = {
+            'cdbFieldDescription': "",
+            'cdbFieldName': fieldName,
+            'cdbFieldData': "",
+            'cdbLabelClass': "label-secondary"
+          };
+          if ((attr.descField != null) && (attr.descField[fieldName] != null)) {
+            if (attr.descField[fieldName].description != null) {
+              description = attr.descField[fieldName].description;
+              fields[iCounter]['cdbFieldDescription'] = description;
+            }
+            descField = attr.descField[fieldName];
+            hasDisplayName = descField.displayName != null;
+            if (hasDisplayName && descField.displayName !== "") {
+              displayName = descField.displayName;
+              fields[iCounter]['cdbFieldName'] = displayName;
+              if (field === this.results['heading']['field']) {
+                this.results['heading']['field'] = displayName;
+              }
+            }
+          }
+          typeOfField = typeof field;
+          isSimpleType = ($.inArray(typeOfField, simpleTypes)) !== -1;
+          if (isSimpleType) {
+            if (fieldName === 'docType') {
+              dataId = 'cdbFieldData';
+              fields[iCounter][dataId] = attr.displayName || field;
+            } else {
+              fields[iCounter][dataId] = field;
+            }
+          } else if ((field != null) && typeOfField === 'object') {
+            fields[iCounter]['cdbFieldData'] = '<ul class="sober-list">';
+            for (objName in field) {
+              obj = field[objName];
+              newLi = '';
+              typeOfObj = typeof obj;
+              isSimpleObj = ($.inArray(typeOfObj, simpleTypes)) !== -1;
+              if (isSimpleObj) {
+                newLi = '<li>' + objName + ' : ';
+                newLi += '<i>' + obj + '</i></li>';
+                fields[iCounter]['cdbFieldData'] += newLi;
+              } else if ((obj != null) && typeof obj === 'object') {
+                newLi = '<li>' + objName + ' : ';
+                newLi += '<i>' + JSON.stringify(obj) + '</i></li>';
+                fields[iCounter]['cdbFieldData'] += newLi;
+              } else {
+                newLi = '<li><i>empty</i></li>';
+                fields[iCounter]['cdbFieldData'] += newLi;
+                fields[iCounter]['cdbLabelClass'] = 'label-danger';
+              }
+            }
+            fields[iCounter]['cdbFieldData'] += '</ul>';
+          } else {
+            fields[iCounter]['cdbFieldData'] = '<i>empty</i>';
+            fields[iCounter]['cdbLabelClass'] = 'label-danger';
+          }
+        }
+        iCounter++;
+      }
+      return fields;
+    };
+
+    ResultView.prototype.template = function() {
+      return require('./templates/result_list');
+    };
+
+    ResultView.prototype.blurIt = function(e) {
+      return $(e.currentTarget).blur();
+    };
+
+    ResultView.prototype.showFieldDescription = function(e) {
+      var accordionOffsetLeft, accordionOffsetTop, infoBoxCss, jqObj, left, offsetLeft, offsetTop, title, top, width;
+      jqObj = $(e.currentTarget);
+      if (jqObj.attr("data-title") !== "") {
+        if (e.type === 'mouseenter') {
+          offsetLeft = jqObj.offset().left;
+          offsetTop = jqObj.offset().top;
+          accordionOffsetLeft = $('#basic-accordion.accordion').offset().left;
+          accordionOffsetTop = $('#basic-accordion.accordion').offset().top;
+          left = offsetLeft - accordionOffsetLeft - 5;
+          top = offsetTop - accordionOffsetTop - 7;
+          width = jqObj.width();
+          $('.info-box .field-title').css({
+            'padding-left': width + 18
+          });
+          title = jqObj.attr("data-title");
+          $('.info-box .field-description').empty().html(title);
+          infoBoxCss = {
+            'z-index': '5',
+            'left': left,
+            'top': top
+          };
+          $('.info-box').css(infoBoxCss);
+          $('.accordion .label').css({
+            'z-index': 'inherit'
+          });
+          jqObj.css({
+            'z-index': '10'
+          });
+          return $('.info-box').stop().fadeTo(200, 1);
+        } else {
+          return $('.info-box').stop().fadeTo(200, 0);
+        }
+      }
+    };
+
+    ResultView.prototype.confirmRemoveResult = function(e) {
+      var data, that;
+      that = this;
+      e.preventDefault();
+      data = {
+        title: t('Confirmation required'),
+        body: t('are you absolutely sure'),
+        confirm: t('delete permanently')
+      };
+      $("body").prepend(this.templateModal(data));
+      $("#confirmation-dialog").modal();
+      $("#confirmation-dialog").modal("show");
+      $("#confirmation-dialog-confirm").unbind('click');
+      return $("#confirmation-dialog-confirm").bind("click", function() {
+        return that.removeResult();
+      });
+    };
+
+    ResultView.prototype.removeResult = function() {
+      var _this = this;
+      this.model.set('id', this.model.get('_id'));
+      return this.model.destroy({
+        data: 'id=' + this.model.get('id'),
+        success: function() {
+          return _this.render;
+        }
+      });
+    };
+
+    return ResultView;
+
+  })(View);
   
 });
 window.require.register("views/result_view", function(exports, require, module) {
