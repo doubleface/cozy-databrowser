@@ -16,8 +16,9 @@ module.exports = class ResultTableView extends View
         htmlThead = '<thead>'
         htmlThead += '<tr>'
         for result in results['fields']
-            htmlThead += '<th>' + result.cdbFieldName + '</th>'
-        htmlThead += '<th>&nbsp;</th>'
+            fieldName = result.cdbFieldName
+            htmlThead += "<th class=\"cozy_#{fieldName}\">#{fieldName}</th>"
+        htmlThead += '<th class="cozy_action">Action</th>'
         htmlThead += '</tr>'
         htmlThead += '</thead>'
         $('#result-view-as-table').prepend htmlThead
@@ -200,13 +201,10 @@ module.exports = class ResultTableView extends View
     confirmRemoveResult : (e) ->
         that = this
         e.preventDefault()
-        message = 'Are you ABSOLUTELY sure ? '
-        message += 'It could lead to IRREVERSIBLE DAMAGES '
-        message += 'to your cozy environment.'
         data =
-            title: 'Confirmation required'
-            body: message
-            confirm: 'delete permanently'
+            title: t 'confirmation required'
+            body: t 'are you absolutely sure'
+            confirm: t 'delete permanently'
 
         $("body").prepend @templateModal(data)
         $("#confirmation-dialog").modal()

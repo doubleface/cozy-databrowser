@@ -124,11 +124,8 @@ module.exports = class ResultsGlobalControlsView extends View
 
     confirmDeleteAll : (e) ->
         e.preventDefault()
-        message = 'Are you ABSOLUTELY sure ? '
-        message += 'It could lead to IRREVERSIBLE DAMAGES '
-        message += 'to your cozy environment.'
         data =
-            title: t 'Confirmation required'
+            title: t 'confirmation required'
             body: t 'are you absolutely sure'
             confirm: t 'delete permanently'
 

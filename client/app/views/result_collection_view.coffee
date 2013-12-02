@@ -50,11 +50,13 @@ module.exports = class ResultCollectionView extends ViewCollection
                             "aoColumnDefs": [
                                 {
                                     bSortable: false
-                                    aTargets: [ -1 ]
+                                    bVisible: false
+                                    aTargets: [ 'cozy_docType', 'cozy_action' ]
                                 }
                             ]
                             "oColVis":
                                 "iOverlayFade": 200
+                                buttonText: t 'button toggle visibility'
                             "sDom": 'CRt'
                             "bStateSave": true
                             "fnStateSave": (oSettings, oData) ->

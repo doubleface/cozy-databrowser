@@ -61,7 +61,6 @@ module.exports = class ResultView extends View
             @results = results
             @results['fields'] = @prepareResultFields attr
 
-
             return @results
 
     prepareResultFields: (attr) ->
