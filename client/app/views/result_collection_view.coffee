@@ -54,7 +54,7 @@ module.exports = class ResultCollectionView extends ViewCollection
                             ]
                             "oColVis":
                                 "iOverlayFade": 200
-                            "sDom": '<"left"C>Rt'
+                            "sDom": 'CRt'
 
                 error : =>
                     $('.loading-image').remove()
@@ -63,6 +63,7 @@ module.exports = class ResultCollectionView extends ViewCollection
 
 
     render: ->
+        $('.introduction').hide()
         if @options? and @options.doctypes?
             loader = '<div class="loading-image">'
             loader += '<img src="images/ajax-loader.gif" />'

@@ -104,9 +104,10 @@ module.exports = class ResultView extends View
                 isSimpleType = ($.inArray typeOfField, simpleTypes) isnt -1
                 if isSimpleType
                     if fieldName is 'docType'
-                        fields[iCounter]['cdbFieldData'] = attr.displayName || field
+                        dataId = 'cdbFieldData'
+                        fields[iCounter][dataId] = attr.displayName || field
                     else
-                        fields[iCounter]['cdbFieldData'] = field
+                        fields[iCounter][dataId] = field
 
                 #field is an object : display list
                 else if field? and typeOfField is 'object'

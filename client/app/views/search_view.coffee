@@ -110,6 +110,8 @@ module.exports = class SearchView extends BaseView
         key += localStore.keys.separation + localStore.keys.isListPresentation
         if localStore.getBoolean key
             @options['presentation'] = 'list'
+        else
+            @options['presentation'] = 'table'
     #------------------------------END COLLECTION-------------------------------
 
 

@@ -18,16 +18,17 @@ module.exports = class Router extends Backbone.Router
 
     search : (query) ->
         options = {}
-
         if query?
             splittedQuery = query.split('&&')
-            doctypePattern = splittedQuery[0]
+            doctypeQuery = splittedQuery[0]
 
-            #Add doctypePattern as an array
-            if not /\|/.test decodeURIComponent(doctypePattern)
-                options['doctypes'] = [doctypePattern]
+            #Add doctypeQuery as an array
+            decodedQuery = decodeURIComponent doctypeQuery
+            if not /\|/.test decodedQuery
+                options['doctypes'] = [doctypeQuery]
             else
-                options['doctypes'] = decodeURIComponent(doctypePattern).split /\|/
+
+                options['doctypes'] = decodedQuery.split /\|/
 
             #Add the range 'all'
             options['range'] = 'all'
@@ -54,6 +55,6 @@ module.exports = class Router extends Backbone.Router
                     o[aux[0]] = val
                 return o
             ), (o) ->
-              _.extend params, o
+                _.extend params, o
 
         return params

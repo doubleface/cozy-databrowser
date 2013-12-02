@@ -150,8 +150,8 @@ describe "Doctype list management", ->
                 @contact.app.should.have.lengthOf 2
                 @contact.app[1].should.equal 'photos'
 
-            it "And contact shouldn't have its meta information", =>
-                @contact.should.not.have.property 'metadoctype'
+            it "And contact should have its meta information", =>
+                @contact.should.have.property 'metadoctype'
 
             it "And metadoctype should be well formed", =>
                 @metadoctype.should.have.properties ['name', 'sum', 'app']

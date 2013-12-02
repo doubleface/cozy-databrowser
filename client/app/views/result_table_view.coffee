@@ -17,7 +17,7 @@ module.exports = class ResultTableView extends View
         htmlThead = '<thead>'
         htmlThead += '<tr>'
         for result in results['fields']
-            htmlThead += '<th>' + result.cdbFieldName + '</th>' #'<th id="countcols_' + countCols + '"><i class="icon-eye-close"></i>&nbsp;' + result.cdbFieldName + '</th>'
+            htmlThead += '<th>' + result.cdbFieldName + '</th>'
             countCols++
         htmlThead += '<th>&nbsp;</th>'
         htmlThead += '</tr>'
@@ -120,13 +120,15 @@ module.exports = class ResultTableView extends View
                 typeOfField = typeof field
                 isSimpleType = ($.inArray typeOfField, simpleTypes) isnt -1
                 if isSimpleType
+                    dataId = 'cdbFieldData'
                     if fieldName is 'docType'
-                        fields[iCounter]['cdbFieldData'] = attr.displayName || field
+                        fields[iCounter][dataId] = attr.displayName || field
                     else if fieldName is '_id'
-                        fields[iCounter]['cdbFieldData'] = '...' + field.substr field.length - 5
+                        minifiedId = '...' + field.substr field.length - 5
+                        fields[iCounter][dataId] = minifiedId
                         fields[iCounter]['cdbFieldTitle'] = field
                     else
-                        fields[iCounter]['cdbFieldData'] = field
+                        fields[iCounter][dataId] = field
 
                 #field is an object : display list
                 else if field? and typeOfField is 'object'
@@ -200,7 +202,8 @@ module.exports = class ResultTableView extends View
         that = this
         e.preventDefault()
         message = 'Are you ABSOLUTELY sure ? '
-        message += 'It could lead to IRREVERSIBLE DAMAGES to your cozy environment.'
+        message += 'It could lead to IRREVERSIBLE DAMAGES '
+        message += 'to your cozy environment.'
         data =
             title: 'Confirmation required'
             body: message

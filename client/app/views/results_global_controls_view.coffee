@@ -147,6 +147,9 @@ module.exports = class ResultsGlobalControlsView extends View
                 url : deleteAllModel.urlRoot + '?' + $.param
                     doctype : @currentDoctype
                 success : (col, data) ->
+                    app.router.navigate 'search',
+                        replace: true
+                        trigger : true
                     location.reload()
     #-----------------------------END DELETE ALL--------------------------------
 

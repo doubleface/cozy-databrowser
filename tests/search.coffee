@@ -105,7 +105,7 @@ describe "Search management", ->
                     should.exist @bodyMetadoctype
 
                 it "The response should contains 1 results", =>
-                    @bodyMetadoctype.should.have.lengthOf 1
+                    @bodyMetadoctype.should.have.lengthOf 2
 
                 it "The response should be well formed", =>
                     @bodyMetadoctype[0].should.have.keys 'id', 'key', 'value'
@@ -146,7 +146,6 @@ describe "Search management", ->
                                     searchCallback = (err, body) =>
                                         @errSearch = err
                                         @bodySearch = body
-                                        console.log body
                                         done()
                                     @dataSystem.getView searchPath, searchCallback, { query : "scopyleft"}
 

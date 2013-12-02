@@ -150,7 +150,7 @@ class DataSystem extends CoreClass
                     appName = app.key.toLowerCase()
                     doctypeName = []
                     for objName, obj of app.value
-                            doctypeName.push objName.toLowerCase()
+                        doctypeName.push objName.toLowerCase()
                     doctypes.push
                         'key' : appName
                         'value' : doctypeName

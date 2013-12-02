@@ -10,8 +10,13 @@ module.exports = class ResultCollection extends Backbone.Collection
 
         #define query
         query = ''
-        paramNbPerPage = if @nbPerPage > 0 then 'nbperpage=' + @nbPerPage else ''
+
+        paramNbPerPage = ''
+        if @nbPerPage > 0
+            paramNbPerPage = 'nbperpage=' + @nbPerPage
+
         paramPage = if @page > 0 then 'page=' + @page else ''
+
         if paramPage isnt '' and paramNbPerPage isnt ''
             query = '?' + paramPage + '&' + paramNbPerPage
 

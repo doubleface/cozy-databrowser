@@ -565,6 +565,9 @@ body {
   color: #d9534f;
   font-weight: bold;
 }
+.page-header {
+  margin-top: 0;
+}
 
 /* side navigation */
 li [class^="icon-"],
