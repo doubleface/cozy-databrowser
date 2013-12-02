@@ -56,5 +56,4 @@ module.exports = class Router extends Backbone.Router
                 return o
             ), (o) ->
                 _.extend params, o
-
         return params

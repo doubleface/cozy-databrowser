@@ -10,7 +10,6 @@ module.exports = class ResultCollection extends Backbone.Collection
 
         #define query
         query = ''
-
         paramNbPerPage = ''
         if @nbPerPage > 0
             paramNbPerPage = 'nbperpage=' + @nbPerPage
