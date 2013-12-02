@@ -11,3 +11,5 @@ module.exports =
         get: index.doctype_meta_infos
     'doctype_delete_all' :
         del: index.doctype_delete_all
+    'initvalues.js':
+        get: index.initvalues

@@ -179,12 +179,10 @@ module.exports = class ResultView extends View
     confirmRemoveResult : (e) ->
         that = this
         e.preventDefault()
-        message = 'Are you ABSOLUTELY sure ? '
-        message += 'It could lead to IRREVERSIBLE DAMAGES to your cozy environment.'
         data =
-            title: 'Confirmation required'
-            body: message
-            confirm: 'delete permanently'
+            title: t 'Confirmation required'
+            body: t 'are you absolutely sure'
+            confirm: t 'delete permanently'
 
         $("body").prepend @templateModal(data)
         $("#confirmation-dialog").modal()
