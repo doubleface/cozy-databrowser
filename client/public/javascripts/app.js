@@ -1404,15 +1404,13 @@ module.exports = ResultTableView = (function(_super) {
   };
 
   ResultTableView.prototype.injectThead = function(results) {
-    var countCols, htmlThead, result, _i, _len, _ref1;
-    countCols = 0;
+    var htmlThead, result, _i, _len, _ref1;
     htmlThead = '<thead>';
     htmlThead += '<tr>';
     _ref1 = results['fields'];
     for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
       result = _ref1[_i];
       htmlThead += '<th>' + result.cdbFieldName + '</th>';
-      countCols++;
     }
     htmlThead += '<th>&nbsp;</th>';
     htmlThead += '</tr>';

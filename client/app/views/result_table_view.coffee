@@ -118,7 +118,6 @@ module.exports = class ResultTableView extends View
                 typeOfField = typeof field
                 isSimpleType = ($.inArray typeOfField, simpleTypes) isnt -1
                 if isSimpleType
-<<<<<<< HEAD
                     dataId = 'cdbFieldData'
                     if fieldName is 'docType'
                         fields[iCounter][dataId] = attr.displayName || field
@@ -128,15 +127,7 @@ module.exports = class ResultTableView extends View
                         fields[iCounter]['cdbFieldTitle'] = field
                     else
                         fields[iCounter][dataId] = field
-=======
-                    if fieldName is 'docType'
-                        fields[iCounter]['cdbFieldData'] = attr.displayName || field
-                    else if fieldName is '_id'
-                        fields[iCounter]['cdbFieldData'] = '...' + field.substr field.length - 5
-                        fields[iCounter]['cdbFieldTitle'] = field
-                    else
-                        fields[iCounter]['cdbFieldData'] = field
->>>>>>> e7602ddf56b787d1badc3594c7e95a988ffb9d4c
+
 
                 #field is an object : display list
                 else if field? and typeOfField is 'object'
@@ -210,12 +201,8 @@ module.exports = class ResultTableView extends View
         that = this
         e.preventDefault()
         message = 'Are you ABSOLUTELY sure ? '
-<<<<<<< HEAD
         message += 'It could lead to IRREVERSIBLE DAMAGES '
         message += 'to your cozy environment.'
-=======
-        message += 'It could lead to IRREVERSIBLE DAMAGES to your cozy environment.'
->>>>>>> e7602ddf56b787d1badc3594c7e95a988ffb9d4c
         data =
             title: 'Confirmation required'
             body: message
