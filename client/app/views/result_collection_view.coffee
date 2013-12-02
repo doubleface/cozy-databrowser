@@ -45,6 +45,7 @@ module.exports = class ResultCollectionView extends ViewCollection
                             @noMoreItems = true
                             $('.load-more-result').hide()
                     if @options.presentation is 'table'
+                        storedPath = 'DataTables_'+ window.location.hash
                         $('#result-view-as-table').dataTable
                             "aoColumnDefs": [
                                 {
@@ -55,6 +56,15 @@ module.exports = class ResultCollectionView extends ViewCollection
                             "oColVis":
                                 "iOverlayFade": 200
                             "sDom": 'CRt'
+                            "bStateSave": true
+                            "fnStateSave": (oSettings, oData) ->
+                                stringifiedData = JSON.stringify(oData)
+                                localStorage.setItem storedPath, stringifiedData
+
+                            "fnStateLoad": (oSettings) ->
+                                loadedData = localStorage.getItem(storedPath)
+                                return JSON.parse loadedData
+
 
                 error : =>
                     $('.loading-image').remove()

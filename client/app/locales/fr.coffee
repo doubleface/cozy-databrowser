@@ -15,3 +15,4 @@ module.exports =
     "A propos": "About"
     "applications using it": "Applications l'utilisant"
     "fields information":"Information sur les champs"
+    "sources":"sources"

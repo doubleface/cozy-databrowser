@@ -511,7 +511,8 @@ module.exports = {
   "search-placeholder": "Search ...",
   "about": "About",
   "applications using it": "Applications using it",
-  "fields information": "Fields information"
+  "fields information": "Fields information",
+  "sources": "sources"
 };
 
 });
@@ -530,7 +531,8 @@ module.exports = {
   "search-placeholder": "Recherche ...",
   "A propos": "About",
   "applications using it": "Applications l'utilisant",
-  "fields information": "Information sur les champs"
+  "fields information": "Information sur les champs",
+  "sources": "sources"
 };
 
 });
@@ -1013,6 +1015,7 @@ module.exports = ResultCollectionView = (function(_super) {
       return this.collection.fetch({
         data: $.param(this.options),
         success: function(col, data) {
+          var storedPath;
           $('.loading-image').remove();
           if ((_this.options.range != null) && (_this.options.doctypes != null)) {
             if (data.length === _this.collection.nbPerPage) {
@@ -1024,6 +1027,7 @@ module.exports = ResultCollectionView = (function(_super) {
             }
           }
           if (_this.options.presentation === 'table') {
+            storedPath = 'DataTables_' + window.location.hash;
             return $('#result-view-as-table').dataTable({
               "aoColumnDefs": [
                 {
@@ -1034,7 +1038,18 @@ module.exports = ResultCollectionView = (function(_super) {
               "oColVis": {
                 "iOverlayFade": 200
               },
-              "sDom": 'CRt'
+              "sDom": 'CRt',
+              "bStateSave": true,
+              "fnStateSave": function(oSettings, oData) {
+                var stringifiedData;
+                stringifiedData = JSON.stringify(oData);
+                return localStorage.setItem(storedPath, stringifiedData);
+              },
+              "fnStateLoad": function(oSettings) {
+                var loadedData;
+                loadedData = localStorage.getItem(storedPath);
+                return JSON.parse(loadedData);
+              }
             });
           }
         },
