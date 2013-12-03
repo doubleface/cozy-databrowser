@@ -138,17 +138,53 @@ window.require.register("collections/result_collection", function(exports, requi
 
     ResultCollection.prototype.model = require('../models/result_model');
 
-    ResultCollection.prototype.url = function() {
-      return 'search?page=' + this.page + '&nbperpage=' + this.nbPerPage;
-    };
-
     ResultCollection.prototype.page = 1;
 
     ResultCollection.prototype.nbPerPage = 10;
 
+    ResultCollection.prototype.url = function() {
+      var paramNbPerPage, paramPage, query;
+      query = '';
+      paramNbPerPage = '';
+      if (this.nbPerPage > 0) {
+        paramNbPerPage = 'nbperpage=' + this.nbPerPage;
+      }
+      paramPage = this.page > 0 ? 'page=' + this.page : '';
+      if (paramPage !== '' && paramNbPerPage !== '') {
+        query = '?' + paramPage + '&' + paramNbPerPage;
+      }
+      return 'search' + query;
+    };
+
     return ResultCollection;
 
   })(Backbone.Collection);
+  
+});
+window.require.register("helpers/oLocalStorageHelper", function(exports, require, module) {
+  module.exports = {
+    keys: {
+      isMetaInfoVisible: 'ismetainfovisible',
+      isListPresentation: 'istablepresentation',
+      separator: '.'
+    },
+    getBoolean: function(key) {
+      var value;
+      value = localStorage.getItem(key);
+      if (value && JSON.parse(value)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    setBoolean: function(key, value) {
+      if (typeof value === 'boolean') {
+        return localStorage.setItem(key, JSON.stringify(value));
+      } else {
+        return localStorage.setItem(key("false"));
+      }
+    }
+  };
   
 });
 window.require.register("initialize", function(exports, require, module) {
@@ -455,7 +491,12 @@ window.require.register("locales/en", function(exports, require, module) {
     "search-placeholder": "Search ...",
     "about": "About",
     "applications using it": "Applications using it",
-    "fields information": "Fields information"
+    "fields information": "Fields information",
+    "sources": "sources",
+    "welcome title": "Welcome to your data explorer",
+    "welcome message part1": "This application allows you to find any data in your cozy environement.",
+    "welcome message part2": "Please, explore the menu and select a type of document that you want to retrieve.",
+    "button toggle visibility": "Show / Hide columns"
   };
   
 });
@@ -465,7 +506,7 @@ window.require.register("locales/fr", function(exports, require, module) {
     "applications": "Applications",
     "currently exploring": "Vue actuelle",
     "confirmation required": "Confirmation requise",
-    "are you absolutely sure": "Etes vous VRAIMENT sur ?\nCela peut causer des DOMMAGES IRREVERSIBLES a votre cozy.",
+    "are you absolutely sure": "Etes vous VRAIMENT sûr ?\nCela peut causer des DOMMAGES IRREVERSIBLES à votre Cozy.",
     "delete permanently": "Supprimer définitivement",
     "cancel": "Annuler",
     "load more results": "Charger plus de résultats",
@@ -473,7 +514,12 @@ window.require.register("locales/fr", function(exports, require, module) {
     "search-placeholder": "Recherche ...",
     "A propos": "About",
     "applications using it": "Applications l'utilisant",
-    "fields information": "Information sur les champs"
+    "fields information": "Information sur les champs",
+    "sources": "sources",
+    "welcome title": "Bienvenue sur votre explorateur de données",
+    "welcome message part1": "Cette application vous permet de visualiser toutes les données présentes dans votre Cozy.",
+    "welcome message part2": "Déroulez le menu et sélectionnez un type de données pour consulter les documents en relation.",
+    "button toggle visibility": "Montrer / Cacher des colonnes"
   };
   
 });
@@ -586,19 +632,51 @@ window.require.register("router", function(exports, require, module) {
       return doctypeNavCollectionView.render();
     };
 
-    Router.prototype.search = function(doctypePattern) {
-      var options, searchView;
+    Router.prototype.search = function(query) {
+      var decodedQuery, doctypeQuery, options, parsedQuery, searchView, splittedQuery;
       options = {};
-      if (doctypePattern != null) {
-        if (!/\|/.test(decodeURIComponent(doctypePattern))) {
-          options['doctypes'] = [doctypePattern];
+      if (query != null) {
+        splittedQuery = query.split('&&');
+        doctypeQuery = splittedQuery[0];
+        decodedQuery = decodeURIComponent(doctypeQuery);
+        if (!/\|/.test(decodedQuery)) {
+          options['doctypes'] = [doctypeQuery];
         } else {
-          options['doctypes'] = decodeURIComponent(doctypePattern).split(/\|/);
+          options['doctypes'] = decodedQuery.split(/\|/);
         }
         options['range'] = 'all';
+        if (splittedQuery.length > 1) {
+          parsedQuery = this.parseQueryString(splittedQuery[1]);
+          if (parsedQuery.presentation != null) {
+            options['presentation'] = parsedQuery.presentation;
+          }
+        }
       }
       searchView = new SearchView(options);
       return searchView.render();
+    };
+
+    Router.prototype.parseQueryString = function(queryString) {
+      var params;
+      params = {};
+      if (queryString) {
+        _.each(_.map(decodeURI(queryString).split(/&/g), function(el, i) {
+          var aux, o, val;
+          aux = el.split("=");
+          o = {};
+          if (aux.length >= 1) {
+            val = 'undefined';
+            if (aux.length === 2) {
+              val = aux[1];
+            }
+            o[aux[0]] = val;
+          }
+          return o;
+        }), function(o) {
+          return _.extend(params, o);
+        });
+      }
+      return params;
     };
 
     return Router;
@@ -715,13 +793,17 @@ window.require.register("views/doctype_nav_collection_view", function(exports, r
     };
 
     DoctypeNavCollectionView.prototype.applySlimscroll = function(jqSubmenu) {
-      var bSlimScollExist, fullHeight, hasSubmenu, isFirstSubmenu, maxHeightOfMenu, menuHeight, navHeight, parentSubmenu, triggerEnter, winHeight;
+      var bSlimScollExist, collaspseHeight, fullHeight, hasParentSubmenu, hasSubmenu, isFirstSubmenu, maxHeightOfMenu, menuHeight, navHeight, navlistHeight, parentSubmenu, searchHeight, triggerEnter, winHeight;
       this.destroySlimscrolls();
       hasSubmenu = jqSubmenu.length > 0;
-      isFirstSubmenu = hasSubmenu && jqSubmenu.parent().closest('.submenu').length === 0;
-      navHeight = $('.nav-list > li').length * 46 + $('#sidebar-collapse').height() + $('.nav-search:eq(0)').height();
+      hasParentSubmenu = jqSubmenu.parent().closest('.submenu').length > 0;
+      isFirstSubmenu = hasSubmenu && !hasParentSubmenu;
+      collaspseHeight = $('#sidebar-collapse').height();
+      searchHeight = $('.nav-search:eq(0)').height();
+      navlistHeight = $('.nav-list > li').length * 46;
+      navHeight = navlistHeight + collaspseHeight + searchHeight;
       if (this.isMenuMinimized) {
-        navHeight = $('.nav-search:eq(0)').height() + 25;
+        navHeight = searchHeight + 25;
       }
       menuHeight = jqSubmenu.height();
       fullHeight = navHeight + menuHeight;
@@ -752,11 +834,13 @@ window.require.register("views/doctype_nav_collection_view", function(exports, r
     };
 
     DoctypeNavCollectionView.prototype.collapseSidebar = function(collpase) {
-      var icon, icon1, icon2, sidebar;
+      var collapseId, icon, icon1, icon2, iconClass, sidebar;
       this.destroySlimscrolls();
       collpase = collpase || false;
       sidebar = $('#sidebar');
-      icon = document.getElementById('sidebar-collapse').querySelector('[class*="icon-"]');
+      collapseId = 'sidebar-collapse';
+      iconClass = '[class*="icon-"]';
+      icon = document.getElementById(collapseId).querySelector(iconClass);
       icon1 = icon.getAttribute('data-icon1');
       icon2 = icon.getAttribute('data-icon2');
       if (collpase) {
@@ -853,7 +937,7 @@ window.require.register("views/doctype_nav_view", function(exports, require, mod
   
 });
 window.require.register("views/result_collection_view", function(exports, require, module) {
-  var ResultCollection, ResultCollectionView, ResultView, ViewCollection, _ref,
+  var ResultCollection, ResultCollectionView, ResultView, TableResultView, ViewCollection, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -861,7 +945,9 @@ window.require.register("views/result_collection_view", function(exports, requir
 
   ResultCollection = require('../collections/result_collection');
 
-  ResultView = require('./result_view');
+  ResultView = require('./result_list_view');
+
+  TableResultView = require('./result_table_view');
 
   module.exports = ResultCollectionView = (function(_super) {
     __extends(ResultCollectionView, _super);
@@ -871,9 +957,9 @@ window.require.register("views/result_collection_view", function(exports, requir
       return _ref;
     }
 
-    ResultCollectionView.prototype.itemview = ResultView;
+    ResultCollectionView.prototype.itemview = TableResultView;
 
-    ResultCollectionView.prototype.collectionEl = '#basic-accordion';
+    ResultCollectionView.prototype.collectionEl = '#result-view-as-table';
 
     ResultCollectionView.prototype.isLoading = false;
 
@@ -883,20 +969,71 @@ window.require.register("views/result_collection_view", function(exports, requir
       var _this = this;
       this.options = options;
       this.collection = new ResultCollection();
+      if (this.options.presentation != null) {
+        switch (this.options.presentation) {
+          case 'list':
+            this.itemview = ResultView;
+            this.collectionEl = '#basic-accordion';
+            break;
+          case 'table':
+            this.itemview = TableResultView;
+            this.collectionEl = '#result-view-as-table';
+            break;
+          default:
+            this.itemview = TableResultView;
+            this.collectionEl = '#result-view-as-table';
+        }
+      }
       ResultCollectionView.__super__.initialize.apply(this, arguments);
       if (this.options.doctypes != null) {
+        if (this.options.presentation === 'table') {
+          this.collection.nbPerPage = 0;
+          $('#results-list').undelegate('th .icon-eye-close', 'click');
+          $('#results-list').undelegate('button.show-col', 'click');
+        }
         return this.collection.fetch({
           data: $.param(this.options),
           success: function(col, data) {
+            var storedPath;
             $('.loading-image').remove();
             if ((_this.options.range != null) && (_this.options.doctypes != null)) {
               if (data.length === _this.collection.nbPerPage) {
                 _this.loopFirstScroll();
-                return $('.load-more-result').show();
+                $('.load-more-result').show();
               } else {
                 _this.noMoreItems = true;
-                return $('.load-more-result').hide();
+                $('.load-more-result').hide();
               }
+            }
+            if (_this.options.presentation === 'table') {
+              storedPath = 'DataTables_' + window.location.hash;
+              return $('#result-view-as-table').dataTable({
+                "aoColumnDefs": [
+                  {
+                    bSortable: false,
+                    aTargets: ['cozy_docType', 'cozy_action']
+                  }, {
+                    bVisible: false,
+                    aTargets: ['cozy__id', 'cozy_docType']
+                  }
+                ],
+                "oColVis": {
+                  "iOverlayFade": 200,
+                  buttonText: t('button toggle visibility')
+                },
+                "sDom": 'CRt',
+                "bStateSave": true,
+                "fnStateSave": function(oSettings, oData) {
+                  var stringifiedData;
+                  stringifiedData = JSON.stringify(oData);
+                  return localStorage.setItem(storedPath, stringifiedData);
+                },
+                "fnStateLoad": function(oSettings) {
+                  var loadedData;
+                  loadedData = localStorage.getItem(storedPath);
+                  return JSON.parse(loadedData);
+                }
+              });
             }
           },
           error: function() {
@@ -910,6 +1047,7 @@ window.require.register("views/result_collection_view", function(exports, requir
 
     ResultCollectionView.prototype.render = function() {
       var id, loader, view, _ref1;
+      $('.introduction').hide();
       if ((this.options != null) && (this.options.doctypes != null)) {
         loader = '<div class="loading-image">';
         loader += '<img src="images/ajax-loader.gif" />';
@@ -1231,30 +1369,28 @@ window.require.register("views/result_list_view", function(exports, require, mod
   })(View);
   
 });
-window.require.register("views/result_view", function(exports, require, module) {
-  var ResultView, View, _ref,
+window.require.register("views/result_table_view", function(exports, require, module) {
+  var ResultTableView, View, _ref,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   View = require('./../lib/view');
 
-  module.exports = ResultView = (function(_super) {
-    __extends(ResultView, _super);
+  module.exports = ResultTableView = (function(_super) {
+    __extends(ResultTableView, _super);
 
-    function ResultView() {
+    function ResultTableView() {
       this.render = __bind(this.render, this);
-      _ref = ResultView.__super__.constructor.apply(this, arguments);
+      _ref = ResultTableView.__super__.constructor.apply(this, arguments);
       return _ref;
     }
 
-    ResultView.prototype.tagName = 'div';
+    ResultTableView.prototype.tagName = 'tr';
 
-    ResultView.prototype.className = 'panel panel-default';
+    ResultTableView.prototype.templateModal = require('./templates/modal_confirm');
 
-    ResultView.prototype.templateModal = require('./templates/modal_confirm');
-
-    ResultView.prototype.events = {
+    ResultTableView.prototype.events = {
       'click .accordion-toggle': 'blurIt',
       'mouseenter .label': 'showFieldDescription',
       'mouseleave .label': 'showFieldDescription',
@@ -1263,25 +1399,46 @@ window.require.register("views/result_view", function(exports, require, module) 
       'mouseout .remove-result': 'convertButtonToClassic'
     };
 
-    ResultView.prototype.convertButtonToDanger = function(event) {
+    ResultTableView.prototype.injectThead = function(results) {
+      var fieldName, htmlThead, result, _i, _len, _ref1;
+      htmlThead = '<thead>';
+      htmlThead += '<tr>';
+      _ref1 = results['fields'];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        result = _ref1[_i];
+        fieldName = result.cdbFieldName;
+        htmlThead += "<th class=\"cozy_" + fieldName + "\">" + fieldName + "</th>";
+      }
+      htmlThead += '<th class="cozy_action">Action</th>';
+      htmlThead += '</tr>';
+      htmlThead += '</thead>';
+      return $('#result-view-as-table').prepend(htmlThead);
+    };
+
+    ResultTableView.prototype.convertButtonToDanger = function(event) {
       var jqObj;
       jqObj = $(event.currentTarget);
       return jqObj.addClass('btn-danger');
     };
 
-    ResultView.prototype.convertButtonToClassic = function(event) {
+    ResultTableView.prototype.convertButtonToClassic = function(event) {
       var jqObj;
       jqObj = $(event.currentTarget);
       return jqObj.removeClass('btn-danger');
     };
 
-    ResultView.prototype.render = function() {
-      return ResultView.__super__.render.call(this, {
-        results: this.manageResultsForView()
+    ResultTableView.prototype.render = function() {
+      var currentResults;
+      currentResults = this.manageResultsForView();
+      if (currentResults.count === 1) {
+        this.injectThead(currentResults);
+      }
+      return ResultTableView.__super__.render.call(this, {
+        results: currentResults
       });
     };
 
-    ResultView.prototype.manageResultsForView = function() {
+    ResultTableView.prototype.manageResultsForView = function() {
       var attr, count, results;
       attr = this.model.attributes;
       count = this.model.get('count');
@@ -1309,22 +1466,23 @@ window.require.register("views/result_view", function(exports, require, module) 
       }
     };
 
-    ResultView.prototype.prepareResultFields = function(attr) {
-      var descField, description, displayName, field, fieldName, fields, hasDisplayName, iCounter, isNativField, isSimpleObj, isSimpleType, newLi, obj, objName, settedField, simpleTypes, typeOfField, typeOfObj;
+    ResultTableView.prototype.prepareResultFields = function(attr) {
+      var dataId, descField, description, displayName, field, fieldName, fields, hasDisplayName, iCounter, isNativField, isSimpleObj, isSimpleType, minifiedId, newLi, obj, objName, settedFields, simpleTypes, typeOfField, typeOfObj;
       iCounter = 0;
       fields = [];
-      settedField = ['idField', 'count', 'descField', 'displayName'];
+      settedFields = ['idField', 'count', 'descField', 'displayName'];
       simpleTypes = ['string', 'number', 'boolean'];
       for (fieldName in attr) {
         field = attr[fieldName];
         description = "";
-        isNativField = ($.inArray(fieldName, settedField)) === -1;
+        isNativField = ($.inArray(fieldName, settedFields)) === -1;
         if (isNativField) {
           fields[iCounter] = {
             'cdbFieldDescription': "",
             'cdbFieldName': fieldName,
-            'cdbFieldData': "",
-            'cdbLabelClass': "label-secondary"
+            'cdbFieldTitle': '',
+            'cdbFieldData': '',
+            'cdbLabelClass': 'label-secondary'
           };
           if ((attr.descField != null) && (attr.descField[fieldName] != null)) {
             if (attr.descField[fieldName].description != null) {
@@ -1344,10 +1502,15 @@ window.require.register("views/result_view", function(exports, require, module) 
           typeOfField = typeof field;
           isSimpleType = ($.inArray(typeOfField, simpleTypes)) !== -1;
           if (isSimpleType) {
+            dataId = 'cdbFieldData';
             if (fieldName === 'docType') {
-              fields[iCounter]['cdbFieldData'] = attr.displayName || field;
+              fields[iCounter][dataId] = attr.displayName || field;
+            } else if (fieldName === '_id') {
+              minifiedId = '...' + field.substr(field.length - 5);
+              fields[iCounter][dataId] = minifiedId;
+              fields[iCounter]['cdbFieldTitle'] = field;
             } else {
-              fields[iCounter]['cdbFieldData'] = field;
+              fields[iCounter][dataId] = field;
             }
           } else if ((field != null) && typeOfField === 'object') {
             fields[iCounter]['cdbFieldData'] = '<ul class="sober-list">';
@@ -1381,15 +1544,15 @@ window.require.register("views/result_view", function(exports, require, module) 
       return fields;
     };
 
-    ResultView.prototype.template = function() {
-      return require('./templates/result');
+    ResultTableView.prototype.template = function() {
+      return require('./templates/result_table');
     };
 
-    ResultView.prototype.blurIt = function(e) {
+    ResultTableView.prototype.blurIt = function(e) {
       return $(e.currentTarget).blur();
     };
 
-    ResultView.prototype.showFieldDescription = function(e) {
+    ResultTableView.prototype.showFieldDescription = function(e) {
       var accordionOffsetLeft, accordionOffsetTop, infoBoxCss, jqObj, left, offsetLeft, offsetTop, title, top, width;
       jqObj = $(e.currentTarget);
       if (jqObj.attr("data-title") !== "") {
@@ -1425,12 +1588,12 @@ window.require.register("views/result_view", function(exports, require, module) 
       }
     };
 
-    ResultView.prototype.confirmRemoveResult = function(e) {
+    ResultTableView.prototype.confirmRemoveResult = function(e) {
       var data, that;
       that = this;
       e.preventDefault();
       data = {
-        title: t('Confirmation required'),
+        title: t('confirmation required'),
         body: t('are you absolutely sure'),
         confirm: t('delete permanently')
       };
@@ -1443,7 +1606,7 @@ window.require.register("views/result_view", function(exports, require, module) 
       });
     };
 
-    ResultView.prototype.removeResult = function() {
+    ResultTableView.prototype.removeResult = function() {
       var _this = this;
       this.model.set('id', this.model.get('_id'));
       return this.model.destroy({
@@ -1454,13 +1617,13 @@ window.require.register("views/result_view", function(exports, require, module) 
       });
     };
 
-    return ResultView;
+    return ResultTableView;
 
   })(View);
   
 });
 window.require.register("views/results_global_controls_view", function(exports, require, module) {
-  var DeleteAllModel, ResultsGlobalControlsView, View, _ref,
+  var DeleteAllModel, ResultsGlobalControlsView, View, app, localStore, _ref,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1469,10 +1632,15 @@ window.require.register("views/results_global_controls_view", function(exports, 
 
   DeleteAllModel = require('./../models/delete_all_model');
 
+  app = require('application');
+
+  localStore = require('./../helpers/oLocalStorageHelper');
+
   module.exports = ResultsGlobalControlsView = (function(_super) {
     __extends(ResultsGlobalControlsView, _super);
 
     function ResultsGlobalControlsView() {
+      this.switchToTableView = __bind(this.switchToTableView, this);
       this.render = __bind(this.render, this);
       _ref = ResultsGlobalControlsView.__super__.constructor.apply(this, arguments);
       return _ref;
@@ -1480,31 +1648,112 @@ window.require.register("views/results_global_controls_view", function(exports, 
 
     ResultsGlobalControlsView.prototype.el = '#results-global-controls';
 
-    ResultsGlobalControlsView.prototype.currentDoctype = '';
-
     ResultsGlobalControlsView.prototype.templateModal = require('./templates/modal_confirm');
+
+    ResultsGlobalControlsView.prototype.currentDoctype = '';
 
     ResultsGlobalControlsView.prototype.events = {
       'mouseover #delete-all': 'switchStyleOfDeleteButton',
       'mouseout #delete-all': 'switchStyleOfDeleteButton',
       'click #delete-all': 'confirmDeleteAll',
-      'click .about-doctype': 'showMetaInfos',
-      'click .table-view': 'switchToTableView'
+      'click .about-doctype': 'toogleMetaInfos',
+      'click .view-switcher': 'switchToTableView'
+    };
+
+    ResultsGlobalControlsView.prototype.template = function() {
+      return require('./templates/results_global_controls');
+    };
+
+    ResultsGlobalControlsView.prototype.initialize = function(opt) {
+      this.opt = opt;
+      $(this.el).undelegate('.about-doctype', 'click');
+      $(this.el).undelegate('.view-switcher', 'click');
+      $(this.el).undelegate('#delete-all', 'mouseover');
+      $(this.el).undelegate('#delete-all', 'mouseout');
+      $(this.el).undelegate('#delete-all', 'click');
+      if (this.opt.doctypes != null) {
+        this.currentDoctype = this.opt.doctypes[0] || '';
+      }
+      return this.render(this.opt);
+    };
+
+    ResultsGlobalControlsView.prototype.render = function(opt) {
+      var iconPresentation, isList, isMetaInfoVisible, templateData;
+      templateData = {};
+      isList = opt.presentation && (opt.presentation === 'list');
+      iconPresentation = isList ? 'icon-th' : 'icon-list-alt';
+      templateData['icon_presentation'] = iconPresentation;
+      templateData['range'] = opt.range ? '(' + opt.range + ')' || '' : void 0;
+      templateData['doctype'] = opt.doctypes ? opt.doctypes[0] : '';
+      if (opt.displayName && (opt.displayName !== '')) {
+        templateData['doctype'] = opt.displayName;
+      }
+      templateData['hasMetainfos'] = opt.hasMetaInfos ? true : void 0;
+      isMetaInfoVisible = this.isMetaInfoVisible();
+      templateData['isVisible'] = isMetaInfoVisible;
+      if (isMetaInfoVisible) {
+        $('#results-meta-infos').show();
+      }
+      return ResultsGlobalControlsView.__super__.render.call(this, templateData);
     };
 
     ResultsGlobalControlsView.prototype.switchToTableView = function(event) {
-      return console.log('switch');
+      var presentation, presentationQuery, tableRoute, viewSwitcher;
+      viewSwitcher = $(event.currentTarget);
+      presentation = 'table';
+      if (this.currentDoctype) {
+        if (viewSwitcher.hasClass('icon-th')) {
+          presentation = 'table';
+          viewSwitcher.removeClass('icon-th').addClass('icon-list-alt');
+        } else {
+          presentation = 'list';
+          viewSwitcher.removeClass('icon-list-alt').addClass('icon-th');
+        }
+        this.storePresentation(presentation);
+        presentationQuery = '&&presentation=' + presentation;
+        tableRoute = 'search/all/' + this.currentDoctype + presentationQuery;
+        return app.router.navigate(tableRoute, {
+          replace: true,
+          trigger: true
+        });
+      }
     };
 
-    ResultsGlobalControlsView.prototype.showMetaInfos = function(event) {
+    ResultsGlobalControlsView.prototype.prepareStoragePresentationKey = function() {
+      var key;
+      key = this.currentDoctype.toLowerCase();
+      key += localStore.keys.separation + localStore.keys.isListPresentation;
+      return key;
+    };
+
+    ResultsGlobalControlsView.prototype.isListPresentation = function() {
+      var key;
+      key = this.prepareStoragePresentationKey();
+      return localStore.getBoolean(key);
+    };
+
+    ResultsGlobalControlsView.prototype.storePresentation = function(presentation) {
+      var isList, key;
+      isList = presentation !== 'table' ? true : false;
+      key = this.prepareStoragePresentationKey();
+      return localStore.setBoolean(key, isList);
+    };
+
+    ResultsGlobalControlsView.prototype.isMetaInfoVisible = function() {
+      return localStore.getBoolean(localStore.keys.isMetaInfoVisible);
+    };
+
+    ResultsGlobalControlsView.prototype.toogleMetaInfos = function(event) {
       var jqObj;
       jqObj = $(event.currentTarget);
       if (jqObj.hasClass('white-and-green')) {
         jqObj.removeClass('white-and-green');
-        return $('#results-meta-infos').hide();
+        $('#results-meta-infos').hide();
+        return localStore.setBoolean(localStore.keys.isMetaInfoVisible, false);
       } else {
         jqObj.addClass('white-and-green');
-        return $('#results-meta-infos').show();
+        $('#results-meta-infos').show();
+        return localStore.setBoolean(localStore.keys.isMetaInfoVisible, true);
       }
     };
 
@@ -1520,43 +1769,12 @@ window.require.register("views/results_global_controls_view", function(exports, 
       }
     };
 
-    ResultsGlobalControlsView.prototype.template = function() {
-      return require('./templates/results_global_controls');
-    };
-
-    ResultsGlobalControlsView.prototype.initialize = function(opt) {
-      $(this.el).undelegate('.about-doctype', 'click');
-      $(this.el).undelegate('#delete-all', 'mouseover');
-      $(this.el).undelegate('#delete-all', 'mouseout');
-      $(this.el).undelegate('#delete-all', 'click');
-      if (opt.doctypes != null) {
-        this.currentDoctype = opt.doctypes[0] || '';
-      }
-      return this.render(opt);
-    };
-
-    ResultsGlobalControlsView.prototype.render = function(opt) {
-      var jqMetaInfos, templateData;
-      templateData = {};
-      templateData['range'] = opt.range ? '(' + opt.range + ')' || '' : void 0;
-      templateData['doctype'] = opt.doctypes ? opt.doctypes[0] : '';
-      if (opt.displayName && (opt.displayName !== '')) {
-        templateData['doctype'] = opt.displayName;
-      }
-      templateData['hasMetainfos'] = opt.hasMetaInfos ? true : void 0;
-      jqMetaInfos = $('#results-meta-infos');
-      templateData['isVisible'] = jqMetaInfos.is(':visible') ? true : void 0;
-      return ResultsGlobalControlsView.__super__.render.call(this, templateData);
-    };
-
     ResultsGlobalControlsView.prototype.confirmDeleteAll = function(e) {
-      var data, message,
+      var data,
         _this = this;
       e.preventDefault();
-      message = 'Are you ABSOLUTELY sure ? ';
-      message += 'It could lead to IRREVERSIBLE DAMAGES to your cozy environment.';
       data = {
-        title: t('Confirmation required'),
+        title: t('confirmation required'),
         body: t('are you absolutely sure'),
         confirm: t('delete permanently')
       };
@@ -1579,6 +1797,10 @@ window.require.register("views/results_global_controls_view", function(exports, 
             doctype: this.currentDoctype
           }),
           success: function(col, data) {
+            app.router.navigate('search', {
+              replace: true,
+              trigger: true
+            });
             return location.reload();
           }
         });
@@ -1591,11 +1813,13 @@ window.require.register("views/results_global_controls_view", function(exports, 
   
 });
 window.require.register("views/results_meta_infos_view", function(exports, require, module) {
-  var ResultsMetaInfosView, View, _ref,
+  var ResultsMetaInfosView, View, localStore, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   View = require('./../lib/view');
+
+  localStore = require('./../helpers/oLocalStorageHelper');
 
   module.exports = ResultsMetaInfosView = (function(_super) {
     __extends(ResultsMetaInfosView, _super);
@@ -1608,18 +1832,19 @@ window.require.register("views/results_meta_infos_view", function(exports, requi
     ResultsMetaInfosView.prototype.el = '#results-meta-infos';
 
     ResultsMetaInfosView.prototype.events = {
-      'click #close-about-doctype': 'showMetaInfos'
-    };
-
-    ResultsMetaInfosView.prototype.showMetaInfos = function(event) {
-      var jqObj;
-      jqObj = $('.about-doctype');
-      jqObj.removeClass('white-and-green');
-      return $('#results-meta-infos').hide();
+      'click #close-about-doctype': 'hideMetaInfos'
     };
 
     ResultsMetaInfosView.prototype.template = function() {
       return require('./templates/results_meta_infos');
+    };
+
+    ResultsMetaInfosView.prototype.hideMetaInfos = function(event) {
+      var jqObj;
+      jqObj = $('.about-doctype');
+      jqObj.removeClass('white-and-green');
+      $('#results-meta-infos').hide();
+      return localStore.setBoolean(localStore.keys.isMetaInfoVisible, false);
     };
 
     return ResultsMetaInfosView;
@@ -1628,7 +1853,8 @@ window.require.register("views/results_meta_infos_view", function(exports, requi
   
 });
 window.require.register("views/search_view", function(exports, require, module) {
-  var BaseView, MetaInfosModel, ResultCollectionView, ResultsGlobalControlsView, ResultsMetaInfosView, SearchView, _ref,
+  var BaseView, MetaInfosModel, ResultCollectionView, ResultsGlobalControlsView, ResultsMetaInfosView, SearchView, localStore, _ref,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -1642,10 +1868,13 @@ window.require.register("views/search_view", function(exports, require, module) 
 
   ResultsMetaInfosView = require('../views/results_meta_infos_view');
 
+  localStore = require('./../helpers/oLocalStorageHelper');
+
   module.exports = SearchView = (function(_super) {
     __extends(SearchView, _super);
 
     function SearchView() {
+      this.initialize = __bind(this.initialize, this);
       _ref = SearchView.__super__.constructor.apply(this, arguments);
       return _ref;
     }
@@ -1660,19 +1889,18 @@ window.require.register("views/search_view", function(exports, require, module) 
       'click #btn-scroll-up': 'hideThis'
     };
 
-    SearchView.prototype.hideThis = function(event) {
-      var jqObj;
-      jqObj = $(event.currentTarget);
-      return jqObj.hide();
-    };
-
     SearchView.prototype.initialize = function(options) {
       var metaInfosModel,
         _this = this;
       this.options = options;
       this.hasDoctype = this.options.doctypes && this.options.doctypes.length > 0;
+      this.hasPresentation = this.options.presentation != null;
       this.bindSearch();
       if (this.hasDoctype) {
+        if (!this.hasPresentation) {
+          this.applyStoredPresentation();
+        }
+        this.resultCollectionView = new ResultCollectionView(this.options);
         metaInfosModel = new MetaInfosModel();
         $('#results-meta-infos').empty();
         metaInfosModel.fetch({
@@ -1680,23 +1908,18 @@ window.require.register("views/search_view", function(exports, require, module) 
             doctype: this.options.doctypes[0]
           }),
           success: function(col, data) {
-            var resultsMetaInfosView;
-            if (data && data.name && (data.application || data.metadoctype)) {
-              resultsMetaInfosView = new ResultsMetaInfosView();
-              resultsMetaInfosView.render(data);
-              _this.options['hasMetaInfos'] = true;
-              _this.options['displayName'] = data.displayName;
-            }
-            return _this.resultsGlobalControlsView = new ResultsGlobalControlsView(_this.options);
+            _this.applyMetaInformation(data);
+            return _this.applyGlobalControls();
           }
         });
-        this.resultCollectionView = new ResultCollectionView(this.options);
         if (this.options.range != null) {
           return $(window).bind('scroll', function(e, isTriggered) {
-            var docHeight;
+            var docHeight, noMoreItems, winHeight;
             docHeight = $(document).height();
-            if (!_this.resultCollectionView.isLoading && !_this.resultCollectionView.noMoreItems) {
-              if ($(window).scrollTop() + $(window).height() === docHeight) {
+            noMoreItems = _this.resultCollectionView.noMoreItems;
+            if (!_this.resultCollectionView.isLoading && !noMoreItems) {
+              winHeight = $(window).scrollTop() + $(window).height();
+              if (winHeight === docHeight) {
                 _this.loadMore(isTriggered);
               }
             }
@@ -1721,8 +1944,40 @@ window.require.register("views/search_view", function(exports, require, module) 
       }
     };
 
+    SearchView.prototype.applyMetaInformation = function(data) {
+      var resultsMetaInfosView;
+      if (data && data.name && (data.application || data.metadoctype)) {
+        resultsMetaInfosView = new ResultsMetaInfosView();
+        resultsMetaInfosView.render(data);
+        this.options['hasMetaInfos'] = true;
+        this.options['displayName'] = data.displayName;
+        return this.options['resultsCollection'] = this.resultCollectionView;
+      }
+    };
+
+    SearchView.prototype.applyGlobalControls = function() {
+      return this.resultsGlobalControlsView = new ResultsGlobalControlsView(this.options);
+    };
+
+    SearchView.prototype.hideThis = function(event) {
+      var jqObj;
+      jqObj = $(event.currentTarget);
+      return jqObj.hide();
+    };
+
     SearchView.prototype.loadMore = function(isTriggered) {
       return this.resultCollectionView.loadNextPage(isTriggered);
+    };
+
+    SearchView.prototype.applyStoredPresentation = function() {
+      var key;
+      key = this.options.doctypes[0].toLowerCase();
+      key += localStore.keys.separation + localStore.keys.isListPresentation;
+      if (localStore.getBoolean(key)) {
+        return this.options['presentation'] = 'list';
+      } else {
+        return this.options['presentation'] = 'table';
+      }
     };
 
     SearchView.prototype.bindSearch = function() {
@@ -1826,7 +2081,7 @@ window.require.register("views/templates/modal_confirm", function(exports, requi
   return buf.join("");
   };
 });
-window.require.register("views/templates/result", function(exports, require, module) {
+window.require.register("views/templates/result_list", function(exports, require, module) {
   module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
   attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
   var buf = [];
@@ -1859,6 +2114,49 @@ window.require.register("views/templates/result", function(exports, require, mod
   return buf.join("");
   };
 });
+window.require.register("views/templates/result_table", function(exports, require, module) {
+  module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+  attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+  var buf = [];
+  with (locals || {}) {
+  var interp;
+   if (results['no_result']) {
+  {
+  buf.push('<em>' + escape((interp = results['no_result_msg']) == null ? '' : interp) + '</em>');
+  }
+   }
+   else {
+  {
+   for (iCount2 = 0; iCount2 < results['fields'].length; iCount2++) {
+  {
+   if (results['fields'][iCount2].cdbFieldTitle !== '') {
+  {
+  buf.push('<td');
+  buf.push(attrs({ 'title':("" + (results['fields'][iCount2].cdbFieldTitle) + "") }, {"title":true}));
+  buf.push('>');
+  var __val__ = results['fields'][iCount2].cdbFieldData
+  buf.push(null == __val__ ? "" : __val__);
+  buf.push('</td>');
+  }
+  } else {
+  {
+  buf.push('<td>');
+  var __val__ = results['fields'][iCount2].cdbFieldData
+  buf.push(null == __val__ ? "" : __val__);
+  buf.push('</td>');
+  }
+  }
+  }
+  }
+  {
+  buf.push('<td class="action"><button class="btn btn-xs remove-result"><i class="icon-trash bigger-120"></i></button></td>');
+  }
+  }
+   }
+  }
+  return buf.join("");
+  };
+});
 window.require.register("views/templates/results_global_controls", function(exports, require, module) {
   module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
   attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
@@ -1867,7 +2165,7 @@ window.require.register("views/templates/results_global_controls", function(expo
   var interp;
    if (doctype !== '') {
   {
-  buf.push('<h4>&nbsp;&nbsp;' + escape((interp = t('currently exploring')) == null ? '' : interp) + ' :&nbsp;<em>' + escape((interp = doctype) == null ? '' : interp) + ' ' + escape((interp = range) == null ? '' : interp) + ' &nbsp;</em>');
+  buf.push('<h4>&nbsp;&nbsp;' + escape((interp = t('currently exploring')) == null ? '' : interp) + ' :&nbsp;<em>' + escape((interp = doctype) == null ? '' : interp) + ' &nbsp;</em>');
    if (hasMetainfos) {
   {
    if (isVisible) {
@@ -1882,7 +2180,9 @@ window.require.register("views/templates/results_global_controls", function(expo
   }
   }
    }
-  buf.push('</h4><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button id="delete-all" class="btn btn-xs"><span></span><i class="icon-trash bigger-120"></i></button></div>');
+  buf.push('&nbsp;<i');
+  buf.push(attrs({ "class": ('view-switcher') + ' ' + (icon_presentation) }, {"class":true}));
+  buf.push('></i></h4><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button id="delete-all" class="btn btn-xs"><span></span><i class="icon-trash bigger-120"></i></button></div>');
   }
   }
   }
@@ -1938,7 +2238,7 @@ window.require.register("views/templates/search", function(exports, require, mod
   var buf = [];
   with (locals || {}) {
   var interp;
-  buf.push('<div id="all-result"><div id="basic-accordion" class="accordion-style1 panel-group"></div><div class="load-more-result"><span>' + escape((interp = t('load more results')) == null ? '' : interp) + '&nbsp;</span><br/><i class="icon-circle-arrow-down"></i></div></div>');
+  buf.push('<div class="introduction"><div class="page-header"><h1>' + escape((interp = t('welcome title')) == null ? '' : interp) + '</h1></div><p>' + escape((interp = t('welcome message part1')) == null ? '' : interp) + '</p><p>' + escape((interp = t('welcome message part2')) == null ? '' : interp) + '</p></div><div id="all-result"><div id="basic-accordion" class="accordion-style1 panel-group"></div><div id="basic-table" class="table-responsive"><table id="result-view-as-table" class="table table-striped table-bordered table-hover"><tbody></tbody></table></div><div class="load-more-result"><span>' + escape((interp = t('load more results')) == null ? '' : interp) + '&nbsp;</span><br/><i class="icon-circle-arrow-down"></i></div></div>');
   }
   return buf.join("");
   };

@@ -15,3 +15,8 @@ module.exports =
     "about": "About"
     "applications using it": "Applications using it"
     "fields information":"Fields information"
+    "sources":"sources"
+    "welcome title": "Welcome to your data explorer"
+    "welcome message part1": "This application allows you to find any data in your cozy environement."
+    "welcome message part2": "Please, explore the menu and select a type of document that you want to retrieve."
+    "button toggle visibility": "Show / Hide columns"

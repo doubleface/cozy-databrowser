@@ -513,6 +513,9 @@ body {
 .firstLetterUp {
   text-transform: capitalize;
 }
+.profile-info-row {
+  min-height: 31px;
+}
 .profile-info-name {
   width: 180px;
 }
@@ -538,7 +541,8 @@ body {
 }
 #launch-search,
 .about-doctype,
-#close-about-doctype {
+#close-about-doctype,
+.view-switcher {
   cursor: pointer;
 }
 .white-and-green {
@@ -561,6 +565,18 @@ body {
 .modal-confirm-text {
   color: #d9534f;
   font-weight: bold;
+}
+.page-header {
+  margin-top: 0;
+}
+#result-view-as-table th {
+  text-align: center;
+}
+#result-view-as-table th .sorting-disable {
+  color: #aaa;
+}
+#result-view-as-table td.action {
+  text-align: center;
 }
 /* side navigation */
 li [class^="icon-"],

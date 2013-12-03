@@ -25,7 +25,7 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         @listenTo @collection, "reset", @onReset
         super
 
-    showMinimizedMenu: () ->
+    showMinimizedMenu: ->
         jqLiContainer = $(event.currentTarget)
         jqSubmenu = jqLiContainer.find(' .submenu:eq(0)')
         if @isMenuMinimized
@@ -74,7 +74,7 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         if not submenuIsVisible
             if @isMenuMinimized and jqParentUl.hasClass 'nav-list' then return
             jqParentUl.find('.open:eq(0)').find(' .submenu:eq(0)').each ->
-                if $(this) isnt jqSubmenu #and not $(this.parentNode).hasClass 'active'
+                if $(this) isnt jqSubmenu
                     $(this).slideUp(200).closest('li').removeClass 'open'
 
             @applySlimscroll jqSubmenu
@@ -83,21 +83,27 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         jqSubmenu.slideToggle 200
         parentLi.toggleClass 'open'
 
-
-
         #Add arrow icon behavior
-        $('.icon-angle-down').addClass('icon-angle-right').removeClass('icon-angle-down')
-        $('.open > a > .icon-angle-right').addClass('icon-angle-down').removeClass('icon-angle-right')
+        $('.icon-angle-down')
+            .addClass('icon-angle-right')
+            .removeClass('icon-angle-down')
+        $('.open > a > .icon-angle-right')
+            .addClass('icon-angle-down')
+            .removeClass('icon-angle-right')
 
         return false
 
     applySlimscroll : (jqSubmenu)->
         @destroySlimscrolls()
         hasSubmenu = jqSubmenu.length > 0
-        isFirstSubmenu = hasSubmenu and jqSubmenu.parent().closest('.submenu').length is 0
-        navHeight = $('.nav-list > li').length * 46 + $('#sidebar-collapse').height() + $('.nav-search:eq(0)').height()
+        hasParentSubmenu = jqSubmenu.parent().closest('.submenu').length > 0
+        isFirstSubmenu = hasSubmenu and not hasParentSubmenu
+        collaspseHeight = $('#sidebar-collapse').height()
+        searchHeight = $('.nav-search:eq(0)').height()
+        navlistHeight = $('.nav-list > li').length * 46
+        navHeight = navlistHeight + collaspseHeight + searchHeight
         if @isMenuMinimized
-            navHeight = $('.nav-search:eq(0)').height() + 25
+            navHeight = searchHeight + 25
         menuHeight = jqSubmenu.height()
         fullHeight = navHeight + menuHeight
         winHeight = $(window).height()
@@ -131,8 +137,9 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
 
         collpase = collpase || false
         sidebar = $('#sidebar')
-
-        icon = document.getElementById('sidebar-collapse').querySelector('[class*="icon-"]')
+        collapseId = 'sidebar-collapse'
+        iconClass ='[class*="icon-"]'
+        icon = document.getElementById(collapseId).querySelector iconClass
         icon1 = icon.getAttribute('data-icon1')
         icon2 = icon.getAttribute('data-icon2')
 
@@ -151,7 +158,7 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
 
         #sidebar menu collapser
         $('#sidebar-collapse').on 'click', =>
-            @isMenuMinimized = $('#sidebar').hasClass('menu-min')
+            @isMenuMinimized = $('#sidebar').hasClass 'menu-min'
             @collapseSidebar !@isMenuMinimized
 
     bindMenuResponsive: ->

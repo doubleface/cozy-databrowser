@@ -62,7 +62,8 @@ class SearchEngine extends CoreClass
                         doctype = doc.value['docType'].toLowerCase()
                         doc.value['idField'] = newFields.idField[doctype]
                         doc.value['descField'] = newFields.descField[doctype]
-                        doc.value['displayName'] = newFields.displayName[doctype]
+                        displayedName = newFields.displayName[doctype]
+                        doc.value['displayName'] = displayedName
                         documents.push doc.value
 
                 res.send(documents)

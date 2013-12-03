@@ -1,6 +1,14 @@
+.introduction
+    .page-header
+        h1 #{t('welcome title')}
+    p #{t('welcome message part1')}
+    p #{t('welcome message part2')}
 #all-result
     #basic-accordion.accordion-style1.panel-group
-    div.load-more-result
+    #basic-table.table-responsive
+            table#result-view-as-table.table.table-striped.table-bordered.table-hover
+                tbody
+    .load-more-result
         span #{t('load more results')}&nbsp;
         br
         i.icon-circle-arrow-down

@@ -4,8 +4,8 @@ module.exports =
     "currently exploring": "Vue actuelle"
     "confirmation required": "Confirmation requise"
     "are you absolutely sure": """
-        Etes vous VRAIMENT sur ?
-        Cela peut causer des DOMMAGES IRREVERSIBLES a votre cozy.
+        Etes vous VRAIMENT sûr ?
+        Cela peut causer des DOMMAGES IRREVERSIBLES à votre Cozy.
     """
     "delete permanently": "Supprimer définitivement"
     "cancel": "Annuler"
@@ -15,3 +15,8 @@ module.exports =
     "A propos": "About"
     "applications using it": "Applications l'utilisant"
     "fields information":"Information sur les champs"
+    "sources":"sources"
+    "welcome title": "Bienvenue sur votre explorateur de données"
+    "welcome message part1": "Cette application vous permet de visualiser toutes les données présentes dans votre Cozy."
+    "welcome message part2": "Déroulez le menu et sélectionnez un type de données pour consulter les documents en relation."
+    "button toggle visibility": "Montrer / Cacher des colonnes"

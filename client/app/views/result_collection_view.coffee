@@ -1,20 +1,37 @@
 ViewCollection = require '../lib/view_collection'
 ResultCollection = require '../collections/result_collection'
-ResultView = require './result_view'
+ResultView = require './result_list_view'
+TableResultView = require './result_table_view'
 
 module.exports = class ResultCollectionView extends ViewCollection
 
-    itemview: ResultView
-    collectionEl :'#basic-accordion'
+    itemview: TableResultView
+    collectionEl :'#result-view-as-table'
     isLoading : false
     noMoreItems : false
 
     initialize: (options) ->
         @options = options
         @collection = new ResultCollection()
+        if @options.presentation?
+            switch @options.presentation
+                when 'list'
+                    @itemview = ResultView
+                    @collectionEl ='#basic-accordion'
+                when 'table'
+                    @itemview = TableResultView
+                    @collectionEl = '#result-view-as-table'
+                else
+                    @itemview = TableResultView
+                    @collectionEl = '#result-view-as-table'
+
         super
         if @options.doctypes?
-            @collection.fetch {
+            if @options.presentation is 'table'
+                @collection.nbPerPage = 0
+                $('#results-list').undelegate 'th .icon-eye-close', 'click'
+                $('#results-list').undelegate 'button.show-col', 'click'
+            @collection.fetch
                 data: $.param(@options)
                 success : (col, data) =>
                     $('.loading-image').remove()
@@ -27,13 +44,41 @@ module.exports = class ResultCollectionView extends ViewCollection
                         else
                             @noMoreItems = true
                             $('.load-more-result').hide()
+                    if @options.presentation is 'table'
+                        storedPath = 'DataTables_'+ window.location.hash
+                        $('#result-view-as-table').dataTable
+                            "aoColumnDefs": [
+                                {
+                                    bSortable: false,
+                                    aTargets: [ 'cozy_docType', 'cozy_action' ]
+                                },
+                                {
+                                    bVisible: false,
+                                    aTargets: ['cozy__id', 'cozy_docType']
+                                }
+                            ]
+                            "oColVis":
+                                "iOverlayFade": 200
+                                buttonText: t 'button toggle visibility'
+                            "sDom": 'CRt'
+                            "bStateSave": true
+                            "fnStateSave": (oSettings, oData) ->
+                                stringifiedData = JSON.stringify(oData)
+                                localStorage.setItem storedPath, stringifiedData
+
+                            "fnStateLoad": (oSettings) ->
+                                loadedData = localStorage.getItem(storedPath)
+                                return JSON.parse loadedData
+
+
                 error : =>
                     $('.loading-image').remove()
                     @noMoreItems = true
                     @displayLoadingError()
-            }
+
 
     render: ->
+        $('.introduction').hide()
         if @options? and @options.doctypes?
             loader = '<div class="loading-image">'
             loader += '<img src="images/ajax-loader.gif" />'

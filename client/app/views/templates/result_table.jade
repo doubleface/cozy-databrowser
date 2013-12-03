@@ -1,0 +1,16 @@
+- if (results['no_result']) {
+    em #{results['no_result_msg']}
+- }
+- else {
+    - for (iCount2 = 0; iCount2 < results['fields'].length; iCount2++) {
+        - if (results['fields'][iCount2].cdbFieldTitle !== '') {
+            td(title="#{results['fields'][iCount2].cdbFieldTitle}")!= results['fields'][iCount2].cdbFieldData
+        -} else {
+            td!= results['fields'][iCount2].cdbFieldData
+            -}
+    -}
+        td.action
+            button.btn.btn-xs.remove-result
+                i.icon-trash.bigger-120
+
+- }
