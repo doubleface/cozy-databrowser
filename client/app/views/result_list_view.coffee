@@ -18,7 +18,6 @@ module.exports = class ResultView extends View
         require './templates/result_list'
 
     render: =>
-        console.log @manageResultsForView()
         super
             results : @manageResultsForView()
     #--------------------------END VIEW BEHAVIOR--------------------------------
