@@ -13,6 +13,24 @@ module.exports = class ResultView extends View
         'mouseover .remove-result' : 'convertButtonToDanger'
         'mouseout .remove-result' : 'convertButtonToClassic'
 
+    #-------------------------BEGIN VIEW BEHAVIOR-------------------------------
+    template: ->
+        require './templates/result_list'
+
+    render: =>
+        console.log @manageResultsForView()
+        super
+            results : @manageResultsForView()
+    #--------------------------END VIEW BEHAVIOR--------------------------------
+
+
+    #----------------------------BEGIN ACCORDION PATCH--------------------------
+    blurIt : (e) ->
+        $(e.currentTarget).blur()
+    #-----------------------------END ACCORDION PATCH---------------------------
+
+
+    #------------------------------BEGIN DELETE ONE-----------------------------
     convertButtonToDanger: (event) ->
         jqObj = $(event.currentTarget)
         jqObj.addClass 'btn-danger'
@@ -21,10 +39,35 @@ module.exports = class ResultView extends View
         jqObj = $(event.currentTarget)
         jqObj.removeClass 'btn-danger'
 
-    render: =>
-        super
-            results : @manageResultsForView()
+    confirmRemoveResult : (e) ->
+        that = this
+        e.preventDefault()
+        data =
+            title: t 'Confirmation required'
+            body: t 'are you absolutely sure'
+            confirm: t 'delete permanently'
 
+        $("body").prepend @templateModal(data)
+        $("#confirmation-dialog").modal()
+        $("#confirmation-dialog").modal("show")
+        $("#confirmation-dialog-confirm").unbind 'click'
+        $("#confirmation-dialog-confirm").bind "click", ->
+            that.removeResult()
+
+    removeResult : ->
+
+        #set id for the native backbone delete action
+        @model.set 'id', @model.get('_id')
+
+        #remove
+        @model.destroy
+            data : 'id=' + @model.get('id')
+            success: =>
+                @render
+    #-------------------------------END DELETE ONE------------------------------
+
+
+    #--------------------------BEGIN RESULT PREPARATION-------------------------
     manageResultsForView: ->
         attr = @model.attributes
         count = @model.get('count')
@@ -102,8 +145,8 @@ module.exports = class ResultView extends View
                 typeOfField = typeof field
                 isSimpleType = ($.inArray typeOfField, simpleTypes) isnt -1
                 if isSimpleType
+                    dataId = 'cdbFieldData'
                     if fieldName is 'docType'
-                        dataId = 'cdbFieldData'
                         fields[iCounter][dataId] = attr.displayName || field
                     else
                         fields[iCounter][dataId] = field
@@ -138,66 +181,4 @@ module.exports = class ResultView extends View
 
             iCounter++
         return fields
-
-
-
-    template: ->
-        require './templates/result_list'
-
-    blurIt : (e) ->
-        $(e.currentTarget).blur()
-
-    showFieldDescription : (e) ->
-        jqObj = $(e.currentTarget)
-        if jqObj.attr("data-title") isnt ""
-            if e.type is 'mouseenter'
-                offsetLeft = jqObj.offset().left
-                offsetTop = jqObj.offset().top
-                accordionOffsetLeft = $('#basic-accordion.accordion')
-                    .offset()
-                    .left
-                accordionOffsetTop = $('#basic-accordion.accordion')
-                    .offset()
-                    .top
-                left = offsetLeft - accordionOffsetLeft - 5
-                top = offsetTop - accordionOffsetTop - 7
-                width = jqObj.width()
-                $('.info-box .field-title').css {'padding-left' : width + 18}
-                title = jqObj.attr("data-title")
-                $('.info-box .field-description').empty().html title
-                infoBoxCss =
-                    'z-index' : '5'
-                    'left' : left
-                    'top' : top
-                $('.info-box').css infoBoxCss
-                $('.accordion .label').css {'z-index' : 'inherit'}
-                jqObj.css({'z-index' : '10'})
-                $('.info-box').stop().fadeTo(200, 1)
-            else
-                $('.info-box').stop().fadeTo(200, 0)
-
-    confirmRemoveResult : (e) ->
-        that = this
-        e.preventDefault()
-        data =
-            title: t 'Confirmation required'
-            body: t 'are you absolutely sure'
-            confirm: t 'delete permanently'
-
-        $("body").prepend @templateModal(data)
-        $("#confirmation-dialog").modal()
-        $("#confirmation-dialog").modal("show")
-        $("#confirmation-dialog-confirm").unbind 'click'
-        $("#confirmation-dialog-confirm").bind "click", ->
-            that.removeResult()
-
-    removeResult : ->
-
-        #set id for the native backbone delete action
-        @model.set('id', @model.get('_id'))
-
-        #remove
-        @model.destroy
-            data : 'id=' + @model.get('id')
-            success: =>
-                @render
+    #---------------------------END RESULT PREPARATION--------------------------
