@@ -49,9 +49,12 @@ module.exports = class ResultCollectionView extends ViewCollection
                         $('#result-view-as-table').dataTable
                             "aoColumnDefs": [
                                 {
-                                    bSortable: false
-                                    bVisible: false
+                                    bSortable: false,
                                     aTargets: [ 'cozy_docType', 'cozy_action' ]
+                                },
+                                {
+                                    bVisible: false,
+                                    aTargets: ['cozy__id', 'cozy_docType']
                                 }
                             ]
                             "oColVis":

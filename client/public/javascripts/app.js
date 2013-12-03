@@ -1011,8 +1011,10 @@ window.require.register("views/result_collection_view", function(exports, requir
                 "aoColumnDefs": [
                   {
                     bSortable: false,
-                    bVisible: false,
                     aTargets: ['cozy_docType', 'cozy_action']
+                  }, {
+                    bVisible: false,
+                    aTargets: ['cozy__id', 'cozy_docType']
                   }
                 ],
                 "oColVis": {
