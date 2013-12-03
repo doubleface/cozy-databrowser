@@ -106,12 +106,12 @@ module.exports = class SearchView extends BaseView
         @resultCollectionView.loadNextPage isTriggered
 
     applyStoredPresentation : ->
-        key = @options.doctypes[0].toLowerCase()
-        key += localStore.keys.separation + localStore.keys.isListPresentation
-        if localStore.getBoolean key
-            @options['presentation'] = 'list'
-        else
-            @options['presentation'] = 'table'
+        #key = @options.doctypes[0].toLowerCase()
+        #key += localStore.keys.separation + localStore.keys.isListPresentation
+        #if localStore.getBoolean key
+        @options['presentation'] = 'list'
+        #else
+        #    @options['presentation'] = 'table'
     #------------------------------END COLLECTION-------------------------------
 
 
