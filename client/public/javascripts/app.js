@@ -1914,8 +1914,7 @@ window.require.register("views/search_view", function(exports, require, module) 
         resultsMetaInfosView = new ResultsMetaInfosView();
         resultsMetaInfosView.render(data);
         this.options['hasMetaInfos'] = true;
-        this.options['displayName'] = data.displayName;
-        return this.options['resultsCollection'] = this.resultCollectionView;
+        return this.options['displayName'] = data.displayName;
       }
     };
 

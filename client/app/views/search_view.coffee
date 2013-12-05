@@ -84,7 +84,7 @@ module.exports = class SearchView extends BaseView
             resultsMetaInfosView.render data
             @options['hasMetaInfos'] = true
             @options['displayName'] = data.displayName
-            @options['resultsCollection'] = @resultCollectionView
+            #@options['resultsCollection'] = @resultCollectionView
     #---------------------------END META INFORMATION ---------------------------
 
 
