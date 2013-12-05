@@ -12,7 +12,7 @@ module.exports =
     "load more results": "Charger plus de résultats"
     "delete all": "Tout supprimer"
     "search-placeholder": "Recherche ..."
-    "A propos": "About"
+    "about": "A propos de"
     "applications using it": "Applications l'utilisant"
     "fields information":"Information sur les champs"
     "sources":"sources"

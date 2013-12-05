@@ -512,7 +512,7 @@ window.require.register("locales/fr", function(exports, require, module) {
     "load more results": "Charger plus de résultats",
     "delete all": "Tout supprimer",
     "search-placeholder": "Recherche ...",
-    "A propos": "About",
+    "about": "A propos de",
     "applications using it": "Applications l'utilisant",
     "fields information": "Information sur les champs",
     "sources": "sources",
@@ -1393,7 +1393,6 @@ window.require.register("views/result_table_view", function(exports, require, mo
 
     ResultTableView.prototype.render = function() {
       var currentResults;
-      console.debug(this.model.attributes);
       currentResults = this.manageResultsForView();
       if (currentResults.count === 1) {
         this.injectThead(currentResults);
