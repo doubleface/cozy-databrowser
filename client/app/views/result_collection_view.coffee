@@ -9,6 +9,7 @@ module.exports = class ResultCollectionView extends ViewCollection
     collectionEl :'#result-view-as-table'
     isLoading : false
     noMoreItems : false
+    firstRender: true
 
     initialize: (options) ->
         @options = options
@@ -31,7 +32,14 @@ module.exports = class ResultCollectionView extends ViewCollection
                 @collection.nbPerPage = 0
                 $('#results-list').undelegate 'th .icon-eye-close', 'click'
                 $('#results-list').undelegate 'button.show-col', 'click'
+
+            $('#all-result').append """
+                <div class="loading-image">'
+                    <img src="images/ajax-loader.gif" />'
+                </div>"""
+
             @collection.fetch
+                reset: true
                 data: $.param(@options)
                 success : (col, data) =>
                     $('.loading-image').remove()
@@ -44,48 +52,40 @@ module.exports = class ResultCollectionView extends ViewCollection
                         else
                             @noMoreItems = true
                             $('.load-more-result').hide()
-                    if @options.presentation is 'table'
-                        storedPath = 'DataTables_'+ window.location.hash
-                        $('#result-view-as-table').dataTable
-                            "aoColumnDefs": [
-                                {
-                                    bSortable: false,
-                                    aTargets: [ 'cozy_docType', 'cozy_action' ]
-                                },
-                                {
-                                    bVisible: false,
-                                    aTargets: ['cozy__id', 'cozy_docType']
-                                }
-                            ]
-                            "oColVis":
-                                "iOverlayFade": 200
-                                buttonText: t 'button toggle visibility'
-                            "sDom": 'CRt'
-                            "bStateSave": true
-                            "fnStateSave": (oSettings, oData) ->
-                                stringifiedData = JSON.stringify(oData)
-                                localStorage.setItem storedPath, stringifiedData
-
-                            "fnStateLoad": (oSettings) ->
-                                loadedData = localStorage.getItem(storedPath)
-                                return JSON.parse loadedData
-
 
                 error : =>
                     $('.loading-image').remove()
                     @noMoreItems = true
                     @displayLoadingError()
 
+    onReset: ->
+        console.log "reset"
+        @oldFields = @collection.fields()
+        @buildTable false
+        super
 
     render: ->
+        console.log "render"
         $('.introduction').hide()
-        if @options? and @options.doctypes?
-            loader = '<div class="loading-image">'
-            loader += '<img src="images/ajax-loader.gif" />'
-            loader += '</div>'
-            $('#all-result').append(loader)
-        view.$el.detach() for id, view of @views
-        super
+        if @options.presentation is 'table'
+            if @firstRender
+                @buildTable true
+                @firstRender = false
+            else
+                @buildTable false
+
+        # view.$el.detach() for id, view of @views
+        @afterRender()
+
+    appendView: (view) ->
+        console.log "appendView", view.$el.find('td').length, @collection.fields().length
+        if @options.presentation is 'table'
+            $('#result-view-as-table').dataTable().fnAddTr(view.$el[0])
+        else
+            super
+
+    itemViewOptions: ->
+        fields: _.without @collection.fields(), 'count'
 
     search : (content) ->
         @options['query'] = content
@@ -114,6 +114,11 @@ module.exports = class ResultCollectionView extends ViewCollection
                         if @noMoreItems
                             $('.load-more-result').hide()
                         @isLoading = false
+
+                        # force re-render if new fields have appeared
+                        if @oldFields.length isnt @collection.fields().length
+                            @render()
+
                         if callback?
                             callback()
                     else
@@ -135,3 +140,49 @@ module.exports = class ResultCollectionView extends ViewCollection
         errorMsg = 'An error occurs during the loading process'
         $('.load-more-result span').text errorMsg
         $('.load-more-result').show()
+
+
+    makeTHead: () ->
+        console.log "makeTHead", @collection.fields()
+        $('#result-view-as-table').find('thead').remove()
+        htmlThead = '<thead><tr>'
+        for fieldName in @collection.fields()
+            htmlThead += "<th class=\"cozy_#{fieldName}\">#{fieldName}</th>"
+        htmlThead += '<th class="cozy_action">Action</th>'
+        htmlThead += '</tr></thead>'
+        $('#result-view-as-table').prepend htmlThead
+
+    buildTable: (firstRender) ->
+        console.log "buildTable", firstRender
+        if not firstRender
+            table = $('#result-view-as-table').dataTable()
+            table.fnDestroy()
+
+        @makeTHead()
+
+        storedPath = 'DataTables_'+ window.location.hash
+        $('#result-view-as-table').dataTable
+            "bRetrieve": not firstRender
+            "bPaginate": false
+            "aoColumnDefs": [
+                {
+                    bSortable: false,
+                    aTargets: [ 'cozy_docType', 'cozy_action' ]
+                },
+                {
+                    bVisible: false,
+                    aTargets: ['cozy__id', 'cozy_docType']
+                }
+            ]
+            "oColVis":
+                "iOverlayFade": 200
+                buttonText: t 'button toggle visibility'
+            "sDom": 'CRt'
+            "bStateSave": true
+            "fnStateSave": (oSettings, oData) ->
+                stringifiedData = JSON.stringify(oData)
+                localStorage.setItem storedPath, stringifiedData
+
+            "fnStateLoad": (oSettings) ->
+                loadedData = localStorage.getItem(storedPath)
+                return JSON.parse loadedData

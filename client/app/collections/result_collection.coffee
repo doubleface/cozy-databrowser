@@ -22,3 +22,8 @@ module.exports = class ResultCollection extends Backbone.Collection
         #return search url with query
         return 'search' + query
 
+
+    fields: ->
+        out = []
+        @each (model) -> out = out.concat Object.keys model.toJSON()
+        return _.uniq out
