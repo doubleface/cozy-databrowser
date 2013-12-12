@@ -33,15 +33,12 @@ module.exports = class ResultCollectionView extends ViewCollection
                 $('#results-list').undelegate 'th .icon-eye-close', 'click'
                 $('#results-list').undelegate 'button.show-col', 'click'
 
-            $('#all-result').append """
-                <div class="loading-image">'
-                    <img src="images/ajax-loader.gif" />'
-                </div>"""
-
+            @isLoading = true
             @collection.fetch
                 reset: true
                 data: $.param(@options)
                 success : (col, data) =>
+                    @isLoading = false
                     $('.loading-image').remove()
                     #native size of the window can trigger next pages and scroll
                     if @options.range? and @options.doctypes?
@@ -54,18 +51,19 @@ module.exports = class ResultCollectionView extends ViewCollection
                             $('.load-more-result').hide()
 
                 error : =>
+                    @isLoading = false
                     $('.loading-image').remove()
                     @noMoreItems = true
                     @displayLoadingError()
 
     onReset: ->
-        console.log "reset"
+        # console.log "reset", @itemViewOptions().fields
         @oldFields = @collection.fields()
         @buildTable false
         super
 
     render: ->
-        console.log "render"
+        # console.log "render"
         $('.introduction').hide()
         if @options.presentation is 'table'
             if @firstRender
@@ -76,16 +74,21 @@ module.exports = class ResultCollectionView extends ViewCollection
 
         # view.$el.detach() for id, view of @views
         @afterRender()
+        if @isLoading
+            $('#all-result').append """
+                <div class="loading-image">
+                    <img src="images/ajax-loader.gif" />
+                </div>"""
 
     appendView: (view) ->
-        console.log "appendView", view.$el.find('td').length, @collection.fields().length
+        # console.log "appendView", view.$el.find('td').length, @itemViewOptions().fields.length
         if @options.presentation is 'table'
             $('#result-view-as-table').dataTable().fnAddTr(view.$el[0])
         else
             super
 
     itemViewOptions: ->
-        fields: _.without @collection.fields(), 'count'
+        fields: _.without @oldFields, 'count'
 
     search : (content) ->
         @options['query'] = content
@@ -93,6 +96,7 @@ module.exports = class ResultCollectionView extends ViewCollection
             data: $.param(@options)
 
     loadNextPage : (isTriggered, callback) ->
+        console.log "nextPage"
         @options['deleted'] = @deleted
         if !@noMoreItems
             @isLoading = true
@@ -116,7 +120,11 @@ module.exports = class ResultCollectionView extends ViewCollection
                         @isLoading = false
 
                         # force re-render if new fields have appeared
-                        if @oldFields.length isnt @collection.fields().length
+                        if @oldFields.length isnt
+                          _.without(@collection.fields(), 'count').length
+                            console.log "DIFF FIELDS"
+                            console.log @oldFields
+                            console.log @collection.fields()
                             @render()
 
                         if callback?
@@ -124,6 +132,7 @@ module.exports = class ResultCollectionView extends ViewCollection
                     else
                         @noMoreItems = true
                 error: ->
+                    @isLoading = false
                     @noMoreItems = true
                     @displayLoadingError()
 
@@ -143,17 +152,16 @@ module.exports = class ResultCollectionView extends ViewCollection
 
 
     makeTHead: () ->
-        console.log "makeTHead", @collection.fields()
         $('#result-view-as-table').find('thead').remove()
         htmlThead = '<thead><tr>'
-        for fieldName in @collection.fields()
+        for fieldName in @itemViewOptions().fields
             htmlThead += "<th class=\"cozy_#{fieldName}\">#{fieldName}</th>"
         htmlThead += '<th class="cozy_action">Action</th>'
         htmlThead += '</tr></thead>'
         $('#result-view-as-table').prepend htmlThead
 
     buildTable: (firstRender) ->
-        console.log "buildTable", firstRender
+        # console.log "buildTable", firstRender
         if not firstRender
             table = $('#result-view-as-table').dataTable()
             table.fnDestroy()

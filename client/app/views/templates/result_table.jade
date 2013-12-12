@@ -3,7 +3,7 @@ if results['no_result']
 else
     each fieldname in fields
         if results['fields'][fieldname] == undefined
-            td NA(#{fieldname})
+            td NA
         else if results['fields'][fieldname].cdbFieldTitle !== ''
             td(title=results['fields'][fieldname].cdbFieldTitle)
                 != results['fields'][fieldname].cdbFieldData

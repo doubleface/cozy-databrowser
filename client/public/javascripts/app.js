@@ -1031,11 +1031,12 @@ module.exports = ResultCollectionView = (function(_super) {
         $('#results-list').undelegate('th .icon-eye-close', 'click');
         $('#results-list').undelegate('button.show-col', 'click');
       }
-      $('#all-result').append("<div class=\"loading-image\">'\n    <img src=\"images/ajax-loader.gif\" />'\n</div>");
+      this.isLoading = true;
       return this.collection.fetch({
         reset: true,
         data: $.param(this.options),
         success: function(col, data) {
+          _this.isLoading = false;
           $('.loading-image').remove();
           if ((_this.options.range != null) && (_this.options.doctypes != null)) {
             if (data.length === _this.collection.nbPerPage) {
@@ -1048,6 +1049,7 @@ module.exports = ResultCollectionView = (function(_super) {
           }
         },
         error: function() {
+          _this.isLoading = false;
           $('.loading-image').remove();
           _this.noMoreItems = true;
           return _this.displayLoadingError();
@@ -1057,14 +1059,12 @@ module.exports = ResultCollectionView = (function(_super) {
   };
 
   ResultCollectionView.prototype.onReset = function() {
-    console.log("reset");
     this.oldFields = this.collection.fields();
     this.buildTable(false);
     return ResultCollectionView.__super__.onReset.apply(this, arguments);
   };
 
   ResultCollectionView.prototype.render = function() {
-    console.log("render");
     $('.introduction').hide();
     if (this.options.presentation === 'table') {
       if (this.firstRender) {
@@ -1074,11 +1074,13 @@ module.exports = ResultCollectionView = (function(_super) {
         this.buildTable(false);
       }
     }
-    return this.afterRender();
+    this.afterRender();
+    if (this.isLoading) {
+      return $('#all-result').append("<div class=\"loading-image\">\n    <img src=\"images/ajax-loader.gif\" />\n</div>");
+    }
   };
 
   ResultCollectionView.prototype.appendView = function(view) {
-    console.log("appendView", view.$el.find('td').length, this.collection.fields().length);
     if (this.options.presentation === 'table') {
       return $('#result-view-as-table').dataTable().fnAddTr(view.$el[0]);
     } else {
@@ -1088,7 +1090,7 @@ module.exports = ResultCollectionView = (function(_super) {
 
   ResultCollectionView.prototype.itemViewOptions = function() {
     return {
-      fields: _.without(this.collection.fields(), 'count')
+      fields: _.without(this.oldFields, 'count')
     };
   };
 
@@ -1101,6 +1103,7 @@ module.exports = ResultCollectionView = (function(_super) {
 
   ResultCollectionView.prototype.loadNextPage = function(isTriggered, callback) {
     var _this = this;
+    console.log("nextPage");
     this.options['deleted'] = this.deleted;
     if (!this.noMoreItems) {
       this.isLoading = true;
@@ -1126,7 +1129,10 @@ module.exports = ResultCollectionView = (function(_super) {
               $('.load-more-result').hide();
             }
             _this.isLoading = false;
-            if (_this.oldFields.length !== _this.collection.fields().length) {
+            if (_this.oldFields.length !== _.without(_this.collection.fields(), 'count').length) {
+              console.log("DIFF FIELDS");
+              console.log(_this.oldFields);
+              console.log(_this.collection.fields());
               _this.render();
             }
             if (callback != null) {
@@ -1137,6 +1143,7 @@ module.exports = ResultCollectionView = (function(_super) {
           }
         },
         error: function() {
+          this.isLoading = false;
           this.noMoreItems = true;
           return this.displayLoadingError();
         }
@@ -1170,10 +1177,9 @@ module.exports = ResultCollectionView = (function(_super) {
 
   ResultCollectionView.prototype.makeTHead = function() {
     var fieldName, htmlThead, _i, _len, _ref1;
-    console.log("makeTHead", this.collection.fields());
     $('#result-view-as-table').find('thead').remove();
     htmlThead = '<thead><tr>';
-    _ref1 = this.collection.fields();
+    _ref1 = this.itemViewOptions().fields;
     for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
       fieldName = _ref1[_i];
       htmlThead += "<th class=\"cozy_" + fieldName + "\">" + fieldName + "</th>";
@@ -1185,7 +1191,6 @@ module.exports = ResultCollectionView = (function(_super) {
 
   ResultCollectionView.prototype.buildTable = function(firstRender) {
     var storedPath, table;
-    console.log("buildTable", firstRender);
     if (!firstRender) {
       table = $('#result-view-as-table').dataTable();
       table.fnDestroy();
@@ -2181,7 +2186,7 @@ else
 
 if ( results['fields'][fieldname] == undefined)
 {
-buf.push('<td>NA(' + escape((interp = fieldname) == null ? '' : interp) + ')</td>');
+buf.push('<td>NA</td>');
 }
 else if ( results['fields'][fieldname].cdbFieldTitle !== '')
 {
@@ -2208,7 +2213,7 @@ buf.push('</td>');
 
 if ( results['fields'][fieldname] == undefined)
 {
-buf.push('<td>NA(' + escape((interp = fieldname) == null ? '' : interp) + ')</td>');
+buf.push('<td>NA</td>');
 }
 else if ( results['fields'][fieldname].cdbFieldTitle !== '')
 {
