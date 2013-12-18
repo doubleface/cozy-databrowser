@@ -171,11 +171,25 @@ module.exports = ResultCollection = (function(_super) {
 
   ResultCollection.prototype.fields = function() {
     var out;
-    out = [];
+    out = {};
     this.each(function(model) {
-      return out = out.concat(Object.keys(model.toJSON()));
+      var desc, field, _i, _len, _ref1, _ref2, _results;
+      _ref1 = Object.keys(model.toJSON());
+      _results = [];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        field = _ref1[_i];
+        if (field === "count" || field === "descField" || field === "displayName" || field === "idField") {
+          continue;
+        }
+        desc = (_ref2 = model.get('descField')) != null ? _ref2[field] : void 0;
+        _results.push(out[field] != null ? out[field] : out[field] = {
+          cdbFieldDescription: (desc != null ? desc.description : void 0) || '',
+          cdbFieldName: (desc != null ? desc.displayName : void 0) || field
+        });
+      }
+      return _results;
     });
-    return _.uniq(out);
+    return out;
   };
 
   return ResultCollection;
@@ -1060,7 +1074,9 @@ module.exports = ResultCollectionView = (function(_super) {
 
   ResultCollectionView.prototype.onReset = function() {
     this.oldFields = this.collection.fields();
-    this.buildTable(false);
+    if (this.options.presentation === 'table') {
+      this.buildTable(false);
+    }
     return ResultCollectionView.__super__.onReset.apply(this, arguments);
   };
 
@@ -1090,7 +1106,7 @@ module.exports = ResultCollectionView = (function(_super) {
 
   ResultCollectionView.prototype.itemViewOptions = function() {
     return {
-      fields: _.without(this.oldFields, 'count')
+      fields: this.collection.fields()
     };
   };
 
@@ -1129,10 +1145,7 @@ module.exports = ResultCollectionView = (function(_super) {
               $('.load-more-result').hide();
             }
             _this.isLoading = false;
-            if (_this.oldFields.length !== _.without(_this.collection.fields(), 'count').length) {
-              console.log("DIFF FIELDS");
-              console.log(_this.oldFields);
-              console.log(_this.collection.fields());
+            if (_this.oldFields.length !== _this.collection.fields().length) {
               _this.render();
             }
             if (callback != null) {
@@ -1176,13 +1189,15 @@ module.exports = ResultCollectionView = (function(_super) {
   };
 
   ResultCollectionView.prototype.makeTHead = function() {
-    var fieldName, htmlThead, _i, _len, _ref1;
+    var display, field, fieldname, htmlThead, title, _ref1;
     $('#result-view-as-table').find('thead').remove();
     htmlThead = '<thead><tr>';
     _ref1 = this.itemViewOptions().fields;
-    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-      fieldName = _ref1[_i];
-      htmlThead += "<th class=\"cozy_" + fieldName + "\">" + fieldName + "</th>";
+    for (fieldname in _ref1) {
+      field = _ref1[fieldname];
+      display = field.cdbFieldName;
+      title = field.cdbFieldDescription;
+      htmlThead += "<th class=\"cozy_" + fieldname + "\"\n    title=\"" + title + "\">\n    " + display + "\n</th>";
     }
     htmlThead += '<th class="cozy_action">Action</th>';
     htmlThead += '</tr></thead>';
@@ -2151,7 +2166,9 @@ buf.push(attrs({ 'style':("height: 0px;"), 'id':("collapse" + (results.count) + 
 buf.push('><div class="panel-body"><div id="result-list" class="profile-user-info profile-user-info-striped">');
  for (var iCount = 0; iCount < results['fields'].length; iCount++) {
 {
-buf.push('<div class="profile-info-row"><div class="profile-info-name">' + escape((interp = results['fields'][iCount].cdbFieldName) == null ? '' : interp) + '</div><div class="profile-info-value">');
+buf.push('<div');
+buf.push(attrs({ 'title':(results['fields'][iCount].cdbFieldDescription), "class": ('profile-info-row') }, {"title":true}));
+buf.push('><div class="profile-info-name">' + escape((interp = results['fields'][iCount].cdbFieldName) == null ? '' : interp) + '</div><div class="profile-info-value">');
 var __val__ = results['fields'][iCount].cdbFieldData
 buf.push(null == __val__ ? "" : __val__);
 buf.push('</div></div>');
@@ -2177,12 +2194,12 @@ buf.push('<em>' + escape((interp = results['no_result_msg']) == null ? '' : inte
 }
 else
 {
-// iterate fields
+// iterate Object.keys(fields)
 ;(function(){
-  if ('number' == typeof fields.length) {
+  if ('number' == typeof Object.keys(fields).length) {
 
-    for (var $index = 0, $$l = fields.length; $index < $$l; $index++) {
-      var fieldname = fields[$index];
+    for (var $index = 0, $$l = Object.keys(fields).length; $index < $$l; $index++) {
+      var fieldname = Object.keys(fields)[$index];
 
 if ( results['fields'][fieldname] == undefined)
 {
@@ -2208,8 +2225,8 @@ buf.push('</td>');
 
   } else {
     var $$l = 0;
-    for (var $index in fields) {
-      $$l++;      var fieldname = fields[$index];
+    for (var $index in Object.keys(fields)) {
+      $$l++;      var fieldname = Object.keys(fields)[$index];
 
 if ( results['fields'][fieldname] == undefined)
 {
@@ -2266,7 +2283,9 @@ buf.push('<i class="about-doctype icon-question-sign"></i>');
 }
 }
  }
-buf.push('&nbsp;<!--i.view-switcher(class=icon_presentation)--></h4><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button id="delete-all" class="btn btn-xs"><span></span><i class="icon-trash bigger-120"></i></button></div>');
+buf.push('&nbsp;<i');
+buf.push(attrs({ "class": ('view-switcher') + ' ' + (icon_presentation) }, {"class":true}));
+buf.push('></i></h4><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button id="delete-all" class="btn btn-xs"><span></span><i class="icon-trash bigger-120"></i></button></div>');
 }
 }
 }
