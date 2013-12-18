@@ -59,7 +59,7 @@ module.exports = class ResultCollectionView extends ViewCollection
     onReset: ->
         # console.log "reset", @itemViewOptions().fields
         @oldFields = @collection.fields()
-        @buildTable false
+        @buildTable false if @options.presentation is 'table'
         super
 
     render: ->
@@ -81,14 +81,14 @@ module.exports = class ResultCollectionView extends ViewCollection
                 </div>"""
 
     appendView: (view) ->
-        # console.log "appendView", view.$el.find('td').length, @itemViewOptions().fields.length
+        # console.log "appendView", @itemViewOptions().fields
         if @options.presentation is 'table'
             $('#result-view-as-table').dataTable().fnAddTr(view.$el[0])
         else
             super
 
     itemViewOptions: ->
-        fields: _.without @oldFields, 'count'
+        fields: @collection.fields()
 
     search : (content) ->
         @options['query'] = content
@@ -120,11 +120,11 @@ module.exports = class ResultCollectionView extends ViewCollection
                         @isLoading = false
 
                         # force re-render if new fields have appeared
-                        if @oldFields.length isnt
-                          _.without(@collection.fields(), 'count').length
-                            console.log "DIFF FIELDS"
-                            console.log @oldFields
-                            console.log @collection.fields()
+                        # console.log @oldFields, "vs", @collection.fields()
+                        if @oldFields.length isnt @collection.fields().length
+                            # console.log "DIFF FIELDS"
+                            # console.log @oldFields
+                            # console.log @collection.fields()
                             @render()
 
                         if callback?
@@ -152,10 +152,17 @@ module.exports = class ResultCollectionView extends ViewCollection
 
 
     makeTHead: () ->
+        # console.log "makeTHead", @itemViewOptions().fields
         $('#result-view-as-table').find('thead').remove()
         htmlThead = '<thead><tr>'
-        for fieldName in @itemViewOptions().fields
-            htmlThead += "<th class=\"cozy_#{fieldName}\">#{fieldName}</th>"
+        for fieldname, field of @itemViewOptions().fields
+            display = field.cdbFieldName
+            title = field.cdbFieldDescription
+            htmlThead += """<th class="cozy_#{fieldname}"
+                                title="#{title}">
+                                #{display}
+                            </th>"""
+
         htmlThead += '<th class="cozy_action">Action</th>'
         htmlThead += '</tr></thead>'
         $('#result-view-as-table').prepend htmlThead

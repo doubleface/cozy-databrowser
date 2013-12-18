@@ -1,7 +1,7 @@
 if results['no_result']
     em #{results['no_result_msg']}
 else
-    each fieldname in fields
+    each fieldname in Object.keys(fields)
         if results['fields'][fieldname] == undefined
             td NA
         else if results['fields'][fieldname].cdbFieldTitle !== ''

@@ -4,7 +4,7 @@ $.fn.dataTableExt.oApi.fnAddTr = function ( oSettings, nTr, bRedraw ) {
         bRedraw = true;
     }
 
-    console.log(oSettings);
+    // console.log(oSettings);
 
     var nTds = nTr.getElementsByTagName('td');
     if ( nTds.length != oSettings.aoColumns.length )
