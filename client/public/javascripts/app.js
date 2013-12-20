@@ -1041,7 +1041,6 @@ module.exports = ResultCollectionView = (function(_super) {
     ResultCollectionView.__super__.initialize.apply(this, arguments);
     if (this.options.doctypes != null) {
       if (this.options.presentation === 'table') {
-        this.collection.nbPerPage = 0;
         $('#results-list').undelegate('th .icon-eye-close', 'click');
         $('#results-list').undelegate('button.show-col', 'click');
       }
@@ -1058,6 +1057,7 @@ module.exports = ResultCollectionView = (function(_super) {
               return $('.load-more-result').show();
             } else {
               _this.noMoreItems = true;
+              _this.render();
               return $('.load-more-result').hide();
             }
           }
@@ -1086,8 +1086,6 @@ module.exports = ResultCollectionView = (function(_super) {
       if (this.firstRender) {
         this.buildTable(true);
         this.firstRender = false;
-      } else {
-        this.buildTable(false);
       }
     }
     this.afterRender();
@@ -1119,7 +1117,6 @@ module.exports = ResultCollectionView = (function(_super) {
 
   ResultCollectionView.prototype.loadNextPage = function(isTriggered, callback) {
     var _this = this;
-    console.log("nextPage");
     this.options['deleted'] = this.deleted;
     if (!this.noMoreItems) {
       this.isLoading = true;
@@ -1146,6 +1143,9 @@ module.exports = ResultCollectionView = (function(_super) {
             }
             _this.isLoading = false;
             if (_this.oldFields.length !== _this.collection.fields().length) {
+              _this.render();
+            }
+            if (_this.noMoreItems) {
               _this.render();
             }
             if (callback != null) {
@@ -1217,6 +1217,9 @@ module.exports = ResultCollectionView = (function(_super) {
       "bPaginate": false,
       "aoColumnDefs": [
         {
+          bSortable: this.noMoreItems,
+          aTargets: ['_all']
+        }, {
           bSortable: false,
           aTargets: ['cozy_docType', 'cozy_action']
         }, {

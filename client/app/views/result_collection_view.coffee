@@ -29,7 +29,7 @@ module.exports = class ResultCollectionView extends ViewCollection
         super
         if @options.doctypes?
             if @options.presentation is 'table'
-                @collection.nbPerPage = 0
+                # @collection.nbPerPage = 0
                 $('#results-list').undelegate 'th .icon-eye-close', 'click'
                 $('#results-list').undelegate 'button.show-col', 'click'
 
@@ -48,6 +48,7 @@ module.exports = class ResultCollectionView extends ViewCollection
 
                         else
                             @noMoreItems = true
+                            @render()
                             $('.load-more-result').hide()
 
                 error : =>
@@ -69,10 +70,7 @@ module.exports = class ResultCollectionView extends ViewCollection
             if @firstRender
                 @buildTable true
                 @firstRender = false
-            else
-                @buildTable false
 
-        # view.$el.detach() for id, view of @views
         @afterRender()
         if @isLoading
             $('#all-result').append """
@@ -96,7 +94,7 @@ module.exports = class ResultCollectionView extends ViewCollection
             data: $.param(@options)
 
     loadNextPage : (isTriggered, callback) ->
-        console.log "nextPage"
+        # console.log "nextPage"
         @options['deleted'] = @deleted
         if !@noMoreItems
             @isLoading = true
@@ -123,6 +121,12 @@ module.exports = class ResultCollectionView extends ViewCollection
                         # console.log @oldFields, "vs", @collection.fields()
                         if @oldFields.length isnt @collection.fields().length
                             # console.log "DIFF FIELDS"
+                            # console.log @oldFields
+                            # console.log @collection.fields()
+                            @render()
+
+                        if @noMoreItems
+                            # console.log "NO MORE ITEMS"
                             # console.log @oldFields
                             # console.log @collection.fields()
                             @render()
@@ -180,6 +184,10 @@ module.exports = class ResultCollectionView extends ViewCollection
             "bRetrieve": not firstRender
             "bPaginate": false
             "aoColumnDefs": [
+                {
+                    bSortable: @noMoreItems
+                    aTargets: ['_all']
+                },
                 {
                     bSortable: false,
                     aTargets: [ 'cozy_docType', 'cozy_action' ]
