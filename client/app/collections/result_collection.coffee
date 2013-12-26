@@ -22,3 +22,15 @@ module.exports = class ResultCollection extends Backbone.Collection
         #return search url with query
         return 'search' + query
 
+
+    fields: ->
+        out = {}
+        @each (model) ->
+            for field in Object.keys model.toJSON()
+                continue if field in ["count", "descField", "displayName", "idField"]
+                desc = model.get('descField')?[field]
+                out[field] ?=
+                    cdbFieldDescription: desc?.description or ''
+                    cdbFieldName: desc?.displayName or field
+
+        return out

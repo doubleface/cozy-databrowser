@@ -12,16 +12,8 @@ module.exports = class ResultTableView extends View
         'mouseover .remove-result' : 'convertButtonToDanger'
         'mouseout .remove-result' : 'convertButtonToClassic'
 
-    injectThead: (results) ->
-        htmlThead = '<thead>'
-        htmlThead += '<tr>'
-        for result in results['fields']
-            fieldName = result.cdbFieldName
-            htmlThead += "<th class=\"cozy_#{fieldName}\">#{fieldName}</th>"
-        htmlThead += '<th class="cozy_action">Action</th>'
-        htmlThead += '</tr>'
-        htmlThead += '</thead>'
-        $('#result-view-as-table').prepend htmlThead
+    initialize: (options) ->
+        @fields = options.fields
 
     convertButtonToDanger: (event) ->
         jqObj = $(event.currentTarget)
@@ -33,9 +25,8 @@ module.exports = class ResultTableView extends View
 
     render: =>
         currentResults = @manageResultsForView()
-        if currentResults.count is 1
-            @injectThead currentResults
         super
+            fields : @fields
             results : currentResults
 
     manageResultsForView: ->
@@ -80,85 +71,80 @@ module.exports = class ResultTableView extends View
     prepareResultFields: (attr) ->
         iCounter = 0
         fields = []
-        settedFields = ['idField', 'count', 'descField', 'displayName']
-        #specialFields = ['_id']
+        settedField = ['idField', 'count', 'descField', 'displayName']
         simpleTypes = ['string', 'number', 'boolean']
 
-        for fieldName, field of attr
+        for fieldName, field of attr when fieldName not in settedField
 
-            description = ""
-            isNativField = ($.inArray fieldName, settedFields) is -1
-            #isSpecialField = ($.inArray fieldName, specialFields) is 0
-            if isNativField
+            iCounter = fieldName
 
-                #prepare new fields
-                fields[iCounter] =
-                    'cdbFieldDescription' : ""
-                    'cdbFieldName' : fieldName
-                    'cdbFieldTitle' : ''
-                    'cdbFieldData' : ''
-                    'cdbLabelClass' : 'label-secondary'
+            #prepare new fields
+            fields[iCounter] =
+                'cdbFieldDescription' : ""
+                'cdbFieldName' : fieldName
+                'cdbFieldTitle' : ''
+                'cdbFieldData' : ''
+                'cdbLabelClass' : 'label-secondary'
 
-                #add description and displayName
-                if attr.descField? and attr.descField[fieldName]?
-                    if attr.descField[fieldName].description?
-                        description = attr.descField[fieldName].description
-                        fields[iCounter]['cdbFieldDescription'] = description
+            #add description and displayName
+            if attr.descField? and attr.descField[fieldName]?
+                if attr.descField[fieldName].description?
+                    description = attr.descField[fieldName].description
+                    fields[iCounter]['cdbFieldDescription'] = description
 
-                    descField = attr.descField[fieldName]
-                    hasDisplayName = descField.displayName?
+                descField = attr.descField[fieldName]
+                hasDisplayName = descField.displayName?
 
-                    if hasDisplayName and descField.displayName isnt ""
-                        displayName = descField.displayName
-                        fields[iCounter]['cdbFieldName'] = displayName
-                        if field is @results['heading']['field']
-                            @results['heading']['field'] = displayName
+                if hasDisplayName and descField.displayName isnt ""
+                    displayName = descField.displayName
+                    fields[iCounter]['cdbFieldName'] = displayName
+                    if field is @results['heading']['field']
+                        @results['heading']['field'] = displayName
 
-                #add data according to typeof
-                #field isn't an object  : display text
-                typeOfField = typeof field
-                isSimpleType = ($.inArray typeOfField, simpleTypes) isnt -1
-                if isSimpleType
-                    dataId = 'cdbFieldData'
-                    if fieldName is 'docType'
-                        fields[iCounter][dataId] = attr.displayName || field
-                    else if fieldName is '_id'
-                        minifiedId = '...' + field.substr field.length - 5
-                        fields[iCounter][dataId] = minifiedId
-                        fields[iCounter]['cdbFieldTitle'] = field
-                    else
-                        fields[iCounter][dataId] = field
-
-
-                #field is an object : display list
-                else if field? and typeOfField is 'object'
-                    fields[iCounter]['cdbFieldData'] = '<ul class="sober-list">'
-                    for objName, obj of field
-                        newLi = ''
-                        typeOfObj = typeof obj
-                        isSimpleObj = ($.inArray typeOfObj, simpleTypes) isnt -1
-
-                        if isSimpleObj
-                            newLi = '<li>' + objName + ' : '
-                            newLi += '<i>' + obj + '</i></li>'
-                            fields[iCounter]['cdbFieldData'] += newLi
-
-                        else if obj? and typeof obj is 'object'
-                            newLi = '<li>' + objName + ' : '
-                            newLi += '<i>' + JSON.stringify(obj) + '</i></li>'
-                            fields[iCounter]['cdbFieldData'] += newLi
-
-                        else
-                            newLi = '<li><i>empty</i></li>'
-                            fields[iCounter]['cdbFieldData'] += newLi
-                            fields[iCounter]['cdbLabelClass'] = 'label-danger'
-                    fields[iCounter]['cdbFieldData'] += '</ul>'
-
+            #add data according to typeof
+            #field isn't an object  : display text
+            typeOfField = typeof field
+            isSimpleType = ($.inArray typeOfField, simpleTypes) isnt -1
+            if isSimpleType
+                dataId = 'cdbFieldData'
+                if fieldName is 'docType'
+                    fields[iCounter][dataId] = attr.displayName || field
+                else if fieldName is '_id'
+                    minifiedId = '...' + field.substr field.length - 5
+                    fields[iCounter][dataId] = minifiedId
+                    fields[iCounter]['cdbFieldTitle'] = field
                 else
-                    fields[iCounter]['cdbFieldData'] = '<i>empty</i>'
-                    fields[iCounter]['cdbLabelClass'] = 'label-danger'
+                    fields[iCounter][dataId] = field
 
-            iCounter++
+
+            #field is an object : display list
+            else if field? and typeOfField is 'object'
+                fields[iCounter]['cdbFieldData'] = '<ul class="sober-list">'
+                for objName, obj of field
+                    newLi = ''
+                    typeOfObj = typeof obj
+                    isSimpleObj = ($.inArray typeOfObj, simpleTypes) isnt -1
+
+                    if isSimpleObj
+                        newLi = '<li>' + objName + ' : '
+                        newLi += '<i>' + obj + '</i></li>'
+                        fields[iCounter]['cdbFieldData'] += newLi
+
+                    else if obj? and typeof obj is 'object'
+                        newLi = '<li>' + objName + ' : '
+                        newLi += '<i>' + JSON.stringify(obj) + '</i></li>'
+                        fields[iCounter]['cdbFieldData'] += newLi
+
+                    else
+                        newLi = '<li><i>empty</i></li>'
+                        fields[iCounter]['cdbFieldData'] += newLi
+                        fields[iCounter]['cdbLabelClass'] = 'label-danger'
+                fields[iCounter]['cdbFieldData'] += '</ul>'
+
+            else
+                fields[iCounter]['cdbFieldData'] = '<i>empty</i>'
+                fields[iCounter]['cdbLabelClass'] = 'label-danger'
+
         return fields
 
 

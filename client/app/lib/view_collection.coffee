@@ -56,7 +56,7 @@ module.exports = class ViewCollection extends BaseView
     afterRender: ->
         @$collectionEl = $(@collectionEl)
         @$collectionEl.empty()
-        @appendView view.$el for id, view of @views
+        @appendView view for id, view of @views
         @onReset @collection
         @onChange @views
 

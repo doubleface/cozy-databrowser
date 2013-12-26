@@ -17,7 +17,7 @@
 
             .profile-user-info.profile-user-info-striped#result-list
                 - for (var iCount = 0; iCount < results['fields'].length; iCount++) {
-                    .profile-info-row
+                    .profile-info-row(title=results['fields'][iCount].cdbFieldDescription)
                         .profile-info-name #{results['fields'][iCount].cdbFieldName}
                         .profile-info-value!= results['fields'][iCount].cdbFieldData
                 - }

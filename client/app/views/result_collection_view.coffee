@@ -9,6 +9,7 @@ module.exports = class ResultCollectionView extends ViewCollection
     collectionEl :'#result-view-as-table'
     isLoading : false
     noMoreItems : false
+    firstRender: true
 
     initialize: (options) ->
         @options = options
@@ -28,12 +29,16 @@ module.exports = class ResultCollectionView extends ViewCollection
         super
         if @options.doctypes?
             if @options.presentation is 'table'
-                @collection.nbPerPage = 0
+                # @collection.nbPerPage = 0
                 $('#results-list').undelegate 'th .icon-eye-close', 'click'
                 $('#results-list').undelegate 'button.show-col', 'click'
+
+            @isLoading = true
             @collection.fetch
+                reset: true
                 data: $.param(@options)
                 success : (col, data) =>
+                    @isLoading = false
                     $('.loading-image').remove()
                     #native size of the window can trigger next pages and scroll
                     if @options.range? and @options.doctypes?
@@ -43,49 +48,45 @@ module.exports = class ResultCollectionView extends ViewCollection
 
                         else
                             @noMoreItems = true
+                            @render()
                             $('.load-more-result').hide()
-                    if @options.presentation is 'table'
-                        storedPath = 'DataTables_'+ window.location.hash
-                        $('#result-view-as-table').dataTable
-                            "aoColumnDefs": [
-                                {
-                                    bSortable: false,
-                                    aTargets: [ 'cozy_docType', 'cozy_action' ]
-                                },
-                                {
-                                    bVisible: false,
-                                    aTargets: ['cozy__id', 'cozy_docType']
-                                }
-                            ]
-                            "oColVis":
-                                "iOverlayFade": 200
-                                buttonText: t 'button toggle visibility'
-                            "sDom": 'CRt'
-                            "bStateSave": true
-                            "fnStateSave": (oSettings, oData) ->
-                                stringifiedData = JSON.stringify(oData)
-                                localStorage.setItem storedPath, stringifiedData
-
-                            "fnStateLoad": (oSettings) ->
-                                loadedData = localStorage.getItem(storedPath)
-                                return JSON.parse loadedData
-
 
                 error : =>
+                    @isLoading = false
                     $('.loading-image').remove()
                     @noMoreItems = true
                     @displayLoadingError()
 
+    onReset: ->
+        # console.log "reset", @itemViewOptions().fields
+        @oldFields = @collection.fields()
+        @buildTable false if @options.presentation is 'table'
+        super
 
     render: ->
+        # console.log "render"
         $('.introduction').hide()
-        if @options? and @options.doctypes?
-            loader = '<div class="loading-image">'
-            loader += '<img src="images/ajax-loader.gif" />'
-            loader += '</div>'
-            $('#all-result').append(loader)
-        view.$el.detach() for id, view of @views
-        super
+        if @options.presentation is 'table'
+            if @firstRender
+                @buildTable true
+                @firstRender = false
+
+        @afterRender()
+        if @isLoading
+            $('#all-result').append """
+                <div class="loading-image">
+                    <img src="images/ajax-loader.gif" />
+                </div>"""
+
+    appendView: (view) ->
+        # console.log "appendView", @itemViewOptions().fields
+        if @options.presentation is 'table'
+            $('#result-view-as-table').dataTable().fnAddTr(view.$el[0])
+        else
+            super
+
+    itemViewOptions: ->
+        fields: @collection.fields()
 
     search : (content) ->
         @options['query'] = content
@@ -93,6 +94,7 @@ module.exports = class ResultCollectionView extends ViewCollection
             data: $.param(@options)
 
     loadNextPage : (isTriggered, callback) ->
+        # console.log "nextPage"
         @options['deleted'] = @deleted
         if !@noMoreItems
             @isLoading = true
@@ -114,11 +116,27 @@ module.exports = class ResultCollectionView extends ViewCollection
                         if @noMoreItems
                             $('.load-more-result').hide()
                         @isLoading = false
+
+                        # force re-render if new fields have appeared
+                        # console.log @oldFields, "vs", @collection.fields()
+                        if @oldFields.length isnt @collection.fields().length
+                            # console.log "DIFF FIELDS"
+                            # console.log @oldFields
+                            # console.log @collection.fields()
+                            @render()
+
+                        if @noMoreItems
+                            # console.log "NO MORE ITEMS"
+                            # console.log @oldFields
+                            # console.log @collection.fields()
+                            @render()
+
                         if callback?
                             callback()
                     else
                         @noMoreItems = true
                 error: ->
+                    @isLoading = false
                     @noMoreItems = true
                     @displayLoadingError()
 
@@ -135,3 +153,59 @@ module.exports = class ResultCollectionView extends ViewCollection
         errorMsg = 'An error occurs during the loading process'
         $('.load-more-result span').text errorMsg
         $('.load-more-result').show()
+
+
+    makeTHead: () ->
+        # console.log "makeTHead", @itemViewOptions().fields
+        $('#result-view-as-table').find('thead').remove()
+        htmlThead = '<thead><tr>'
+        for fieldname, field of @itemViewOptions().fields
+            display = field.cdbFieldName
+            title = field.cdbFieldDescription
+            htmlThead += """<th class="cozy_#{fieldname}"
+                                title="#{title}">
+                                #{display}
+                            </th>"""
+
+        htmlThead += '<th class="cozy_action">Action</th>'
+        htmlThead += '</tr></thead>'
+        $('#result-view-as-table').prepend htmlThead
+
+    buildTable: (firstRender) ->
+        # console.log "buildTable", firstRender
+        if not firstRender
+            table = $('#result-view-as-table').dataTable()
+            table.fnDestroy()
+
+        @makeTHead()
+
+        storedPath = 'DataTables_'+ window.location.hash
+        $('#result-view-as-table').dataTable
+            "bRetrieve": not firstRender
+            "bPaginate": false
+            "aoColumnDefs": [
+                {
+                    bSortable: @noMoreItems
+                    aTargets: ['_all']
+                },
+                {
+                    bSortable: false,
+                    aTargets: [ 'cozy_docType', 'cozy_action' ]
+                },
+                {
+                    bVisible: false,
+                    aTargets: ['cozy__id', 'cozy_docType']
+                }
+            ]
+            "oColVis":
+                "iOverlayFade": 200
+                buttonText: t 'button toggle visibility'
+            "sDom": 'CRt'
+            "bStateSave": true
+            "fnStateSave": (oSettings, oData) ->
+                stringifiedData = JSON.stringify(oData)
+                localStorage.setItem storedPath, stringifiedData
+
+            "fnStateLoad": (oSettings) ->
+                loadedData = localStorage.getItem(storedPath)
+                return JSON.parse loadedData
