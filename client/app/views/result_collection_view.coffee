@@ -48,7 +48,8 @@ module.exports = class ResultCollectionView extends ViewCollection
 
                         else
                             @noMoreItems = true
-                            @render()
+                            @buildTable @firstRender
+                            @collection.forEach @addItem
                             $('.load-more-result').hide()
 
                 error : =>
@@ -58,20 +59,23 @@ module.exports = class ResultCollectionView extends ViewCollection
                     @displayLoadingError()
 
     onReset: ->
-        # console.log "reset", @itemViewOptions().fields
+        if @oldFields?
+            console.log "reset", Object.keys(@oldFields).length
+        else
+            console.log "reset", null
+
         @oldFields = @collection.fields()
-        @buildTable false if @options.presentation is 'table'
+        @buildTable @firstRender if @options.presentation is 'table'
         super
 
     render: ->
-        # console.log "render"
+        console.log "render", @collection.length
         $('.introduction').hide()
         if @options.presentation is 'table'
             if @firstRender
                 @buildTable true
                 @firstRender = false
 
-        @afterRender()
         if @isLoading
             $('#all-result').append """
                 <div class="loading-image">
@@ -79,9 +83,9 @@ module.exports = class ResultCollectionView extends ViewCollection
                 </div>"""
 
     appendView: (view) ->
-        # console.log "appendView", @itemViewOptions().fields
+        #console.log "appendView", @itemViewOptions().fields
         if @options.presentation is 'table'
-            $('#result-view-as-table').dataTable().fnAddTr(view.$el[0])
+            $('#result-view-as-table').dataTable().fnAddTr view.$el[0]
         else
             super
 
@@ -94,7 +98,7 @@ module.exports = class ResultCollectionView extends ViewCollection
             data: $.param(@options)
 
     loadNextPage : (isTriggered, callback) ->
-        # console.log "nextPage"
+        #console.log "nextPage"
         @options['deleted'] = @deleted
         if !@noMoreItems
             @isLoading = true
@@ -104,8 +108,8 @@ module.exports = class ResultCollectionView extends ViewCollection
                 $('.load-more-result').spin 'tiny'
             @collection.fetch
                 data: $.param(@options)
-                remove : false
-                success : (col, data) =>
+                remove: false
+                success: (col, data) =>
                     if data.length?
                         if !isTriggered
                             $('.load-more-result .spinner').hide()
@@ -118,23 +122,27 @@ module.exports = class ResultCollectionView extends ViewCollection
                         @isLoading = false
 
                         # force re-render if new fields have appeared
-                        # console.log @oldFields, "vs", @collection.fields()
-                        if @oldFields.length isnt @collection.fields().length
-                            # console.log "DIFF FIELDS"
-                            # console.log @oldFields
-                            # console.log @collection.fields()
-                            @render()
+                        #console.log @oldFields, "vs", @collection.fields()
+                        if Object.keys(@oldFields).length isnt Object.keys(@collection.fields()).length
+                            #console.log "DIFF FIELDS"
+                            #console.log @oldFields
+                            #console.log @collection.fields()
+                            @oldFields = @collection.fields()
+                            @buildTable @firstRender
+                            @collection.forEach @addItem
 
                         if @noMoreItems
                             # console.log "NO MORE ITEMS"
                             # console.log @oldFields
                             # console.log @collection.fields()
-                            @render()
+                            @buildTable @firstRender
+                            @collection.forEach @addItem
 
                         if callback?
                             callback()
                     else
                         @noMoreItems = true
+                        @buildTable @firstRender
                 error: ->
                     @isLoading = false
                     @noMoreItems = true
@@ -167,15 +175,21 @@ module.exports = class ResultCollectionView extends ViewCollection
                                 #{display}
                             </th>"""
 
-        htmlThead += '<th class="cozy_action">Action</th>'
+        htmlThead += '<th class="action">Action</th>'
         htmlThead += '</tr></thead>'
         $('#result-view-as-table').prepend htmlThead
 
     buildTable: (firstRender) ->
-        # console.log "buildTable", firstRender
+        console.log "buildTable", firstRender
         if not firstRender
             table = $('#result-view-as-table').dataTable()
             table.fnDestroy()
+
+            # destroy
+            $('#result-view-as-table tr').remove()
+
+            # construct
+
 
         @makeTHead()
 
@@ -190,7 +204,7 @@ module.exports = class ResultCollectionView extends ViewCollection
                 },
                 {
                     bSortable: false,
-                    aTargets: [ 'cozy_docType', 'cozy_action' ]
+                    aTargets: [ 'cozy_docType', 'action' ]
                 },
                 {
                     bVisible: false,

@@ -7,9 +7,21 @@ $.fn.dataTableExt.oApi.fnAddTr = function ( oSettings, nTr, bRedraw ) {
     // console.log(oSettings);
 
     var nTds = nTr.getElementsByTagName('td');
-    if ( nTds.length != oSettings.aoColumns.length )
+    var visibleCols = 0;
+    for(var i=0; i< oSettings.aoColumns.length; i++)
     {
-        alert( 'Warning: not adding new TR - columns and TD elements must match' );
+        if(oSettings.aoColumns[i].bVisible)
+        {
+            visibleCols++;
+        }
+    }
+
+    if ( nTds.length != oSettings.aoColumns.length)
+    {
+        //console.log(new Error().stack());
+        console.debug(nTds.length, oSettings.aoColumns.length);
+        //console.log('alert');
+        //alert( 'Warning: not adding new TR - columns and TD elements must match' );
         return;
     }
 
