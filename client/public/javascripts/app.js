@@ -1028,7 +1028,12 @@ window.require.register("views/result_collection_view", function(exports, requir
                 return $('.load-more-result').show();
               } else {
                 _this.noMoreItems = true;
-                _this.buildTable(_this.firstRender);
+                if (_this.options.presentation === "list") {
+                  _this.collection.forEach(_this.removeItem);
+                }
+                if (_this.options.presentation === "table") {
+                  _this.buildTable(_this.firstRender);
+                }
                 _this.collection.forEach(_this.addItem);
                 return $('.load-more-result').hide();
               }
@@ -1045,11 +1050,13 @@ window.require.register("views/result_collection_view", function(exports, requir
     };
 
     ResultCollectionView.prototype.onReset = function() {
-      if (this.oldFields != null) {
-        console.log("reset", Object.keys(this.oldFields).length);
-      } else {
-        console.log("reset", null);
-      }
+      /*
+      if @oldFields?
+          console.log "reset", Object.keys(@oldFields).length
+      else
+          console.log "reset", null
+      */
+
       this.oldFields = this.collection.fields();
       if (this.options.presentation === 'table') {
         this.buildTable(this.firstRender);
@@ -1058,7 +1065,6 @@ window.require.register("views/result_collection_view", function(exports, requir
     };
 
     ResultCollectionView.prototype.render = function() {
-      console.log("render", this.collection.length);
       $('.introduction').hide();
       if (this.options.presentation === 'table') {
         if (this.firstRender) {
@@ -1067,8 +1073,9 @@ window.require.register("views/result_collection_view", function(exports, requir
         }
       }
       if (this.isLoading) {
-        return $('#all-result').append("<div class=\"loading-image\">\n    <img src=\"images/ajax-loader.gif\" />\n</div>");
+        $('#all-result').append("<div class=\"loading-image\">\n    <img src=\"images/ajax-loader.gif\" />\n</div>");
       }
+      return ResultCollectionView.__super__.render.apply(this, arguments);
     };
 
     ResultCollectionView.prototype.appendView = function(view) {
@@ -1121,11 +1128,21 @@ window.require.register("views/result_collection_view", function(exports, requir
               _this.isLoading = false;
               if (Object.keys(_this.oldFields).length !== Object.keys(_this.collection.fields()).length) {
                 _this.oldFields = _this.collection.fields();
-                _this.buildTable(_this.firstRender);
+                if (_this.options.presentation === "list") {
+                  _this.collection.forEach(_this.removeItem);
+                }
+                if (_this.options.presentation === "table") {
+                  _this.buildTable(_this.firstRender);
+                }
                 _this.collection.forEach(_this.addItem);
               }
               if (_this.noMoreItems) {
-                _this.buildTable(_this.firstRender);
+                if (_this.options.presentation === "list") {
+                  _this.collection.forEach(_this.removeItem);
+                }
+                if (_this.options.presentation === "table") {
+                  _this.buildTable(_this.firstRender);
+                }
                 _this.collection.forEach(_this.addItem);
               }
               if (callback != null) {
@@ -1133,7 +1150,9 @@ window.require.register("views/result_collection_view", function(exports, requir
               }
             } else {
               _this.noMoreItems = true;
-              return _this.buildTable(_this.firstRender);
+              if (_this.options.presentation === "table") {
+                return _this.buildTable(_this.firstRender);
+              }
             }
           },
           error: function() {
@@ -1187,7 +1206,6 @@ window.require.register("views/result_collection_view", function(exports, requir
 
     ResultCollectionView.prototype.buildTable = function(firstRender) {
       var storedPath, table;
-      console.log("buildTable", firstRender);
       if (!firstRender) {
         table = $('#result-view-as-table').dataTable();
         table.fnDestroy();
@@ -1476,7 +1494,6 @@ window.require.register("views/result_table_view", function(exports, require, mo
 
     ResultTableView.prototype.render = function() {
       var currentResults;
-      console.log("render table view", Object.keys(this.fields).length);
       currentResults = this.manageResultsForView();
       return ResultTableView.__super__.render.call(this, {
         fields: this.fields,

@@ -7,19 +7,10 @@ $.fn.dataTableExt.oApi.fnAddTr = function ( oSettings, nTr, bRedraw ) {
     // console.log(oSettings);
 
     var nTds = nTr.getElementsByTagName('td');
-    var visibleCols = 0;
-    for(var i=0; i< oSettings.aoColumns.length; i++)
-    {
-        if(oSettings.aoColumns[i].bVisible)
-        {
-            visibleCols++;
-        }
-    }
-
     if ( nTds.length != oSettings.aoColumns.length)
     {
         //console.log(new Error().stack());
-        console.debug(nTds.length, oSettings.aoColumns.length);
+        console.debug('normal error before refactoring...', nTds.length, oSettings.aoColumns.length);
         //console.log('alert');
         //alert( 'Warning: not adding new TR - columns and TD elements must match' );
         return;
