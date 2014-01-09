@@ -48,7 +48,8 @@ module.exports = class ResultCollectionView extends ViewCollection
 
                         else
                             @noMoreItems = true
-                            @buildTable @firstRender
+                            @collection.forEach @removeItem if @options.presentation is "list"
+                            @buildTable @firstRender if @options.presentation is "table"
                             @collection.forEach @addItem
                             $('.load-more-result').hide()
 
@@ -59,17 +60,19 @@ module.exports = class ResultCollectionView extends ViewCollection
                     @displayLoadingError()
 
     onReset: ->
+        ###
         if @oldFields?
             console.log "reset", Object.keys(@oldFields).length
         else
             console.log "reset", null
+        ###
 
         @oldFields = @collection.fields()
         @buildTable @firstRender if @options.presentation is 'table'
         super
 
     render: ->
-        console.log "render", @collection.length
+        #console.log "render", @collection.length
         $('.introduction').hide()
         if @options.presentation is 'table'
             if @firstRender
@@ -81,6 +84,7 @@ module.exports = class ResultCollectionView extends ViewCollection
                 <div class="loading-image">
                     <img src="images/ajax-loader.gif" />
                 </div>"""
+        super
 
     appendView: (view) ->
         #console.log "appendView", @itemViewOptions().fields
@@ -128,21 +132,23 @@ module.exports = class ResultCollectionView extends ViewCollection
                             #console.log @oldFields
                             #console.log @collection.fields()
                             @oldFields = @collection.fields()
-                            @buildTable @firstRender
+                            @collection.forEach @removeItem if @options.presentation is "list"
+                            @buildTable @firstRender if @options.presentation is "table"
                             @collection.forEach @addItem
 
                         if @noMoreItems
                             # console.log "NO MORE ITEMS"
                             # console.log @oldFields
                             # console.log @collection.fields()
-                            @buildTable @firstRender
+                            @collection.forEach @removeItem if @options.presentation is "list"
+                            @buildTable @firstRender if @options.presentation is "table"
                             @collection.forEach @addItem
 
                         if callback?
                             callback()
                     else
                         @noMoreItems = true
-                        @buildTable @firstRender
+                        @buildTable @firstRender if @options.presentation is "table"
                 error: ->
                     @isLoading = false
                     @noMoreItems = true
@@ -180,16 +186,11 @@ module.exports = class ResultCollectionView extends ViewCollection
         $('#result-view-as-table').prepend htmlThead
 
     buildTable: (firstRender) ->
-        console.log "buildTable", firstRender
+        #console.log "buildTable", firstRender
         if not firstRender
             table = $('#result-view-as-table').dataTable()
             table.fnDestroy()
-
-            # destroy
             $('#result-view-as-table tr').remove()
-
-            # construct
-
 
         @makeTHead()
 
