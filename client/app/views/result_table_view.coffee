@@ -24,6 +24,7 @@ module.exports = class ResultTableView extends View
         jqObj.removeClass 'btn-danger'
 
     render: =>
+        console.log "render table view", Object.keys(@fields).length
         currentResults = @manageResultsForView()
         super
             fields : @fields

@@ -50,6 +50,12 @@
         "related": null
     },
     {
+        "docType": "Alarm",
+        "action": "DISPLAY",
+        "trigg": "Tue Jul 19 2013 09:00:00",
+        "related": null
+    },
+    {
         "docType": "Contact",
         "fn": "John Doe",
         "datapoints": [
@@ -647,6 +653,7 @@
       "price": 0.99,
       "type": "0",
       "typeLabel": "Article",
+      "addedField": "blablalba",
       "ticketId": "3214569871",
       "intermarcheShopId": "11567",
       "timestamp": "2013-02-19T11:00:00.000Z",
