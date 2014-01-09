@@ -3,13 +3,11 @@
  * ColVis styles
  */
 .ColVis {
-	float: left;
 	margin-bottom: 1em;
 }
 
 .ColVis_Button {
 	position: relative;
-	float: left;
 	margin-right: 3px;
 	padding: 3px 5px;
 	height: 30px;
