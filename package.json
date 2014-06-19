@@ -1,5 +1,5 @@
 {
-  "name": "cozy-databrowser",
+  "name": "databrowser",
   "version": "1.0.0",
   "engines": [
     "node = 0.8.x"
@@ -28,7 +28,7 @@
     "test": "cake tests",
     "start": "coffee server.coffee"
   },
-  "cozy-displayName": "ToutesMesDonnées",
+  "cozy-displayName": "Data Browser",
   "cozy-permissions": {
     "All": {
       "description": "The application needs all the permission because it allows you to browse through all your data."
