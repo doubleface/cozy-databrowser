@@ -25,7 +25,7 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         @listenTo @collection, "reset", @onReset
         super
 
-    showMinimizedMenu: ->
+    showMinimizedMenu: (event) ->
         jqLiContainer = $(event.currentTarget)
         jqSubmenu = jqLiContainer.find(' .submenu:eq(0)')
         if @isMenuMinimized
@@ -36,10 +36,10 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
     activateMenuElement: (event) ->
 
         #needed elements
-        jqMenuLink = $(event.currentTarget)
+        jqMenuLink = $ event.target
         parentLi = jqMenuLink.parent 'li'
         parentsLi = jqMenuLink.parentsUntil '#doctype-nav-collection-view', 'li'
-        jqSubmenu = parentLi.find('.submenu:eq(0)')
+        jqSubmenu = parentLi.find '> .submenu'
         jqParentUl = jqSubmenu.parent().closest 'ul'
 
         #needed booleans
@@ -55,7 +55,6 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
                 @lastSlimScrolled = null
             else
                 @lastSlimScrolled = jqSubmenu
-
 
         #activate the all tree
         if not hasSubmenu
@@ -73,13 +72,16 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         submenuIsVisible = jqSubmenu.is ':visible'
         if not submenuIsVisible
             if @isMenuMinimized and jqParentUl.hasClass 'nav-list' then return
-            jqParentUl.find('.open:eq(0)').find(' .submenu:eq(0)').each ->
+
+            jqParentUl.find('.open').find('.submenu').each ->
                 if $(this) isnt jqSubmenu
                     $(this).slideUp(200).closest('li').removeClass 'open'
 
             @applySlimscroll jqSubmenu
 
         if @isMenuMinimized and jqParentUl.hasClass 'nav-list' then return false
+
+        # close if it's open, open if it's close
         jqSubmenu.slideToggle 200
         parentLi.toggleClass 'open'
 
@@ -138,7 +140,7 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         collpase = collpase || false
         sidebar = $('#sidebar')
         collapseId = 'sidebar-collapse'
-        iconClass ='[class*="icon-"]'
+        iconClass = "[class*=\"icon-\"]"
         icon = document.getElementById(collapseId).querySelector iconClass
         icon1 = icon.getAttribute('data-icon1')
         icon2 = icon.getAttribute('data-icon2')
