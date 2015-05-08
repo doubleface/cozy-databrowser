@@ -111,7 +111,7 @@ module.exports = class SearchView extends BaseView
         if localStore.getBoolean key
             @options['presentation'] = 'list'
         else
-           @options['presentation'] = 'table'
+            @options['presentation'] = 'table'
     #------------------------------END COLLECTION-------------------------------
 
 
@@ -124,7 +124,7 @@ module.exports = class SearchView extends BaseView
         searchElt.click =>
             @resultCollectionView.search(searchField.val())
         searchField.attr 'placeholder', t 'search-placeholder'
-        searchField.keypress (event) =>
+        searchField.keypress (event) ->
             if event.which is 13
                 event.preventDefault()
                 searchElt.click()

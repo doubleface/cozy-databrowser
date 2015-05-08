@@ -7,11 +7,11 @@ async = require 'async'
 
 module.exports.initvalues = (req, res, next) ->
     async.parallel [
-        (cb) => module.exports.doctypes {query:menu:true}, send: (code, msg) ->
+        (cb) -> module.exports.doctypes {query:menu:true}, send: (code, msg) ->
             if code is 500 then cb new Error msg
             else cb null, code
 
-        (cb) => dataSystem.getLocale cb
+        (cb) -> dataSystem.getLocale cb
 
     ], (err, results) ->
         return next err if err

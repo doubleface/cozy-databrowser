@@ -169,7 +169,7 @@ module.exports = class ResultCollectionView extends ViewCollection
         $('.load-more-result').show()
 
 
-    makeTHead: () ->
+    makeTHead: ->
         # console.log "makeTHead", @itemViewOptions().fields
         $('#result-view-as-table').find('thead').remove()
         htmlThead = '<thead><tr>'
