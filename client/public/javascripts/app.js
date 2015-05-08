@@ -1,42 +1,59 @@
-(function(/*! Brunch !*/) {
+(function() {
   'use strict';
 
-  var globals = typeof window !== 'undefined' ? window : global;
+  var globals = typeof window === 'undefined' ? global : window;
   if (typeof globals.require === 'function') return;
 
   var modules = {};
   var cache = {};
+  var has = ({}).hasOwnProperty;
 
-  var has = function(object, name) {
-    return ({}).hasOwnProperty.call(object, name);
+  var aliases = {};
+
+  var endsWith = function(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
   };
 
-  var expand = function(root, name) {
-    var results = [], parts, part;
-    if (/^\.\.?(\/|$)/.test(name)) {
-      parts = [root, name].join('/').split('/');
-    } else {
-      parts = name.split('/');
-    }
-    for (var i = 0, length = parts.length; i < length; i++) {
-      part = parts[i];
-      if (part === '..') {
-        results.pop();
-      } else if (part !== '.' && part !== '') {
-        results.push(part);
+  var unalias = function(alias, loaderPath) {
+    var start = 0;
+    if (loaderPath) {
+      if (loaderPath.indexOf('components/' === 0)) {
+        start = 'components/'.length;
+      }
+      if (loaderPath.indexOf('/', start) > 0) {
+        loaderPath = loaderPath.substring(start, loaderPath.indexOf('/', start));
       }
     }
-    return results.join('/');
+    var result = aliases[alias + '/index.js'] || aliases[loaderPath + '/deps/' + alias + '/index.js'];
+    if (result) {
+      return 'components/' + result.substring(0, result.length - '.js'.length);
+    }
+    return alias;
   };
 
+  var expand = (function() {
+    var reg = /^\.\.?(\/|$)/;
+    return function(root, name) {
+      var results = [], parts, part;
+      parts = (reg.test(name) ? root + '/' + name : name).split('/');
+      for (var i = 0, length = parts.length; i < length; i++) {
+        part = parts[i];
+        if (part === '..') {
+          results.pop();
+        } else if (part !== '.' && part !== '') {
+          results.push(part);
+        }
+      }
+      return results.join('/');
+    };
+  })();
   var dirname = function(path) {
     return path.split('/').slice(0, -1).join('/');
   };
 
   var localRequire = function(path) {
     return function(name) {
-      var dir = dirname(path);
-      var absolute = expand(dir, name);
+      var absolute = expand(dirname(path), name);
       return globals.require(absolute, path);
     };
   };
@@ -51,21 +68,26 @@
   var require = function(name, loaderPath) {
     var path = expand(name, '.');
     if (loaderPath == null) loaderPath = '/';
+    path = unalias(name, loaderPath);
 
-    if (has(cache, path)) return cache[path].exports;
-    if (has(modules, path)) return initModule(path, modules[path]);
+    if (has.call(cache, path)) return cache[path].exports;
+    if (has.call(modules, path)) return initModule(path, modules[path]);
 
     var dirIndex = expand(path, './index');
-    if (has(cache, dirIndex)) return cache[dirIndex].exports;
-    if (has(modules, dirIndex)) return initModule(dirIndex, modules[dirIndex]);
+    if (has.call(cache, dirIndex)) return cache[dirIndex].exports;
+    if (has.call(modules, dirIndex)) return initModule(dirIndex, modules[dirIndex]);
 
     throw new Error('Cannot find module "' + name + '" from '+ '"' + loaderPath + '"');
   };
 
-  var define = function(bundle, fn) {
+  require.alias = function(from, to) {
+    aliases[to] = from;
+  };
+
+  require.register = require.define = function(bundle, fn) {
     if (typeof bundle === 'object') {
       for (var key in bundle) {
-        if (has(bundle, key)) {
+        if (has.call(bundle, key)) {
           modules[key] = bundle[key];
         }
       }
@@ -74,21 +96,18 @@
     }
   };
 
-  var list = function() {
+  require.list = function() {
     var result = [];
     for (var item in modules) {
-      if (has(modules, item)) {
+      if (has.call(modules, item)) {
         result.push(item);
       }
     }
     return result;
   };
 
+  require.brunch = true;
   globals.require = require;
-  globals.require.define = define;
-  globals.require.register = define;
-  globals.require.list = list;
-  globals.require.brunch = true;
 })();
 require.register("application", function(exports, require, module) {
 module.exports = {
@@ -110,11 +129,10 @@ module.exports = {
     return Backbone.history.start();
   }
 };
-
 });
 
 ;require.register("collections/doctype_collection", function(exports, require, module) {
-var DoctypeCollection, _ref,
+var DoctypeCollection,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -122,8 +140,7 @@ module.exports = DoctypeCollection = (function(_super) {
   __extends(DoctypeCollection, _super);
 
   function DoctypeCollection() {
-    _ref = DoctypeCollection.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return DoctypeCollection.__super__.constructor.apply(this, arguments);
   }
 
   DoctypeCollection.prototype.model = require('../models/doctype_model');
@@ -133,11 +150,10 @@ module.exports = DoctypeCollection = (function(_super) {
   return DoctypeCollection;
 
 })(Backbone.Collection);
-
 });
 
 ;require.register("collections/result_collection", function(exports, require, module) {
-var ResultCollection, _ref,
+var ResultCollection,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -145,8 +161,7 @@ module.exports = ResultCollection = (function(_super) {
   __extends(ResultCollection, _super);
 
   function ResultCollection() {
-    _ref = ResultCollection.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return ResultCollection.__super__.constructor.apply(this, arguments);
   }
 
   ResultCollection.prototype.model = require('../models/result_model');
@@ -173,15 +188,15 @@ module.exports = ResultCollection = (function(_super) {
     var out;
     out = {};
     this.each(function(model) {
-      var desc, field, _i, _len, _ref1, _ref2, _results;
-      _ref1 = Object.keys(model.toJSON());
+      var desc, field, _i, _len, _ref, _ref1, _results;
+      _ref = Object.keys(model.toJSON());
       _results = [];
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        field = _ref1[_i];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        field = _ref[_i];
         if (field === "count" || field === "descField" || field === "displayName" || field === "idField") {
           continue;
         }
-        desc = (_ref2 = model.get('descField')) != null ? _ref2[field] : void 0;
+        desc = (_ref1 = model.get('descField')) != null ? _ref1[field] : void 0;
         _results.push(out[field] != null ? out[field] : out[field] = {
           cdbFieldDescription: (desc != null ? desc.description : void 0) || '',
           cdbFieldName: (desc != null ? desc.displayName : void 0) || field
@@ -195,7 +210,6 @@ module.exports = ResultCollection = (function(_super) {
   return ResultCollection;
 
 })(Backbone.Collection);
-
 });
 
 ;require.register("helpers/oLocalStorageHelper", function(exports, require, module) {
@@ -222,7 +236,6 @@ module.exports = {
     }
   }
 };
-
 });
 
 ;require.register("initialize", function(exports, require, module) {
@@ -234,7 +247,6 @@ $(function() {
   require('lib/app_helpers');
   return app.initialize();
 });
-
 });
 
 ;require.register("lib/app_helpers", function(exports, require, module) {
@@ -244,9 +256,7 @@ $(function() {
     console = window.console = window.console || {};
     method = void 0;
     dummy = function() {};
-    methods = 'assert,count,debug,dir,dirxml,error,exception,\
-                   group,groupCollapsed,groupEnd,info,log,markTimeline,\
-                   profile,profileEnd,time,timeEnd,trace,warn'.split(',');
+    methods = 'assert,count,debug,dir,dirxml,error,exception, group,groupCollapsed,groupEnd,info,log,markTimeline, profile,profileEnd,time,timeEnd,trace,warn'.split(',');
     _results = [];
     while (method = methods.pop()) {
       _results.push(console[method] = console[method] || dummy);
@@ -310,11 +320,10 @@ $(function() {
     }
   };
 })();
-
 });
 
 ;require.register("lib/base_view", function(exports, require, module) {
-var BaseView, _ref,
+var BaseView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -322,8 +331,7 @@ module.exports = BaseView = (function(_super) {
   __extends(BaseView, _super);
 
   function BaseView() {
-    _ref = BaseView.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return BaseView.__super__.constructor.apply(this, arguments);
   }
 
   BaseView.prototype.template = function() {};
@@ -331,9 +339,9 @@ module.exports = BaseView = (function(_super) {
   BaseView.prototype.initialize = function() {};
 
   BaseView.prototype.getRenderData = function() {
-    var _ref1;
+    var _ref;
     return {
-      model: (_ref1 = this.model) != null ? _ref1.toJSON() : void 0
+      model: (_ref = this.model) != null ? _ref.toJSON() : void 0
     };
   };
 
@@ -358,11 +366,10 @@ module.exports = BaseView = (function(_super) {
   return BaseView;
 
 })(Backbone.View);
-
 });
 
 ;require.register("lib/view", function(exports, require, module) {
-var View, _ref,
+var View,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -370,8 +377,7 @@ module.exports = View = (function(_super) {
   __extends(View, _super);
 
   function View() {
-    _ref = View.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return View.__super__.constructor.apply(this, arguments);
   }
 
   View.prototype.template = function() {};
@@ -401,11 +407,10 @@ module.exports = View = (function(_super) {
   return View;
 
 })(Backbone.View);
-
 });
 
 ;require.register("lib/view_collection", function(exports, require, module) {
-var BaseView, ViewCollection, _ref,
+var BaseView, ViewCollection,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -418,8 +423,7 @@ module.exports = ViewCollection = (function(_super) {
   function ViewCollection() {
     this.removeItem = __bind(this.removeItem, this);
     this.addItem = __bind(this.addItem, this);
-    _ref = ViewCollection.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return ViewCollection.__super__.constructor.apply(this, arguments);
   }
 
   ViewCollection.prototype.itemview = null;
@@ -457,22 +461,22 @@ module.exports = ViewCollection = (function(_super) {
   };
 
   ViewCollection.prototype.render = function() {
-    var id, view, _ref1;
-    _ref1 = this.views;
-    for (id in _ref1) {
-      view = _ref1[id];
+    var id, view, _ref;
+    _ref = this.views;
+    for (id in _ref) {
+      view = _ref[id];
       view.$el.detach();
     }
     return ViewCollection.__super__.render.apply(this, arguments);
   };
 
   ViewCollection.prototype.afterRender = function() {
-    var id, view, _ref1;
+    var id, view, _ref;
     this.$collectionEl = $(this.collectionEl);
     this.$collectionEl.empty();
-    _ref1 = this.views;
-    for (id in _ref1) {
-      view = _ref1[id];
+    _ref = this.views;
+    for (id in _ref) {
+      view = _ref[id];
       this.appendView(view);
     }
     this.onReset(this.collection);
@@ -485,10 +489,10 @@ module.exports = ViewCollection = (function(_super) {
   };
 
   ViewCollection.prototype.onReset = function(newcollection) {
-    var id, view, _ref1;
-    _ref1 = this.views;
-    for (id in _ref1) {
-      view = _ref1[id];
+    var id, view, _ref;
+    _ref = this.views;
+    for (id in _ref) {
+      view = _ref[id];
       view.remove();
     }
     return newcollection.forEach(this.addItem);
@@ -517,7 +521,6 @@ module.exports = ViewCollection = (function(_super) {
   return ViewCollection;
 
 })(BaseView);
-
 });
 
 ;require.register("locales/en", function(exports, require, module) {
@@ -541,7 +544,6 @@ module.exports = {
   "welcome message part2": "Please, explore the menu and select a type of document that you want to retrieve.",
   "button toggle visibility": "Show / Hide columns"
 };
-
 });
 
 ;require.register("locales/fr", function(exports, require, module) {
@@ -565,11 +567,10 @@ module.exports = {
   "welcome message part2": "Déroulez le menu et sélectionnez un type de données pour consulter les documents en relation.",
   "button toggle visibility": "Montrer / Cacher des colonnes"
 };
-
 });
 
 ;require.register("models/delete_all_model", function(exports, require, module) {
-var DoctypeDeleteAllModel, _ref,
+var DoctypeDeleteAllModel,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -577,8 +578,7 @@ module.exports = DoctypeDeleteAllModel = (function(_super) {
   __extends(DoctypeDeleteAllModel, _super);
 
   function DoctypeDeleteAllModel() {
-    _ref = DoctypeDeleteAllModel.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return DoctypeDeleteAllModel.__super__.constructor.apply(this, arguments);
   }
 
   DoctypeDeleteAllModel.prototype.urlRoot = 'doctype_delete_all';
@@ -586,11 +586,10 @@ module.exports = DoctypeDeleteAllModel = (function(_super) {
   return DoctypeDeleteAllModel;
 
 })(Backbone.Model);
-
 });
 
 ;require.register("models/doctype_model", function(exports, require, module) {
-var DoctypeModel, _ref,
+var DoctypeModel,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -598,8 +597,7 @@ module.exports = DoctypeModel = (function(_super) {
   __extends(DoctypeModel, _super);
 
   function DoctypeModel() {
-    _ref = DoctypeModel.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return DoctypeModel.__super__.constructor.apply(this, arguments);
   }
 
   DoctypeModel.prototype.rootUrl = "doctypes";
@@ -607,11 +605,10 @@ module.exports = DoctypeModel = (function(_super) {
   return DoctypeModel;
 
 })(Backbone.Model);
-
 });
 
 ;require.register("models/meta_infos_model", function(exports, require, module) {
-var DoctypeMetaInfosModel, _ref,
+var DoctypeMetaInfosModel,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -619,8 +616,7 @@ module.exports = DoctypeMetaInfosModel = (function(_super) {
   __extends(DoctypeMetaInfosModel, _super);
 
   function DoctypeMetaInfosModel() {
-    _ref = DoctypeMetaInfosModel.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return DoctypeMetaInfosModel.__super__.constructor.apply(this, arguments);
   }
 
   DoctypeMetaInfosModel.prototype.urlRoot = 'doctype_meta_infos';
@@ -628,11 +624,10 @@ module.exports = DoctypeMetaInfosModel = (function(_super) {
   return DoctypeMetaInfosModel;
 
 })(Backbone.Model);
-
 });
 
 ;require.register("models/result_model", function(exports, require, module) {
-var ResultModel, _ref,
+var ResultModel,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -640,8 +635,7 @@ module.exports = ResultModel = (function(_super) {
   __extends(ResultModel, _super);
 
   function ResultModel() {
-    _ref = ResultModel.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return ResultModel.__super__.constructor.apply(this, arguments);
   }
 
   ResultModel.prototype.urlRoot = "search";
@@ -649,11 +643,10 @@ module.exports = ResultModel = (function(_super) {
   return ResultModel;
 
 })(Backbone.Model);
-
 });
 
 ;require.register("router", function(exports, require, module) {
-var DoctypeNavCollectionView, Router, SearchView, _ref,
+var DoctypeNavCollectionView, Router, SearchView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -665,8 +658,7 @@ module.exports = Router = (function(_super) {
   __extends(Router, _super);
 
   function Router() {
-    _ref = Router.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return Router.__super__.constructor.apply(this, arguments);
   }
 
   Router.prototype.routes = {
@@ -731,11 +723,10 @@ module.exports = Router = (function(_super) {
   return Router;
 
 })(Backbone.Router);
-
 });
 
 ;require.register("views/doctype_nav_collection_view", function(exports, require, module) {
-var DoctypeCollection, DoctypeNavCollectionView, DoctypeNavView, ViewCollection, _ref,
+var DoctypeCollection, DoctypeNavCollectionView, DoctypeNavView, ViewCollection,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -749,8 +740,7 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
   __extends(DoctypeNavCollectionView, _super);
 
   function DoctypeNavCollectionView() {
-    _ref = DoctypeNavCollectionView.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return DoctypeNavCollectionView.__super__.constructor.apply(this, arguments);
   }
 
   DoctypeNavCollectionView.prototype.itemview = DoctypeNavView;
@@ -907,25 +897,27 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
   };
 
   DoctypeNavCollectionView.prototype.bindMenuCollapser = function() {
-    var _this = this;
-    return $('#sidebar-collapse').on('click', function() {
-      _this.isMenuMinimized = $('#sidebar').hasClass('menu-min');
-      return _this.collapseSidebar(!_this.isMenuMinimized);
-    });
+    return $('#sidebar-collapse').on('click', (function(_this) {
+      return function() {
+        _this.isMenuMinimized = $('#sidebar').hasClass('menu-min');
+        return _this.collapseSidebar(!_this.isMenuMinimized);
+      };
+    })(this));
   };
 
   DoctypeNavCollectionView.prototype.bindMenuResponsive = function() {
-    var _this = this;
     $('#menu-toggler').on('click', function() {
       $('#sidebar').toggleClass('display');
       $(this).toggleClass('display');
       return false;
     });
-    return $(window).resize(function() {
-      if (_this.lastSlimScrolled != null) {
-        return _this.applySlimscroll(_this.lastSlimScrolled);
-      }
-    });
+    return $(window).resize((function(_this) {
+      return function() {
+        if (_this.lastSlimScrolled != null) {
+          return _this.applySlimscroll(_this.lastSlimScrolled);
+        }
+      };
+    })(this));
   };
 
   DoctypeNavCollectionView.prototype.destroySlimscrolls = function() {
@@ -944,11 +936,10 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
   return DoctypeNavCollectionView;
 
 })(ViewCollection);
-
 });
 
 ;require.register("views/doctype_nav_view", function(exports, require, module) {
-var DoctypeNavView, View, _ref,
+var DoctypeNavView, View,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -958,8 +949,7 @@ module.exports = DoctypeNavView = (function(_super) {
   __extends(DoctypeNavView, _super);
 
   function DoctypeNavView() {
-    _ref = DoctypeNavView.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return DoctypeNavView.__super__.constructor.apply(this, arguments);
   }
 
   DoctypeNavView.prototype.tagName = 'li';
@@ -985,11 +975,10 @@ module.exports = DoctypeNavView = (function(_super) {
   return DoctypeNavView;
 
 })(View);
-
 });
 
 ;require.register("views/result_collection_view", function(exports, require, module) {
-var ResultCollection, ResultCollectionView, ResultView, TableResultView, ViewCollection, _ref,
+var ResultCollection, ResultCollectionView, ResultView, TableResultView, ViewCollection,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -1005,8 +994,7 @@ module.exports = ResultCollectionView = (function(_super) {
   __extends(ResultCollectionView, _super);
 
   function ResultCollectionView() {
-    _ref = ResultCollectionView.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return ResultCollectionView.__super__.constructor.apply(this, arguments);
   }
 
   ResultCollectionView.prototype.itemview = TableResultView;
@@ -1020,7 +1008,6 @@ module.exports = ResultCollectionView = (function(_super) {
   ResultCollectionView.prototype.firstRender = true;
 
   ResultCollectionView.prototype.initialize = function(options) {
-    var _this = this;
     this.options = options;
     this.collection = new ResultCollection();
     if (this.options.presentation != null) {
@@ -1048,44 +1035,48 @@ module.exports = ResultCollectionView = (function(_super) {
       return this.collection.fetch({
         reset: true,
         data: $.param(this.options),
-        success: function(col, data) {
-          _this.isLoading = false;
-          $('.loading-image').remove();
-          if ((_this.options.range != null) && (_this.options.doctypes != null)) {
-            if (data.length === _this.collection.nbPerPage) {
-              _this.loopFirstScroll();
-              return $('.load-more-result').show();
-            } else {
-              _this.noMoreItems = true;
-              if (_this.options.presentation === "list") {
-                _this.collection.forEach(_this.removeItem);
+        success: (function(_this) {
+          return function(col, data) {
+            _this.isLoading = false;
+            $('.loading-image').remove();
+            if ((_this.options.range != null) && (_this.options.doctypes != null)) {
+              if (data.length === _this.collection.nbPerPage) {
+                _this.loopFirstScroll();
+                return $('.load-more-result').show();
+              } else {
+                _this.noMoreItems = true;
+                if (_this.options.presentation === "list") {
+                  _this.collection.forEach(_this.removeItem);
+                }
+                if (_this.options.presentation === "table") {
+                  _this.buildTable(_this.firstRender);
+                }
+                _this.collection.forEach(_this.addItem);
+                return $('.load-more-result').hide();
               }
-              if (_this.options.presentation === "table") {
-                _this.buildTable(_this.firstRender);
-              }
-              _this.collection.forEach(_this.addItem);
-              return $('.load-more-result').hide();
             }
-          }
-        },
-        error: function() {
-          _this.isLoading = false;
-          $('.loading-image').remove();
-          _this.noMoreItems = true;
-          return _this.displayLoadingError();
-        }
+          };
+        })(this),
+        error: (function(_this) {
+          return function() {
+            _this.isLoading = false;
+            $('.loading-image').remove();
+            _this.noMoreItems = true;
+            return _this.displayLoadingError();
+          };
+        })(this)
       });
     }
   };
 
   ResultCollectionView.prototype.onReset = function() {
+
     /*
     if @oldFields?
         console.log "reset", Object.keys(@oldFields).length
     else
         console.log "reset", null
-    */
-
+     */
     this.oldFields = this.collection.fields();
     if (this.options.presentation === 'table') {
       this.buildTable(this.firstRender);
@@ -1129,7 +1120,6 @@ module.exports = ResultCollectionView = (function(_super) {
   };
 
   ResultCollectionView.prototype.loadNextPage = function(isTriggered, callback) {
-    var _this = this;
     this.options['deleted'] = this.deleted;
     if (!this.noMoreItems) {
       this.isLoading = true;
@@ -1141,49 +1131,51 @@ module.exports = ResultCollectionView = (function(_super) {
       return this.collection.fetch({
         data: $.param(this.options),
         remove: false,
-        success: function(col, data) {
-          var isDone;
-          if (data.length != null) {
-            if (!isTriggered) {
-              $('.load-more-result .spinner').hide();
-              $('.load-more-result i').show();
-              $('.load-more-result span').show();
-            }
-            isDone = data.length < _this.collection.nbPerPage;
-            _this.noMoreItems = isDone;
-            if (_this.noMoreItems) {
-              $('.load-more-result').hide();
-            }
-            _this.isLoading = false;
-            if (Object.keys(_this.oldFields).length !== Object.keys(_this.collection.fields()).length) {
-              _this.oldFields = _this.collection.fields();
-              if (_this.options.presentation === "list") {
-                _this.collection.forEach(_this.removeItem);
+        success: (function(_this) {
+          return function(col, data) {
+            var isDone;
+            if (data.length != null) {
+              if (!isTriggered) {
+                $('.load-more-result .spinner').hide();
+                $('.load-more-result i').show();
+                $('.load-more-result span').show();
               }
+              isDone = data.length < _this.collection.nbPerPage;
+              _this.noMoreItems = isDone;
+              if (_this.noMoreItems) {
+                $('.load-more-result').hide();
+              }
+              _this.isLoading = false;
+              if (Object.keys(_this.oldFields).length !== Object.keys(_this.collection.fields()).length) {
+                _this.oldFields = _this.collection.fields();
+                if (_this.options.presentation === "list") {
+                  _this.collection.forEach(_this.removeItem);
+                }
+                if (_this.options.presentation === "table") {
+                  _this.buildTable(_this.firstRender);
+                }
+                _this.collection.forEach(_this.addItem);
+              }
+              if (_this.noMoreItems) {
+                if (_this.options.presentation === "list") {
+                  _this.collection.forEach(_this.removeItem);
+                }
+                if (_this.options.presentation === "table") {
+                  _this.buildTable(_this.firstRender);
+                }
+                _this.collection.forEach(_this.addItem);
+              }
+              if (callback != null) {
+                return callback();
+              }
+            } else {
+              _this.noMoreItems = true;
               if (_this.options.presentation === "table") {
-                _this.buildTable(_this.firstRender);
+                return _this.buildTable(_this.firstRender);
               }
-              _this.collection.forEach(_this.addItem);
             }
-            if (_this.noMoreItems) {
-              if (_this.options.presentation === "list") {
-                _this.collection.forEach(_this.removeItem);
-              }
-              if (_this.options.presentation === "table") {
-                _this.buildTable(_this.firstRender);
-              }
-              _this.collection.forEach(_this.addItem);
-            }
-            if (callback != null) {
-              return callback();
-            }
-          } else {
-            _this.noMoreItems = true;
-            if (_this.options.presentation === "table") {
-              return _this.buildTable(_this.firstRender);
-            }
-          }
-        },
+          };
+        })(this),
         error: function() {
           this.isLoading = false;
           this.noMoreItems = true;
@@ -1194,14 +1186,15 @@ module.exports = ResultCollectionView = (function(_super) {
   };
 
   ResultCollectionView.prototype.loopFirstScroll = function() {
-    var firstScroll,
-      _this = this;
+    var firstScroll;
     if (!this.isLoading && !this.noMoreItems) {
       firstScroll = $(document).height() === $(window).height();
       if (firstScroll) {
-        return this.loadNextPage(true, function() {
-          return _this.loopFirstScroll();
-        });
+        return this.loadNextPage(true, (function(_this) {
+          return function() {
+            return _this.loopFirstScroll();
+          };
+        })(this));
       }
     }
   };
@@ -1218,12 +1211,12 @@ module.exports = ResultCollectionView = (function(_super) {
   };
 
   ResultCollectionView.prototype.makeTHead = function() {
-    var display, field, fieldname, htmlThead, title, _ref1;
+    var display, field, fieldname, htmlThead, title, _ref;
     $('#result-view-as-table').find('thead').remove();
     htmlThead = '<thead><tr>';
-    _ref1 = this.itemViewOptions().fields;
-    for (fieldname in _ref1) {
-      field = _ref1[fieldname];
+    _ref = this.itemViewOptions().fields;
+    for (fieldname in _ref) {
+      field = _ref[fieldname];
       display = field.cdbFieldName;
       title = field.cdbFieldDescription;
       htmlThead += "<th class=\"cozy_" + fieldname + "\"\n    title=\"" + title + "\">\n    " + display + "\n</th>";
@@ -1279,11 +1272,10 @@ module.exports = ResultCollectionView = (function(_super) {
   return ResultCollectionView;
 
 })(ViewCollection);
-
 });
 
 ;require.register("views/result_list_view", function(exports, require, module) {
-var ResultView, View, _ref,
+var ResultView, View,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1295,8 +1287,7 @@ module.exports = ResultView = (function(_super) {
 
   function ResultView() {
     this.render = __bind(this.render, this);
-    _ref = ResultView.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return ResultView.__super__.constructor.apply(this, arguments);
   }
 
   ResultView.prototype.tagName = 'div';
@@ -1359,13 +1350,14 @@ module.exports = ResultView = (function(_super) {
   };
 
   ResultView.prototype.removeResult = function() {
-    var _this = this;
     this.model.set('id', this.model.get('_id'));
     return this.model.destroy({
       data: 'id=' + this.model.get('id'),
-      success: function() {
-        return _this.render;
-      }
+      success: (function(_this) {
+        return function() {
+          return _this.render;
+        };
+      })(this)
     });
   };
 
@@ -1473,11 +1465,10 @@ module.exports = ResultView = (function(_super) {
   return ResultView;
 
 })(View);
-
 });
 
 ;require.register("views/result_table_view", function(exports, require, module) {
-var ResultTableView, View, _ref,
+var ResultTableView, View,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -1490,8 +1481,7 @@ module.exports = ResultTableView = (function(_super) {
 
   function ResultTableView() {
     this.render = __bind(this.render, this);
-    _ref = ResultTableView.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return ResultTableView.__super__.constructor.apply(this, arguments);
   }
 
   ResultTableView.prototype.tagName = 'tr';
@@ -1700,24 +1690,24 @@ module.exports = ResultTableView = (function(_super) {
   };
 
   ResultTableView.prototype.removeResult = function() {
-    var _this = this;
     this.model.set('id', this.model.get('_id'));
     return this.model.destroy({
       data: 'id=' + this.model.get('id'),
-      success: function() {
-        return _this.render;
-      }
+      success: (function(_this) {
+        return function() {
+          return _this.render;
+        };
+      })(this)
     });
   };
 
   return ResultTableView;
 
 })(View);
-
 });
 
 ;require.register("views/results_global_controls_view", function(exports, require, module) {
-var DeleteAllModel, ResultsGlobalControlsView, View, app, localStore, _ref,
+var DeleteAllModel, ResultsGlobalControlsView, View, app, localStore,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1736,8 +1726,7 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
   function ResultsGlobalControlsView() {
     this.switchToTableView = __bind(this.switchToTableView, this);
     this.render = __bind(this.render, this);
-    _ref = ResultsGlobalControlsView.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return ResultsGlobalControlsView.__super__.constructor.apply(this, arguments);
   }
 
   ResultsGlobalControlsView.prototype.el = '#results-global-controls';
@@ -1864,8 +1853,7 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
   };
 
   ResultsGlobalControlsView.prototype.confirmDeleteAll = function(e) {
-    var data,
-      _this = this;
+    var data;
     e.preventDefault();
     data = {
       title: t('confirmation required'),
@@ -1876,9 +1864,11 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
     $("#confirmation-dialog").modal();
     $("#confirmation-dialog").modal("show");
     $("#confirmation-dialog-confirm").unbind('click');
-    return $("#confirmation-dialog-confirm").bind("click", function() {
-      return _this.deleteAll();
-    });
+    return $("#confirmation-dialog-confirm").bind("click", (function(_this) {
+      return function() {
+        return _this.deleteAll();
+      };
+    })(this));
   };
 
   ResultsGlobalControlsView.prototype.deleteAll = function() {
@@ -1904,11 +1894,10 @@ module.exports = ResultsGlobalControlsView = (function(_super) {
   return ResultsGlobalControlsView;
 
 })(View);
-
 });
 
 ;require.register("views/results_meta_infos_view", function(exports, require, module) {
-var ResultsMetaInfosView, View, localStore, _ref,
+var ResultsMetaInfosView, View, localStore,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -1920,8 +1909,7 @@ module.exports = ResultsMetaInfosView = (function(_super) {
   __extends(ResultsMetaInfosView, _super);
 
   function ResultsMetaInfosView() {
-    _ref = ResultsMetaInfosView.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return ResultsMetaInfosView.__super__.constructor.apply(this, arguments);
   }
 
   ResultsMetaInfosView.prototype.el = '#results-meta-infos';
@@ -1945,11 +1933,10 @@ module.exports = ResultsMetaInfosView = (function(_super) {
   return ResultsMetaInfosView;
 
 })(View);
-
 });
 
 ;require.register("views/search_view", function(exports, require, module) {
-var BaseView, MetaInfosModel, ResultCollectionView, ResultsGlobalControlsView, ResultsMetaInfosView, SearchView, localStore, _ref,
+var BaseView, MetaInfosModel, ResultCollectionView, ResultsGlobalControlsView, ResultsMetaInfosView, SearchView, localStore,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1971,8 +1958,7 @@ module.exports = SearchView = (function(_super) {
 
   function SearchView() {
     this.initialize = __bind(this.initialize, this);
-    _ref = SearchView.__super__.constructor.apply(this, arguments);
-    return _ref;
+    return SearchView.__super__.constructor.apply(this, arguments);
   }
 
   SearchView.prototype.el = '#results-list';
@@ -1986,8 +1972,7 @@ module.exports = SearchView = (function(_super) {
   };
 
   SearchView.prototype.initialize = function(options) {
-    var metaInfosModel,
-      _this = this;
+    var metaInfosModel;
     this.options = options;
     this.hasDoctype = this.options.doctypes && this.options.doctypes.length > 0;
     this.hasPresentation = this.options.presentation != null;
@@ -2003,39 +1988,44 @@ module.exports = SearchView = (function(_super) {
         data: $.param({
           doctype: this.options.doctypes[0]
         }),
-        success: function(col, data) {
-          _this.applyMetaInformation(data);
-          return _this.applyGlobalControls();
-        }
+        success: (function(_this) {
+          return function(col, data) {
+            _this.applyMetaInformation(data);
+            return _this.applyGlobalControls();
+          };
+        })(this)
       });
       if (this.options.range != null) {
-        return $(window).bind('scroll', function(e, isTriggered) {
-          var docHeight, noMoreItems, winHeight;
-          docHeight = $(document).height();
-          noMoreItems = _this.resultCollectionView.noMoreItems;
-          if (!_this.resultCollectionView.isLoading && !noMoreItems) {
-            winHeight = $(window).scrollTop() + $(window).height();
-            if (winHeight === docHeight) {
-              _this.loadMore(isTriggered);
+        return $(window).bind('scroll', (function(_this) {
+          return function(e, isTriggered) {
+            var docHeight, noMoreItems, winHeight;
+            docHeight = $(document).height();
+            noMoreItems = _this.resultCollectionView.noMoreItems;
+            if (!_this.resultCollectionView.isLoading && !noMoreItems) {
+              winHeight = $(window).scrollTop() + $(window).height();
+              if (winHeight === docHeight) {
+                _this.loadMore(isTriggered);
+              }
             }
-          }
-          if ($(window).scrollTop() > 0) {
-            return $('#btn-scroll-up').show();
-          } else {
-            return $('#btn-scroll-up').hide();
-          }
-        });
+            if ($(window).scrollTop() > 0) {
+              return $('#btn-scroll-up').show();
+            } else {
+              return $('#btn-scroll-up').hide();
+            }
+          };
+        })(this));
       }
     }
   };
 
   SearchView.prototype.afterRender = function() {
-    var _this = this;
     if (this.hasDoctype) {
       this.resultCollectionView.render();
-      $(window).bind('resize', function() {
-        return _this.resultCollectionView.loopFirstScroll();
-      });
+      $(window).bind('resize', (function(_this) {
+        return function() {
+          return _this.resultCollectionView.loopFirstScroll();
+        };
+      })(this));
       return this.bindSearch();
     }
   };
@@ -2076,15 +2066,16 @@ module.exports = SearchView = (function(_super) {
   };
 
   SearchView.prototype.bindSearch = function() {
-    var searchElt, searchField,
-      _this = this;
+    var searchElt, searchField;
     searchElt = $('#launch-search');
     searchField = $('#search-field');
     searchElt.unbind('click');
     searchField.unbind('keypress');
-    searchElt.click(function() {
-      return _this.resultCollectionView.search(searchField.val());
-    });
+    searchElt.click((function(_this) {
+      return function() {
+        return _this.resultCollectionView.search(searchField.val());
+      };
+    })(this));
     searchField.attr('placeholder', t('search-placeholder'));
     return searchField.keypress(function(event) {
       if (event.which === 13) {
@@ -2097,289 +2088,291 @@ module.exports = SearchView = (function(_super) {
   return SearchView;
 
 })(BaseView);
-
 });
 
 ;require.register("views/templates/doctype_nav", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var __templateData = function template(locals) {
 var buf = [];
-with (locals || {}) {
-var interp;
- if (value.length) {
+var jade_mixins = {};
+var jade_interp;
+var locals_ = (locals || {}),value = locals_.value,icons = locals_.icons,category = locals_.category,displayName = locals_.displayName,subValues = locals_.subValues,doctype = locals_.doctype,sum = locals_.sum,name = locals_.name;
+if (value.length) {
 {
-buf.push('<a href="#" class="dropdown-toggle first-level">');
- if (icons[category]) {
+buf.push("<a href=\"#\" class=\"dropdown-toggle first-level\">");
+if (icons[category]) {
 {
-buf.push('<i');
-buf.push(attrs({ "class": ("" + (icons[category]) + "") }, {"class":true}));
-buf.push('></i>');
+buf.push("<i" + (jade.cls(["" + (icons[category]) + ""], [true])) + "></i>");
 }
 }
-buf.push('<span class="menu-text firstLetterUp">');
-var __val__ = t(category)
-buf.push(escape(null == __val__ ? "" : __val__));
-buf.push('</span><b class="arrow icon-angle-right"></b></a><ul class="submenu">');
- for (var index in value) {
+buf.push("<span class=\"menu-text firstLetterUp\">" + (jade.escape(null == (jade_interp = t(category)) ? "" : jade_interp)) + "</span><b class=\"arrow icon-angle-right\"></b></a><ul class=\"submenu\">");
+for (var index in value) {
 {
- if (value[index].doctype) {
+if (value[index].doctype) {
 {
- displayName = value[index].displayName !== ''? value[index].displayName : value[index].doctype
-buf.push('<li><a');
-buf.push(attrs({ 'href':('#search/all/' + (value[index].doctype) + '') }, {"href":true}));
-buf.push('><i class="icon-double-angle-right"></i>' + escape((interp = displayName) == null ? '' : interp) + '<span class="menu-little-text">&nbsp;(' + escape((interp = value[index].sum) == null ? '' : interp) + ')</span></a></li>');
+displayName = value[index].displayName !== ''? value[index].displayName : value[index].doctype
+buf.push("<li><a" + (jade.attr("href", '#search/all/' + (value[index].doctype) + '', true, false)) + "><i class=\"icon-double-angle-right\"></i>" + (jade.escape((jade_interp = displayName) == null ? '' : jade_interp)) + "<span class=\"menu-little-text\">&nbsp;(" + (jade.escape((jade_interp = value[index].sum) == null ? '' : jade_interp)) + ")</span></a></li>");
 }
- }
- else {
+}
+else {
 {
-buf.push('<li><a href="#" class="dropdown-toggle"><i class="icon-double-angle-right"></i><span class="menu-text">' + escape((interp = value[index].key) == null ? '' : interp) + '</span><b class="arrow icon-angle-right"></b></a><ul class="submenu">');
- subValues = value[index].value
- for (var subIndex in subValues) {
+buf.push("<li><a href=\"#\" class=\"dropdown-toggle\"><i class=\"icon-double-angle-right\"></i><span class=\"menu-text\">" + (jade.escape((jade_interp = value[index].key) == null ? '' : jade_interp)) + "</span><b class=\"arrow icon-angle-right\"></b></a><ul class=\"submenu\">");
+subValues = value[index].value
+for (var subIndex in subValues) {
 {
- doctype = subValues[subIndex].doctype
- displayName = subValues[subIndex].displayName !== ''? subValues[subIndex].displayName : doctype
- sum = subValues[subIndex].sum
-buf.push('<li><a');
-buf.push(attrs({ 'href':('#search/all/' + (doctype) + '') }, {"href":true}));
-buf.push('>' + escape((interp = displayName) == null ? '' : interp) + '<span class="menu-little-text">&nbsp;(' + escape((interp = sum) == null ? '' : interp) + ')</span></a></li>');
+doctype = subValues[subIndex].doctype
+displayName = subValues[subIndex].displayName !== ''? subValues[subIndex].displayName : doctype
+sum = subValues[subIndex].sum
+buf.push("<li><a" + (jade.attr("href", '#search/all/' + (doctype) + '', true, false)) + ">" + (jade.escape((jade_interp = displayName) == null ? '' : jade_interp)) + "<span class=\"menu-little-text\">&nbsp;(" + (jade.escape((jade_interp = sum) == null ? '' : jade_interp)) + ")</span></a></li>");
 }
- }
-buf.push('</ul></li>');
+}
+buf.push("</ul></li>");
 }
 }
 }
- }
-buf.push('</ul>');
 }
- }
- else {
+buf.push("</ul>");
+}
+}
+else {
 {
-buf.push('<a');
-buf.push(attrs({ 'href':('#search/all/' + (name) + '') }, {"href":true}));
-buf.push('>' + escape((interp = name) == null ? '' : interp) + '</a>');
+buf.push("<a" + (jade.attr("href", '#search/all/' + (name) + '', true, false)) + ">" + (jade.escape((jade_interp = name) == null ? '' : jade_interp)) + "</a>");
 }
-}
-}
-return buf.join("");
+};return buf.join("");
 };
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
 });
 
 ;require.register("views/templates/modal_confirm", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var __templateData = function template(locals) {
 var buf = [];
-with (locals || {}) {
-var interp;
-buf.push('<div id="confirmation-dialog" class="modal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-hidden="true" class="close">x</button><h4 class="modal-title">' + escape((interp = title) == null ? '' : interp) + '</h4></div><div class="modal-body"><p class="modal-confirm-text">' + escape((interp = body) == null ? '' : interp) + '</p></div><div class="modal-footer"><span data-dismiss="modal" class="btn btn-link">');
-var __val__ = t('cancel')
-buf.push(escape(null == __val__ ? "" : __val__));
-buf.push('</span><span id="confirmation-dialog-confirm" data-dismiss="modal" class="btn btn-danger">' + escape((interp = confirm) == null ? '' : interp) + '</span></div></div></div></div>');
-}
-return buf.join("");
+var jade_mixins = {};
+var jade_interp;
+var locals_ = (locals || {}),title = locals_.title,body = locals_.body,confirm = locals_.confirm;
+buf.push("<div id=\"confirmation-dialog\" class=\"modal\"><div class=\"modal-dialog\"><div class=\"modal-content\"><div class=\"modal-header\"><button type=\"button\" data-dismiss=\"modal\" aria-hidden=\"true\" class=\"close\">x</button><h4 class=\"modal-title\">" + (jade.escape((jade_interp = title) == null ? '' : jade_interp)) + "</h4></div><div class=\"modal-body\"><p class=\"modal-confirm-text\">" + (jade.escape((jade_interp = body) == null ? '' : jade_interp)) + "</p></div><div class=\"modal-footer\"><span data-dismiss=\"modal\" class=\"btn btn-link\">" + (jade.escape(null == (jade_interp = t('cancel')) ? "" : jade_interp)) + "</span><span id=\"confirmation-dialog-confirm\" data-dismiss=\"modal\" class=\"btn btn-danger\">" + (jade.escape((jade_interp = confirm) == null ? '' : jade_interp)) + "</span></div></div></div></div>");;return buf.join("");
 };
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
 });
 
 ;require.register("views/templates/result_list", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var __templateData = function template(locals) {
 var buf = [];
-with (locals || {}) {
-var interp;
- if (results['no_result']) {
+var jade_mixins = {};
+var jade_interp;
+var locals_ = (locals || {}),results = locals_.results;
+if (results['no_result']) {
 {
-buf.push('<em>' + escape((interp = results['no_result_msg']) == null ? '' : interp) + '</em>');
+buf.push("<em>" + (jade.escape((jade_interp = results['no_result_msg']) == null ? '' : jade_interp)) + "</em>");
 }
- }
- else {
+}
+else {
 {
-buf.push('<div class="panel-heading"><h4 class="panel-title"><a');
-buf.push(attrs({ 'data-toggle':("collapse"), 'data-parent':("#basic-accordion"), 'href':("#collapse" + (results.count) + ""), "class": ('accordion-toggle') }, {"data-toggle":true,"data-parent":true,"href":true}));
-buf.push('><i class="icon-plus-sign"></i><strong>&nbsp;' + escape((interp = results.heading.doctype) == null ? '' : interp) + '</strong>&nbsp;' + escape((interp = results.heading.field) == null ? '' : interp) + ' :\n&nbsp;' + escape((interp = results.heading.data) == null ? '' : interp) + '</a><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button class="btn btn-xs remove-result"><i class="icon-trash bigger-120"></i></button></div></h4></div><div');
-buf.push(attrs({ 'style':("height: 0px;"), 'id':("collapse" + (results.count) + ""), "class": ('panel-collapse') + ' ' + ('collapse') }, {"style":true,"id":true}));
-buf.push('><div class="panel-body"><div id="result-list" class="profile-user-info profile-user-info-striped">');
- for (var iCount = 0; iCount < results['fields'].length; iCount++) {
+buf.push("<div class=\"panel-heading\"><h4 class=\"panel-title\"><a data-toggle=\"collapse\" data-parent=\"#basic-accordion\"" + (jade.attr("href", "#collapse" + (results.count) + "", true, false)) + " class=\"accordion-toggle\"><i class=\"icon-plus-sign\"></i><strong>&nbsp;" + (jade.escape((jade_interp = results.heading.doctype) == null ? '' : jade_interp)) + "</strong>&nbsp;" + (jade.escape((jade_interp = results.heading.field) == null ? '' : jade_interp)) + " :\n&nbsp;" + (jade.escape((jade_interp = results.heading.data) == null ? '' : jade_interp)) + "</a><div class=\"visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons\"><button class=\"btn btn-xs remove-result\"><i class=\"icon-trash bigger-120\"></i></button></div></h4></div><div style=\"height: 0px;\"" + (jade.attr("id", "collapse" + (results.count) + "", true, false)) + " class=\"panel-collapse collapse\"><div class=\"panel-body\"><div id=\"result-list\" class=\"profile-user-info profile-user-info-striped\">");
+for (var iCount = 0; iCount < results['fields'].length; iCount++) {
 {
-buf.push('<div');
-buf.push(attrs({ 'title':(results['fields'][iCount].cdbFieldDescription), "class": ('profile-info-row') }, {"title":true}));
-buf.push('><div class="profile-info-name">' + escape((interp = results['fields'][iCount].cdbFieldName) == null ? '' : interp) + '</div><div class="profile-info-value">');
-var __val__ = results['fields'][iCount].cdbFieldData
-buf.push(null == __val__ ? "" : __val__);
-buf.push('</div></div>');
+buf.push("<div" + (jade.attr("title", results['fields'][iCount].cdbFieldDescription, true, false)) + " class=\"profile-info-row\"><div class=\"profile-info-name\">" + (jade.escape((jade_interp = results['fields'][iCount].cdbFieldName) == null ? '' : jade_interp)) + "</div><div class=\"profile-info-value\">" + (null == (jade_interp = results['fields'][iCount].cdbFieldData) ? "" : jade_interp) + "</div></div>");
 }
- }
-buf.push('</div></div></div>');
 }
- }
+buf.push("</div></div></div>");
 }
-return buf.join("");
+};return buf.join("");
 };
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
 });
 
 ;require.register("views/templates/result_table", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var __templateData = function template(locals) {
 var buf = [];
-with (locals || {}) {
-var interp;
+var jade_mixins = {};
+var jade_interp;
+var locals_ = (locals || {}),results = locals_.results,fields = locals_.fields,undefined = locals_.undefined;
 if ( results['no_result'])
 {
-buf.push('<em>' + escape((interp = results['no_result_msg']) == null ? '' : interp) + '</em>');
+buf.push("<em>" + (jade.escape((jade_interp = results['no_result_msg']) == null ? '' : jade_interp)) + "</em>");
 }
 else
 {
 // iterate Object.keys(fields)
 ;(function(){
-  if ('number' == typeof Object.keys(fields).length) {
+  var $$obj = Object.keys(fields);
+  if ('number' == typeof $$obj.length) {
 
-    for (var $index = 0, $$l = Object.keys(fields).length; $index < $$l; $index++) {
-      var fieldname = Object.keys(fields)[$index];
+    for (var $index = 0, $$l = $$obj.length; $index < $$l; $index++) {
+      var fieldname = $$obj[$index];
 
 if ( results['fields'][fieldname] == undefined)
 {
-buf.push('<td>NA</td>');
+buf.push("<td>NA</td>");
 }
 else if ( results['fields'][fieldname].cdbFieldTitle !== '')
 {
-buf.push('<td');
-buf.push(attrs({ 'title':(results['fields'][fieldname].cdbFieldTitle) }, {"title":true}));
-buf.push('>');
-var __val__ = results['fields'][fieldname].cdbFieldData
-buf.push(null == __val__ ? "" : __val__);
-buf.push('</td>');
+buf.push("<td" + (jade.attr("title", results['fields'][fieldname].cdbFieldTitle, true, false)) + ">" + (null == (jade_interp = results['fields'][fieldname].cdbFieldData) ? "" : jade_interp) + "</td>");
 }
 else
 {
-buf.push('<td>');
-var __val__ = results['fields'][fieldname].cdbFieldData
-buf.push(null == __val__ ? "" : __val__);
-buf.push('</td>');
+buf.push("<td>" + (null == (jade_interp = results['fields'][fieldname].cdbFieldData) ? "" : jade_interp) + "</td>");
 }
     }
 
   } else {
     var $$l = 0;
-    for (var $index in Object.keys(fields)) {
-      $$l++;      var fieldname = Object.keys(fields)[$index];
+    for (var $index in $$obj) {
+      $$l++;      var fieldname = $$obj[$index];
 
 if ( results['fields'][fieldname] == undefined)
 {
-buf.push('<td>NA</td>');
+buf.push("<td>NA</td>");
 }
 else if ( results['fields'][fieldname].cdbFieldTitle !== '')
 {
-buf.push('<td');
-buf.push(attrs({ 'title':(results['fields'][fieldname].cdbFieldTitle) }, {"title":true}));
-buf.push('>');
-var __val__ = results['fields'][fieldname].cdbFieldData
-buf.push(null == __val__ ? "" : __val__);
-buf.push('</td>');
+buf.push("<td" + (jade.attr("title", results['fields'][fieldname].cdbFieldTitle, true, false)) + ">" + (null == (jade_interp = results['fields'][fieldname].cdbFieldData) ? "" : jade_interp) + "</td>");
 }
 else
 {
-buf.push('<td>');
-var __val__ = results['fields'][fieldname].cdbFieldData
-buf.push(null == __val__ ? "" : __val__);
-buf.push('</td>');
+buf.push("<td>" + (null == (jade_interp = results['fields'][fieldname].cdbFieldData) ? "" : jade_interp) + "</td>");
 }
     }
 
   }
 }).call(this);
 
-buf.push('<td class="action"><button class="btn btn-xs remove-result"><i class="icon-trash bigger-120"></i></button></td>');
-}
-}
-return buf.join("");
+buf.push("<td class=\"action\"><button class=\"btn btn-xs remove-result\"><i class=\"icon-trash bigger-120\"></i></button></td>");
+};return buf.join("");
 };
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
 });
 
 ;require.register("views/templates/results_global_controls", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var __templateData = function template(locals) {
 var buf = [];
-with (locals || {}) {
-var interp;
- if (doctype !== '') {
+var jade_mixins = {};
+var jade_interp;
+var locals_ = (locals || {}),doctype = locals_.doctype,hasMetainfos = locals_.hasMetainfos,isVisible = locals_.isVisible,icon_presentation = locals_.icon_presentation;
+if (doctype !== '') {
 {
-buf.push('<h4>&nbsp;&nbsp;' + escape((interp = t('currently exploring')) == null ? '' : interp) + ' :&nbsp;<em>' + escape((interp = doctype) == null ? '' : interp) + ' &nbsp;</em>');
- if (hasMetainfos) {
+buf.push("<h4>&nbsp;&nbsp;" + (jade.escape((jade_interp = t('currently exploring')) == null ? '' : jade_interp)) + " :&nbsp;<em>" + (jade.escape((jade_interp = doctype) == null ? '' : jade_interp)) + " &nbsp;</em>");
+if (hasMetainfos) {
 {
- if (isVisible) {
+if (isVisible) {
 {
-buf.push('<i class="about-doctype icon-question-sign white-and-green"></i>');
+buf.push("<i class=\"about-doctype icon-question-sign white-and-green\"></i>");
 }
 }
- else {
+else {
 {
-buf.push('<i class="about-doctype icon-question-sign"></i>');
+buf.push("<i class=\"about-doctype icon-question-sign\"></i>");
 }
 }
 }
- }
-buf.push('&nbsp;<i');
-buf.push(attrs({ "class": ('view-switcher') + ' ' + (icon_presentation) }, {"class":true}));
-buf.push('></i></h4><div class="visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons"><button id="delete-all" class="btn btn-xs"><span></span><i class="icon-trash bigger-120"></i></button></div>');
 }
+buf.push("&nbsp;<i" + (jade.cls(['view-switcher',icon_presentation], [null,true])) + "></i></h4><div class=\"visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons\"><button id=\"delete-all\" class=\"btn btn-xs\"><span></span><i class=\"icon-trash bigger-120\"></i></button></div>");
 }
-}
-return buf.join("");
+};return buf.join("");
 };
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
 });
 
 ;require.register("views/templates/results_meta_infos", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var __templateData = function template(locals) {
 var buf = [];
-with (locals || {}) {
-var interp;
-buf.push('<div class="widget-box"><div class="widget-header widget-header-small header-color-green"><h4 class="lighter"><i class="icon-question-sign"></i>');
- displayedDoctype = displayName !== '' ? displayName : name;
-buf.push('&nbsp;' + escape((interp = t('about')) == null ? '' : interp) + ' ' + escape((interp = displayedDoctype) == null ? '' : interp) + '</h4><div class="widget-toolbar"><span id="close-about-doctype"><i class="icon-remove"></i></span></div></div><div class="widget-body"><div class="widget-body-inner"><div class="widget-main padding-6"><div class="md-desc-wrapper">');
- if (applications && applications.length > 0) {
+var jade_mixins = {};
+var jade_interp;
+var locals_ = (locals || {}),displayedDoctype = locals_.displayedDoctype,displayName = locals_.displayName,name = locals_.name,applications = locals_.applications,metadoctype = locals_.metadoctype;
+buf.push("<div class=\"widget-box\"><div class=\"widget-header widget-header-small header-color-green\"><h4 class=\"lighter\"><i class=\"icon-question-sign\"></i>");
+displayedDoctype = displayName !== '' ? displayName : name;
+buf.push("&nbsp;" + (jade.escape((jade_interp = t('about')) == null ? '' : jade_interp)) + " " + (jade.escape((jade_interp = displayedDoctype) == null ? '' : jade_interp)) + "</h4><div class=\"widget-toolbar\"><span id=\"close-about-doctype\"><i class=\"icon-remove\"></i></span></div></div><div class=\"widget-body\"><div class=\"widget-body-inner\"><div class=\"widget-main padding-6\"><div class=\"md-desc-wrapper\">");
+if (applications && applications.length > 0) {
 {
-buf.push('<div class="md-desc-container"><strong>');
-var __val__ = t('applications using it') + ' :'
-buf.push(escape(null == __val__ ? "" : __val__));
-buf.push('</strong><ul class="sober-list">');
- for (var index in applications) {
+buf.push("<div class=\"md-desc-container\"><strong>" + (jade.escape(null == (jade_interp = t('applications using it') + ' :') ? "" : jade_interp)) + "</strong><ul class=\"sober-list\">");
+for (var index in applications) {
 {
-buf.push('<li class="firstLetterUp"><i class="icon-download-alt"></i><span>&nbsp;' + escape((interp = applications[index]) == null ? '' : interp) + '</span></li>');
-}
- }
-buf.push('</ul></div>');
+buf.push("<li class=\"firstLetterUp\"><i class=\"icon-download-alt\"></i><span>&nbsp;" + (jade.escape((jade_interp = applications[index]) == null ? '' : jade_interp)) + "</span></li>");
 }
 }
- if (typeof(metadoctype) === 'object') {
+buf.push("</ul></div>");
+}
+}
+if (typeof(metadoctype) === 'object') {
 {
-buf.push('<div class="md-desc-container"><strong>');
-var __val__ = t('fields information') + ' :'
-buf.push(escape(null == __val__ ? "" : __val__));
-buf.push('</strong><ul class="sober-list">');
- var fields = metadoctype.fields;
- for (var obj in fields) {
+buf.push("<div class=\"md-desc-container\"><strong>" + (jade.escape(null == (jade_interp = t('fields information') + ' :') ? "" : jade_interp)) + "</strong><ul class=\"sober-list\">");
+var fields = metadoctype.fields;
+for (var obj in fields) {
 {
-buf.push('<li><i class="icon-tag"></i><span>&nbsp;' + escape((interp = fields[obj].displayName) == null ? '' : interp) + ' -&nbsp;<i>' + escape((interp = fields[obj].description) == null ? '' : interp) + '</i></span></li>');
+buf.push("<li><i class=\"icon-tag\"></i><span>&nbsp;" + (jade.escape((jade_interp = fields[obj].displayName) == null ? '' : jade_interp)) + " -&nbsp;<i>" + (jade.escape((jade_interp = fields[obj].description) == null ? '' : jade_interp)) + "</i></span></li>");
 }
- }
-buf.push('</ul></div>');
 }
- }
-buf.push('</div></div><div class="clear"></div></div></div></div>');
+buf.push("</ul></div>");
 }
-return buf.join("");
+}
+buf.push("</div></div><div class=\"clear\"></div></div></div></div>");;return buf.join("");
 };
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
 });
 
 ;require.register("views/templates/search", function(exports, require, module) {
-module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
-attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var __templateData = function template(locals) {
 var buf = [];
-with (locals || {}) {
-var interp;
-buf.push('<div class="introduction"><div class="page-header"><h1>' + escape((interp = t('welcome title')) == null ? '' : interp) + '</h1></div><p>' + escape((interp = t('welcome message part1')) == null ? '' : interp) + '</p><p>' + escape((interp = t('welcome message part2')) == null ? '' : interp) + '</p></div><div id="all-result"><div id="basic-accordion" class="accordion-style1 panel-group"></div><div id="basic-table" class="table-responsive"><table id="result-view-as-table" class="table table-striped table-bordered table-hover"><tbody></tbody></table></div><div class="load-more-result"><span>' + escape((interp = t('load more results')) == null ? '' : interp) + '&nbsp;</span><br/><i class="icon-circle-arrow-down"></i></div></div>');
-}
-return buf.join("");
+var jade_mixins = {};
+var jade_interp;
+
+buf.push("<div class=\"introduction\"><div class=\"page-header\"><h1>" + (jade.escape((jade_interp = t('welcome title')) == null ? '' : jade_interp)) + "</h1></div><p>" + (jade.escape((jade_interp = t('welcome message part1')) == null ? '' : jade_interp)) + "</p><p>" + (jade.escape((jade_interp = t('welcome message part2')) == null ? '' : jade_interp)) + "</p></div><div id=\"all-result\"><div id=\"basic-accordion\" class=\"accordion-style1 panel-group\"></div><div id=\"basic-table\" class=\"table-responsive\"><table id=\"result-view-as-table\" class=\"table table-striped table-bordered table-hover\"><tbody></tbody></table></div><div class=\"load-more-result\"><span>" + (jade.escape((jade_interp = t('load more results')) == null ? '' : jade_interp)) + "&nbsp;</span><br/><i class=\"icon-circle-arrow-down\"></i></div></div>");;return buf.join("");
 };
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
 });
 
 ;

@@ -33,3 +33,6 @@ exports.config =
         templates:
             defaultExtension: 'jade'
             joinTo: 'javascripts/app.js'
+    plugins:
+        jade:
+            globals: ['t', 'jQuery', '$']
