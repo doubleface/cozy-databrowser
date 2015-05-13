@@ -8,7 +8,6 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
     collection : new DoctypeCollection()
     collectionEl : '#doctype-nav-collection-view'
     el : '#doctype-nav-collection-view'
-    isMenuMinimized : false
     lastSlimScrolled : null
 
     events:
@@ -16,7 +15,6 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         'mouseenter .doctype-list-item' : 'showMinimizedMenu'
 
     initialize: ->
-        @bindMenuCollapser()
         @bindMenuResponsive()
         @collection.fetch
             data: $.param
@@ -28,10 +26,6 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
     showMinimizedMenu: (event) ->
         jqLiContainer = $(event.currentTarget)
         jqSubmenu = jqLiContainer.find(' .submenu:eq(0)')
-        if @isMenuMinimized
-            @destroySlimscrolls
-            @applySlimscroll(jqSubmenu, true)
-            jqScrollDiv = jqLiContainer.find('.slimScrollDiv')
 
     activateMenuElement: (event) ->
 
@@ -65,33 +59,14 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         #stop here if it's a link
         if isDirectLink then return
 
-        #verify if minimized
-        @isMenuMinimized = $('#sidebar').hasClass 'menu-min'
-
         #close other submenu
         submenuIsVisible = jqSubmenu.is ':visible'
         if not submenuIsVisible
-            if @isMenuMinimized and jqParentUl.hasClass 'nav-list' then return
-
             jqParentUl.find('.open').find('.submenu').each ->
                 if $(this) isnt jqSubmenu
                     $(this).slideUp(200).closest('li').removeClass 'open'
 
             @applySlimscroll jqSubmenu
-
-        if @isMenuMinimized and jqParentUl.hasClass 'nav-list' then return false
-
-        # close if it's open, open if it's close
-        jqSubmenu.slideToggle 200
-        parentLi.toggleClass 'open'
-
-        #Add arrow icon behavior
-        $('.icon-angle-down')
-            .addClass('icon-angle-right')
-            .removeClass('icon-angle-down')
-        $('.open > a > .icon-angle-right')
-            .addClass('icon-angle-down')
-            .removeClass('icon-angle-right')
 
         return false
 
@@ -100,10 +75,9 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         hasSubmenu = jqSubmenu.length > 0
         hasParentSubmenu = jqSubmenu.parent().closest('.submenu').length > 0
         isFirstSubmenu = hasSubmenu and not hasParentSubmenu
-        collaspseHeight = $('#sidebar-collapse').height()
         searchHeight = $('.nav-search:eq(0)').height()
         navlistHeight = $('.nav-list > li').length * 46
-        navHeight = navlistHeight + collaspseHeight + searchHeight
+        navHeight = navlistHeight + searchHeight
         if @isMenuMinimized
             navHeight = searchHeight + 25
         menuHeight = jqSubmenu.height()
@@ -132,37 +106,6 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         if bSlimScollExist
             @lastSlimScrolled = jqSubmenu
 
-
-    collapseSidebar : (collpase) ->
-
-        @destroySlimscrolls()
-
-        collpase = collpase || false
-        sidebar = $('#sidebar')
-        collapseId = 'sidebar-collapse'
-        iconClass = "[class*=\"icon-\"]"
-        icon = document.getElementById(collapseId).querySelector iconClass
-        icon1 = icon.getAttribute('data-icon1')
-        icon2 = icon.getAttribute('data-icon2')
-
-        if collpase
-            sidebar.addClass('menu-min')
-            $(icon).removeClass(icon1)
-            $(icon).addClass(icon2)
-            @isMenuMinimized = true
-        else
-            sidebar.removeClass('menu-min')
-            $(icon).removeClass(icon2)
-            $(icon).addClass(icon1)
-            @isMenuMinimized = false
-
-    bindMenuCollapser: ->
-
-        #sidebar menu collapser
-        $('#sidebar-collapse').on 'click', =>
-            @isMenuMinimized = $('#sidebar').hasClass 'menu-min'
-            @collapseSidebar !@isMenuMinimized
-
     bindMenuResponsive: ->
         $('#menu-toggler').on 'click', ->
             $('#sidebar').toggleClass('display')
@@ -171,8 +114,6 @@ module.exports = class DoctypeNavCollectionView extends ViewCollection
         $(window).resize =>
             if @lastSlimScrolled?
                 @applySlimscroll @lastSlimScrolled
-
-
 
     destroySlimscrolls: ->
         $('.slimScrollDiv').each ->

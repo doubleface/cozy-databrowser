@@ -751,8 +751,6 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
 
   DoctypeNavCollectionView.prototype.el = '#doctype-nav-collection-view';
 
-  DoctypeNavCollectionView.prototype.isMenuMinimized = false;
-
   DoctypeNavCollectionView.prototype.lastSlimScrolled = null;
 
   DoctypeNavCollectionView.prototype.events = {
@@ -761,7 +759,6 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
   };
 
   DoctypeNavCollectionView.prototype.initialize = function() {
-    this.bindMenuCollapser();
     this.bindMenuResponsive();
     this.collection.fetch({
       data: $.param({
@@ -774,14 +771,9 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
   };
 
   DoctypeNavCollectionView.prototype.showMinimizedMenu = function(event) {
-    var jqLiContainer, jqScrollDiv, jqSubmenu;
+    var jqLiContainer, jqSubmenu;
     jqLiContainer = $(event.currentTarget);
-    jqSubmenu = jqLiContainer.find(' .submenu:eq(0)');
-    if (this.isMenuMinimized) {
-      this.destroySlimscrolls;
-      this.applySlimscroll(jqSubmenu, true);
-      return jqScrollDiv = jqLiContainer.find('.slimScrollDiv');
-    }
+    return jqSubmenu = jqLiContainer.find(' .submenu:eq(0)');
   };
 
   DoctypeNavCollectionView.prototype.activateMenuElement = function(event) {
@@ -809,12 +801,8 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     if (isDirectLink) {
       return;
     }
-    this.isMenuMinimized = $('#sidebar').hasClass('menu-min');
     submenuIsVisible = jqSubmenu.is(':visible');
     if (!submenuIsVisible) {
-      if (this.isMenuMinimized && jqParentUl.hasClass('nav-list')) {
-        return;
-      }
       jqParentUl.find('.open').find('.submenu').each(function() {
         if ($(this) !== jqSubmenu) {
           return $(this).slideUp(200).closest('li').removeClass('open');
@@ -822,26 +810,18 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
       });
       this.applySlimscroll(jqSubmenu);
     }
-    if (this.isMenuMinimized && jqParentUl.hasClass('nav-list')) {
-      return false;
-    }
-    jqSubmenu.slideToggle(200);
-    parentLi.toggleClass('open');
-    $('.icon-angle-down').addClass('icon-angle-right').removeClass('icon-angle-down');
-    $('.open > a > .icon-angle-right').addClass('icon-angle-down').removeClass('icon-angle-right');
     return false;
   };
 
   DoctypeNavCollectionView.prototype.applySlimscroll = function(jqSubmenu) {
-    var bSlimScollExist, collaspseHeight, fullHeight, hasParentSubmenu, hasSubmenu, isFirstSubmenu, maxHeightOfMenu, menuHeight, navHeight, navlistHeight, parentSubmenu, searchHeight, triggerEnter, winHeight;
+    var bSlimScollExist, fullHeight, hasParentSubmenu, hasSubmenu, isFirstSubmenu, maxHeightOfMenu, menuHeight, navHeight, navlistHeight, parentSubmenu, searchHeight, triggerEnter, winHeight;
     this.destroySlimscrolls();
     hasSubmenu = jqSubmenu.length > 0;
     hasParentSubmenu = jqSubmenu.parent().closest('.submenu').length > 0;
     isFirstSubmenu = hasSubmenu && !hasParentSubmenu;
-    collaspseHeight = $('#sidebar-collapse').height();
     searchHeight = $('.nav-search:eq(0)').height();
     navlistHeight = $('.nav-list > li').length * 46;
-    navHeight = navlistHeight + collaspseHeight + searchHeight;
+    navHeight = navlistHeight + searchHeight;
     if (this.isMenuMinimized) {
       navHeight = searchHeight + 25;
     }
@@ -871,38 +851,6 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     if (bSlimScollExist) {
       return this.lastSlimScrolled = jqSubmenu;
     }
-  };
-
-  DoctypeNavCollectionView.prototype.collapseSidebar = function(collpase) {
-    var collapseId, icon, icon1, icon2, iconClass, sidebar;
-    this.destroySlimscrolls();
-    collpase = collpase || false;
-    sidebar = $('#sidebar');
-    collapseId = 'sidebar-collapse';
-    iconClass = "[class*=\"icon-\"]";
-    icon = document.getElementById(collapseId).querySelector(iconClass);
-    icon1 = icon.getAttribute('data-icon1');
-    icon2 = icon.getAttribute('data-icon2');
-    if (collpase) {
-      sidebar.addClass('menu-min');
-      $(icon).removeClass(icon1);
-      $(icon).addClass(icon2);
-      return this.isMenuMinimized = true;
-    } else {
-      sidebar.removeClass('menu-min');
-      $(icon).removeClass(icon2);
-      $(icon).addClass(icon1);
-      return this.isMenuMinimized = false;
-    }
-  };
-
-  DoctypeNavCollectionView.prototype.bindMenuCollapser = function() {
-    return $('#sidebar-collapse').on('click', (function(_this) {
-      return function() {
-        _this.isMenuMinimized = $('#sidebar').hasClass('menu-min');
-        return _this.collapseSidebar(!_this.isMenuMinimized);
-      };
-    })(this));
   };
 
   DoctypeNavCollectionView.prototype.bindMenuResponsive = function() {
@@ -2095,16 +2043,10 @@ var __templateData = function template(locals) {
 var buf = [];
 var jade_mixins = {};
 var jade_interp;
-var locals_ = (locals || {}),value = locals_.value,icons = locals_.icons,category = locals_.category,displayName = locals_.displayName,subValues = locals_.subValues,doctype = locals_.doctype,sum = locals_.sum,name = locals_.name;
+var locals_ = (locals || {}),value = locals_.value,displayName = locals_.displayName,subValues = locals_.subValues,doctype = locals_.doctype,sum = locals_.sum,name = locals_.name;
 if (value.length) {
 {
-buf.push("<a href=\"#\" class=\"dropdown-toggle first-level\">");
-if (icons[category]) {
-{
-buf.push("<i" + (jade.cls(["" + (icons[category]) + ""], [true])) + "></i>");
-}
-}
-buf.push("<span class=\"menu-text firstLetterUp\">" + (jade.escape(null == (jade_interp = t(category)) ? "" : jade_interp)) + "</span><b class=\"arrow icon-angle-right\"></b></a><ul class=\"submenu\">");
+buf.push("<ul style=\"display:block;\" class=\"submenu\">");
 for (var index in value) {
 {
 if (value[index].doctype) {
