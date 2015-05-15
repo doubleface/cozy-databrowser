@@ -36,3 +36,5 @@ exports.config =
     plugins:
         jade:
             globals: ['t', 'jQuery', '$']
+    server:
+        path: 'custom-server.js'
