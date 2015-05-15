@@ -23,5 +23,9 @@
     "javascript-brunch": "^1.7.1",
     "stylus-brunch": "^1.8.1",
     "uglify-js-brunch": "^1.7.8"
+  },
+  "devDependencies": {
+    "express": "^4.12.3",
+    "morgan": "^1.5.3"
   }
 }

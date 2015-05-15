@@ -38,4 +38,3 @@ exports.config =
             globals: ['t', 'jQuery', '$']
     server:
         path: 'custom-server.js'
-
