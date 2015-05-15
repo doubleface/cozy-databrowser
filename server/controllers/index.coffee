@@ -135,7 +135,7 @@ module.exports.doctypes = (req, res) ->
                                 sum : sums[subdataLow] || 0
                                 displayName: displayNames[subdataLow] || ""
 
-            res.send doctypes
+            res.send doctypes[0].value
 
 #search
 module.exports.search = (req, res) ->

@@ -646,11 +646,11 @@ module.exports = ResultModel = (function(_super) {
 });
 
 ;require.register("router", function(exports, require, module) {
-var DoctypeNavCollectionView, Router, SearchView,
+var DoctypeNavView, Router, SearchView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-DoctypeNavCollectionView = require('views/doctype_nav_collection_view');
+DoctypeNavView = require('views/doctype_nav_view');
 
 SearchView = require('views/search_view');
 
@@ -668,9 +668,7 @@ module.exports = Router = (function(_super) {
   };
 
   Router.prototype.initialize = function() {
-    var doctypeNavCollectionView;
-    doctypeNavCollectionView = new DoctypeNavCollectionView();
-    return doctypeNavCollectionView.render();
+    return new DoctypeNavView();
   };
 
   Router.prototype.search = function(query) {
@@ -725,16 +723,12 @@ module.exports = Router = (function(_super) {
 })(Backbone.Router);
 });
 
-;require.register("views/doctype_nav_collection_view", function(exports, require, module) {
-var DoctypeCollection, DoctypeNavCollectionView, DoctypeNavView, ViewCollection,
+;require.register("views/doctype_nav_view", function(exports, require, module) {
+var DoctypeCollection, DoctypeNavCollectionView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-ViewCollection = require('../lib/view_collection');
-
 DoctypeCollection = require('../collections/doctype_collection');
-
-DoctypeNavView = require('./doctype_nav_view');
 
 module.exports = DoctypeNavCollectionView = (function(_super) {
   __extends(DoctypeNavCollectionView, _super);
@@ -743,79 +737,47 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     return DoctypeNavCollectionView.__super__.constructor.apply(this, arguments);
   }
 
-  DoctypeNavCollectionView.prototype.itemview = DoctypeNavView;
-
   DoctypeNavCollectionView.prototype.collection = new DoctypeCollection();
-
-  DoctypeNavCollectionView.prototype.collectionEl = '#doctype-nav-collection-view';
 
   DoctypeNavCollectionView.prototype.el = '#doctype-nav-collection-view';
 
+  DoctypeNavCollectionView.prototype.events = {
+    "click li": "onClick"
+  };
+
   DoctypeNavCollectionView.prototype.initialize = function() {
-    this.bindMenuResponsive();
     this.collection.fetch({
       data: $.param({
         'menu': true
       })
     });
-    this.views = {};
-    this.listenTo(this.collection, "reset", this.onReset);
-    return DoctypeNavCollectionView.__super__.initialize.apply(this, arguments);
+    this.listenTo(this.collection, "sync", this.onSync);
+    return this;
   };
 
-  DoctypeNavCollectionView.prototype.bindMenuResponsive = function() {
-    $('#menu-toggler').on('click', function() {
-      $('#sidebar').toggleClass('display');
-      $(this).toggleClass('display');
-      return false;
+  DoctypeNavCollectionView.prototype.onSync = function() {
+    var html;
+    html = "";
+    this.collection.each(function(model) {
+      var json;
+      json = model.toJSON();
+      return html += "<li>\n    <a href=\"#search/all/" + json.doctype + "\">\n        <span class=\"menu-text firstLetterUp\">" + json.doctype + " (" + json.sum + ")</span>\n    </a>\n</li>\n";
     });
-    return $(window).resize((function(_this) {
-      return function() {};
-    })(this));
+    return this.$el.append(html);
+  };
+
+  DoctypeNavCollectionView.prototype.render = function() {};
+
+  DoctypeNavCollectionView.prototype.onClick = function(e) {
+    this.$('li').each(function() {
+      return $(this).removeClass('active');
+    });
+    return $(e.currentTarget).addClass('active');
   };
 
   return DoctypeNavCollectionView;
 
-})(ViewCollection);
-});
-
-;require.register("views/doctype_nav_view", function(exports, require, module) {
-var DoctypeNavView, View,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-View = require('./../lib/view');
-
-module.exports = DoctypeNavView = (function(_super) {
-  __extends(DoctypeNavView, _super);
-
-  function DoctypeNavView() {
-    return DoctypeNavView.__super__.constructor.apply(this, arguments);
-  }
-
-  DoctypeNavView.prototype.tagName = 'li';
-
-  DoctypeNavView.prototype.className = 'doctype-list-item';
-
-  DoctypeNavView.prototype.render = function() {
-    return DoctypeNavView.__super__.render.call(this, {
-      category: this.model.get('name'),
-      value: this.model.get('value'),
-      icons: {
-        all: 'icon-list',
-        applications: 'icon-download-alt',
-        sources: 'icon-book'
-      }
-    });
-  };
-
-  DoctypeNavView.prototype.template = function() {
-    return require('./templates/doctype_nav');
-  };
-
-  return DoctypeNavView;
-
-})(View);
+})(Backbone.View);
 });
 
 ;require.register("views/result_collection_view", function(exports, require, module) {
@@ -1929,30 +1891,6 @@ module.exports = SearchView = (function(_super) {
   return SearchView;
 
 })(BaseView);
-});
-
-;require.register("views/templates/doctype_nav", function(exports, require, module) {
-var __templateData = function template(locals) {
-var buf = [];
-var jade_mixins = {};
-var jade_interp;
-var locals_ = (locals || {}),value = locals_.value,displayName = locals_.displayName;
-for (var index in value) {
-{
-displayName = value[index].displayName !== ''? value[index].displayName : value[index].doctype
-buf.push("<a" + (jade.attr("href", '#search/all/' + (value[index].doctype) + '', true, false)) + " class=\"dropdown-toggle first-level\"><span class=\"menu-text firstLetterUp\">" + (jade.escape((jade_interp = displayName) == null ? '' : jade_interp)) + " (" + (jade.escape((jade_interp = value[index].sum) == null ? '' : jade_interp)) + ")</span></a>");
-}
-};return buf.join("");
-};
-if (typeof define === 'function' && define.amd) {
-  define([], function() {
-    return __templateData;
-  });
-} else if (typeof module === 'object' && module && module.exports) {
-  module.exports = __templateData;
-} else {
-  __templateData;
-}
 });
 
 ;require.register("views/templates/modal_confirm", function(exports, require, module) {

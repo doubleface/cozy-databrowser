@@ -1,5 +1,5 @@
 #Required backbone classes
-DoctypeNavCollectionView = require 'views/doctype_nav_collection_view'
+DoctypeNavView = require 'views/doctype_nav_view'
 SearchView = require 'views/search_view'
 
 #Define Router class
@@ -13,8 +13,7 @@ module.exports = class Router extends Backbone.Router
     initialize: ->
 
         #Initialize the left menu 'doctype nav'
-        doctypeNavCollectionView = new DoctypeNavCollectionView()
-        doctypeNavCollectionView.render()
+        new DoctypeNavView()
 
     search : (query) ->
         options = {}

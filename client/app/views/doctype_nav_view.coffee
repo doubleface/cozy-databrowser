@@ -1,18 +1,37 @@
-View = require './../lib/view'
+DoctypeCollection = require '../collections/doctype_collection'
 
-module.exports = class DoctypeNavView extends View
+module.exports = class DoctypeNavCollectionView extends Backbone.View
 
-    tagName: 'li'
-    className: 'doctype-list-item'
+    collection : new DoctypeCollection()
+    el : '#doctype-nav-collection-view'
+
+    events:
+        "click li": "onClick"
+
+    initialize: ->
+        @collection.fetch
+            data: $.param
+                'menu' : true
+        @listenTo @collection, "sync", @onSync
+        return @
+
+    onSync: ->
+        html = ""
+        @collection.each (model) ->
+            json = model.toJSON()
+            html+= """
+            <li>
+                <a href="#search/all/#{json.doctype}">
+                    <span class="menu-text firstLetterUp">#{json.doctype} (#{json.sum})</span>
+                </a>
+            </li>
+
+            """
+        @$el.append html
 
     render: ->
-        super
-            category : @model.get('name')
-            value : @model.get('value')
-            icons :
-                all : 'icon-list'
-                applications : 'icon-download-alt'
-                sources : 'icon-book'
 
-    template: ->
-        require './templates/doctype_nav'
+    onClick: (e) ->
+        @$('li').each -> $(@).removeClass 'active'
+        $(e.currentTarget).addClass 'active'
+
