@@ -1,34 +1,5 @@
-- if (value.length) {
-    ul.submenu(style='display:block;')
-        - for (var index in value) {
-                - if (value[index].doctype) {
-                    - displayName = value[index].displayName !== ''? value[index].displayName : value[index].doctype
-                    li
-                        a(href='#search/all/#{value[index].doctype}')
-                            i.icon-double-angle-right
-                            |#{displayName}
-                            span.menu-little-text &nbsp;(#{value[index].sum})
-                - }
-                - else {
-                    li
-                        a.dropdown-toggle(href="#")
-                            i.icon-double-angle-right
-                            span.menu-text #{value[index].key}
-                            b.arrow.icon-angle-right
-                        ul.submenu
-                            - subValues = value[index].value
-                            - for (var subIndex in subValues) {
-                                - doctype = subValues[subIndex].doctype
-                                - displayName = subValues[subIndex].displayName !== ''? subValues[subIndex].displayName : doctype
-                                - sum = subValues[subIndex].sum
-                                li
-                                    a(href='#search/all/#{doctype}') #{displayName}
-                                        span.menu-little-text &nbsp;(#{sum})
-
-                            - }
-                -}
-        - }
+- for (var index in value) {
+    - displayName = value[index].displayName !== ''? value[index].displayName : value[index].doctype
+    a.dropdown-toggle.first-level(href='#search/all/#{value[index].doctype}')
+        span.menu-text.firstLetterUp #{displayName} (#{value[index].sum})
 - }
-- else {
-    a(href='#search/all/#{name}') #{name}
--}

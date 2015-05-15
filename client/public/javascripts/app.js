@@ -2043,41 +2043,11 @@ var __templateData = function template(locals) {
 var buf = [];
 var jade_mixins = {};
 var jade_interp;
-var locals_ = (locals || {}),value = locals_.value,displayName = locals_.displayName,subValues = locals_.subValues,doctype = locals_.doctype,sum = locals_.sum,name = locals_.name;
-if (value.length) {
-{
-buf.push("<ul style=\"display:block;\" class=\"submenu\">");
+var locals_ = (locals || {}),value = locals_.value,displayName = locals_.displayName;
 for (var index in value) {
 {
-if (value[index].doctype) {
-{
 displayName = value[index].displayName !== ''? value[index].displayName : value[index].doctype
-buf.push("<li><a" + (jade.attr("href", '#search/all/' + (value[index].doctype) + '', true, false)) + "><i class=\"icon-double-angle-right\"></i>" + (jade.escape((jade_interp = displayName) == null ? '' : jade_interp)) + "<span class=\"menu-little-text\">&nbsp;(" + (jade.escape((jade_interp = value[index].sum) == null ? '' : jade_interp)) + ")</span></a></li>");
-}
-}
-else {
-{
-buf.push("<li><a href=\"#\" class=\"dropdown-toggle\"><i class=\"icon-double-angle-right\"></i><span class=\"menu-text\">" + (jade.escape((jade_interp = value[index].key) == null ? '' : jade_interp)) + "</span><b class=\"arrow icon-angle-right\"></b></a><ul class=\"submenu\">");
-subValues = value[index].value
-for (var subIndex in subValues) {
-{
-doctype = subValues[subIndex].doctype
-displayName = subValues[subIndex].displayName !== ''? subValues[subIndex].displayName : doctype
-sum = subValues[subIndex].sum
-buf.push("<li><a" + (jade.attr("href", '#search/all/' + (doctype) + '', true, false)) + ">" + (jade.escape((jade_interp = displayName) == null ? '' : jade_interp)) + "<span class=\"menu-little-text\">&nbsp;(" + (jade.escape((jade_interp = sum) == null ? '' : jade_interp)) + ")</span></a></li>");
-}
-}
-buf.push("</ul></li>");
-}
-}
-}
-}
-buf.push("</ul>");
-}
-}
-else {
-{
-buf.push("<a" + (jade.attr("href", '#search/all/' + (name) + '', true, false)) + ">" + (jade.escape((jade_interp = name) == null ? '' : jade_interp)) + "</a>");
+buf.push("<a" + (jade.attr("href", '#search/all/' + (value[index].doctype) + '', true, false)) + " class=\"dropdown-toggle first-level\"><span class=\"menu-text firstLetterUp\">" + (jade.escape((jade_interp = displayName) == null ? '' : jade_interp)) + " (" + (jade.escape((jade_interp = value[index].sum) == null ? '' : jade_interp)) + ")</span></a>");
 }
 };return buf.join("");
 };
