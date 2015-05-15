@@ -751,13 +751,6 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
 
   DoctypeNavCollectionView.prototype.el = '#doctype-nav-collection-view';
 
-  DoctypeNavCollectionView.prototype.lastSlimScrolled = null;
-
-  DoctypeNavCollectionView.prototype.events = {
-    'click a': 'activateMenuElement',
-    'mouseenter .doctype-list-item': 'showMinimizedMenu'
-  };
-
   DoctypeNavCollectionView.prototype.initialize = function() {
     this.bindMenuResponsive();
     this.collection.fetch({
@@ -770,89 +763,6 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
     return DoctypeNavCollectionView.__super__.initialize.apply(this, arguments);
   };
 
-  DoctypeNavCollectionView.prototype.showMinimizedMenu = function(event) {
-    var jqLiContainer, jqSubmenu;
-    jqLiContainer = $(event.currentTarget);
-    return jqSubmenu = jqLiContainer.find(' .submenu:eq(0)');
-  };
-
-  DoctypeNavCollectionView.prototype.activateMenuElement = function(event) {
-    var hasSubmenu, isDirectLink, jqMenuLink, jqParentUl, jqSubmenu, parentLi, parentsLi, submenuIsVisible;
-    jqMenuLink = $(event.target);
-    parentLi = jqMenuLink.parent('li');
-    parentsLi = jqMenuLink.parentsUntil('#doctype-nav-collection-view', 'li');
-    jqSubmenu = parentLi.find('> .submenu');
-    jqParentUl = jqSubmenu.parent().closest('ul');
-    isDirectLink = !jqMenuLink.hasClass('dropdown-toggle');
-    hasSubmenu = jqSubmenu.length > 0;
-    if (!isDirectLink) {
-      this.destroySlimscrolls();
-      if ((this.lastSlimScrolled != null) && (this.lastSlimScrolled !== jqSubmenu)) {
-        this.lastSlimScrolled = null;
-      } else {
-        this.lastSlimScrolled = jqSubmenu;
-      }
-    }
-    if (!hasSubmenu) {
-      $('#doctype-nav-collection-view li').removeClass('active');
-      parentsLi.addClass('active');
-      parentLi.addClass('active');
-    }
-    if (isDirectLink) {
-      return;
-    }
-    submenuIsVisible = jqSubmenu.is(':visible');
-    if (!submenuIsVisible) {
-      jqParentUl.find('.open').find('.submenu').each(function() {
-        if ($(this) !== jqSubmenu) {
-          return $(this).slideUp(200).closest('li').removeClass('open');
-        }
-      });
-      this.applySlimscroll(jqSubmenu);
-    }
-    return false;
-  };
-
-  DoctypeNavCollectionView.prototype.applySlimscroll = function(jqSubmenu) {
-    var bSlimScollExist, fullHeight, hasParentSubmenu, hasSubmenu, isFirstSubmenu, maxHeightOfMenu, menuHeight, navHeight, navlistHeight, parentSubmenu, searchHeight, triggerEnter, winHeight;
-    this.destroySlimscrolls();
-    hasSubmenu = jqSubmenu.length > 0;
-    hasParentSubmenu = jqSubmenu.parent().closest('.submenu').length > 0;
-    isFirstSubmenu = hasSubmenu && !hasParentSubmenu;
-    searchHeight = $('.nav-search:eq(0)').height();
-    navlistHeight = $('.nav-list > li').length * 46;
-    navHeight = navlistHeight + searchHeight;
-    if (this.isMenuMinimized) {
-      navHeight = searchHeight + 25;
-    }
-    menuHeight = jqSubmenu.height();
-    fullHeight = navHeight + menuHeight;
-    winHeight = $(window).height();
-    maxHeightOfMenu = winHeight - navHeight;
-    parentSubmenu = jqSubmenu.parent().closest('.submenu');
-    bSlimScollExist = false;
-    if (isFirstSubmenu && fullHeight > winHeight) {
-      jqSubmenu.slimScroll({
-        height: maxHeightOfMenu + 'px'
-      });
-      bSlimScollExist = true;
-    } else if (parentSubmenu.length > 0 && !isFirstSubmenu) {
-      if (fullHeight + parentSubmenu.height() > winHeight) {
-        parentSubmenu.slimScroll({
-          height: maxHeightOfMenu + 'px'
-        });
-        triggerEnter = function() {
-          return parentSubmenu.mouseenter();
-        };
-        setTimeout(triggerEnter, 200);
-        bSlimScollExist = true;
-      }
-    }
-    if (bSlimScollExist) {
-      return this.lastSlimScrolled = jqSubmenu;
-    }
-  };
-
   DoctypeNavCollectionView.prototype.bindMenuResponsive = function() {
     $('#menu-toggler').on('click', function() {
       $('#sidebar').toggleClass('display');
@@ -860,25 +770,8 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
       return false;
     });
     return $(window).resize((function(_this) {
-      return function() {
-        if (_this.lastSlimScrolled != null) {
-          return _this.applySlimscroll(_this.lastSlimScrolled);
-        }
-      };
+      return function() {};
     })(this));
-  };
-
-  DoctypeNavCollectionView.prototype.destroySlimscrolls = function() {
-    return $('.slimScrollDiv').each(function() {
-      var jqObj;
-      jqObj = $(this).children('ul');
-      jqObj.css({
-        'height': 'auto'
-      });
-      jqObj.parent().unbind();
-      jqObj.parent().undelegate();
-      return jqObj.parent().replaceWith(jqObj);
-    });
   };
 
   return DoctypeNavCollectionView;
