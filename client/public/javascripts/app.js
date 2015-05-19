@@ -126,6 +126,11 @@ module.exports = {
     }
     this.polyglot.extend(locales);
     window.t = this.polyglot.t.bind(this.polyglot);
+    $('#menu-toggler').on('click', function(e) {
+      e.preventDefault();
+      $('#sidebar').toggleClass('display');
+      return $(this).toggleClass('display');
+    });
     return Backbone.history.start();
   }
 };

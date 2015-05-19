@@ -20,4 +20,10 @@ module.exports =
         @polyglot.extend locales
         window.t = @polyglot.t.bind @polyglot
 
+        # binds the responsive menu button
+        $('#menu-toggler').on 'click', (e) ->
+            e.preventDefault()
+            $('#sidebar').toggleClass('display')
+            $(this).toggleClass('display')
+
         Backbone.history.start()
