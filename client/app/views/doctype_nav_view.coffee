@@ -5,14 +5,12 @@ module.exports = class DoctypeNavCollectionView extends Backbone.View
     collection : new DoctypeCollection()
     el : '#doctype-nav-collection-view'
 
-    events:
-        "click li": "onClick"
-
     initialize: ->
         @collection.fetch
             data: $.param
                 'menu' : true
         @listenTo @collection, "sync", @onSync
+        @listenTo Backbone, "change:section", @onChangeSection
         return @
 
     onSync: ->
@@ -28,10 +26,12 @@ module.exports = class DoctypeNavCollectionView extends Backbone.View
 
             """
         @$el.append html
+        @onChangeSection @section
 
     render: ->
 
-    onClick: (e) ->
+    onChangeSection: (section) ->
         @$('li').each -> $(@).removeClass 'active'
-        $(e.currentTarget).addClass 'active'
+        @$("a[href='#" + section + "']").closest('li').addClass 'active'
+        @section = section
 

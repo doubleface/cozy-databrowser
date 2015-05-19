@@ -677,50 +677,15 @@ module.exports = Router = (function(_super) {
   };
 
   Router.prototype.search = function(query) {
-    var decodedQuery, doctypeQuery, options, parsedQuery, searchView, splittedQuery;
+    var options, searchView;
     options = {};
     if (query != null) {
-      splittedQuery = query.split('&&');
-      doctypeQuery = splittedQuery[0];
-      decodedQuery = decodeURIComponent(doctypeQuery);
-      if (!/\|/.test(decodedQuery)) {
-        options['doctypes'] = [doctypeQuery];
-      } else {
-        options['doctypes'] = decodedQuery.split(/\|/);
-      }
       options['range'] = 'all';
-      if (splittedQuery.length > 1) {
-        parsedQuery = this.parseQueryString(splittedQuery[1]);
-        if (parsedQuery.presentation != null) {
-          options['presentation'] = parsedQuery.presentation;
-        }
-      }
+      options['doctypes'] = [query];
+      Backbone.trigger('change:section', Backbone.history.fragment);
     }
     searchView = new SearchView(options);
     return searchView.render();
-  };
-
-  Router.prototype.parseQueryString = function(queryString) {
-    var params;
-    params = {};
-    if (queryString) {
-      _.each(_.map(decodeURI(queryString).split(/&/g), function(el, i) {
-        var aux, o, val;
-        aux = el.split("=");
-        o = {};
-        if (aux.length >= 1) {
-          val = 'undefined';
-          if (aux.length === 2) {
-            val = aux[1];
-          }
-          o[aux[0]] = val;
-        }
-        return o;
-      }), function(o) {
-        return _.extend(params, o);
-      });
-    }
-    return params;
   };
 
   return Router;
@@ -746,10 +711,6 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
 
   DoctypeNavCollectionView.prototype.el = '#doctype-nav-collection-view';
 
-  DoctypeNavCollectionView.prototype.events = {
-    "click li": "onClick"
-  };
-
   DoctypeNavCollectionView.prototype.initialize = function() {
     this.collection.fetch({
       data: $.param({
@@ -757,6 +718,7 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
       })
     });
     this.listenTo(this.collection, "sync", this.onSync);
+    this.listenTo(Backbone, "change:section", this.onChangeSection);
     return this;
   };
 
@@ -768,16 +730,18 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
       json = model.toJSON();
       return html += "<li>\n    <a href=\"#search/all/" + json.doctype + "\">\n        <span class=\"menu-text firstLetterUp\">" + json.doctype + " (" + json.sum + ")</span>\n    </a>\n</li>\n";
     });
-    return this.$el.append(html);
+    this.$el.append(html);
+    return this.onChangeSection(this.section);
   };
 
   DoctypeNavCollectionView.prototype.render = function() {};
 
-  DoctypeNavCollectionView.prototype.onClick = function(e) {
+  DoctypeNavCollectionView.prototype.onChangeSection = function(section) {
     this.$('li').each(function() {
       return $(this).removeClass('active');
     });
-    return $(e.currentTarget).addClass('active');
+    this.$("a[href='#" + section + "']").closest('li').addClass('active');
+    return this.section = section;
   };
 
   return DoctypeNavCollectionView;

@@ -18,41 +18,9 @@ module.exports = class Router extends Backbone.Router
     search : (query) ->
         options = {}
         if query?
-            splittedQuery = query.split('&&')
-            doctypeQuery = splittedQuery[0]
-
-            #Add doctypeQuery as an array
-            decodedQuery = decodeURIComponent doctypeQuery
-            if not /\|/.test decodedQuery
-                options['doctypes'] = [doctypeQuery]
-            else
-
-                options['doctypes'] = decodedQuery.split /\|/
-
-            #Add the range 'all'
             options['range'] = 'all'
+            options['doctypes'] = [query]
+            Backbone.trigger 'change:section', Backbone.history.fragment
 
-            if splittedQuery.length > 1
-                parsedQuery = @parseQueryString splittedQuery[1]
-                if parsedQuery.presentation?
-                    options['presentation'] = parsedQuery.presentation
-
-
-        #Create Search view (with option) and render
         searchView = new SearchView options
         searchView.render()
-
-    parseQueryString: (queryString) ->
-        params = {}
-        if queryString
-            _.each _.map(decodeURI(queryString).split(/&/g), (el, i) ->
-                aux = el.split("=")
-                o = {}
-                if aux.length >= 1
-                    val = 'undefined'
-                    val = aux[1]  if aux.length is 2
-                    o[aux[0]] = val
-                return o
-            ), (o) ->
-                _.extend params, o
-        return params
