@@ -23,4 +23,3 @@ module.exports = class Router extends Backbone.Router
             Backbone.trigger 'change:section', Backbone.history.fragment
 
         searchView = new SearchView options
-        searchView.render()

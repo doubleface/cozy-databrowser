@@ -423,23 +423,6 @@ body {
 #sidebar {
   z-index: 20;
 }
-#results-global-controls {
-  border-bottom: 1px solid #e5e5e5;
-  background-color: #f5f5f5;
-  min-height: 41px;
-  line-height: 40px;
-  padding: 0 12px 0 0;
-  display: block;
-  width: 100%;
-  z-index: 10;
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-#results-global-controls .result-buttons {
-  margin-top: 9px;
-  position: fixed;
-}
 .current-title {
   margin: 0 0 12px;
   border-bottom: 1px dotted #e2e2e2;
@@ -465,7 +448,7 @@ body {
   margin-right: 0;
 }
 .page-content {
-  padding-top: 51px;
+  padding-top: 10px;
 }
 #results-meta-infos {
   margin-bottom: 10px;

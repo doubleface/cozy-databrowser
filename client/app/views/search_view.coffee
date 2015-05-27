@@ -1,7 +1,6 @@
 #Required backbone classes
 BaseView = require '../lib/base_view'
 ResultCollectionView = require '../views/result_collection_view'
-ResultsGlobalControlsView = require '../views/results_global_controls_view'
 MetaInfosModel = require './../models/meta_infos_model'
 ResultsMetaInfosView = require '../views/results_meta_infos_view'
 
@@ -46,10 +45,6 @@ module.exports = class SearchView extends BaseView
                     #Add the meta information panel
                     @applyMetaInformation data
 
-                    #Add the top bar Global Controls
-                    @applyGlobalControls()
-
-
             #scroll event trigger next page (infinite scroll)
             if @options.range?
                 $(window).bind 'scroll', (e, isTriggered) =>
@@ -63,6 +58,7 @@ module.exports = class SearchView extends BaseView
                         $('#btn-scroll-up').show()
                     else
                         $('#btn-scroll-up').hide()
+        @render()
 
     afterRender : ->
         if @hasDoctype
@@ -85,12 +81,6 @@ module.exports = class SearchView extends BaseView
             @options['hasMetaInfos'] = true
             @options['displayName'] = data.displayName
             #@options['resultsCollection'] = @resultCollectionView
-    #---------------------------END META INFORMATION ---------------------------
-
-
-    #--------------------------BEGIN META INFORMATION---------------------------
-    applyGlobalControls: ->
-        @resultsGlobalControlsView = new ResultsGlobalControlsView @options
     #---------------------------END META INFORMATION ---------------------------
 
 

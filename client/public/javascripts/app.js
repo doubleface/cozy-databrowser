@@ -255,76 +255,59 @@ $(function() {
 });
 
 ;require.register("lib/app_helpers", function(exports, require, module) {
-(function() {
-  return (function() {
-    var console, dummy, method, methods, _results;
-    console = window.console = window.console || {};
-    method = void 0;
-    dummy = function() {};
-    methods = 'assert,count,debug,dir,dirxml,error,exception, group,groupCollapsed,groupEnd,info,log,markTimeline, profile,profileEnd,time,timeEnd,trace,warn'.split(',');
-    _results = [];
-    while (method = methods.pop()) {
-      _results.push(console[method] = console[method] || dummy);
-    }
-    return _results;
-  })();
-})();
-
-(function() {
-  return $.fn.spin = function(opts, color) {
-    var presets;
-    presets = {
-      tiny: {
-        lines: 8,
-        length: 2,
-        width: 2,
-        radius: 3
-      },
-      small: {
-        lines: 8,
-        length: 1,
-        width: 2,
-        radius: 5
-      },
-      large: {
-        lines: 10,
-        length: 8,
-        width: 4,
-        radius: 8
-      }
-    };
-    if (Spinner) {
-      return this.each(function() {
-        var $this, spinner;
-        $this = $(this);
-        spinner = $this.data("spinner");
-        if (spinner != null) {
-          spinner.stop();
-          return $this.data("spinner", null);
-        } else if (opts !== false) {
-          if (typeof opts === "string") {
-            if (opts in presets) {
-              opts = presets[opts];
-            } else {
-              opts = {};
-            }
-            if (color) {
-              opts.color = color;
-            }
-          }
-          spinner = new Spinner($.extend({
-            color: $this.css("color")
-          }, opts));
-          spinner.spin(this);
-          return $this.data("spinner", spinner);
-        }
-      });
-    } else {
-      console.log("Spinner class not available.");
-      return null;
+$.fn.spin = function(opts, color) {
+  var presets;
+  presets = {
+    tiny: {
+      lines: 8,
+      length: 2,
+      width: 2,
+      radius: 3
+    },
+    small: {
+      lines: 8,
+      length: 1,
+      width: 2,
+      radius: 5
+    },
+    large: {
+      lines: 10,
+      length: 8,
+      width: 4,
+      radius: 8
     }
   };
-})();
+  if (Spinner) {
+    return this.each(function() {
+      var $this, spinner;
+      $this = $(this);
+      spinner = $this.data("spinner");
+      if (spinner != null) {
+        spinner.stop();
+        return $this.data("spinner", null);
+      } else if (opts !== false) {
+        if (typeof opts === "string") {
+          if (opts in presets) {
+            opts = presets[opts];
+          } else {
+            opts = {};
+          }
+          if (color) {
+            opts.color = color;
+          }
+        }
+        spinner = new Spinner($.extend({
+          color: $this.css("color")
+        }, opts));
+        spinner.spin(this);
+        return $this.data("spinner", spinner);
+      }
+    });
+  } else {
+    console.log("Spinner class not available.");
+    return null;
+  }
+};
 });
 
 ;require.register("lib/base_view", function(exports, require, module) {
@@ -684,8 +667,7 @@ module.exports = Router = (function(_super) {
       options['doctypes'] = [query];
       Backbone.trigger('change:section', Backbone.history.fragment);
     }
-    searchView = new SearchView(options);
-    return searchView.render();
+    return searchView = new SearchView(options);
   };
 
   return Router;
@@ -1478,196 +1460,6 @@ module.exports = ResultTableView = (function(_super) {
 })(View);
 });
 
-;require.register("views/results_global_controls_view", function(exports, require, module) {
-var DeleteAllModel, ResultsGlobalControlsView, View, app, localStore,
-  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-View = require('./../lib/view');
-
-DeleteAllModel = require('./../models/delete_all_model');
-
-app = require('application');
-
-localStore = require('./../helpers/oLocalStorageHelper');
-
-module.exports = ResultsGlobalControlsView = (function(_super) {
-  __extends(ResultsGlobalControlsView, _super);
-
-  function ResultsGlobalControlsView() {
-    this.switchToTableView = __bind(this.switchToTableView, this);
-    this.render = __bind(this.render, this);
-    return ResultsGlobalControlsView.__super__.constructor.apply(this, arguments);
-  }
-
-  ResultsGlobalControlsView.prototype.el = '#results-global-controls';
-
-  ResultsGlobalControlsView.prototype.templateModal = require('./templates/modal_confirm');
-
-  ResultsGlobalControlsView.prototype.currentDoctype = '';
-
-  ResultsGlobalControlsView.prototype.events = {
-    'mouseover #delete-all': 'switchStyleOfDeleteButton',
-    'mouseout #delete-all': 'switchStyleOfDeleteButton',
-    'click #delete-all': 'confirmDeleteAll',
-    'click .about-doctype': 'toogleMetaInfos',
-    'click .view-switcher': 'switchToTableView'
-  };
-
-  ResultsGlobalControlsView.prototype.template = function() {
-    return require('./templates/results_global_controls');
-  };
-
-  ResultsGlobalControlsView.prototype.initialize = function(opt) {
-    this.opt = opt;
-    $(this.el).undelegate('.about-doctype', 'click');
-    $(this.el).undelegate('.view-switcher', 'click');
-    $(this.el).undelegate('#delete-all', 'mouseover');
-    $(this.el).undelegate('#delete-all', 'mouseout');
-    $(this.el).undelegate('#delete-all', 'click');
-    if (this.opt.doctypes != null) {
-      this.currentDoctype = this.opt.doctypes[0] || '';
-    }
-    return this.render(this.opt);
-  };
-
-  ResultsGlobalControlsView.prototype.render = function(opt) {
-    var iconPresentation, isList, isMetaInfoVisible, templateData;
-    templateData = {};
-    isList = opt.presentation && (opt.presentation === 'list');
-    iconPresentation = isList ? 'icon-th' : 'icon-list-alt';
-    templateData['icon_presentation'] = iconPresentation;
-    templateData['range'] = opt.range ? '(' + opt.range + ')' || '' : void 0;
-    templateData['doctype'] = opt.doctypes ? opt.doctypes[0] : '';
-    if (opt.displayName && (opt.displayName !== '')) {
-      templateData['doctype'] = opt.displayName;
-    }
-    templateData['hasMetainfos'] = opt.hasMetaInfos ? true : void 0;
-    isMetaInfoVisible = this.isMetaInfoVisible();
-    templateData['isVisible'] = isMetaInfoVisible;
-    if (isMetaInfoVisible) {
-      $('#results-meta-infos').show();
-    }
-    return ResultsGlobalControlsView.__super__.render.call(this, templateData);
-  };
-
-  ResultsGlobalControlsView.prototype.switchToTableView = function(event) {
-    var presentation, presentationQuery, tableRoute, viewSwitcher;
-    viewSwitcher = $(event.currentTarget);
-    presentation = 'table';
-    if (this.currentDoctype) {
-      if (viewSwitcher.hasClass('icon-th')) {
-        presentation = 'table';
-        viewSwitcher.removeClass('icon-th').addClass('icon-list-alt');
-      } else {
-        presentation = 'list';
-        viewSwitcher.removeClass('icon-list-alt').addClass('icon-th');
-      }
-      this.storePresentation(presentation);
-      presentationQuery = '&&presentation=' + presentation;
-      tableRoute = 'search/all/' + this.currentDoctype + presentationQuery;
-      return app.router.navigate(tableRoute, {
-        replace: true,
-        trigger: true
-      });
-    }
-  };
-
-  ResultsGlobalControlsView.prototype.prepareStoragePresentationKey = function() {
-    var key;
-    key = this.currentDoctype.toLowerCase();
-    key += localStore.keys.separation + localStore.keys.isListPresentation;
-    return key;
-  };
-
-  ResultsGlobalControlsView.prototype.isListPresentation = function() {
-    var key;
-    key = this.prepareStoragePresentationKey();
-    return localStore.getBoolean(key);
-  };
-
-  ResultsGlobalControlsView.prototype.storePresentation = function(presentation) {
-    var isList, key;
-    isList = presentation !== 'table' ? true : false;
-    key = this.prepareStoragePresentationKey();
-    return localStore.setBoolean(key, isList);
-  };
-
-  ResultsGlobalControlsView.prototype.isMetaInfoVisible = function() {
-    return localStore.getBoolean(localStore.keys.isMetaInfoVisible);
-  };
-
-  ResultsGlobalControlsView.prototype.toogleMetaInfos = function(event) {
-    var jqObj;
-    jqObj = $(event.currentTarget);
-    if (jqObj.hasClass('white-and-green')) {
-      jqObj.removeClass('white-and-green');
-      $('#results-meta-infos').hide();
-      return localStore.setBoolean(localStore.keys.isMetaInfoVisible, false);
-    } else {
-      jqObj.addClass('white-and-green');
-      $('#results-meta-infos').show();
-      return localStore.setBoolean(localStore.keys.isMetaInfoVisible, true);
-    }
-  };
-
-  ResultsGlobalControlsView.prototype.switchStyleOfDeleteButton = function(event) {
-    var jqObj;
-    jqObj = $(event.currentTarget);
-    if (!jqObj.hasClass('btn-danger')) {
-      jqObj.addClass('btn-danger');
-      return jqObj.children('span').text(t('delete all') + ' ');
-    } else {
-      jqObj.removeClass('btn-danger');
-      return jqObj.children('span').empty();
-    }
-  };
-
-  ResultsGlobalControlsView.prototype.confirmDeleteAll = function(e) {
-    var data;
-    e.preventDefault();
-    data = {
-      title: t('confirmation required'),
-      body: t('are you absolutely sure'),
-      confirm: t('delete permanently')
-    };
-    $("body").prepend(this.templateModal(data));
-    $("#confirmation-dialog").modal();
-    $("#confirmation-dialog").modal("show");
-    $("#confirmation-dialog-confirm").unbind('click');
-    return $("#confirmation-dialog-confirm").bind("click", (function(_this) {
-      return function() {
-        return _this.deleteAll();
-      };
-    })(this));
-  };
-
-  ResultsGlobalControlsView.prototype.deleteAll = function() {
-    var deleteAllModel;
-    if ((this.currentDoctype != null) && this.currentDoctype !== '') {
-      deleteAllModel = new DeleteAllModel();
-      return deleteAllModel.fetch({
-        type: 'DELETE',
-        url: deleteAllModel.urlRoot + '?' + $.param({
-          doctype: this.currentDoctype
-        }),
-        success: function(col, data) {
-          app.router.navigate('search', {
-            replace: true,
-            trigger: true
-          });
-          return location.reload();
-        }
-      });
-    }
-  };
-
-  return ResultsGlobalControlsView;
-
-})(View);
-});
-
 ;require.register("views/results_meta_infos_view", function(exports, require, module) {
 var ResultsMetaInfosView, View, localStore,
   __hasProp = {}.hasOwnProperty,
@@ -1708,7 +1500,7 @@ module.exports = ResultsMetaInfosView = (function(_super) {
 });
 
 ;require.register("views/search_view", function(exports, require, module) {
-var BaseView, MetaInfosModel, ResultCollectionView, ResultsGlobalControlsView, ResultsMetaInfosView, SearchView, localStore,
+var BaseView, MetaInfosModel, ResultCollectionView, ResultsMetaInfosView, SearchView, localStore,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1716,8 +1508,6 @@ var BaseView, MetaInfosModel, ResultCollectionView, ResultsGlobalControlsView, R
 BaseView = require('../lib/base_view');
 
 ResultCollectionView = require('../views/result_collection_view');
-
-ResultsGlobalControlsView = require('../views/results_global_controls_view');
 
 MetaInfosModel = require('./../models/meta_infos_model');
 
@@ -1762,13 +1552,12 @@ module.exports = SearchView = (function(_super) {
         }),
         success: (function(_this) {
           return function(col, data) {
-            _this.applyMetaInformation(data);
-            return _this.applyGlobalControls();
+            return _this.applyMetaInformation(data);
           };
         })(this)
       });
       if (this.options.range != null) {
-        return $(window).bind('scroll', (function(_this) {
+        $(window).bind('scroll', (function(_this) {
           return function(e, isTriggered) {
             var docHeight, noMoreItems, winHeight;
             docHeight = $(document).height();
@@ -1788,6 +1577,7 @@ module.exports = SearchView = (function(_super) {
         })(this));
       }
     }
+    return this.render();
   };
 
   SearchView.prototype.afterRender = function() {
@@ -1810,10 +1600,6 @@ module.exports = SearchView = (function(_super) {
       this.options['hasMetaInfos'] = true;
       return this.options['displayName'] = data.displayName;
     }
-  };
-
-  SearchView.prototype.applyGlobalControls = function() {
-    return this.resultsGlobalControlsView = new ResultsGlobalControlsView(this.options);
   };
 
   SearchView.prototype.hideThis = function(event) {
