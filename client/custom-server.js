@@ -77,6 +77,6 @@ exports.startServer = function startServer(port, path, callback) {
     });
 
     // Listen on the right port, and notify Brunch once ready through `callback`.
-    server.listen(process.env.PORT || por, process.env.IP || "0.0.0.0", callback);
-    console.log("Server started on " + process.env.IP + ":" + process.env.PORT);
+    server.listen(process.env.PORT || port, process.env.IP || "0.0.0.0", callback);
+    console.log("Server started on " + (process.env.IP || "0.0.0.0") + ":" + (process.env.PORT || port));
 };
