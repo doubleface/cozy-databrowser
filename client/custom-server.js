@@ -72,10 +72,6 @@ exports.startServer = function startServer(port, path, callback) {
         ]);
     });
 
-    app.get('/doctype_meta_infos', function(req, res) {
-        res.json({"name":"Application","applications":[],"displayName":""});
-    });
-
     // Listen on the right port, and notify Brunch once ready through `callback`.
     server.listen(process.env.PORT || port, process.env.IP || "0.0.0.0", callback);
     console.log("Server started on " + (process.env.IP || "0.0.0.0") + ":" + (process.env.PORT || port));

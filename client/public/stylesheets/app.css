@@ -450,10 +450,6 @@ body {
 .page-content {
   padding-top: 10px;
 }
-#results-meta-infos {
-  margin-bottom: 10px;
-  display: none;
-}
 .load-more-result {
   margin: auto;
   text-align: center;

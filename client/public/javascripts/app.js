@@ -595,25 +595,6 @@ module.exports = DoctypeModel = (function(_super) {
 })(Backbone.Model);
 });
 
-;require.register("models/meta_infos_model", function(exports, require, module) {
-var DoctypeMetaInfosModel,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-module.exports = DoctypeMetaInfosModel = (function(_super) {
-  __extends(DoctypeMetaInfosModel, _super);
-
-  function DoctypeMetaInfosModel() {
-    return DoctypeMetaInfosModel.__super__.constructor.apply(this, arguments);
-  }
-
-  DoctypeMetaInfosModel.prototype.urlRoot = 'doctype_meta_infos';
-
-  return DoctypeMetaInfosModel;
-
-})(Backbone.Model);
-});
-
 ;require.register("models/result_model", function(exports, require, module) {
 var ResultModel,
   __hasProp = {}.hasOwnProperty,
@@ -1460,47 +1441,8 @@ module.exports = ResultTableView = (function(_super) {
 })(View);
 });
 
-;require.register("views/results_meta_infos_view", function(exports, require, module) {
-var ResultsMetaInfosView, View, localStore,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-View = require('./../lib/view');
-
-localStore = require('./../helpers/oLocalStorageHelper');
-
-module.exports = ResultsMetaInfosView = (function(_super) {
-  __extends(ResultsMetaInfosView, _super);
-
-  function ResultsMetaInfosView() {
-    return ResultsMetaInfosView.__super__.constructor.apply(this, arguments);
-  }
-
-  ResultsMetaInfosView.prototype.el = '#results-meta-infos';
-
-  ResultsMetaInfosView.prototype.events = {
-    'click #close-about-doctype': 'hideMetaInfos'
-  };
-
-  ResultsMetaInfosView.prototype.template = function() {
-    return require('./templates/results_meta_infos');
-  };
-
-  ResultsMetaInfosView.prototype.hideMetaInfos = function(event) {
-    var jqObj;
-    jqObj = $('.about-doctype');
-    jqObj.removeClass('white-and-green');
-    $('#results-meta-infos').hide();
-    return localStore.setBoolean(localStore.keys.isMetaInfoVisible, false);
-  };
-
-  return ResultsMetaInfosView;
-
-})(View);
-});
-
 ;require.register("views/search_view", function(exports, require, module) {
-var BaseView, MetaInfosModel, ResultCollectionView, ResultsMetaInfosView, SearchView, localStore,
+var BaseView, ResultCollectionView, SearchView, localStore,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1508,10 +1450,6 @@ var BaseView, MetaInfosModel, ResultCollectionView, ResultsMetaInfosView, Search
 BaseView = require('../lib/base_view');
 
 ResultCollectionView = require('../views/result_collection_view');
-
-MetaInfosModel = require('./../models/meta_infos_model');
-
-ResultsMetaInfosView = require('../views/results_meta_infos_view');
 
 localStore = require('./../helpers/oLocalStorageHelper');
 
@@ -1534,7 +1472,6 @@ module.exports = SearchView = (function(_super) {
   };
 
   SearchView.prototype.initialize = function(options) {
-    var metaInfosModel;
     this.options = options;
     this.hasDoctype = this.options.doctypes && this.options.doctypes.length > 0;
     this.hasPresentation = this.options.presentation != null;
@@ -1544,18 +1481,6 @@ module.exports = SearchView = (function(_super) {
         this.applyStoredPresentation();
       }
       this.resultCollectionView = new ResultCollectionView(this.options);
-      metaInfosModel = new MetaInfosModel();
-      $('#results-meta-infos').empty();
-      metaInfosModel.fetch({
-        data: $.param({
-          doctype: this.options.doctypes[0]
-        }),
-        success: (function(_this) {
-          return function(col, data) {
-            return _this.applyMetaInformation(data);
-          };
-        })(this)
-      });
       if (this.options.range != null) {
         $(window).bind('scroll', (function(_this) {
           return function(e, isTriggered) {
@@ -1589,16 +1514,6 @@ module.exports = SearchView = (function(_super) {
         };
       })(this));
       return this.bindSearch();
-    }
-  };
-
-  SearchView.prototype.applyMetaInformation = function(data) {
-    var resultsMetaInfosView;
-    if (data && data.name && (data.application || data.metadoctype)) {
-      resultsMetaInfosView = new ResultsMetaInfosView();
-      resultsMetaInfosView.render(data);
-      this.options['hasMetaInfos'] = true;
-      return this.options['displayName'] = data.displayName;
     }
   };
 
@@ -1797,51 +1712,6 @@ buf.push("<i class=\"about-doctype icon-question-sign\"></i>");
 buf.push("&nbsp;<i" + (jade.cls(['view-switcher',icon_presentation], [null,true])) + "></i></h4><div class=\"visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons\"><button id=\"delete-all\" class=\"btn btn-xs\"><span></span><i class=\"icon-trash bigger-120\"></i></button></div>");
 }
 };return buf.join("");
-};
-if (typeof define === 'function' && define.amd) {
-  define([], function() {
-    return __templateData;
-  });
-} else if (typeof module === 'object' && module && module.exports) {
-  module.exports = __templateData;
-} else {
-  __templateData;
-}
-});
-
-;require.register("views/templates/results_meta_infos", function(exports, require, module) {
-var __templateData = function template(locals) {
-var buf = [];
-var jade_mixins = {};
-var jade_interp;
-var locals_ = (locals || {}),displayedDoctype = locals_.displayedDoctype,displayName = locals_.displayName,name = locals_.name,applications = locals_.applications,metadoctype = locals_.metadoctype;
-buf.push("<div class=\"widget-box\"><div class=\"widget-header widget-header-small header-color-green\"><h4 class=\"lighter\"><i class=\"icon-question-sign\"></i>");
-displayedDoctype = displayName !== '' ? displayName : name;
-buf.push("&nbsp;" + (jade.escape((jade_interp = t('about')) == null ? '' : jade_interp)) + " " + (jade.escape((jade_interp = displayedDoctype) == null ? '' : jade_interp)) + "</h4><div class=\"widget-toolbar\"><span id=\"close-about-doctype\"><i class=\"icon-remove\"></i></span></div></div><div class=\"widget-body\"><div class=\"widget-body-inner\"><div class=\"widget-main padding-6\"><div class=\"md-desc-wrapper\">");
-if (applications && applications.length > 0) {
-{
-buf.push("<div class=\"md-desc-container\"><strong>" + (jade.escape(null == (jade_interp = t('applications using it') + ' :') ? "" : jade_interp)) + "</strong><ul class=\"sober-list\">");
-for (var index in applications) {
-{
-buf.push("<li class=\"firstLetterUp\"><i class=\"icon-download-alt\"></i><span>&nbsp;" + (jade.escape((jade_interp = applications[index]) == null ? '' : jade_interp)) + "</span></li>");
-}
-}
-buf.push("</ul></div>");
-}
-}
-if (typeof(metadoctype) === 'object') {
-{
-buf.push("<div class=\"md-desc-container\"><strong>" + (jade.escape(null == (jade_interp = t('fields information') + ' :') ? "" : jade_interp)) + "</strong><ul class=\"sober-list\">");
-var fields = metadoctype.fields;
-for (var obj in fields) {
-{
-buf.push("<li><i class=\"icon-tag\"></i><span>&nbsp;" + (jade.escape((jade_interp = fields[obj].displayName) == null ? '' : jade_interp)) + " -&nbsp;<i>" + (jade.escape((jade_interp = fields[obj].description) == null ? '' : jade_interp)) + "</i></span></li>");
-}
-}
-buf.push("</ul></div>");
-}
-}
-buf.push("</div></div><div class=\"clear\"></div></div></div></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {

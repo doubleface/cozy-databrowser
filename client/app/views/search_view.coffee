@@ -1,8 +1,6 @@
 #Required backbone classes
 BaseView = require '../lib/base_view'
 ResultCollectionView = require '../views/result_collection_view'
-MetaInfosModel = require './../models/meta_infos_model'
-ResultsMetaInfosView = require '../views/results_meta_infos_view'
 
 #Required helpers objects
 localStore = require './../helpers/oLocalStorageHelper'
@@ -33,18 +31,6 @@ module.exports = class SearchView extends BaseView
             #Add the results
             @resultCollectionView = new ResultCollectionView @options
 
-            #Prepare meta-informations
-            metaInfosModel = new MetaInfosModel()
-            $('#results-meta-infos').empty()
-
-            metaInfosModel.fetch
-                data: $.param
-                    doctype : @options.doctypes[0]
-                success : (col, data) =>
-
-                    #Add the meta information panel
-                    @applyMetaInformation data
-
             #scroll event trigger next page (infinite scroll)
             if @options.range?
                 $(window).bind 'scroll', (e, isTriggered) =>
@@ -69,20 +55,6 @@ module.exports = class SearchView extends BaseView
                 @resultCollectionView.loopFirstScroll()
             @bindSearch()
     #--------------------------END VIEW BEHAVIOR--------------------------------
-
-
-    #--------------------------BEGIN META INFORMATION---------------------------
-    applyMetaInformation: (data) ->
-        if data and data.name and(data.application or data.metadoctype)
-
-            #Add the container Meta Infos
-            resultsMetaInfosView = new ResultsMetaInfosView()
-            resultsMetaInfosView.render data
-            @options['hasMetaInfos'] = true
-            @options['displayName'] = data.displayName
-            #@options['resultsCollection'] = @resultCollectionView
-    #---------------------------END META INFORMATION ---------------------------
-
 
     #-----------------------BEGIN SCROLL TO TOP BUTTON--------------------------
     hideThis : (event) ->
