@@ -1,6 +1,5 @@
 ViewCollection = require '../lib/view_collection'
 ResultCollection = require '../collections/result_collection'
-ResultView = require './result_list_view'
 TableResultView = require './result_table_view'
 
 module.exports = class ResultCollectionView extends ViewCollection
@@ -14,24 +13,14 @@ module.exports = class ResultCollectionView extends ViewCollection
     initialize: (options) ->
         @options = options
         @collection = new ResultCollection()
-        if @options.presentation?
-            switch @options.presentation
-                when 'list'
-                    @itemview = ResultView
-                    @collectionEl ='#basic-accordion'
-                when 'table'
-                    @itemview = TableResultView
-                    @collectionEl = '#result-view-as-table'
-                else
-                    @itemview = TableResultView
-                    @collectionEl = '#result-view-as-table'
+        @itemview = TableResultView
+        @collectionEl = '#result-view-as-table'
 
         super
         if @options.doctypes?
-            if @options.presentation is 'table'
-                # @collection.nbPerPage = 0
-                $('#results-list').undelegate 'th .icon-eye-close', 'click'
-                $('#results-list').undelegate 'button.show-col', 'click'
+            # @collection.nbPerPage = 0
+            $('#results-list').undelegate 'th .icon-eye-close', 'click'
+            $('#results-list').undelegate 'button.show-col', 'click'
 
             @isLoading = true
             @collection.fetch
@@ -48,8 +37,7 @@ module.exports = class ResultCollectionView extends ViewCollection
 
                         else
                             @noMoreItems = true
-                            @collection.forEach @removeItem if @options.presentation is "list"
-                            @buildTable @firstRender if @options.presentation is "table"
+                            @buildTable @firstRender
                             @collection.forEach @addItem
                             $('.load-more-result').hide()
 
@@ -60,24 +48,15 @@ module.exports = class ResultCollectionView extends ViewCollection
                     @displayLoadingError()
 
     onReset: ->
-        ###
-        if @oldFields?
-            console.log "reset", Object.keys(@oldFields).length
-        else
-            console.log "reset", null
-        ###
-
         @oldFields = @collection.fields()
-        @buildTable @firstRender if @options.presentation is 'table'
+        @buildTable @firstRender
         super
 
     render: ->
-        #console.log "render", @collection.length
         $('.introduction').hide()
-        if @options.presentation is 'table'
-            if @firstRender
-                @buildTable true
-                @firstRender = false
+        if @firstRender
+            @buildTable true
+            @firstRender = false
 
         if @isLoading
             $('#all-result').append """
@@ -87,11 +66,7 @@ module.exports = class ResultCollectionView extends ViewCollection
         super
 
     appendView: (view) ->
-        #console.log "appendView", @itemViewOptions().fields
-        if @options.presentation is 'table'
-            $('#result-view-as-table').dataTable().fnAddTr view.$el[0]
-        else
-            super
+        $('#result-view-as-table').dataTable().fnAddTr view.$el[0]
 
     itemViewOptions: ->
         fields: @collection.fields()
@@ -102,7 +77,6 @@ module.exports = class ResultCollectionView extends ViewCollection
             data: $.param(@options)
 
     loadNextPage : (isTriggered, callback) ->
-        #console.log "nextPage"
         @options['deleted'] = @deleted
         if !@noMoreItems
             @isLoading = true
@@ -126,29 +100,20 @@ module.exports = class ResultCollectionView extends ViewCollection
                         @isLoading = false
 
                         # force re-render if new fields have appeared
-                        #console.log @oldFields, "vs", @collection.fields()
                         if Object.keys(@oldFields).length isnt Object.keys(@collection.fields()).length
-                            #console.log "DIFF FIELDS"
-                            #console.log @oldFields
-                            #console.log @collection.fields()
                             @oldFields = @collection.fields()
-                            @collection.forEach @removeItem if @options.presentation is "list"
-                            @buildTable @firstRender if @options.presentation is "table"
+                            @buildTable @firstRender
                             @collection.forEach @addItem
 
                         if @noMoreItems
-                            # console.log "NO MORE ITEMS"
-                            # console.log @oldFields
-                            # console.log @collection.fields()
-                            @collection.forEach @removeItem if @options.presentation is "list"
-                            @buildTable @firstRender if @options.presentation is "table"
+                            @buildTable @firstRender
                             @collection.forEach @addItem
 
                         if callback?
                             callback()
                     else
                         @noMoreItems = true
-                        @buildTable @firstRender if @options.presentation is "table"
+                        @buildTable @firstRender
                 error: ->
                     @isLoading = false
                     @noMoreItems = true
@@ -170,7 +135,6 @@ module.exports = class ResultCollectionView extends ViewCollection
 
 
     makeTHead: ->
-        # console.log "makeTHead", @itemViewOptions().fields
         $('#result-view-as-table').find('thead').remove()
         htmlThead = '<thead><tr>'
         for fieldname, field of @itemViewOptions().fields
@@ -186,7 +150,6 @@ module.exports = class ResultCollectionView extends ViewCollection
         $('#result-view-as-table').prepend htmlThead
 
     buildTable: (firstRender) ->
-        #console.log "buildTable", firstRender
         if not firstRender
             table = $('#result-view-as-table').dataTable()
             table.fnDestroy()

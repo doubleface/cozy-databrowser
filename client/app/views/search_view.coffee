@@ -2,9 +2,6 @@
 BaseView = require '../lib/base_view'
 ResultCollectionView = require '../views/result_collection_view'
 
-#Required helpers objects
-localStore = require './../helpers/oLocalStorageHelper'
-
 #Define SearchView class
 module.exports = class SearchView extends BaseView
 
@@ -18,15 +15,9 @@ module.exports = class SearchView extends BaseView
     initialize : (options) =>
         @options = options
         @hasDoctype = @options.doctypes and @options.doctypes.length > 0
-        @hasPresentation = @options.presentation?
         @bindSearch()
 
         if @hasDoctype
-
-            #apply stored presentation
-            if not @hasPresentation
-                @applyStoredPresentation()
-
 
             #Add the results
             @resultCollectionView = new ResultCollectionView @options
@@ -67,13 +58,6 @@ module.exports = class SearchView extends BaseView
     loadMore : (isTriggered)->
         @resultCollectionView.loadNextPage isTriggered
 
-    applyStoredPresentation : ->
-        key = @options.doctypes[0].toLowerCase()
-        key += localStore.keys.separation + localStore.keys.isListPresentation
-        if localStore.getBoolean key
-            @options['presentation'] = 'list'
-        else
-            @options['presentation'] = 'table'
     #------------------------------END COLLECTION-------------------------------
 
 

@@ -713,15 +713,13 @@ module.exports = DoctypeNavCollectionView = (function(_super) {
 });
 
 ;require.register("views/result_collection_view", function(exports, require, module) {
-var ResultCollection, ResultCollectionView, ResultView, TableResultView, ViewCollection,
+var ResultCollection, ResultCollectionView, TableResultView, ViewCollection,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 ViewCollection = require('../lib/view_collection');
 
 ResultCollection = require('../collections/result_collection');
-
-ResultView = require('./result_list_view');
 
 TableResultView = require('./result_table_view');
 
@@ -745,27 +743,12 @@ module.exports = ResultCollectionView = (function(_super) {
   ResultCollectionView.prototype.initialize = function(options) {
     this.options = options;
     this.collection = new ResultCollection();
-    if (this.options.presentation != null) {
-      switch (this.options.presentation) {
-        case 'list':
-          this.itemview = ResultView;
-          this.collectionEl = '#basic-accordion';
-          break;
-        case 'table':
-          this.itemview = TableResultView;
-          this.collectionEl = '#result-view-as-table';
-          break;
-        default:
-          this.itemview = TableResultView;
-          this.collectionEl = '#result-view-as-table';
-      }
-    }
+    this.itemview = TableResultView;
+    this.collectionEl = '#result-view-as-table';
     ResultCollectionView.__super__.initialize.apply(this, arguments);
     if (this.options.doctypes != null) {
-      if (this.options.presentation === 'table') {
-        $('#results-list').undelegate('th .icon-eye-close', 'click');
-        $('#results-list').undelegate('button.show-col', 'click');
-      }
+      $('#results-list').undelegate('th .icon-eye-close', 'click');
+      $('#results-list').undelegate('button.show-col', 'click');
       this.isLoading = true;
       return this.collection.fetch({
         reset: true,
@@ -780,12 +763,7 @@ module.exports = ResultCollectionView = (function(_super) {
                 return $('.load-more-result').show();
               } else {
                 _this.noMoreItems = true;
-                if (_this.options.presentation === "list") {
-                  _this.collection.forEach(_this.removeItem);
-                }
-                if (_this.options.presentation === "table") {
-                  _this.buildTable(_this.firstRender);
-                }
+                _this.buildTable(_this.firstRender);
                 _this.collection.forEach(_this.addItem);
                 return $('.load-more-result').hide();
               }
@@ -805,27 +783,16 @@ module.exports = ResultCollectionView = (function(_super) {
   };
 
   ResultCollectionView.prototype.onReset = function() {
-
-    /*
-    if @oldFields?
-        console.log "reset", Object.keys(@oldFields).length
-    else
-        console.log "reset", null
-     */
     this.oldFields = this.collection.fields();
-    if (this.options.presentation === 'table') {
-      this.buildTable(this.firstRender);
-    }
+    this.buildTable(this.firstRender);
     return ResultCollectionView.__super__.onReset.apply(this, arguments);
   };
 
   ResultCollectionView.prototype.render = function() {
     $('.introduction').hide();
-    if (this.options.presentation === 'table') {
-      if (this.firstRender) {
-        this.buildTable(true);
-        this.firstRender = false;
-      }
+    if (this.firstRender) {
+      this.buildTable(true);
+      this.firstRender = false;
     }
     if (this.isLoading) {
       $('#all-result').append("<div class=\"loading-image\">\n    <img src=\"images/ajax-loader.gif\" />\n</div>");
@@ -834,11 +801,7 @@ module.exports = ResultCollectionView = (function(_super) {
   };
 
   ResultCollectionView.prototype.appendView = function(view) {
-    if (this.options.presentation === 'table') {
-      return $('#result-view-as-table').dataTable().fnAddTr(view.$el[0]);
-    } else {
-      return ResultCollectionView.__super__.appendView.apply(this, arguments);
-    }
+    return $('#result-view-as-table').dataTable().fnAddTr(view.$el[0]);
   };
 
   ResultCollectionView.prototype.itemViewOptions = function() {
@@ -883,21 +846,11 @@ module.exports = ResultCollectionView = (function(_super) {
               _this.isLoading = false;
               if (Object.keys(_this.oldFields).length !== Object.keys(_this.collection.fields()).length) {
                 _this.oldFields = _this.collection.fields();
-                if (_this.options.presentation === "list") {
-                  _this.collection.forEach(_this.removeItem);
-                }
-                if (_this.options.presentation === "table") {
-                  _this.buildTable(_this.firstRender);
-                }
+                _this.buildTable(_this.firstRender);
                 _this.collection.forEach(_this.addItem);
               }
               if (_this.noMoreItems) {
-                if (_this.options.presentation === "list") {
-                  _this.collection.forEach(_this.removeItem);
-                }
-                if (_this.options.presentation === "table") {
-                  _this.buildTable(_this.firstRender);
-                }
+                _this.buildTable(_this.firstRender);
                 _this.collection.forEach(_this.addItem);
               }
               if (callback != null) {
@@ -905,9 +858,7 @@ module.exports = ResultCollectionView = (function(_super) {
               }
             } else {
               _this.noMoreItems = true;
-              if (_this.options.presentation === "table") {
-                return _this.buildTable(_this.firstRender);
-              }
+              return _this.buildTable(_this.firstRender);
             }
           };
         })(this),
@@ -1007,199 +958,6 @@ module.exports = ResultCollectionView = (function(_super) {
   return ResultCollectionView;
 
 })(ViewCollection);
-});
-
-;require.register("views/result_list_view", function(exports, require, module) {
-var ResultView, View,
-  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-View = require('./../lib/view');
-
-module.exports = ResultView = (function(_super) {
-  __extends(ResultView, _super);
-
-  function ResultView() {
-    this.render = __bind(this.render, this);
-    return ResultView.__super__.constructor.apply(this, arguments);
-  }
-
-  ResultView.prototype.tagName = 'div';
-
-  ResultView.prototype.className = 'panel panel-default';
-
-  ResultView.prototype.templateModal = require('./templates/modal_confirm');
-
-  ResultView.prototype.events = {
-    'click .accordion-toggle': 'blurIt',
-    'mouseenter .label': 'showFieldDescription',
-    'mouseleave .label': 'showFieldDescription',
-    'click .remove-result': 'confirmRemoveResult',
-    'mouseover .remove-result': 'convertButtonToDanger',
-    'mouseout .remove-result': 'convertButtonToClassic'
-  };
-
-  ResultView.prototype.template = function() {
-    return require('./templates/result_list');
-  };
-
-  ResultView.prototype.render = function() {
-    return ResultView.__super__.render.call(this, {
-      results: this.manageResultsForView()
-    });
-  };
-
-  ResultView.prototype.blurIt = function(e) {
-    return $(e.currentTarget).blur();
-  };
-
-  ResultView.prototype.convertButtonToDanger = function(event) {
-    var jqObj;
-    jqObj = $(event.currentTarget);
-    return jqObj.addClass('btn-danger');
-  };
-
-  ResultView.prototype.convertButtonToClassic = function(event) {
-    var jqObj;
-    jqObj = $(event.currentTarget);
-    return jqObj.removeClass('btn-danger');
-  };
-
-  ResultView.prototype.confirmRemoveResult = function(e) {
-    var data, that;
-    that = this;
-    e.preventDefault();
-    data = {
-      title: t('Confirmation required'),
-      body: t('are you absolutely sure'),
-      confirm: t('delete permanently')
-    };
-    $("body").prepend(this.templateModal(data));
-    $("#confirmation-dialog").modal();
-    $("#confirmation-dialog").modal("show");
-    $("#confirmation-dialog-confirm").unbind('click');
-    return $("#confirmation-dialog-confirm").bind("click", function() {
-      return that.removeResult();
-    });
-  };
-
-  ResultView.prototype.removeResult = function() {
-    this.model.set('id', this.model.get('_id'));
-    return this.model.destroy({
-      data: 'id=' + this.model.get('id'),
-      success: (function(_this) {
-        return function() {
-          return _this.render;
-        };
-      })(this)
-    });
-  };
-
-  ResultView.prototype.manageResultsForView = function() {
-    var attr, count, results;
-    attr = this.model.attributes;
-    count = this.model.get('count');
-    results = {};
-    if (attr.no_result != null) {
-      $('#all-result .accordion').empty();
-      results['no_result'] = true;
-      results['no_result_msg'] = attr.no_result;
-      return results;
-    } else if (count === 0) {
-      results['no_result'] = true;
-      results['no_result_msg'] = 'No results.';
-      return results;
-    } else {
-      results['no_result'] = false;
-      results['count'] = count;
-      results['heading'] = {
-        'doctype': attr.displayName || attr.docType,
-        'field': attr.idField != null ? attr.idField : 'id',
-        'data': attr.idField != null ? attr[attr.idField] : attr._id
-      };
-      this.results = results;
-      this.results['fields'] = this.prepareResultFields(attr);
-      return this.results;
-    }
-  };
-
-  ResultView.prototype.prepareResultFields = function(attr) {
-    var dataId, descField, description, displayName, field, fieldName, fields, hasDisplayName, iCounter, isNativField, isSimpleObj, isSimpleType, newLi, obj, objName, settedField, simpleTypes, typeOfField, typeOfObj;
-    iCounter = 0;
-    fields = [];
-    settedField = ['idField', 'count', 'descField', 'displayName'];
-    simpleTypes = ['string', 'number', 'boolean'];
-    for (fieldName in attr) {
-      field = attr[fieldName];
-      description = "";
-      isNativField = ($.inArray(fieldName, settedField)) === -1;
-      if (isNativField) {
-        fields[iCounter] = {
-          'cdbFieldDescription': "",
-          'cdbFieldName': fieldName,
-          'cdbFieldData': "",
-          'cdbLabelClass': "label-secondary"
-        };
-        if ((attr.descField != null) && (attr.descField[fieldName] != null)) {
-          if (attr.descField[fieldName].description != null) {
-            description = attr.descField[fieldName].description;
-            fields[iCounter]['cdbFieldDescription'] = description;
-          }
-          descField = attr.descField[fieldName];
-          hasDisplayName = descField.displayName != null;
-          if (hasDisplayName && descField.displayName !== "") {
-            displayName = descField.displayName;
-            fields[iCounter]['cdbFieldName'] = displayName;
-            if (field === this.results['heading']['field']) {
-              this.results['heading']['field'] = displayName;
-            }
-          }
-        }
-        typeOfField = typeof field;
-        isSimpleType = ($.inArray(typeOfField, simpleTypes)) !== -1;
-        if (isSimpleType) {
-          dataId = 'cdbFieldData';
-          if (fieldName === 'docType') {
-            fields[iCounter][dataId] = attr.displayName || field;
-          } else {
-            fields[iCounter][dataId] = field;
-          }
-        } else if ((field != null) && typeOfField === 'object') {
-          fields[iCounter]['cdbFieldData'] = '<ul class="sober-list">';
-          for (objName in field) {
-            obj = field[objName];
-            newLi = '';
-            typeOfObj = typeof obj;
-            isSimpleObj = ($.inArray(typeOfObj, simpleTypes)) !== -1;
-            if (isSimpleObj) {
-              newLi = '<li>' + objName + ' : ';
-              newLi += '<i>' + obj + '</i></li>';
-              fields[iCounter]['cdbFieldData'] += newLi;
-            } else if ((obj != null) && typeof obj === 'object') {
-              newLi = '<li>' + objName + ' : ';
-              newLi += '<i>' + JSON.stringify(obj) + '</i></li>';
-              fields[iCounter]['cdbFieldData'] += newLi;
-            } else {
-              newLi = '<li><i>empty</i></li>';
-              fields[iCounter]['cdbFieldData'] += newLi;
-              fields[iCounter]['cdbLabelClass'] = 'label-danger';
-            }
-          }
-          fields[iCounter]['cdbFieldData'] += '</ul>';
-        } else {
-          fields[iCounter]['cdbFieldData'] = '<i>empty</i>';
-          fields[iCounter]['cdbLabelClass'] = 'label-danger';
-        }
-      }
-      iCounter++;
-    }
-    return fields;
-  };
-
-  return ResultView;
-
-})(View);
 });
 
 ;require.register("views/result_table_view", function(exports, require, module) {
@@ -1442,7 +1200,7 @@ module.exports = ResultTableView = (function(_super) {
 });
 
 ;require.register("views/search_view", function(exports, require, module) {
-var BaseView, ResultCollectionView, SearchView, localStore,
+var BaseView, ResultCollectionView, SearchView,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1450,8 +1208,6 @@ var BaseView, ResultCollectionView, SearchView, localStore,
 BaseView = require('../lib/base_view');
 
 ResultCollectionView = require('../views/result_collection_view');
-
-localStore = require('./../helpers/oLocalStorageHelper');
 
 module.exports = SearchView = (function(_super) {
   __extends(SearchView, _super);
@@ -1474,12 +1230,8 @@ module.exports = SearchView = (function(_super) {
   SearchView.prototype.initialize = function(options) {
     this.options = options;
     this.hasDoctype = this.options.doctypes && this.options.doctypes.length > 0;
-    this.hasPresentation = this.options.presentation != null;
     this.bindSearch();
     if (this.hasDoctype) {
-      if (!this.hasPresentation) {
-        this.applyStoredPresentation();
-      }
       this.resultCollectionView = new ResultCollectionView(this.options);
       if (this.options.range != null) {
         $(window).bind('scroll', (function(_this) {
@@ -1527,17 +1279,6 @@ module.exports = SearchView = (function(_super) {
     return this.resultCollectionView.loadNextPage(isTriggered);
   };
 
-  SearchView.prototype.applyStoredPresentation = function() {
-    var key;
-    key = this.options.doctypes[0].toLowerCase();
-    key += localStore.keys.separation + localStore.keys.isListPresentation;
-    if (localStore.getBoolean(key)) {
-      return this.options['presentation'] = 'list';
-    } else {
-      return this.options['presentation'] = 'table';
-    }
-  };
-
   SearchView.prototype.bindSearch = function() {
     var searchElt, searchField;
     searchElt = $('#launch-search');
@@ -1570,40 +1311,6 @@ var jade_mixins = {};
 var jade_interp;
 var locals_ = (locals || {}),title = locals_.title,body = locals_.body,confirm = locals_.confirm;
 buf.push("<div id=\"confirmation-dialog\" class=\"modal\"><div class=\"modal-dialog\"><div class=\"modal-content\"><div class=\"modal-header\"><button type=\"button\" data-dismiss=\"modal\" aria-hidden=\"true\" class=\"close\">x</button><h4 class=\"modal-title\">" + (jade.escape((jade_interp = title) == null ? '' : jade_interp)) + "</h4></div><div class=\"modal-body\"><p class=\"modal-confirm-text\">" + (jade.escape((jade_interp = body) == null ? '' : jade_interp)) + "</p></div><div class=\"modal-footer\"><span data-dismiss=\"modal\" class=\"btn btn-link\">" + (jade.escape(null == (jade_interp = t('cancel')) ? "" : jade_interp)) + "</span><span id=\"confirmation-dialog-confirm\" data-dismiss=\"modal\" class=\"btn btn-danger\">" + (jade.escape((jade_interp = confirm) == null ? '' : jade_interp)) + "</span></div></div></div></div>");;return buf.join("");
-};
-if (typeof define === 'function' && define.amd) {
-  define([], function() {
-    return __templateData;
-  });
-} else if (typeof module === 'object' && module && module.exports) {
-  module.exports = __templateData;
-} else {
-  __templateData;
-}
-});
-
-;require.register("views/templates/result_list", function(exports, require, module) {
-var __templateData = function template(locals) {
-var buf = [];
-var jade_mixins = {};
-var jade_interp;
-var locals_ = (locals || {}),results = locals_.results;
-if (results['no_result']) {
-{
-buf.push("<em>" + (jade.escape((jade_interp = results['no_result_msg']) == null ? '' : jade_interp)) + "</em>");
-}
-}
-else {
-{
-buf.push("<div class=\"panel-heading\"><h4 class=\"panel-title\"><a data-toggle=\"collapse\" data-parent=\"#basic-accordion\"" + (jade.attr("href", "#collapse" + (results.count) + "", true, false)) + " class=\"accordion-toggle\"><i class=\"icon-plus-sign\"></i><strong>&nbsp;" + (jade.escape((jade_interp = results.heading.doctype) == null ? '' : jade_interp)) + "</strong>&nbsp;" + (jade.escape((jade_interp = results.heading.field) == null ? '' : jade_interp)) + " :\n&nbsp;" + (jade.escape((jade_interp = results.heading.data) == null ? '' : jade_interp)) + "</a><div class=\"visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons\"><button class=\"btn btn-xs remove-result\"><i class=\"icon-trash bigger-120\"></i></button></div></h4></div><div style=\"height: 0px;\"" + (jade.attr("id", "collapse" + (results.count) + "", true, false)) + " class=\"panel-collapse collapse\"><div class=\"panel-body\"><div id=\"result-list\" class=\"profile-user-info profile-user-info-striped\">");
-for (var iCount = 0; iCount < results['fields'].length; iCount++) {
-{
-buf.push("<div" + (jade.attr("title", results['fields'][iCount].cdbFieldDescription, true, false)) + " class=\"profile-info-row\"><div class=\"profile-info-name\">" + (jade.escape((jade_interp = results['fields'][iCount].cdbFieldName) == null ? '' : jade_interp)) + "</div><div class=\"profile-info-value\">" + (null == (jade_interp = results['fields'][iCount].cdbFieldData) ? "" : jade_interp) + "</div></div>");
-}
-}
-buf.push("</div></div></div>");
-}
-};return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -1673,44 +1380,6 @@ buf.push("<td>" + (null == (jade_interp = results['fields'][fieldname].cdbFieldD
 }).call(this);
 
 buf.push("<td class=\"action\"><button class=\"btn btn-xs remove-result\"><i class=\"icon-trash bigger-120\"></i></button></td>");
-};return buf.join("");
-};
-if (typeof define === 'function' && define.amd) {
-  define([], function() {
-    return __templateData;
-  });
-} else if (typeof module === 'object' && module && module.exports) {
-  module.exports = __templateData;
-} else {
-  __templateData;
-}
-});
-
-;require.register("views/templates/results_global_controls", function(exports, require, module) {
-var __templateData = function template(locals) {
-var buf = [];
-var jade_mixins = {};
-var jade_interp;
-var locals_ = (locals || {}),doctype = locals_.doctype,hasMetainfos = locals_.hasMetainfos,isVisible = locals_.isVisible,icon_presentation = locals_.icon_presentation;
-if (doctype !== '') {
-{
-buf.push("<h4>&nbsp;&nbsp;" + (jade.escape((jade_interp = t('currently exploring')) == null ? '' : jade_interp)) + " :&nbsp;<em>" + (jade.escape((jade_interp = doctype) == null ? '' : jade_interp)) + " &nbsp;</em>");
-if (hasMetainfos) {
-{
-if (isVisible) {
-{
-buf.push("<i class=\"about-doctype icon-question-sign white-and-green\"></i>");
-}
-}
-else {
-{
-buf.push("<i class=\"about-doctype icon-question-sign\"></i>");
-}
-}
-}
-}
-buf.push("&nbsp;<i" + (jade.cls(['view-switcher',icon_presentation], [null,true])) + "></i></h4><div class=\"visible-md visible-lg hidden-sm hidden-xs btn-group result-buttons\"><button id=\"delete-all\" class=\"btn btn-xs\"><span></span><i class=\"icon-trash bigger-120\"></i></button></div>");
-}
 };return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
