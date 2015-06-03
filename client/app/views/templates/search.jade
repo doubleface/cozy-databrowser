@@ -4,7 +4,10 @@
     p #{t('welcome message part1')}
     p #{t('welcome message part2')}
 #all-result
-    #basic-accordion.accordion-style1.panel-group
+    .visible-md.visible-lg.hidden-sm.hidden-xs.btn-group.result-buttons
+        button#delete-all.btn.btn-xs
+            span
+            i.icon-trash.bigger-120
     #basic-table.table-responsive
             table#result-view-as-table.table.table-striped.table-bordered.table-hover
                 tbody

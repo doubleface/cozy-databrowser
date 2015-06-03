@@ -1,15 +1,56 @@
 #Required backbone classes
 BaseView = require '../lib/base_view'
 ResultCollectionView = require '../views/result_collection_view'
+DeleteAllModel = require '../models/delete_all_model'
 
 #Define SearchView class
 module.exports = class SearchView extends BaseView
 
     el: '#results-list'
     template: require('./templates/search')
+    templateModal: require('./templates/modal_confirm')
     hasDoctype : false
     events :
         'click #btn-scroll-up' : 'hideThis'
+        'mouseover #delete-all' : 'switchStyleOfDeleteButton'
+        'mouseout #delete-all' : 'switchStyleOfDeleteButton'
+        'click #delete-all' : 'confirmDeleteAll'
+
+    switchStyleOfDeleteButton: (event) ->
+        jqObj = $(event.currentTarget)
+        if not jqObj.hasClass 'btn-danger'
+            jqObj.addClass 'btn-danger'
+            jqObj.children('span').text t('delete all') + ' '
+        else
+            jqObj.removeClass 'btn-danger'
+            jqObj.children('span').empty()
+
+    confirmDeleteAll : (e) ->
+        e.preventDefault()
+        data =
+            title: t 'confirmation required'
+            body: t 'are you absolutely sure'
+            confirm: t 'delete permanently'
+
+        $("body").prepend @templateModal(data)
+        $("#confirmation-dialog").modal()
+        $("#confirmation-dialog").modal("show")
+        $("#confirmation-dialog-confirm").unbind 'click'
+        $("#confirmation-dialog-confirm").bind "click", =>
+            @deleteAll()
+
+    deleteAll: ->
+        if @currentDoctype? and @currentDoctype isnt ''
+            deleteAllModel = new DeleteAllModel()
+            deleteAllModel.fetch
+                type: 'DELETE'
+                url : deleteAllModel.urlRoot + '?' + $.param
+                    doctype : @currentDoctype
+                success : (col, data) ->
+                    app.router.navigate 'search',
+                        replace: true
+                        trigger : true
+                    location.reload()
 
     #-------------------------BEGIN VIEW BEHAVIOR-------------------------------
     initialize : (options) =>
@@ -18,6 +59,7 @@ module.exports = class SearchView extends BaseView
         @bindSearch()
 
         if @hasDoctype
+            @currentDoctype = @options.doctypes[0]
 
             #Add the results
             @resultCollectionView = new ResultCollectionView @options
