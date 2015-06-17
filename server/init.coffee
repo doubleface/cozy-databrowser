@@ -35,13 +35,15 @@ module.exports = (initCallback) ->
         metadoctype:
             getAllByRelated:
                 map: (doc) ->
-                    if doc.docType.toLowerCase() is 'metadoctype'
-                        emit doc.related, doc
+                    if doc.docType?
+                        if doc.docType.toLowerCase() is 'metadoctype'
+                            emit doc.related, doc
         application:
             getPermissions:
                 map: (doc) ->
-                    if doc.docType.toLowerCase() is 'application'
-                        emit doc.name, doc.permissions
+                    if doc.docType?
+                        if doc.docType.toLowerCase() is 'application'
+                            emit doc.name, doc.permissions
 
     #----prepare requests
     setupRequests = []
