@@ -66,7 +66,7 @@ module.exports = class ResultCollectionView extends ViewCollection
         super
 
     appendView: (view) ->
-        $('#result-view-as-table').dataTable().fnAddTr view.$el[0]
+        $('#result-view-as-table').dataTable().api().rows.add(view.$el).draw()
 
     itemViewOptions: ->
         fields: @collection.fields()
@@ -159,26 +159,26 @@ module.exports = class ResultCollectionView extends ViewCollection
 
         storedPath = 'DataTables_'+ window.location.hash
         $('#result-view-as-table').dataTable
-            "bRetrieve": not firstRender
-            "bPaginate": false
-            "aoColumnDefs": [
+            "retrieve": not firstRender
+            "paging": false
+            "columnDefs": [
                 {
                     bSortable: @noMoreItems
                     aTargets: ['_all']
                 },
                 {
-                    bSortable: false,
+                    bSortable: true,
                     aTargets: [ 'cozy_docType', 'action' ]
                 },
                 {
                     bVisible: false,
-                    aTargets: ['cozy__id', 'cozy_docType']
+                    aTargets: ['cozy__id', 'cozy_docType', 'cozy_password']
                 }
             ]
             "oColVis":
                 "iOverlayFade": 200
                 buttonText: t 'button toggle visibility'
-            "sDom": 'CRt'
+            "dom": 'CRt'
             "bStateSave": true
             "fnStateSave": (oSettings, oData) ->
                 stringifiedData = JSON.stringify(oData)

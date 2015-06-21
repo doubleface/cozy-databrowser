@@ -1,33 +1,42 @@
-/*
- * File:        ColVis.js
- * Version:     1.0.8
- * CVS:         $Id$
- * Description: Controls for column visiblity in DataTables
- * Author:      Allan Jardine (www.sprymedia.co.uk)
- * Created:     Wed Sep 15 18:23:29 BST 2010
- * Modified:    $Date$ by $Author$
- * Language:    Javascript
- * License:     GPL v2 or BSD 3 point style
- * Project:     Just a little bit of fun :-)
- * Contact:     www.sprymedia.co.uk/contact
- *
- * Copyright 2010-2011 Allan Jardine, all rights reserved.
- *
- * This source file is free software, under either the GPL v2 license or a
- * BSD style license, available at:
- *   http://datatables.net/license_gpl2
- *   http://datatables.net/license_bsd
+/*! ColVis 1.1.2
+ * ©2010-2015 SpryMedia Ltd - datatables.net/license
  */
-
-(function($) {
 
 /**
- * ColVis provides column visiblity control for DataTables
+ * @summary     ColVis
+ * @description Controls for column visibility in DataTables
+ * @version     1.1.2
+ * @file        dataTables.colReorder.js
+ * @author      SpryMedia Ltd (www.sprymedia.co.uk)
+ * @contact     www.sprymedia.co.uk/contact
+ * @copyright   Copyright 2010-2015 SpryMedia Ltd.
+ *
+ * This source file is free software, available under the following license:
+ *   MIT license - http://datatables.net/license/mit
+ *
+ * This source file is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the license files for details.
+ *
+ * For details please refer to: http://www.datatables.net
+ */
+
+(function(window, document, undefined) {
+
+
+var factory = function( $, DataTable ) {
+"use strict";
+
+/**
+ * ColVis provides column visibility control for DataTables
+ *
  * @class ColVis
  * @constructor
- * @param {object} DataTables settings object
+ * @param {object} DataTables settings object. With DataTables 1.10 this can
+ *   also be and API instance, table node, jQuery collection or jQuery selector.
+ * @param {object} ColVis configuration options
  */
-ColVis = function( oDTSettings, oInit )
+var ColVis = function( oDTSettings, oInit )
 {
 	/* Santiy check that we are a new instance */
 	if ( !this.CLASS || this.CLASS != "ColVis" )
@@ -40,13 +49,20 @@ ColVis = function( oDTSettings, oInit )
 		oInit = {};
 	}
 
+	var camelToHungarian = $.fn.dataTable.camelToHungarian;
+	if ( camelToHungarian ) {
+		camelToHungarian( ColVis.defaults, ColVis.defaults, true );
+		camelToHungarian( ColVis.defaults, oInit );
+	}
+
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * Public class variables
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	/**
-	 * @namespace Settings object which contains customisable information for ColVis instance
+	 * @namespace Settings object which contains customisable information for
+	 *     ColVis instance. Augmented by ColVis.defaults
 	 */
 	this.s = {
 		/**
@@ -66,38 +82,6 @@ ColVis = function( oDTSettings, oInit )
 		"oInit": oInit,
 
 		/**
-		 * Callback function to tell the user when the state has changed
-		 *  @property fnStateChange
-		 *  @type     function
-		 *  @default  null
-		 */
-		"fnStateChange": null,
-
-		/**
-		 * Mode of activation. Can be 'click' or 'mouseover'
-		 *  @property activate
-		 *  @type     String
-		 *  @default  click
-		 */
-		"activate": "click",
-
-		/**
-		 * Position of the collection menu when shown - align "left" or "right"
-		 *  @property sAlign
-		 *  @type     String
-		 *  @default  right
-		 */
-		"sAlign": "left",
-
-		/**
-		 * Text used for the button
-		 *  @property buttonText
-		 *  @type     String
-		 *  @default  Show / hide columns
-		 */
-		"buttonText": "Show / hide columns",
-
-		/**
 		 * Flag to say if the collection is hidden
 		 *  @property hidden
 		 *  @type     boolean
@@ -106,87 +90,12 @@ ColVis = function( oDTSettings, oInit )
 		"hidden": true,
 
 		/**
-		 * List of columns (integers) which should be excluded from the list
-		 *  @property aiExclude
-		 *  @type     Array
-		 *  @default  []
-		 */
-		"aiExclude": [],
-
-		/**
-		 * Store the original viisbility settings so they could be restored
+		 * Store the original visibility settings so they could be restored
 		 *  @property abOriginal
 		 *  @type     Array
 		 *  @default  []
 		 */
-		"abOriginal": [],
-
-		/**
-		 * Show Show-All button
-		 *  @property bShowAll
-		 *  @type     Array
-		 *  @default  []
-		 */
-		"bShowAll": false,
-
-		/**
-		 * Show All button text
-		 *  @property sShowAll
-		 *  @type     String
-		 *  @default  Restore original
-		 */
-		"sShowAll": "Show All",
-
-		/**
-		 * Show restore button
-		 *  @property bRestore
-		 *  @type     Array
-		 *  @default  []
-		 */
-		"bRestore": false,
-
-		/**
-		 * Restore button text
-		 *  @property sRestore
-		 *  @type     String
-		 *  @default  Restore original
-		 */
-		"sRestore": "Restore original",
-
-		/**
-		 * Overlay animation duration in mS
-		 *  @property iOverlayFade
-		 *  @type     Integer
-		 *  @default  500
-		 */
-		"iOverlayFade": 500,
-
-		/**
-		 * Label callback for column names. Takes three parameters: 1. the column index, 2. the column
-		 * title detected by DataTables and 3. the TH node for the column
-		 *  @property fnLabel
-		 *  @type     Function
-		 *  @default  null
-		 */
-		"fnLabel": null,
-
-		/**
-		 * Indicate if ColVis should automatically calculate the size of buttons or not. The default
-		 * is for it to do so. Set to "css" to disable the automatic sizing
-		 *  @property sSize
-		 *  @type     String
-		 *  @default  auto
-		 */
-		"sSize": "auto",
-
-		/**
-		 * Indicate if the column list should be positioned by Javascript, visually below the button
-		 * or allow CSS to do the positioning
-		 *  @property bCssPosition
-		 *  @type     boolean
-		 *  @default  false
-		 */
-		"bCssPosition": false
+		"abOriginal": []
 	};
 
 
@@ -243,6 +152,14 @@ ColVis = function( oDTSettings, oInit )
 		"buttons": [],
 
 		/**
+		 * List of group button elements
+		 *  @property groupButtons
+		 *  @type     Array
+		 *  @default  []
+		 */
+		"groupButtons": [],
+
+		/**
 		 * Restore button
 		 *  @property restore
 		 *  @type     Node
@@ -255,8 +172,11 @@ ColVis = function( oDTSettings, oInit )
 	ColVis.aInstances.push( this );
 
 	/* Constructor logic */
-	this.s.dt = oDTSettings;
-	this._fnConstruct();
+	this.s.dt = $.fn.dataTable.Api ?
+		new $.fn.dataTable.Api( oDTSettings ).settings()[0] :
+		oDTSettings;
+
+	this._fnConstruct( oInit );
 	return this;
 };
 
@@ -268,34 +188,50 @@ ColVis.prototype = {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	/**
-	 * Rebuild the list of buttons for this instance (i.e. if there is a column header update)
+	 * Get the ColVis instance's control button so it can be injected into the
+	 * DOM
+	 *  @method  button
+	 *  @returns {node} ColVis button
+	 */
+	button: function ()
+	{
+		return this.dom.wrapper;
+	},
+
+	/**
+	 * Alias of `rebuild` for backwards compatibility
 	 *  @method  fnRebuild
-	 *  @returns void
 	 */
 	"fnRebuild": function ()
 	{
+		this.rebuild();
+	},
+
+	/**
+	 * Rebuild the list of buttons for this instance (i.e. if there is a column
+	 * header update)
+	 *  @method  fnRebuild
+	 */
+	rebuild: function ()
+	{
 		/* Remove the old buttons */
-		for ( var i=this.dom.buttons.length-1 ; i>=0 ; i-- )
-		{
-			if ( this.dom.buttons[i] !== null )
-			{
-				this.dom.collection.removeChild( this.dom.buttons[i] );
-			}
+		for ( var i=this.dom.buttons.length-1 ; i>=0 ; i-- ) {
+			this.dom.collection.removeChild( this.dom.buttons[i] );
 		}
 		this.dom.buttons.splice( 0, this.dom.buttons.length );
+		this.dom.groupButtons.splice(0, this.dom.groupButtons.length);
 
-		if ( this.dom.restore )
-		{
+		if ( this.dom.restore ) {
 			this.dom.restore.parentNode( this.dom.restore );
 		}
 
 		/* Re-add them (this is not the optimal way of doing this, it is fast and effective) */
+		this._fnAddGroups();
 		this._fnAddButtons();
 
 		/* Update the checkboxes */
 		this._fnDrawCallback();
 	},
-
 
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -308,26 +244,35 @@ ColVis.prototype = {
 	 *  @returns void
 	 *  @private
 	 */
-	"_fnConstruct": function ()
+	"_fnConstruct": function ( init )
 	{
-		this._fnApplyCustomisation();
+		this._fnApplyCustomisation( init );
 
 		var that = this;
 		var i, iLen;
 		this.dom.wrapper = document.createElement('div');
-		this.dom.wrapper.className = "ColVis TableTools";
+		this.dom.wrapper.className = "ColVis";
 
-		this.dom.button = this._fnDomBaseButton( this.s.buttonText );
-		this.dom.button.className += " ColVis_MasterButton";
-		this.dom.wrapper.appendChild( this.dom.button );
+		this.dom.button = $( '<button />', {
+				'class': !this.s.dt.bJUI ?
+					"ColVis_Button ColVis_MasterButton" :
+					"ColVis_Button ColVis_MasterButton ui-button ui-state-default"
+			} )
+			.append( '<span>'+this.s.buttonText+'</span>' )
+			.bind( this.s.activate=="mouseover" ? "mouseover" : "click", function (e) {
+				e.preventDefault();
+				that._fnCollectionShow();
+			} )
+			.appendTo( this.dom.wrapper )[0];
 
 		this.dom.catcher = this._fnDomCatcher();
 		this.dom.collection = this._fnDomCollection();
 		this.dom.background = this._fnDomBackground();
 
+		this._fnAddGroups();
 		this._fnAddButtons();
 
-		/* Store the original visbility information */
+		/* Store the original visibility information */
 		for ( i=0, iLen=this.s.dt.aoColumns.length ; i<iLen ; i++ )
 		{
 			this.s.abOriginal.push( this.s.dt.aoColumns[i].bVisible );
@@ -344,7 +289,7 @@ ColVis.prototype = {
 		/* If columns are reordered, then we need to update our exclude list and
 		 * rebuild the displayed list
 		 */
-		$(this.s.dt.oInstance).bind( 'column-reorder', function ( e, oSettings, oReorder ) {
+		$(this.s.dt.oInstance).bind( 'column-reorder.dt', function ( e, oSettings, oReorder ) {
 			for ( i=0, iLen=that.s.aiExclude.length ; i<iLen ; i++ ) {
 				that.s.aiExclude[i] = oReorder.aiInvertMapping[ that.s.aiExclude[i] ];
 			}
@@ -354,6 +299,13 @@ ColVis.prototype = {
 
 			that.fnRebuild();
 		} );
+
+		$(this.s.dt.oInstance).bind( 'destroy.dt', function () {
+			$(that.dom.wrapper).remove();
+		} );
+
+		// Set the initial state
+		this._fnDrawCallback();
 	},
 
 
@@ -363,73 +315,31 @@ ColVis.prototype = {
 	 *  @returns void
 	 *  @private
 	 */
-	"_fnApplyCustomisation": function ()
+	"_fnApplyCustomisation": function ( init )
 	{
-		var oConfig = this.s.oInit;
+		$.extend( true, this.s, ColVis.defaults, init );
 
-		if ( typeof oConfig.activate != 'undefined' )
-		{
-			this.s.activate = oConfig.activate;
+		// Slightly messy overlap for the camelCase notation
+		if ( ! this.s.showAll && this.s.bShowAll ) {
+			this.s.showAll = this.s.sShowAll;
 		}
 
-		if ( typeof oConfig.buttonText != 'undefined' )
-		{
-			this.s.buttonText = oConfig.buttonText;
+		if ( ! this.s.restore && this.s.bRestore ) {
+			this.s.restore = this.s.sRestore;
 		}
 
-		if ( typeof oConfig.aiExclude != 'undefined' )
-		{
-			this.s.aiExclude = oConfig.aiExclude;
-		}
-
-		if ( typeof oConfig.bRestore != 'undefined' )
-		{
-			this.s.bRestore = oConfig.bRestore;
-		}
-
-		if ( typeof oConfig.sRestore != 'undefined' )
-		{
-			this.s.sRestore = oConfig.sRestore;
-		}
-
-		if ( typeof oConfig.bShowAll != 'undefined' )
-		{
-			this.s.bShowAll = oConfig.bShowAll;
-		}
-
-		if ( typeof oConfig.sShowAll != 'undefined' )
-		{
-			this.s.sShowAll = oConfig.sShowAll;
-		}
-
-		if ( typeof oConfig.sAlign != 'undefined' )
-		{
-			this.s.sAlign = oConfig.sAlign;
-		}
-
-		if ( typeof oConfig.fnStateChange != 'undefined' )
-		{
-			this.s.fnStateChange = oConfig.fnStateChange;
-		}
-
-		if ( typeof oConfig.iOverlayFade != 'undefined' )
-		{
-			this.s.iOverlayFade = oConfig.iOverlayFade;
-		}
-
-		if ( typeof oConfig.fnLabel != 'undefined' )
-		{
-			this.s.fnLabel = oConfig.fnLabel;
-		}
-
-		if ( typeof oConfig.sSize != 'undefined' )
-		{
-			this.s.sSize = oConfig.sSize;
-		}
-
-		if ( typeof oConfig.bCssPosition != 'undefined' )
-		{
-			this.s.bCssPosition = oConfig.bCssPosition;
+		// CamelCase to Hungarian for the column groups 
+		var groups = this.s.groups;
+		var hungarianGroups = this.s.aoGroups;
+		if ( groups ) {
+			for ( var i=0, ien=groups.length ; i<ien ; i++ ) {
+				if ( groups[i].title ) {
+					hungarianGroups[i].sTitle = groups[i].title;
+				}
+				if ( groups[i].columns ) {
+					hungarianGroups[i].aiColumns = groups[i].columns;
+				}
+			}
 		}
 	},
 
@@ -443,20 +353,72 @@ ColVis.prototype = {
 	 */
 	"_fnDrawCallback": function ()
 	{
-		var aoColumns = this.s.dt.aoColumns;
+		var columns = this.s.dt.aoColumns;
+		var buttons = this.dom.buttons;
+		var groups = this.s.aoGroups;
+		var button;
 
-		for ( var i=0, iLen=aoColumns.length ; i<iLen ; i++ )
-		{
-			if ( this.dom.buttons[i] !== null )
+		for ( var i=0, ien=buttons.length ; i<ien ; i++ ) {
+			button = buttons[i];
+
+			if ( button.__columnIdx !== undefined ) {
+				$('input', button).prop( 'checked', columns[ button.__columnIdx ].bVisible );
+			}
+		}
+
+		var allVisible = function ( columnIndeces ) {
+			for ( var k=0, kLen=columnIndeces.length ; k<kLen ; k++ )
 			{
-				if ( aoColumns[i].bVisible )
-				{
-					$('input', this.dom.buttons[i]).attr('checked','checked');
-				}
-				else
-				{
-					$('input', this.dom.buttons[i]).removeAttr('checked');
-				}
+				if (  columns[columnIndeces[k]].bVisible === false ) { return false; }
+			}
+			return true;
+		};
+		var allHidden = function ( columnIndeces ) {
+			for ( var m=0 , mLen=columnIndeces.length ; m<mLen ; m++ )
+			{
+				if ( columns[columnIndeces[m]].bVisible === true ) { return false; }
+			}
+			return true;
+		};
+
+		for ( var j=0, jLen=groups.length ; j<jLen ; j++ )
+		{
+			if ( allVisible(groups[j].aiColumns) )
+			{
+				$('input', this.dom.groupButtons[j]).prop('checked', true);
+				$('input', this.dom.groupButtons[j]).prop('indeterminate', false);
+			}
+			else if ( allHidden(groups[j].aiColumns) )
+			{
+				$('input', this.dom.groupButtons[j]).prop('checked', false);
+				$('input', this.dom.groupButtons[j]).prop('indeterminate', false);
+			}
+			else
+			{
+				$('input', this.dom.groupButtons[j]).prop('indeterminate', true);
+			}
+		}
+	},
+
+
+	/**
+	 * Loop through the groups (provided in the settings) and create a button for each.
+	 *  @method  _fnAddgroups
+	 *  @returns void
+	 *  @private
+	 */
+	"_fnAddGroups": function ()
+	{
+		var nButton;
+
+		if ( typeof this.s.aoGroups != 'undefined' )
+		{
+			for ( var i=0, iLen=this.s.aoGroups.length ; i<iLen ; i++ )
+			{
+				nButton = this._fnDomGroupButton( i );
+				this.dom.groupButtons.push( nButton );
+				this.dom.buttons.push( nButton );
+				this.dom.collection.appendChild( nButton );
 			}
 		}
 	},
@@ -472,37 +434,55 @@ ColVis.prototype = {
 	{
 		var
 			nButton,
-			sExclude = ","+this.s.aiExclude.join(',')+",";
+			columns = this.s.dt.aoColumns;
 
-		for ( var i=0, iLen=this.s.dt.aoColumns.length ; i<iLen ; i++ )
-		{
-			if ( sExclude.indexOf( ","+i+"," ) == -1 )
+		if ( $.inArray( 'all', this.s.aiExclude ) === -1 ) {
+			for ( var i=0, iLen=columns.length ; i<iLen ; i++ )
 			{
-				nButton = this._fnDomColumnButton( i );
-				this.dom.buttons.push( nButton );
-				this.dom.collection.appendChild( nButton );
-			}
-			else
-			{
-				this.dom.buttons.push( null );
+				if ( $.inArray( i, this.s.aiExclude ) === -1 )
+				{
+					nButton = this._fnDomColumnButton( i );
+					nButton.__columnIdx = i;
+					this.dom.buttons.push( nButton );
+				}
 			}
 		}
 
-		if ( this.s.bRestore )
+		if ( this.s.order === 'alpha' ) {
+			this.dom.buttons.sort( function ( a, b ) {
+				var titleA = columns[ a.__columnIdx ].sTitle;
+				var titleB = columns[ b.__columnIdx ].sTitle;
+
+				return titleA === titleB ?
+					0 :
+					titleA < titleB ?
+						-1 :
+						1;
+			} );
+		}
+
+		if ( this.s.restore )
 		{
 			nButton = this._fnDomRestoreButton();
 			nButton.className += " ColVis_Restore";
 			this.dom.buttons.push( nButton );
-			this.dom.collection.appendChild( nButton );
 		}
 
-		if ( this.s.bShowAll )
+		if ( this.s.showAll )
 		{
-			nButton = this._fnDomShowAllButton();
+			nButton = this._fnDomShowXButton( this.s.showAll, true );
 			nButton.className += " ColVis_ShowAll";
 			this.dom.buttons.push( nButton );
-			this.dom.collection.appendChild( nButton );
 		}
+
+		if ( this.s.showNone )
+		{
+			nButton = this._fnDomShowXButton( this.s.showNone, false );
+			nButton.className += " ColVis_ShowNone";
+			this.dom.buttons.push( nButton );
+		}
+
+		$(this.dom.collection).append( this.dom.buttons );
 	},
 
 
@@ -516,60 +496,91 @@ ColVis.prototype = {
 	{
 		var
 			that = this,
-			nButton = document.createElement('button'),
-			nSpan = document.createElement('span');
+			dt = this.s.dt;
 
-		nButton.className = !this.s.dt.bJUI ? "ColVis_Button TableTools_Button" :
-			"ColVis_Button TableTools_Button ui-button ui-state-default";
-		nButton.appendChild( nSpan );
-		$(nSpan).html( '<span class="ColVis_title">'+this.s.sRestore+'</span>' );
-
-		$(nButton).click( function (e) {
-			for ( var i=0, iLen=that.s.abOriginal.length ; i<iLen ; i++ )
-			{
-				that.s.dt.oInstance.fnSetColumnVis( i, that.s.abOriginal[i], false );
-			}
-			that._fnAdjustOpenRows();
-			that.s.dt.oInstance.fnAdjustColumnSizing( false );
-			that.s.dt.oInstance.fnDraw( false );
-		} );
-
-		return nButton;
+		return $(
+				'<li class="ColVis_Special '+(dt.bJUI ? 'ui-button ui-state-default' : '')+'">'+
+					this.s.restore+
+				'</li>'
+			)
+			.click( function (e) {
+				for ( var i=0, iLen=that.s.abOriginal.length ; i<iLen ; i++ )
+				{
+					that.s.dt.oInstance.fnSetColumnVis( i, that.s.abOriginal[i], false );
+				}
+				that._fnAdjustOpenRows();
+				that.s.dt.oInstance.fnAdjustColumnSizing( false );
+				that.s.dt.oInstance.fnDraw( false );
+			} )[0];
 	},
 
 
 	/**
-	 * Create a button which allows a "show all" action
-	 *  @method  _fnDomShowAllButton
+	 * Create a button which allows show all and show node actions
+	 *  @method  _fnDomShowXButton
 	 *  @returns {Node} Created button
 	 *  @private
 	 */
-	"_fnDomShowAllButton": function ()
+	"_fnDomShowXButton": function ( str, action )
 	{
 		var
 			that = this,
-			nButton = document.createElement('button'),
-			nSpan = document.createElement('span');
+			dt = this.s.dt;
 
-		nButton.className = !this.s.dt.bJUI ? "ColVis_Button TableTools_Button" :
-			"ColVis_Button TableTools_Button ui-button ui-state-default";
-		nButton.appendChild( nSpan );
-		$(nSpan).html( '<span class="ColVis_title">'+this.s.sShowAll+'</span>' );
-
-		$(nButton).click( function (e) {
-			for ( var i=0, iLen=that.s.abOriginal.length ; i<iLen ; i++ )
-			{
-				if (that.s.aiExclude.indexOf(i) === -1)
+		return $(
+				'<li class="ColVis_Special '+(dt.bJUI ? 'ui-button ui-state-default' : '')+'">'+
+					str+
+				'</li>'
+			)
+			.click( function (e) {
+				for ( var i=0, iLen=that.s.abOriginal.length ; i<iLen ; i++ )
 				{
-					that.s.dt.oInstance.fnSetColumnVis( i, true, false );
+					if (that.s.aiExclude.indexOf(i) === -1)
+					{
+						that.s.dt.oInstance.fnSetColumnVis( i, action, false );
+					}
 				}
-			}
-			that._fnAdjustOpenRows();
-			that.s.dt.oInstance.fnAdjustColumnSizing( false );
-			that.s.dt.oInstance.fnDraw( false );
-		} );
+				that._fnAdjustOpenRows();
+				that.s.dt.oInstance.fnAdjustColumnSizing( false );
+				that.s.dt.oInstance.fnDraw( false );
+			} )[0];
+	},
 
-		return nButton;
+
+	/**
+	 * Create the DOM for a show / hide group button
+	 *  @method  _fnDomGroupButton
+	 *  @param {int} i Group in question, order based on that provided in settings
+	 *  @returns {Node} Created button
+	 *  @private
+	 */
+	"_fnDomGroupButton": function ( i )
+	{
+		var
+			that = this,
+			dt = this.s.dt,
+			oGroup = this.s.aoGroups[i];
+
+		return $(
+				'<li class="ColVis_Special '+(dt.bJUI ? 'ui-button ui-state-default' : '')+'">'+
+					'<label>'+
+						'<input type="checkbox" />'+
+						'<span>'+oGroup.sTitle+'</span>'+
+					'</label>'+
+				'</li>'
+			)
+			.click( function (e) {
+				var showHide = !$('input', this).is(":checked");
+				if (  e.target.nodeName.toLowerCase() !== "li" )
+				{
+					showHide = ! showHide;
+				}
+
+				for ( var j=0 ; j < oGroup.aiColumns.length ; j++ )
+				{
+					that.s.dt.oInstance.fnSetColumnVis( oGroup.aiColumns[j], showHide );
+				}
+			} )[0];
 	},
 
 
@@ -584,59 +595,70 @@ ColVis.prototype = {
 	{
 		var
 			that = this,
-			oColumn = this.s.dt.aoColumns[i],
-			nButton = document.createElement('button'),
-			nSpan = document.createElement('span'),
+			column = this.s.dt.aoColumns[i],
 			dt = this.s.dt;
 
-		nButton.className = !dt.bJUI ? "ColVis_Button TableTools_Button" :
-			"ColVis_Button TableTools_Button ui-button ui-state-default";
-		nButton.appendChild( nSpan );
-		var sTitle = this.s.fnLabel===null ? oColumn.sTitle : this.s.fnLabel( i, oColumn.sTitle, oColumn.nTh );
-		$(nSpan).html(
-			'<span class="ColVis_radio"><input type="checkbox"/></span>'+
-			'<span class="ColVis_title">'+sTitle+'</span>' );
+		var title = this.s.fnLabel===null ?
+			column.sTitle :
+			this.s.fnLabel( i, column.sTitle, column.nTh );
 
-		$(nButton).click( function (e) {
-			var showHide = !$('input', this).is(":checked");
-			if ( e.target.nodeName.toLowerCase() == "input" )
-			{
-				showHide = $('input', this).is(":checked");
-			}
+		return $(
+				'<li '+(dt.bJUI ? 'class="ui-button ui-state-default"' : '')+'>'+
+					'<label>'+
+						'<input type="checkbox" />'+
+						'<span>'+title+'</span>'+
+					'</label>'+
+				'</li>'
+			)
+			.click( function (e) {
+				var showHide = !$('input', this).is(":checked");
+				if (  e.target.nodeName.toLowerCase() !== "li" )
+				{
+					if ( e.target.nodeName.toLowerCase() == "input" || that.s.fnStateChange === null )
+					{
+						showHide = ! showHide;
+					}
+				}
 
-			/* Need to consider the case where the initialiser created more than one table - change the
-			 * API index that DataTables is using
-			 */
-			var oldIndex = $.fn.dataTableExt.iApiIndex;
-			$.fn.dataTableExt.iApiIndex = that._fnDataTablesApiIndex.call(that);
+				/* Need to consider the case where the initialiser created more than one table - change the
+				 * API index that DataTables is using
+				 */
+				var oldIndex = $.fn.dataTableExt.iApiIndex;
+				$.fn.dataTableExt.iApiIndex = that._fnDataTablesApiIndex.call(that);
 
-			// Optimisation for server-side processing when scrolling - don't do a full redraw
-			if ( dt.oFeatures.bServerSide && (dt.oScroll.sX !== "" || dt.oScroll.sY !== "" ) )
-			{
-				that.s.dt.oInstance.fnSetColumnVis( i, showHide, false );
-				that.s.dt.oInstance.fnAdjustColumnSizing( false );
-				that.s.dt.oInstance.oApi._fnScrollDraw( that.s.dt );
-				that._fnDrawCallback();
-			}
-			else
-			{
-				that.s.dt.oInstance.fnSetColumnVis( i, showHide );
-			}
+				// Optimisation for server-side processing when scrolling - don't do a full redraw
+				if ( dt.oFeatures.bServerSide )
+				{
+					that.s.dt.oInstance.fnSetColumnVis( i, showHide, false );
+					that.s.dt.oInstance.fnAdjustColumnSizing( false );
+					if (dt.oScroll.sX !== "" || dt.oScroll.sY !== "" )
+					{
+						that.s.dt.oInstance.oApi._fnScrollDraw( that.s.dt );
+					}
+					that._fnDrawCallback();
+				}
+				else
+				{
+					that.s.dt.oInstance.fnSetColumnVis( i, showHide );
+				}
 
-			$.fn.dataTableExt.iApiIndex = oldIndex; /* Restore */
+				$.fn.dataTableExt.iApiIndex = oldIndex; /* Restore */
 
-			if ( that.s.fnStateChange !== null )
-			{
-				that.s.fnStateChange.call( that, i, showHide );
-			}
-		} );
-
-		return nButton;
+				if ( that.s.fnStateChange !== null )
+				{
+					if ( e.target.nodeName.toLowerCase() == "span" )
+					{
+						e.preventDefault();
+					}
+					that.s.fnStateChange.call( that, i, showHide );
+				}
+			} )[0];
 	},
 
 
 	/**
-	 * Get the position in the DataTables instance array of the table for this instance of ColVis
+	 * Get the position in the DataTables instance array of the table for this
+	 * instance of ColVis
 	 *  @method  _fnDataTablesApiIndex
 	 *  @returns {int} Index
 	 *  @private
@@ -655,55 +677,26 @@ ColVis.prototype = {
 
 
 	/**
-	 * Create the DOM needed for the button and apply some base properties. All buttons start here
-	 *  @method  _fnDomBaseButton
-	 *  @param   {String} text Button text
-	 *  @returns {Node} DIV element for the button
-	 *  @private
-	 */
-	"_fnDomBaseButton": function ( text )
-	{
-		var
-			that = this,
-			nButton = document.createElement('button'),
-			nSpan = document.createElement('span'),
-			sEvent = this.s.activate=="mouseover" ? "mouseover" : "click";
-
-		nButton.className = !this.s.dt.bJUI ? "ColVis_Button TableTools_Button" :
-			"ColVis_Button TableTools_Button ui-button ui-state-default";
-		nButton.appendChild( nSpan );
-		nSpan.innerHTML = text;
-
-		$(nButton).bind( sEvent, function (e) {
-			that._fnCollectionShow();
-			e.preventDefault();
-		} );
-
-		return nButton;
-	},
-
-
-	/**
-	 * Create the element used to contain list the columns (it is shown and hidden as needed)
+	 * Create the element used to contain list the columns (it is shown and
+	 * hidden as needed)
 	 *  @method  _fnDomCollection
 	 *  @returns {Node} div container for the collection
 	 *  @private
 	 */
 	"_fnDomCollection": function ()
 	{
-		var that = this;
-		var nHidden = document.createElement('div');
-		nHidden.style.display = "none";
-		nHidden.className = !this.s.dt.bJUI ? "ColVis_collection TableTools_collection" :
-			"ColVis_collection TableTools_collection ui-buttonset ui-buttonset-multi";
-
-		if ( !this.s.bCssPosition )
-		{
-			nHidden.style.position = "absolute";
-		}
-		$(nHidden).css('opacity', 0);
-
-		return nHidden;
+		return $('<ul />', {
+				'class': !this.s.dt.bJUI ?
+					"ColVis_collection" :
+					"ColVis_collection ui-buttonset ui-buttonset-multi"
+			} )
+		.css( {
+			'display': 'none',
+			'opacity': 0,
+			'position': ! this.s.bCssPosition ?
+				'absolute' :
+				''
+		} )[0];
 	},
 
 
@@ -718,7 +711,7 @@ ColVis.prototype = {
 		var
 			that = this,
 			nCatcher = document.createElement('div');
-		nCatcher.className = "ColVis_catcher TableTools_catcher";
+		nCatcher.className = "ColVis_catcher";
 
 		$(nCatcher).click( function () {
 			that._fnCollectionHide.call( that, null, null );
@@ -739,16 +732,12 @@ ColVis.prototype = {
 	{
 		var that = this;
 
-		var nBackground = document.createElement('div');
-		nBackground.style.position = "absolute";
-		nBackground.style.left = "0px";
-		nBackground.style.top = "0px";
-		nBackground.className = "ColVis_collectionBackground TableTools_collectionBackground";
-		$(nBackground).css('opacity', 0);
-
-		$(nBackground).click( function () {
-			that._fnCollectionHide.call( that, null, null );
-		} );
+		var background = $('<div></div>')
+			.addClass( 'ColVis_collectionBackground' )
+			.css( 'opacity', 0 )
+			.click( function () {
+				that._fnCollectionHide.call( that, null, null );
+			} );
 
 		/* When considering a mouse over action for the activation, we also consider a mouse out
 		 * which is the same as a mouse over the background - without all the messing around of
@@ -756,13 +745,13 @@ ColVis.prototype = {
 		 */
 		if ( this.s.activate == "mouseover" )
 		{
-			$(nBackground).mouseover( function () {
+			background.mouseover( function () {
 				that.s.overcollection = false;
 				that._fnCollectionHide.call( that, null, null );
 			} );
 		}
 
-		return nBackground;
+		return background[0];
 	},
 
 
@@ -774,26 +763,26 @@ ColVis.prototype = {
 	 */
 	"_fnCollectionShow": function ()
 	{
-		var that = this, i, iLen;
+		var that = this, i, iLen, iLeft;
 		var oPos = $(this.dom.button).offset();
 		var nHidden = this.dom.collection;
 		var nBackground = this.dom.background;
 		var iDivX = parseInt(oPos.left, 10);
 		var iDivY = parseInt(oPos.top + $(this.dom.button).outerHeight(), 10);
 
-		if ( !this.s.bCssPosition )
+		if ( ! this.s.bCssPosition )
 		{
 			nHidden.style.top = iDivY+"px";
 			nHidden.style.left = iDivX+"px";
 		}
-		nHidden.style.display = "block";
-		$(nHidden).css('opacity',0);
 
-		var iWinHeight = $(window).height(), iDocHeight = $(document).height(),
-		 	iWinWidth = $(window).width(), iDocWidth = $(document).width();
+		$(nHidden).css( {
+			'display': 'block',
+			'opacity': 0
+		} );
 
-		nBackground.style.height = ((iWinHeight>iDocHeight)? iWinHeight : iDocHeight) +"px";
-		nBackground.style.width = ((iWinWidth<iDocWidth)? iWinWidth : iDocWidth) +"px";
+		nBackground.style.bottom ='0px';
+		nBackground.style.right = '0px';
 
 		var oStyle = this.dom.catcher.style;
 		oStyle.height = $(this.dom.button).outerHeight()+"px";
@@ -805,60 +794,38 @@ ColVis.prototype = {
 		document.body.appendChild( nHidden );
 		document.body.appendChild( this.dom.catcher );
 
-		/* Resize the buttons */
-		if ( this.s.sSize == "auto" )
-		{
-			var aiSizes = [];
-			this.dom.collection.style.width = "auto";
-			for ( i=0, iLen=this.dom.buttons.length ; i<iLen ; i++ )
+		/* This results in a very small delay for the end user but it allows the animation to be
+		 * much smoother. If you don't want the animation, then the setTimeout can be removed
+		 */
+		$(nHidden).animate({"opacity": 1}, that.s.iOverlayFade);
+		$(nBackground).animate({"opacity": 0.1}, that.s.iOverlayFade, 'linear', function () {
+			/* In IE6 if you set the checked attribute of a hidden checkbox, then this is not visually
+			 * reflected. As such, we need to do it here, once it is visible. Unbelievable.
+			 */
+			if ( $.browser && $.browser.msie && $.browser.version == "6.0" )
 			{
-				if ( this.dom.buttons[i] !== null )
-				{
-					this.dom.buttons[i].style.width = "auto";
-					aiSizes.push( $(this.dom.buttons[i]).outerWidth() );
-				}
+				that._fnDrawCallback();
 			}
-			iMax = Math.max.apply(window, aiSizes);
-			for ( i=0, iLen=this.dom.buttons.length ; i<iLen ; i++ )
-			{
-				if ( this.dom.buttons[i] !== null )
-				{
-					this.dom.buttons[i].style.width = iMax+"px";
-				}
-			}
-			this.dom.collection.style.width = iMax+"px";
-		}
+		});
 
 		/* Visual corrections to try and keep the collection visible */
 		if ( !this.s.bCssPosition )
 		{
-			nHidden.style.left = this.s.sAlign=="left" ?
-				iDivX+"px" : (iDivX-$(nHidden).outerWidth()+$(this.dom.button).outerWidth())+"px";
+			iLeft = ( this.s.sAlign=="left" ) ?
+				iDivX :
+				iDivX - $(nHidden).outerWidth() + $(this.dom.button).outerWidth();
+
+			nHidden.style.left = iLeft+"px";
 
 			var iDivWidth = $(nHidden).outerWidth();
 			var iDivHeight = $(nHidden).outerHeight();
+			var iDocWidth = $(document).width();
 
-			if ( iDivX + iDivWidth > iDocWidth )
+			if ( iLeft + iDivWidth > iDocWidth )
 			{
 				nHidden.style.left = (iDocWidth-iDivWidth)+"px";
 			}
 		}
-
-		/* This results in a very small delay for the end user but it allows the animation to be
-		 * much smoother. If you don't want the animation, then the setTimeout can be removed
-		 */
-		setTimeout( function () {
-			$(nHidden).animate({"opacity": 1}, that.s.iOverlayFade);
-			$(nBackground).animate({"opacity": 0.1}, that.s.iOverlayFade, 'linear', function () {
-				/* In IE6 if you set the checked attribute of a hidden checkbox, then this is not visually
-				 * reflected. As such, we need to do it here, once it is visible. Unbelievable.
-				 */
-				// if ( jQuery.browser.msie && jQuery.browser.version == "6.0" )
-				// {
-				// 	that._fnDrawCallback();
-				// }
-			});
-		}, 10 );
 
 		this.s.hidden = false;
 	},
@@ -924,7 +891,9 @@ ColVis.fnRebuild = function ( oTable )
 	var nTable = null;
 	if ( typeof oTable != 'undefined' )
 	{
-		nTable = oTable.fnSettings().nTable;
+		nTable = $.fn.dataTable.Api ?
+			new $.fn.dataTable.Api( oTable ).table().node() :
+			oTable.fnSettings().nTable;
 	}
 
 	for ( var i=0, iLen=ColVis.aInstances.length ; i<iLen ; i++ )
@@ -937,6 +906,123 @@ ColVis.fnRebuild = function ( oTable )
 };
 
 
+ColVis.defaults = {
+	/**
+	 * Mode of activation. Can be 'click' or 'mouseover'
+	 *  @property activate
+	 *  @type     string
+	 *  @default  click
+	 */
+	active: 'click',
+
+	/**
+	 * Text used for the button
+	 *  @property buttonText
+	 *  @type     string
+	 *  @default  Show / hide columns
+	 */
+	buttonText: 'Show / hide columns',
+
+	/**
+	 * List of columns (integers) which should be excluded from the list
+	 *  @property aiExclude
+	 *  @type     array
+	 *  @default  []
+	 */
+	aiExclude: [],
+
+	/**
+	 * Show restore button
+	 *  @property bRestore
+	 *  @type     boolean
+	 *  @default  false
+	 */
+	bRestore: false,
+
+	/**
+	 * Restore button text
+	 *  @property sRestore
+	 *  @type     string
+	 *  @default  Restore original
+	 */
+	sRestore: 'Restore original',
+
+	/**
+	 * Show Show-All button
+	 *  @property bShowAll
+	 *  @type     boolean
+	 *  @default  false
+	 */
+	bShowAll: false,
+
+	/**
+	 * Show All button text
+	 *  @property sShowAll
+	 *  @type     string
+	 *  @default  Restore original
+	 */
+	sShowAll: 'Show All',
+
+	/**
+	 * Position of the collection menu when shown - align "left" or "right"
+	 *  @property sAlign
+	 *  @type     string
+	 *  @default  left
+	 */
+	sAlign: 'left',
+
+	/**
+	 * Callback function to tell the user when the state has changed
+	 *  @property fnStateChange
+	 *  @type     function
+	 *  @default  null
+	 */
+	fnStateChange: null,
+
+	/**
+	 * Overlay animation duration in mS
+	 *  @property iOverlayFade
+	 *  @type     integer|false
+	 *  @default  500
+	 */
+	iOverlayFade: 500,
+
+	/**
+	 * Label callback for column names. Takes three parameters: 1. the
+	 * column index, 2. the column title detected by DataTables and 3. the
+	 * TH node for the column
+	 *  @property fnLabel
+	 *  @type     function
+	 *  @default  null
+	 */
+	fnLabel: null,
+
+	/**
+	 * Indicate if the column list should be positioned by Javascript,
+	 * visually below the button or allow CSS to do the positioning
+	 *  @property bCssPosition
+	 *  @type     boolean
+	 *  @default  false
+	 */
+	bCssPosition: false,
+
+	/**
+	 * Group buttons
+	 *  @property aoGroups
+	 *  @type     array
+	 *  @default  []
+	 */
+	aoGroups: [],
+
+	/**
+	 * Button ordering - 'alpha' (alphabetical) or 'column' (table column
+	 * order)
+	 *  @property order
+	 *  @type     string
+	 *  @default  column
+	 */
+	order: 'column'
+};
 
 
 
@@ -976,7 +1062,7 @@ ColVis.prototype.CLASS = "ColVis";
  *  @type      String
  *  @default   See code
  */
-ColVis.VERSION = "1.0.8";
+ColVis.VERSION = "1.1.2";
 ColVis.prototype.VERSION = ColVis.VERSION;
 
 
@@ -996,10 +1082,9 @@ if ( typeof $.fn.dataTable == "function" &&
 {
 	$.fn.dataTableExt.aoFeatures.push( {
 		"fnInit": function( oDTSettings ) {
-			var init = (typeof oDTSettings.oInit.oColVis == 'undefined') ?
-				{} : oDTSettings.oInit.oColVis;
-			var oColvis = new ColVis( oDTSettings, init );
-			return oColvis.dom.wrapper;
+			var init = oDTSettings.oInit;
+			var colvis = new ColVis( oDTSettings, init.colVis || init.oColVis || {} );
+			return colvis.button();
 		},
 		"cFeature": "C",
 		"sFeature": "ColVis"
@@ -1010,4 +1095,29 @@ else
 	alert( "Warning: ColVis requires DataTables 1.7 or greater - www.datatables.net/download");
 }
 
-})(jQuery);
+
+// Make ColVis accessible from the DataTables instance
+$.fn.dataTable.ColVis = ColVis;
+$.fn.DataTable.ColVis = ColVis;
+
+
+return ColVis;
+}; // /factory
+
+
+// Define as an AMD module if possible
+if ( typeof define === 'function' && define.amd ) {
+	define( ['jquery', 'datatables'], factory );
+}
+else if ( typeof exports === 'object' ) {
+    // Node/CommonJS
+    factory( require('jquery'), require('datatables') );
+}
+else if ( jQuery && !jQuery.fn.dataTable.ColVis ) {
+	// Otherwise simply initialise as normal, stopping multiple evaluation
+	factory( jQuery, jQuery.fn.dataTable );
+}
+
+
+})(window, document);
+
