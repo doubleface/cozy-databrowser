@@ -32,11 +32,6 @@ class DataSystem extends CoreClass
         doctypes:
             getall: '/doctypes'
             getsums: '/request/doctypes/getsums/'
-            getallbyorigin : '/request/doctypes/getallbyorigin/'
-        metadoctype:
-            getallbyrelated: '/request/metadoctype/getallbyrelated/'
-        application:
-            getpermissions: '/request/application/getpermissions/'
 
     #common error messages
     ERR_MSG:
@@ -113,48 +108,6 @@ class DataSystem extends CoreClass
 
     getDoctypes: (callback) ->
         @getData @PATH.doctypes.getall, callback
-
-    getPermissions : (callback) ->
-        @getView @PATH.application.getpermissions, callback
-
-    getDoctypesByOrigin : (callback) ->
-        viewCallback = (error, body) ->
-            if error?
-                callback error
-            else
-                newArray = []
-                allObj = {}
-                for couple in body
-                    if couple.key?
-                        if allObj[couple.key[0]]?
-                            allObj[couple.key[0]].push couple.key[1]
-                        else
-                            allObj[couple.key[0]] = []
-                            allObj[couple.key[0]].push couple.key[1]
-                for objName, obj of allObj
-                    newObj = {}
-                    newObj['key'] = objName
-                    newObj['value'] = obj
-                    newArray.push newObj
-                callback null, newArray
-        @getView @PATH.doctypes.getallbyorigin, viewCallback, group: true
-
-
-    getDoctypesByApplication: (callback) ->
-        @getPermissions (error, applications) ->
-            if error?
-                callback error
-            else
-                doctypes = []
-                for app in applications
-                    appName = app.key.toLowerCase()
-                    doctypeName = []
-                    for objName, obj of app.value
-                        doctypeName.push objName.toLowerCase()
-                    doctypes.push
-                        'key' : appName
-                        'value' : doctypeName
-                callback null, doctypes
 
     indexId: (id, aFields, callback = null) ->
         fields = {"fields": aFields}

@@ -7,8 +7,6 @@ module.exports =
         get: index.search
     'search/:id':
         del: index.delete
-    'doctype_meta_infos':
-        get: index.doctype_meta_infos
     'doctype_delete_all' :
         del: index.doctype_delete_all
     'initvalues.js':
