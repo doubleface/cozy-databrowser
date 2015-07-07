@@ -25,10 +25,10 @@ class DataSystem extends CoreClass
     PATH:
         data: '/data/'
         request: '/request/'
-        all: '/dball/'
+        all: '/all/'
         search: '/data/search/'
         index: '/data/index/'
-        destroyAll : '/dball/destroy/'
+        destroyAll : '/all/destroy/'
         doctypes:
             getall: '/doctypes'
             getsums: '/request/doctypes/getsums/'
