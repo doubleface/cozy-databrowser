@@ -44,14 +44,11 @@ module.exports.doctypes = (req, res) ->
         dataSystem.getView targetUrl, callback, group: true
 
     async.parallel menuRequests, (error, results) ->
-        console.log "---------------------------"
-        console.log "results", results
         if error?
             res.send 500, dataSystem.ERR_MSG.retrieveData
         else
             doctypes = []
             sums = {}
-            displayNames = {}
 
             #compact sums
             for sum in results[1]
@@ -71,16 +68,9 @@ module.exports.doctypes = (req, res) ->
                         category.value[index] =
                             doctype: data
                             sum: sums[dataLow] || 0
-                            displayName: displayNames[dataLow] || ""
-                    else
-                        for subdata, index in data.value
-                            subdataLow = subdata.toLowerCase()
-                            data.value[index] =
-                                doctype : subdata
-                                sum : sums[subdataLow] || 0
-                                displayName: displayNames[subdataLow] || ""
+                            displayName: _.capitalize(data)
 
-            res.send _.sortBy(doctypes[0].value, 'doctype')
+            res.send _.sortBy(doctypes[0].value, 'displayName')
 
 #search
 module.exports.search = (req, res) ->
