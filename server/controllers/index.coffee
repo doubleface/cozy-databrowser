@@ -4,6 +4,7 @@ searchEngine = require('../lib/searchEngine')(dataSystem)
 
 #add NPM helpers
 async = require 'async'
+_ = require 'lodash'
 
 module.exports.initvalues = (req, res, next) ->
     async.parallel [
@@ -33,7 +34,6 @@ module.exports.doctype_delete_all = (req, res) ->
 
 #doctypes
 module.exports.doctypes = (req, res) ->
-
       #------PREPARE REQUESTS
     menuRequests = []
     menuRequests.push (callback) -> #0 -> all
@@ -44,6 +44,8 @@ module.exports.doctypes = (req, res) ->
         dataSystem.getView targetUrl, callback, group: true
 
     async.parallel menuRequests, (error, results) ->
+        console.log "---------------------------"
+        console.log "results", results
         if error?
             res.send 500, dataSystem.ERR_MSG.retrieveData
         else
@@ -78,7 +80,7 @@ module.exports.doctypes = (req, res) ->
                                 sum : sums[subdataLow] || 0
                                 displayName: displayNames[subdataLow] || ""
 
-            res.send doctypes[0].value
+            res.send _.sortBy(doctypes[0].value, 'doctype')
 
 #search
 module.exports.search = (req, res) ->
