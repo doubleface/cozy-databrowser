@@ -32,52 +32,6 @@ module.exports.doctype_delete_all = (req, res) ->
     else
         res.send 'Doctype needed'
 
-
-module.exports.doctype_meta_infos = (req, res) ->
-    if req.query and req.query.doctype?
-        doctypeName = req.query.doctype
-        requests = []
-        requests.push (callback) -> #0 -> get all the metadoctypes
-            targetUrl = dataSystem.PATH.metadoctype.getallbyrelated
-            dataSystem.getView targetUrl, callback
-
-        requests.push (callback) -> #1 -> get the permissions
-            targetUrl = dataSystem.PATH.application.getpermissions
-            dataSystem.getView targetUrl, callback
-
-        async.parallel requests, (error, results) ->
-            if error?
-                res.send 500, dataSystem.ERR_MSG.retrieveData
-            else
-                metadoctypesByDoctype = results[0]
-                permissionsByDoctype = results[1]
-                metaInfos =
-                    name : doctypeName
-                    applications : []
-                    displayName : ''
-
-                for metadoctype in metadoctypesByDoctype
-                    key = metadoctype.key.toLowerCase()
-                    value = metadoctype.value
-                    if key is doctypeName.toLowerCase()
-                        metaInfos['metadoctype'] = value
-                        metaInfos['displayName'] = value.displayName || ''
-
-                #add permissions
-                for permissions in permissionsByDoctype
-
-                    #ensure permissions keys are in lowercase
-                    permissionKeys = Object.keys permissions.value
-                    permissionKeys = permissionKeys.map (single) ->
-                        return single.toLowerCase()
-
-                    if doctypeName in permissionKeys
-                        metaInfos['applications'].push permissions.key
-
-                res.send metaInfos
-    else
-        res.send 'nothing'
-
 #doctypes
 module.exports.doctypes = (req, res) ->
       #------PREPARE REQUESTS
@@ -88,10 +42,6 @@ module.exports.doctypes = (req, res) ->
     menuRequests.push (callback) -> #1 -> sums
         targetUrl = dataSystem.PATH.doctypes.getsums
         dataSystem.getView targetUrl, callback, group: true
-
-    menuRequests.push (callback) -> #2 -> metadoctypes
-        targetUrl = dataSystem.PATH.metadoctype.getallbyrelated
-        dataSystem.getView targetUrl, callback
 
     async.parallel menuRequests, (error, results) ->
         console.log "---------------------------"
@@ -106,13 +56,6 @@ module.exports.doctypes = (req, res) ->
             #compact sums
             for sum in results[1]
                 sums[sum.key.toLowerCase()] = sum.value
-            #compact displayNames
-            for metadoctype in results[2]
-                if metadoctype.value.displayName?
-                    key = metadoctype.key.toLowerCase()
-                    displayName = metadoctype.value.displayName
-                    displayNames[key] = displayName
-
 
             #prepare categories
             if results[0].length? and results[0].length > 0
