@@ -64,7 +64,6 @@ class SearchEngine extends CoreClass
                         doc.value.descField = newFields.descField[doctype]
                         displayedName = newFields.displayName[doctype]
                         doc.value.displayName = displayedName
-                        console.log doc
                         if doc.value.password?
                             doc.value.password = '***************'
                         documents.push doc.value
