@@ -173,7 +173,7 @@ module.exports = ResultCollection = (function(superClass) {
 
   ResultCollection.prototype.page = 1;
 
-  ResultCollection.prototype.nbPerPage = 10;
+  ResultCollection.prototype.nbPerPage = 100;
 
   ResultCollection.prototype.url = function() {
     var paramNbPerPage, paramPage, query;
