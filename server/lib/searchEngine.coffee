@@ -59,11 +59,13 @@ class SearchEngine extends CoreClass
                     #if index > 0
                 for doc in results[1]
                     if doc.key? and doc.value?
-                        doctype = doc.value['docType'].toLowerCase()
-                        doc.value['idField'] = newFields.idField[doctype]
-                        doc.value['descField'] = newFields.descField[doctype]
+                        doctype = doc.value.docType.toLowerCase()
+                        doc.value.idField = newFields.idField[doctype]
+                        doc.value.descField = newFields.descField[doctype]
                         displayedName = newFields.displayName[doctype]
-                        doc.value['displayName'] = displayedName
+                        doc.value.displayName = displayedName
+                        if doc.value.password?
+                            doc.value.password = '***************'
                         documents.push doc.value
 
                 res.send(documents)

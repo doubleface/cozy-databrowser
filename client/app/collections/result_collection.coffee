@@ -4,7 +4,7 @@ module.exports = class ResultCollection extends Backbone.Collection
 
     page : 1
 
-    nbPerPage : 10
+    nbPerPage : 100
 
     url: ->
 
