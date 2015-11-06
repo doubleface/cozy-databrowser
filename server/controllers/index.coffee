@@ -6,6 +6,7 @@ searchEngine = require('../lib/searchEngine')(dataSystem)
 async = require 'async'
 _ = require 'lodash'
 
+
 module.exports.initvalues = (req, res, next) ->
     async.parallel [
         (cb) -> dataSystem.getLocale cb
@@ -92,9 +93,10 @@ module.exports.search = (req, res) ->
 
                 #skip & limit + deleted lines params
                 nbDeleted = if deleted? then parseInt(deleted, 10) else 0
-                params['limit'] = nbPerPage
+                params.limit = nbPerPage
                 if page > 1
-                    params['skip'] = (nbPerPage * (page - 1)) - nbDeleted
+                    params.skip = (nbPerPage * (page - 1)) - nbDeleted
+                console.log params
 
             #query param
             if req.query.query? and req.query.query isnt ""

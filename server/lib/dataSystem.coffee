@@ -107,7 +107,18 @@ class DataSystem extends CoreClass
         @postData path, callback, params
 
     getDoctypes: (callback) ->
-        @getData @PATH.doctypes.getall, callback
+        @getData @PATH.doctypes.getall, (err, body) ->
+            return callback err if err
+            console.log body
+
+            hash = {}
+            result = []
+            for doctype in body
+                if not hash[doctype.toLowerCase()]
+                    result.push doctype
+                    hash[doctype.toLowerCase()] = true
+
+            callback null, result
 
     indexId: (id, aFields, callback = null) ->
         fields = {"fields": aFields}

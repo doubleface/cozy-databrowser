@@ -35,10 +35,20 @@ class SearchEngine extends CoreClass
 
                 for doc in results
                     if doc.key? and doc.value?
+<<<<<<< HEAD
                         doctype = doc.value['docType'].toLowerCase()
                         doc.value['idField'] = []
                         doc.value['descField'] = []
                         doc.value['displayName'] = []
+=======
+                        doctype = doc.value.docType.toLowerCase()
+                        doc.value.idField = newFields.idField[doctype]
+                        doc.value.descField = newFields.descField[doctype]
+                        displayedName = newFields.displayName[doctype]
+                        doc.value.displayName = displayedName
+                        if doc.value.password?
+                            doc.value.password = '***************'
+>>>>>>> master
                         documents.push doc.value
 
                 res.send(documents)
