@@ -14,3 +14,8 @@ exports.config =
 
     server:
         path: 'custom-server.js'
+    plugins:
+        babel:
+            ignore: [
+                /^(bower_components|vendor)/
+            ]

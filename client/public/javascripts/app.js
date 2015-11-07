@@ -112,14 +112,16 @@
 require.register("initialize", function(exports, require, module) {
 //import app from "application";
 
+"use strict";
+
 console.log("it is ok!!!!");
+console.log(Promise);
 
 /*
 $ ->
 
     app.initialize()
 */
-
 });
 
 ;
