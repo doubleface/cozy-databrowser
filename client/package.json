@@ -8,20 +8,14 @@
     "type": "git",
     "url": ""
   },
-  "engines": {
-    "node": "0.10.x"
-  },
   "scripts": {
     "start": "brunch watch --server"
   },
   "dependencies": {
     "auto-reload-brunch": "^1.7.8",
     "clean-css-brunch": "^1.7.2",
-    "coffee-script-brunch": "^1.8.1",
     "css-brunch": "^1.7.0",
-    "jade-brunch": "^1.8.1",
     "javascript-brunch": "^1.7.1",
-    "stylus-brunch": "^1.8.1",
     "uglify-js-brunch": "^1.7.8"
   },
   "devDependencies": {
