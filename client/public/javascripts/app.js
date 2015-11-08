@@ -126,7 +126,17 @@ var _viewsMain = require("views/main");
 
 var _viewsMain2 = _interopRequireDefault(_viewsMain);
 
-exports["default"] = {
+var Router = Backbone.Router.extend({
+    routes: {
+        "doctype/:doctype": "onDoctype"
+    },
+    onDoctype: function onDoctype(doctype) {
+        this.app.views.main.setDoctype(doctype);
+    }
+
+});
+
+var app = {
     initialize: function initialize() {
         this.views = {
             menu: new _viewsMenu2["default"](),
@@ -134,8 +144,17 @@ exports["default"] = {
         };
         this.views.menu.$el.appendTo("#container");
         this.views.main.$el.appendTo("#container");
+        this.router = new Router({
+            app: this
+        });
+        this.router.app = this;
+        Backbone.history.start();
     }
 };
+
+var router = new Router();
+
+exports["default"] = app;
 module.exports = exports["default"];
 });
 
@@ -169,12 +188,23 @@ module.exports = exports["default"];
 });
 
 require.register("views/main", function(exports, require, module) {
-"use strict";
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
     value: true
 });
-exports["default"] = Backbone.View.extend({
+function attrToString(attr) {
+    if (!_(attr).isObject()) return attr;else {
+        var result = '<ul>';
+        for (var i in attr) {
+            result += '<li>' + attrToString(attr[i]) + '</li>';
+        }
+        result += '</ul>';
+        return result;
+    }
+}
+
+exports['default'] = Backbone.View.extend({
     attributes: {
         id: "main"
     },
@@ -182,17 +212,41 @@ exports["default"] = Backbone.View.extend({
     emptyTemplate: '<p>Nothing to display at the moment!</p>',
     initialize: function initialize() {
         this.render();
+        this.listenTo(this.collection, "reset", this.render);
     },
     render: function render() {
         var html = "";
         if (this.collection.length === 0) {
             html = this.emptyTemplate;
+        } else {
+            html = '<table><thead><tr>';
+            var model = this.collection.at(0).toJSON();
+            for (var i in model) {
+                html += '<th>' + i + '</th>';
+            }
+            html += '</tr></thead><tbody>';
+            this.collection.forEach(function (model) {
+                html += '<tr>';
+                var json = model.toJSON();
+                for (var i in json) {
+                    html += '<td>' + attrToString(json[i]) + '</td>';
+                }
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
         }
         this.$el.empty().html(html);
         return this;
+    },
+    setDoctype: function setDoctype(doctype) {
+        this.doctype = doctype;
+        this.collection.fetch({
+            reset: true,
+            url: "search?page=1&nbperpage=100&range=all&doctypes[]=" + doctype
+        });
     }
 });
-module.exports = exports["default"];
+module.exports = exports['default'];
 });
 
 require.register("views/menu", function(exports, require, module) {
@@ -216,7 +270,7 @@ exports["default"] = Backbone.View.extend({
     initialize: function initialize() {
         this.collection.fetch().done(this.render.bind(this));
     },
-    itemTemplate: _.template('<li><%= doctype %> (<%= sum %>)</li>'),
+    itemTemplate: _.template('<li><a href="#doctype/<%= doctype %>"><%= doctype %> (<%= sum %>)</a></li>'),
     render: function render() {
         var _this = this;
 

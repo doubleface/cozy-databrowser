@@ -8,7 +8,7 @@ export default Backbone.View.extend({
     initialize() {
         this.collection.fetch().done(this.render.bind(this));
     },
-    itemTemplate: _.template('<li><%= doctype %> (<%= sum %>)</li>'),
+    itemTemplate: _.template('<li><a href="#doctype/<%= doctype %>"><%= doctype %> (<%= sum %>)</a></li>'),
     render() {
         var html = "<ul>";
         this.collection.forEach((model) => {
