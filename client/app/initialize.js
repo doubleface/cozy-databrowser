@@ -1,10 +1,5 @@
-//import app from "application";
+import app from "application";
 
-console.log("it is ok!!!!");
-console.log(Promise);
+window.app = app;
 
-/*
-$ ->
-
-    app.initialize()
-*/
+$(() => app.initialize());

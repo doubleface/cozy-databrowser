@@ -109,20 +109,128 @@
   require._cache = cache;
   globals.require = require;
 })();
-require.register("initialize", function(exports, require, module) {
-//import app from "application";
-
+require.register("application", function(exports, require, module) {
 "use strict";
 
-console.log("it is ok!!!!");
-console.log(Promise);
-
-/*
-$ ->
-
-    app.initialize()
-*/
+Object.defineProperty(exports, "__esModule", {
+    value: true
 });
 
-;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _viewsMenu = require("views/menu");
+
+var _viewsMenu2 = _interopRequireDefault(_viewsMenu);
+
+var _viewsMain = require("views/main");
+
+var _viewsMain2 = _interopRequireDefault(_viewsMain);
+
+exports["default"] = {
+    initialize: function initialize() {
+        this.views = {
+            menu: new _viewsMenu2["default"](),
+            main: new _viewsMain2["default"]()
+        };
+        this.views.menu.$el.appendTo("#container");
+        this.views.main.$el.appendTo("#container");
+    }
+};
+module.exports = exports["default"];
+});
+
+;require.register("initialize", function(exports, require, module) {
+"use strict";
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _application = require("application");
+
+var _application2 = _interopRequireDefault(_application);
+
+window.app = _application2["default"];
+
+$(function () {
+  return _application2["default"].initialize();
+});
+});
+
+require.register("models/menu", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports["default"] = Backbone.Collection.extend({
+    model: Backbone.Model,
+    url: "/docTypes"
+});
+module.exports = exports["default"];
+});
+
+require.register("views/main", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports["default"] = Backbone.View.extend({
+    attributes: {
+        id: "main"
+    },
+    collection: new Backbone.Collection(),
+    emptyTemplate: '<p>Nothing to display at the moment!</p>',
+    initialize: function initialize() {
+        this.render();
+    },
+    render: function render() {
+        var html = "";
+        if (this.collection.length === 0) {
+            html = this.emptyTemplate;
+        }
+        this.$el.empty().html(html);
+        return this;
+    }
+});
+module.exports = exports["default"];
+});
+
+require.register("views/menu", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _modelsMenu = require("models/menu");
+
+var _modelsMenu2 = _interopRequireDefault(_modelsMenu);
+
+exports["default"] = Backbone.View.extend({
+    attributes: {
+        id: "menu"
+    },
+    collection: new _modelsMenu2["default"](),
+    initialize: function initialize() {
+        this.collection.fetch().done(this.render.bind(this));
+    },
+    itemTemplate: _.template('<li><%= doctype %> (<%= sum %>)</li>'),
+    render: function render() {
+        var _this = this;
+
+        var html = "<ul>";
+        this.collection.forEach(function (model) {
+            html += _this.itemTemplate(model.toJSON());
+        }, this);
+        html += "</ul>";
+        this.$el.empty().html(html);
+        return this;
+    }
+});
+module.exports = exports["default"];
+});
+
+
 //# sourceMappingURL=app.js.map
