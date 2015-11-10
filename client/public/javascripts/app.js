@@ -182,7 +182,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = Backbone.Collection.extend({
     model: Backbone.Model,
-    url: "docTypes"
+    url: "doctypes"
 });
 module.exports = exports["default"];
 });
