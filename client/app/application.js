@@ -8,7 +8,6 @@ var Router = Backbone.Router.extend({
     onDoctype(doctype){
         this.app.views.main.setDoctype(doctype);
     }
-
 });
 
 var app = {
@@ -24,6 +23,12 @@ var app = {
         });
         this.router.app = this;
         Backbone.history.start();
+
+        $("[formaction='drawer/toggle']").on("click", () => {
+            const $aside = $("aside")
+            const isExpanded = $aside.attr("aria-expanded") === "true" ? "false" : "true";
+            $aside.attr("aria-expanded", isExpanded);
+        });
     }
 }
 
