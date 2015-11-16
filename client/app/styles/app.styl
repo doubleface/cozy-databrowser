@@ -4,17 +4,20 @@
     @extend $app-2panes-toolbar
 
     > aside
-    [role=toolbar] > div
-    [role=contentinfo]
-        padding .5em
-
-    > aside
-        background-color red
+        padded()
+        background-color grey-01
+        border-right 1px solid grey-03
+        ul
+            reset()
         li
+            padding 3px
             list-style-type none
+        a
+            color black
+            text-decoration none
 
     [role=toolbar]
-        background-color green
+        background-color white
         display flex
 
         [formaction="drawer/toggle"]
@@ -22,4 +25,4 @@
             flex-basis 2.25em
 
     [role=contentinfo]
-        background-color blue
+        background-color white

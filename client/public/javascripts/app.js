@@ -133,7 +133,6 @@ var Router = Backbone.Router.extend({
     onDoctype: function onDoctype(doctype) {
         this.app.views.main.setDoctype(doctype);
     }
-
 });
 
 var app = {
@@ -149,6 +148,12 @@ var app = {
         });
         this.router.app = this;
         Backbone.history.start();
+
+        $("[formaction='drawer/toggle']").on("click", function () {
+            var $aside = $("aside");
+            var isExpanded = $aside.attr("aria-expanded") === "true" ? "false" : "true";
+            $aside.attr("aria-expanded", isExpanded);
+        });
     }
 };
 
