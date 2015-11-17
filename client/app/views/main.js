@@ -24,7 +24,7 @@ export default Backbone.View.extend({
         const json = model.toJSON();
         for (let i in json) {
             if (_(json[i]).isObject()) continue
-            if (i === "password") continue;
+            if (i === "password") result[i] = "***";
             if (i === "_id") continue;
             result[i] = json[i];
         }
