@@ -597,6 +597,7 @@ input[type=password] {
 @media (max-width: 50rem) {
 }
 [role=application] > aside {
+  overflow-y: auto;
   padding-top: 1em;
   padding-bottom: 1em;
   padding-left: 1em;
@@ -662,6 +663,7 @@ input[type=password] {
 }
 [role=application] [role=contentinfo] {
   background-color: #fff;
+  overflow-x: auto !important;
 }
 
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1090,6 +1092,7 @@ th {
 }
 
 [role=application] > aside {
+  overflow-y: auto;
   background-color: grey-01;
   border-right: 1px solid grey-03;
 }
@@ -1563,5 +1566,3 @@ th {
   border-bottom-width: 0;
 }
 
-
-/*# sourceMappingURL=app.css.map*/
