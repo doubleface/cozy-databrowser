@@ -19,21 +19,33 @@ export default Backbone.View.extend({
         this.render();
         this.listenTo(this.collection, "reset", this.render);
     },
+    serializeModel(model) {
+        var result = {};
+        const json = model.toJSON();
+        for (let i in json) {
+            if (_(json[i]).isObject()) continue
+            if (i === "password") continue;
+            if (i === "_id") continue;
+            result[i] = json[i];
+        }
+
+        return result;
+    },
     render() {
         var html = "";
         if (this.collection.length === 0) {
             html = this.emptyTemplate;
         } else {
             html = '<table><thead><tr>';
-            var model = this.collection.at(0).toJSON();
-            for (var i in model) {
+            const model = this.serializeModel(this.collection.at(0));
+            for (let i in model) {
                 html+= `<th>${i}</th>`;
             }
             html+= '</tr></thead><tbody>';
             this.collection.forEach(model => {
                 html+= '<tr>';
-                var json = model.toJSON();
-                for (var i in json) {
+                const json = this.serializeModel(model);
+                for (let i in json) {
                     html+= `<td>${attrToString(json[i])}</td>`;
                 }
                 html+= '</tr>';
