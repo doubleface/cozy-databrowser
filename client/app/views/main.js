@@ -37,16 +37,20 @@ export default Backbone.View.extend({
             html = this.emptyTemplate;
         } else {
             html = '<table><thead><tr>';
-            const model = this.serializeModel(this.collection.at(0));
-            for (let i in model) {
+            this.columnList = this.serializeModel(this.collection.at(0));
+            for (let i in this.columnList) {
                 html+= `<th>${i}</th>`;
             }
             html+= '</tr></thead><tbody>';
             this.collection.forEach(model => {
                 html+= '<tr>';
                 const json = this.serializeModel(model);
-                for (let i in json) {
-                    html+= `<td>${attrToString(json[i])}</td>`;
+                for (let i in this.columnList) {
+                    if (json[i] !== undefined) {
+                        html+= `<td>${attrToString(json[i])}</td>`;
+                    } else {
+                        html+= `<td>NA</td>`;
+                    }
                 }
                 html+= '</tr>';
             });
