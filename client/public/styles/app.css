@@ -617,6 +617,9 @@ input[type=password] {
   color: #000;
   text-decoration: none;
 }
+[role=application] > aside a.selected {
+  font-weight: bold;
+}
 [role=application] [role=toolbar] {
   background-color: #fff;
   display: flex;

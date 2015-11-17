@@ -7,6 +7,7 @@ var Router = Backbone.Router.extend({
     },
     onDoctype(doctype){
         this.app.views.main.setDoctype(doctype);
+        this.app.views.menu.select(doctype);
     }
 });
 

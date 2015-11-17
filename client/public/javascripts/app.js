@@ -132,6 +132,7 @@ var Router = Backbone.Router.extend({
     },
     onDoctype: function onDoctype(doctype) {
         this.app.views.main.setDoctype(doctype);
+        this.app.views.menu.select(doctype);
     }
 });
 
@@ -271,17 +272,24 @@ exports["default"] = Backbone.View.extend({
     initialize: function initialize() {
         this.collection.fetch().done(this.render.bind(this));
     },
-    itemTemplate: _.template('<li><a href="#doctype/<%= doctype %>"><%= doctype %> (<%= sum %>)</a></li>'),
+    itemTemplate: _.template('<li><a class="<%= sclass %>" href="#doctype/<%= doctype %>"><%= doctype %> (<%= sum %>)</a></li>'),
     render: function render() {
         var _this = this;
 
         var html = "<ul>";
         this.collection.forEach(function (model) {
-            html += _this.itemTemplate(model.toJSON());
+            var json = model.toJSON();
+            json.sclass = json.doctype === _this.selected ? "selected" : "";
+            html += _this.itemTemplate(json);
         }, this);
         html += "</ul>";
         this.$el.empty().html(html);
         return this;
+    },
+    select: function select(doctype) {
+        this.selected = doctype;
+        this.$("a").removeClass("selected");
+        this.$("a[href='#doctype/" + doctype + "']").addClass("selected");
     }
 });
 module.exports = exports["default"];

@@ -6,14 +6,21 @@ export default Backbone.View.extend({
     initialize() {
         this.collection.fetch().done(this.render.bind(this));
     },
-    itemTemplate: _.template('<li><a href="#doctype/<%= doctype %>"><%= doctype %> (<%= sum %>)</a></li>'),
+    itemTemplate: _.template('<li><a class="<%= sclass %>" href="#doctype/<%= doctype %>"><%= doctype %> (<%= sum %>)</a></li>'),
     render() {
         var html = "<ul>";
         this.collection.forEach((model) => {
-            html+= this.itemTemplate(model.toJSON());
+            var json = model.toJSON();
+            json.sclass = json.doctype === this.selected ? "selected" : "";
+            html+= this.itemTemplate(json);
         }, this);
         html+= "</ul>";
         this.$el.empty().html(html);
         return this;
+    },
+    select(doctype) {
+        this.selected = doctype;
+        this.$("a").removeClass("selected");
+        this.$("a[href='#doctype/" + doctype + "']").addClass("selected");
     }
 });
