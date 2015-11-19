@@ -14,11 +14,15 @@
   "dependencies": {
     "auto-reload-brunch": "^1.7.8",
     "babel-brunch": "^5.1.2",
+    "backbone": "^1.2.3",
+    "backbone.marionette": "^2.4.4",
     "cozy-ui": "git+https://github.com/cozy/cozy-ui.git",
     "css-brunch": "^1.7.0",
     "javascript-brunch": "^1.7.1",
+    "jquery": "^2.1.4",
     "stylus-brunch": "^1.8.1",
-    "uglify-js-brunch": "^1.7.8"
+    "uglify-js-brunch": "^1.7.8",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "express": "^4.12.3",

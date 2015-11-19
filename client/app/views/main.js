@@ -1,15 +1,14 @@
 function attrToString(attr) {
     if (!_(attr).isObject()) return attr;
     else {
-        var result = '<ul>';
-        for (var i in attr) {
+        let result = '<ul>';
+        for (let i in attr) {
             result+= `<li>${attrToString(attr[i])}</li>`;
         }
         result+= '</ul>';
         return result;
     }
 }
-
 
 export default Backbone.View.extend({
     el: "[role='contentinfo']",
@@ -20,7 +19,7 @@ export default Backbone.View.extend({
         this.listenTo(this.collection, "reset", this.render);
     },
     serializeModel(model) {
-        var result = {};
+        const result = {};
         const json = model.toJSON();
         for (let i in json) {
             if (_(json[i]).isObject()) continue
@@ -32,7 +31,7 @@ export default Backbone.View.extend({
         return result;
     },
     render() {
-        var html = "";
+        let html = "";
         if (this.collection.length === 0) {
             html = this.emptyTemplate;
         } else {
