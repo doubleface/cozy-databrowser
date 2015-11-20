@@ -14,7 +14,6 @@
   "dependencies": {
     "auto-reload-brunch": "^1.7.8",
     "babel-brunch": "^5.1.2",
-    "clean-css-brunch": "^1.7.2",
     "css-brunch": "^1.7.0",
     "javascript-brunch": "^1.7.1",
     "uglify-js-brunch": "^1.7.8"
