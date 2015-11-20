@@ -1,9 +1,7 @@
 import Collection from "models/menu";
 
 export default Backbone.View.extend({
-    attributes: {
-        id: "menu"
-    },
+    el: "aside",
     collection: new Collection(),
     initialize() {
         this.collection.fetch().done(this.render.bind(this));

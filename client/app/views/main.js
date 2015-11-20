@@ -12,9 +12,7 @@ function attrToString(attr) {
 
 
 export default Backbone.View.extend({
-    attributes: {
-        id: "main"
-    },
+    el: "[role='contentinfo']",
     collection: new Backbone.Collection(),
     emptyTemplate: '<p>Nothing to display at the moment!</p>',
     initialize() {

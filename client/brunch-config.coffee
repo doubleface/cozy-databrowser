@@ -12,10 +12,17 @@ exports.config =
                     'vendor/scripts/polyglot.js'
                 ]
 
+        stylesheets:
+            joinTo: 'styles/app.css'
+
     server:
         path: 'custom-server.js'
     plugins:
         babel:
             ignore: [
                 /^(bower_components|vendor)/
+            ]
+        stylus:
+            plugins: [
+                'cozy-ui/lib/stylus'
             ]

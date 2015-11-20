@@ -205,9 +205,7 @@ function attrToString(attr) {
 }
 
 exports['default'] = Backbone.View.extend({
-    attributes: {
-        id: "main"
-    },
+    el: "[role='contentinfo']",
     collection: new Backbone.Collection(),
     emptyTemplate: '<p>Nothing to display at the moment!</p>',
     initialize: function initialize() {
@@ -263,9 +261,7 @@ var _modelsMenu = require("models/menu");
 var _modelsMenu2 = _interopRequireDefault(_modelsMenu);
 
 exports["default"] = Backbone.View.extend({
-    attributes: {
-        id: "menu"
-    },
+    el: "aside",
     collection: new _modelsMenu2["default"](),
     initialize: function initialize() {
         this.collection.fetch().done(this.render.bind(this));
