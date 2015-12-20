@@ -12,7 +12,6 @@
     "start": "brunch watch --server"
   },
   "dependencies": {
-    "auto-reload-brunch": "^1.7.8",
     "babel-brunch": "^6.0.0",
     "backbone": "^1.2.3",
     "backbone.marionette": "^2.4.4",
