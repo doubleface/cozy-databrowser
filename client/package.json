@@ -12,11 +12,11 @@
     "start": "brunch watch --server"
   },
   "dependencies": {
-    "babel-brunch": "^6.0.0",
+    "babel-brunch": "^5.1.2",
     "backbone": "^1.2.3",
-    "backbone.marionette": "^2.4.4",
-    "cozy-ui": "git+https://github.com/cozy/cozy-ui.git",
+    "cozy-ui": "^0.1.4",
     "css-brunch": "^1.7.0",
+    "datatables": "^1.10.9",
     "javascript-brunch": "^1.7.1",
     "jquery": "^2.1.4",
     "stylus-brunch": "^1.8.1",
