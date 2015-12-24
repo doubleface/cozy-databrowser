@@ -1,1 +1,291 @@
-!function(){"use strict";var e="undefined"==typeof window?global:window;if("function"!=typeof e.require){var t={},i={},n={},r={}.hasOwnProperty,o="components/",s=function(e,t){var i=0;t&&(0===t.indexOf(o)&&(i=o.length),t.indexOf("/",i)>0&&(t=t.substring(i,t.indexOf("/",i))));var r=n[e+"/index.js"]||n[t+"/deps/"+e+"/index.js"];return r?o+r.substring(0,r.length-".js".length):e},l=/^\.\.?(\/|$)/,a=function(e,t){for(var i,n=[],r=(l.test(t)?e+"/"+t:t).split("/"),o=0,s=r.length;s>o;o++)i=r[o],".."===i?n.pop():"."!==i&&""!==i&&n.push(i);return n.join("/")},c=function(e){return e.split("/").slice(0,-1).join("/")},u=function(t){return function(i){var n=a(c(t),i);return e.require(n,t)}},d=function(e,t){var n={id:e,exports:{}};return i[e]=n,t(n.exports,u(e),n),n.exports},f=function(e,n){var o=a(e,".");if(null==n&&(n="/"),o=s(e,n),r.call(i,o))return i[o].exports;if(r.call(t,o))return d(o,t[o]);var l=a(o,"./index");if(r.call(i,l))return i[l].exports;if(r.call(t,l))return d(l,t[l]);throw new Error('Cannot find module "'+e+'" from "'+n+'"')};f.alias=function(e,t){n[t]=e},f.register=f.define=function(e,i){if("object"==typeof e)for(var n in e)r.call(e,n)&&(t[n]=e[n]);else t[e]=i},f.list=function(){var e=[];for(var i in t)r.call(t,i)&&e.push(i);return e},f.brunch=!0,f._cache=i,e.require=f}}(),require.register("application",function(e,t,i){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(e,"__esModule",{value:!0});var r=t("views/menu"),o=n(r),s=t("views/main"),l=n(s),a=Backbone.Router.extend({routes:{"doctype/:doctype":"onDoctype"},onDoctype:function(e){this.app.views.main.setDoctype(e),this.app.views.menu.select(e)}}),c={initialize:function(){this.views={menu:new o["default"],main:new l["default"]},this.views.menu.$el.appendTo("#container"),this.views.main.$el.appendTo("#container"),this.router=new a({app:this}),this.router.app=this,Backbone.history.start(),$("[formaction='drawer/toggle']").on("click",function(){var e=$("aside"),t="true"===e.attr("aria-expanded")?"false":"true";e.attr("aria-expanded",t)})}};new a;e["default"]=c}),require.register("initialize",function(e,t,i){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}var r=t("application"),o=n(r);window.app=o["default"],$(function(){return o["default"].initialize()})}),require.register("models/menu",function(e,t,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e["default"]=Backbone.Collection.extend({model:Backbone.Model,url:"doctypes"})}),require.register("views/main",function(e,t,i){"use strict";function n(e){if(_(e).isObject()){var t="<ul>";for(var i in e)t+="<li>"+n(e[i])+"</li>";return t+="</ul>"}return e}Object.defineProperty(e,"__esModule",{value:!0}),e["default"]=Backbone.View.extend({el:"[role='contentinfo']",collection:new Backbone.Collection,emptyTemplate:"<p>Nothing to display at the moment!</p>",initialize:function(){this.render(),this.listenTo(this.collection,"reset",this.render)},serializeModel:function(e){var t={},i=e.toJSON();for(var n in i)_(i[n]).isObject()||("password"===n&&(t[n]="***"),"_id"!==n&&(t[n]=i[n]));return t},render:function(){var e=this,t="";if(0===this.collection.length)t=this.emptyTemplate;else{t="<table><thead><tr>",this.columnList=this.serializeModel(this.collection.at(0));for(var i in this.columnList)t+="<th>"+i+"</th>";t+="</tr></thead><tbody>",this.collection.forEach(function(i){t+="<tr>";var r=e.serializeModel(i);for(var o in e.columnList)t+=void 0!==r[o]?"<td>"+n(r[o])+"</td>":"<td>NA</td>";t+="</tr>"}),t+="</tbody></table>"}return this.$el.empty().html(t),this},setDoctype:function(e){this.doctype=e,this.collection.fetch({reset:!0,url:"search?page=1&nbperpage=100&range=all&doctypes[]="+e})}})}),require.register("views/menu",function(e,t,i){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(e,"__esModule",{value:!0});var r=t("models/menu"),o=n(r);e["default"]=Backbone.View.extend({el:"aside",collection:new o["default"],initialize:function(){this.collection.fetch().done(this.render.bind(this))},itemTemplate:_.template('<li><a class="<%= sclass %>" href="#doctype/<%= doctype %>"><%= doctype %> (<%= sum %>)</a></li>'),render:function(){var e=this,t="<ul>";return this.collection.forEach(function(i){var n=i.toJSON();n.sclass=n.doctype===e.selected?"selected":"",t+=e.itemTemplate(n)},this),t+="</ul>",this.$el.empty().html(t),this},select:function(e){this.selected=e,this.$("a").removeClass("selected"),this.$("a[href='#doctype/"+e+"']").addClass("selected")}})});
+(function() {
+  'use strict';
+
+  var globals = typeof window === 'undefined' ? global : window;
+  if (typeof globals.require === 'function') return;
+
+  var modules = {};
+  var cache = {};
+  var aliases = {};
+  var has = ({}).hasOwnProperty;
+
+  var endsWith = function(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+  };
+
+  var _cmp = 'components/';
+  var unalias = function(alias, loaderPath) {
+    var start = 0;
+    if (loaderPath) {
+      if (loaderPath.indexOf(_cmp) === 0) {
+        start = _cmp.length;
+      }
+      if (loaderPath.indexOf('/', start) > 0) {
+        loaderPath = loaderPath.substring(start, loaderPath.indexOf('/', start));
+      }
+    }
+    var result = aliases[alias + '/index.js'] || aliases[loaderPath + '/deps/' + alias + '/index.js'];
+    if (result) {
+      return _cmp + result.substring(0, result.length - '.js'.length);
+    }
+    return alias;
+  };
+
+  var _reg = /^\.\.?(\/|$)/;
+  var expand = function(root, name) {
+    var results = [], part;
+    var parts = (_reg.test(name) ? root + '/' + name : name).split('/');
+    for (var i = 0, length = parts.length; i < length; i++) {
+      part = parts[i];
+      if (part === '..') {
+        results.pop();
+      } else if (part !== '.' && part !== '') {
+        results.push(part);
+      }
+    }
+    return results.join('/');
+  };
+
+  var dirname = function(path) {
+    return path.split('/').slice(0, -1).join('/');
+  };
+
+  var localRequire = function(path) {
+    return function expanded(name) {
+      var absolute = expand(dirname(path), name);
+      return globals.require(absolute, path);
+    };
+  };
+
+  var initModule = function(name, definition) {
+    var module = {id: name, exports: {}};
+    cache[name] = module;
+    definition(module.exports, localRequire(name), module);
+    return module.exports;
+  };
+
+  var require = function(name, loaderPath) {
+    var path = expand(name, '.');
+    if (loaderPath == null) loaderPath = '/';
+    path = unalias(name, loaderPath);
+
+    if (has.call(cache, path)) return cache[path].exports;
+    if (has.call(modules, path)) return initModule(path, modules[path]);
+
+    var dirIndex = expand(path, './index');
+    if (has.call(cache, dirIndex)) return cache[dirIndex].exports;
+    if (has.call(modules, dirIndex)) return initModule(dirIndex, modules[dirIndex]);
+
+    throw new Error('Cannot find module "' + name + '" from '+ '"' + loaderPath + '"');
+  };
+
+  require.alias = function(from, to) {
+    aliases[to] = from;
+  };
+
+  require.register = require.define = function(bundle, fn) {
+    if (typeof bundle === 'object') {
+      for (var key in bundle) {
+        if (has.call(bundle, key)) {
+          modules[key] = bundle[key];
+        }
+      }
+    } else {
+      modules[bundle] = fn;
+    }
+  };
+
+  require.list = function() {
+    var result = [];
+    for (var item in modules) {
+      if (has.call(modules, item)) {
+        result.push(item);
+      }
+    }
+    return result;
+  };
+
+  require.brunch = true;
+  require._cache = cache;
+  globals.require = require;
+})();
+require.register("application", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _viewsMenu = require("views/menu");
+
+var _viewsMenu2 = _interopRequireDefault(_viewsMenu);
+
+var _viewsMain = require("views/main");
+
+var _viewsMain2 = _interopRequireDefault(_viewsMain);
+
+var Router = Backbone.Router.extend({
+    routes: {
+        "doctype/:doctype": "onDoctype"
+    },
+    onDoctype: function onDoctype(doctype) {
+        this.app.views.main.setDoctype(doctype);
+        this.app.views.menu.select(doctype);
+    }
+});
+
+var app = {
+    initialize: function initialize() {
+        this.views = {
+            menu: new _viewsMenu2["default"](),
+            main: new _viewsMain2["default"]()
+        };
+        this.views.menu.$el.appendTo("#container");
+        this.views.main.$el.appendTo("#container");
+        this.router = new Router({
+            app: this
+        });
+        this.router.app = this;
+        Backbone.history.start();
+
+        $("[formaction='drawer/toggle']").on("click", function () {
+            var $aside = $("aside");
+            var isExpanded = $aside.attr("aria-expanded") === "true" ? "false" : "true";
+            $aside.attr("aria-expanded", isExpanded);
+        });
+    }
+};
+
+var router = new Router();
+
+exports["default"] = app;
+module.exports = exports["default"];
+});
+
+;require.register("initialize", function(exports, require, module) {
+"use strict";
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _application = require("application");
+
+var _application2 = _interopRequireDefault(_application);
+
+window.app = _application2["default"];
+
+$(function () {
+  return _application2["default"].initialize();
+});
+});
+
+require.register("models/menu", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports["default"] = Backbone.Collection.extend({
+    model: Backbone.Model,
+    url: "doctypes"
+});
+module.exports = exports["default"];
+});
+
+require.register("views/main", function(exports, require, module) {
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+function attrToString(attr) {
+    if (!_(attr).isObject()) return attr;else {
+        var result = '<ul>';
+        for (var i in attr) {
+            result += '<li>' + attrToString(attr[i]) + '</li>';
+        }
+        result += '</ul>';
+        return result;
+    }
+}
+
+exports['default'] = Backbone.View.extend({
+    el: "[role='contentinfo']",
+    collection: new Backbone.Collection(),
+    initialize: function initialize() {
+        this.$el.html('<table></table>');
+        this.listenTo(this.collection, "reset", this.render);
+    },
+    getCols: function getCols(json) {
+        if (json.length === 0) return [];
+        return Object.keys(json[0]).map(function (col) {
+            return { data: col };
+        });
+    },
+    render: function render() {
+        var json = this.collection.toJSON();
+        var config = {
+            destroy: true,
+            data: json,
+            columns: this.getCols(json)
+        };
+        console.log(config);
+        //this.$("table").DataTable(config);
+        return this;
+    },
+    setDoctype: function setDoctype(doctype) {
+        this.doctype = doctype;
+        this.collection.fetch({
+            reset: true,
+            url: "search?range=all&doctypes[]=" + doctype
+        });
+    }
+});
+module.exports = exports['default'];
+});
+
+require.register("views/menu", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _modelsMenu = require("models/menu");
+
+var _modelsMenu2 = _interopRequireDefault(_modelsMenu);
+
+exports["default"] = Backbone.View.extend({
+    el: "aside",
+    collection: new _modelsMenu2["default"](),
+    initialize: function initialize() {
+        this.collection.fetch().done(this.render.bind(this));
+    },
+    itemTemplate: _.template('<li><a class="<%= sclass %>" href="#doctype/<%= doctype %>"><%= doctype %> (<%= sum %>)</a></li>'),
+    render: function render() {
+        var _this = this;
+
+        var html = "<ul>";
+        this.collection.forEach(function (model) {
+            var json = model.toJSON();
+            json.sclass = json.doctype === _this.selected ? "selected" : "";
+            html += _this.itemTemplate(json);
+        }, this);
+        html += "</ul>";
+        this.$el.empty().html(html);
+        return this;
+    },
+    select: function select(doctype) {
+        this.selected = doctype;
+        this.$("a").removeClass("selected");
+        this.$("a[href='#doctype/" + doctype + "']").addClass("selected");
+    }
+});
+module.exports = exports["default"];
+});
+
+
+//# sourceMappingURL=app.js.map
