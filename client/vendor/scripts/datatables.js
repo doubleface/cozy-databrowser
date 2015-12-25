@@ -1,1 +1,1 @@
-../../node_modules/datatables/media/js/jquery.dataTables.js
+../../node_modules/datatables.net/js/jquery.dataTables.js

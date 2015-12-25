@@ -621,6 +621,10 @@ input[type=password] {
 [role=application] > aside a.selected {
   font-weight: bold;
 }
+[role=application] .dataTables_filter,
+[role=application] .dataTables_info {
+  text-align: center;
+}
 [role=application] table {
   empty-cells: show;
   border: 1px solid #cbcbcb;
@@ -1533,6 +1537,10 @@ th {
   padding: 0;
 }
 
+[role=application] .dataTables_filter,
+[role=application] .dataTables_info {
+  text-align: center;
+}
 [role=application] table {
   empty-cells: show;
   border: 1px solid #cbcbcb;
@@ -1566,5 +1574,3 @@ th {
   border-bottom-width: 0;
 }
 
-
-/*# sourceMappingURL=app.css.map*/

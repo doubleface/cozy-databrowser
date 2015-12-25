@@ -16,7 +16,7 @@
     "backbone": "^1.2.3",
     "cozy-ui": "^0.1.4",
     "css-brunch": "^1.7.0",
-    "datatables": "^1.10.9",
+    "datatables.net": "^1.10.10",
     "javascript-brunch": "^1.7.1",
     "jquery": "^2.1.4",
     "stylus-brunch": "^1.8.1",
