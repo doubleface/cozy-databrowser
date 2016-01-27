@@ -557,25 +557,18 @@ input[type=password] {
   height: 100vh;
 }
 [role=application] main,
-[role=application] > aside {
-  display: flex;
-  flex-direction: column;
-}
-[role=application] main,
-[role=application] main > [role=contentinfo] {
+[role=application] [role=contentinfo] {
   flex: 1;
   height: auto;
   overflow-x: hidden;
   overflow-y: auto;
 }
-@media (min-width: 64rem) {
-  [role=application] [formaction="drawer/toggle"] {
-    display: none !important;
-    visibility: hidden;
-  }
+[role=application] main {
+  display: flex;
+  flex-direction: column;
 }
 @media (max-width: 63.9375rem) {
-  [role=application] > aside {
+  [role=application] .drawer {
     z-index: 1;
     position: absolute;
     top: 0;
@@ -584,7 +577,7 @@ input[type=password] {
     height: 100vh;
     padding-right: 4.58333em;
   }
-  [role=application] > aside[aria-expanded=true] + main {
+  [role=application] .drawer[aria-expanded=true] + main {
     transform: translateX(calc(100vw - 4.58333em));
   }
   [role=application] main {
@@ -664,10 +657,16 @@ input[type=password] {
 [role=application] [role=toolbar] [formaction="drawer/toggle"] {
   padding: 0;
   flex-basis: 2.25em;
+  display: none;
 }
 [role=application] [role=contentinfo] {
   background-color: #fff;
   overflow-x: auto !important;
+}
+@media (max-width: 63.9375rem) {
+  [role=application] [role=toolbar] [formaction="drawer/toggle"] {
+    display: block;
+  }
 }
 
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
