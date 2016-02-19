@@ -14,7 +14,6 @@ export default Backbone.View.extend({
     el: "[role='contentinfo']",
     collection: new Backbone.Collection(),
     initialize() {
-        this.$el.html('<table></table>');
         this.listenTo(this.collection, "reset", this.render);
     },
     getCols(json) {
@@ -30,6 +29,7 @@ export default Backbone.View.extend({
         return result;
     },
     render() {
+        this.$el.empty().html('<table></table>');
         var json = this.collection.toJSON();
         var config = {
             destroy: true,
