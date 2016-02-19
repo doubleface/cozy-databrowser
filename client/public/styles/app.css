@@ -459,6 +459,38 @@ body {
  *
  * This file contains icons coded in data:uri
  */
+@-moz-keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+@-webkit-keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+@-o-keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
 /*
  * PALETTE / COLORS
  * ================
@@ -557,18 +589,25 @@ input[type=password] {
   height: 100vh;
 }
 [role=application] main,
-[role=application] [role=contentinfo] {
+[role=application] > aside {
+  display: flex;
+  flex-direction: column;
+}
+[role=application] main,
+[role=application] main > [role=contentinfo] {
   flex: 1;
   height: auto;
   overflow-x: hidden;
   overflow-y: auto;
 }
-[role=application] main {
-  display: flex;
-  flex-direction: column;
+@media (min-width: 64rem) {
+  [role=application] [formaction="drawer/toggle"] {
+    display: none !important;
+    visibility: hidden;
+  }
 }
 @media (max-width: 63.9375rem) {
-  [role=application] .drawer {
+  [role=application] > aside {
     z-index: 1;
     position: absolute;
     top: 0;
@@ -577,7 +616,7 @@ input[type=password] {
     height: 100vh;
     padding-right: 4.58333em;
   }
-  [role=application] .drawer[aria-expanded=true] + main {
+  [role=application] > aside[aria-expanded=true] + main {
     transform: translateX(calc(100vw - 4.58333em));
   }
   [role=application] main {
