@@ -689,6 +689,20 @@ input[type=password] {
 [role=application] tbody > tr:last-child > td {
   border-bottom-width: 0;
 }
+[role=application] th {
+  background-repeat: no-repeat;
+  background-position: center right;
+  cursor: pointer;
+}
+[role=application] th.sorting {
+  background-image: url("../images/sort_both.png");
+}
+[role=application] th.sorting_asc {
+  background-image: url("../images/sort_asc.png");
+}
+[role=application] th.sorting_desc {
+  background-image: url("../images/sort_desc.png");
+}
 [role=application] [role=toolbar] {
   background-color: #fff;
   display: flex;
@@ -1610,5 +1624,19 @@ th {
 }
 [role=application] tbody > tr:last-child > td {
   border-bottom-width: 0;
+}
+[role=application] th {
+  background-repeat: no-repeat;
+  background-position: center right;
+  cursor: pointer;
+}
+[role=application] th.sorting {
+  background-image: url("../images/sort_both.png");
+}
+[role=application] th.sorting_asc {
+  background-image: url("../images/sort_asc.png");
+}
+[role=application] th.sorting_desc {
+  background-image: url("../images/sort_desc.png");
 }
 

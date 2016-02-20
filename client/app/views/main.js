@@ -36,6 +36,7 @@ export default Backbone.View.extend({
             lengthChange: false,
             paging: false,
             dom: "fit",
+            scrollY: "calc(100vh - 6em)",
             data: json,
             columns: this.getCols(json)
         };
