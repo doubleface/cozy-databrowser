@@ -34,9 +34,11 @@ export default Backbone.View.extend({
         var config = {
             destroy: true,
             lengthChange: false,
-            paging: false,
             dom: "fit",
             scrollY: "calc(100vh - 6em)",
+            deferRender: true,
+            scroller: true,
+            scrollCollapse: true,
             data: json,
             columns: this.getCols(json)
         };

@@ -10,6 +10,7 @@ exports.config =
                     'vendor/scripts/underscore.js'
                     'vendor/scripts/backbone.js'
                     'vendor/scripts/datatables.js'
+                    'vendor/scripts/dataTables.scroller.js'
                     'vendor/scripts/polyglot.js'
                 ]
 
