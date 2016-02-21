@@ -17,6 +17,8 @@
     "cozy-ui": "^0.1.6",
     "css-brunch": "^2.0.0",
     "datatables.net": "^1.10.11",
+    "datatables.net-buttons": "^1.1.2",
+    "datatables.net-responsive": "^2.0.2",
     "datatables.net-scroller": "^1.4.1",
     "express": "^4.13.4",
     "javascript-brunch": "^2.0.0",

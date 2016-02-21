@@ -11,6 +11,9 @@ exports.config =
                     'vendor/scripts/backbone.js'
                     'vendor/scripts/datatables.js'
                     'vendor/scripts/dataTables.scroller.js'
+                    'vendor/scripts/dataTables.buttons.js'
+                    'vendor/scripts/buttons.colVis.js'
+                    'vendor/scripts/dataTables.responsive.js'
                     'vendor/scripts/polyglot.js'
                 ]
 
