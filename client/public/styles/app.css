@@ -653,6 +653,15 @@ input[type=password] {
 [role=application] > aside a.selected {
   font-weight: bold;
 }
+.dt-button-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse farthest-corner at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%);
+  z-index: 2001;
+}
 [role=application] .dataTables_filter,
 [role=application] .dataTables_info {
   text-align: center;
@@ -702,6 +711,32 @@ input[type=password] {
 }
 [role=application] th.sorting_desc {
   background-image: url("../images/sort_desc.png");
+}
+[role=application] .thead {
+  display: flex;
+}
+[role=application] .thead > div {
+  margin: 0.5em 1em 0.5em 1em;
+}
+[role=application] .thead .dataTables_filter {
+  flex-grow: 1;
+  padding-top: 0.5em;
+}
+[role=application] .thead .dt-buttons {
+  box-sizing: border-box;
+  padding: 0.5em 1em;
+  border: 1px solid #999;
+  border-radius: 2px;
+  cursor: pointer;
+  background-color: #e9e9e9;
+  background-image: linear-gradient(top, #fff 0%, #e9e9e9 100%);
+  user-select: none;
+  text-decoration: none;
+  outline: none;
+}
+[role=application] .thead .dataTables_info {
+  padding-top: 0.5em;
+  margin-right: 1em;
 }
 [role=application] [role=toolbar] {
   background-color: #fff;
@@ -1589,6 +1624,15 @@ th {
   padding: 0;
 }
 
+.dt-button-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse farthest-corner at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%);
+  z-index: 2001;
+}
 [role=application] .dataTables_filter,
 [role=application] .dataTables_info {
   text-align: center;
@@ -1638,5 +1682,31 @@ th {
 }
 [role=application] th.sorting_desc {
   background-image: url("../images/sort_desc.png");
+}
+[role=application] .thead {
+  display: flex;
+}
+[role=application] .thead > div {
+  margin: 0.5em 1em 0.5em 1em;
+}
+[role=application] .thead .dataTables_filter {
+  flex-grow: 1;
+  padding-top: 0.5em;
+}
+[role=application] .thead .dt-buttons {
+  box-sizing: border-box;
+  padding: 0.5em 1em;
+  border: 1px solid #999;
+  border-radius: 2px;
+  cursor: pointer;
+  background-color: #e9e9e9;
+  background-image: linear-gradient(top, #fff 0%, #e9e9e9 100%);
+  user-select: none;
+  text-decoration: none;
+  outline: none;
+}
+[role=application] .thead .dataTables_info {
+  padding-top: 0.5em;
+  margin-right: 1em;
 }
 

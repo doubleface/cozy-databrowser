@@ -1,3 +1,11 @@
+.dt-button-background
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    background radial-gradient(ellipse farthest-corner at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 100%)
+    z-index 2001
 [role=application]
     .dataTables_filter,.dataTables_info
         text-align center
@@ -44,3 +52,26 @@
 
     th.sorting_desc
         background-image: url(../images/sort_desc.png)
+
+    .thead
+        display flex
+        > div
+            margin 0.5em 1em 0.5em 1em
+        .dataTables_filter
+            flex-grow 1
+            padding-top 0.5em
+        .dt-buttons
+            box-sizing border-box
+            padding 0.5em 1em;
+            border 1px solid #999
+            border-radius 2px
+            cursor pointer
+            background-color #e9e9e9
+            background-image linear-gradient(top, #fff 0%, #e9e9e9 100%)
+            user-select none
+            text-decoration none
+            outline none
+        .dataTables_info
+            padding-top 0.5em
+            margin-right 1em
+

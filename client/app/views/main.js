@@ -29,14 +29,17 @@ export default Backbone.View.extend({
         return result;
     },
     render() {
-        this.$el.empty().html('<table></table>');
+        this.$el.html('<table></table>');
         var json = this.collection.toJSON();
         var config = {
             destroy: true,
             lengthChange: false,
-            dom: "fit",
-            scrollY: "calc(100vh - 6em)",
-            responsive: true,
+            dom: '<"thead"Bfi>t',
+            buttons: [
+                'colvis'
+            ],
+            scrollX: "100%",
+            scrollY: "calc(100vh - 7em)",
             deferRender: true,
             scroller: true,
             data: json,
