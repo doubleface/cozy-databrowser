@@ -4,5 +4,10 @@
     "cozy-displayName": "Databrowser",
     "version": "2.0.0",
     "description": "Browse all the data in your Cozy",
-    "license": "MIT"
+    "license": "MIT",
+    "cozy-permissions": {
+        "contact": {
+            "description": "I just want to display the list of contacts"
+        }
+    }
 }
