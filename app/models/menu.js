@@ -1,12 +1,14 @@
 export default Backbone.Collection.extend({
     model: Backbone.Model,
     fetch() {
-        return window.cozysdk.queryView("doctypes", "getsums", {group: true})
-        .then(result => {
-            console.log(result, "result to see");
-            return result;
-        }).catch(function(err){
-            console.error(err, "there was an error in the request");
+        return new Promise((resolve, reject) => {
+            window.cozysdk.queryView("doctypes", "getsums", { group: true })
+            .then(result => {
+                this.reset(result);
+                resolve(result);
+            }).catch(err => {
+                reject(err);
+            });
         });
     }
 });
