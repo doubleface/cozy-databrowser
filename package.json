@@ -1,18 +1,39 @@
 {
-  "name": "databrowser",
-  "cozy-type": "static",
-  "cozy-displayName": "Databrowser",
-  "version": "2.0.0",
-  "description": "Browse all the data in your Cozy",
-  "license": "MIT",
-  "cozy-permissions": {
-    "all": {
-      "description": "Databrowser needs access to all your doctypes to display it"
+    "name": "databrowser",
+    "cozy-type": "static",
+    "cozy-displayName": "Databrowser",
+    "version": "2.0.0",
+    "description": "Browse all the data in your Cozy",
+    "license": "MIT",
+    "cozy-permissions": {
+        "all": {
+            "description": "Databrowser needs access to all your doctypes to display it"
+        }
+    },
+    "dependencies": {
+        "babel-brunch": "^6.0.0",
+        "backbone": "^1.2.3",
+        "cozy-ui": "^0.1.6",
+        "css-brunch": "^2.0.0",
+        "datatables.net": "^1.10.11",
+        "datatables.net-buttons": "^1.1.2",
+        "datatables.net-buttons-dt": "^1.2.2",
+        "datatables.net-dt": "^1.10.12",
+        "datatables.net-responsive": "^2.0.2",
+        "datatables.net-responsive-dt": "^2.1.0",
+        "datatables.net-scroller": "^1.4.1",
+        "datatables.net-scroller-dt": "^1.4.2",
+        "javascript-brunch": "^2.0.0",
+        "jquery": "^2.2.0",
+        "stylus-brunch": "^2.0.0",
+        "uglify-js-brunch": "^2.0.1",
+        "underscore": "^1.8.3"
+    },
+    "devDependencies": {
+        "express": "^4.13.4",
+        "morgan": "^1.7.0"
+    },
+    "scripts": {
+        "start": "brunch watch --server"
     }
-  },
-  "devDependencies": {
-    "backbone": "^1.3.3",
-    "bootstrap": "^3.3.7",
-    "jquery": "^3.1.1"
-  }
 }
