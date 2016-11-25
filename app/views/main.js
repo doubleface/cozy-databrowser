@@ -50,9 +50,9 @@ export default Backbone.View.extend({
     },
     setDoctype(doctype){
         this.doctype = doctype;
-        this.collection.fetch({
-            reset: true,
-            url: "search?range=all&doctypes[]=" + doctype
+        cozysdk.queryView(doctype.toLowerCase(), "all", {}, (err, data) => {
+            if (err) return console.error(err, "error while fetching doctype");
+            this.collection.reset(data.map(record => record.value));
         });
     }
 });
