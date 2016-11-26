@@ -18,7 +18,7 @@ export default Backbone.View.extend({
     },
     getCols(json) {
         var result = [];
-        if (json.length === 0) return result;
+        if (json.length === 0 || Object.keys(json[0]) == 0) return false;
         for (var i in json[0]) {
             result.push({
                 title: i,
@@ -31,6 +31,11 @@ export default Backbone.View.extend({
     render() {
         this.$el.html('<table></table>');
         var json = this.collection.toJSON();
+        var columns = this.getCols(json);
+        if (columns === false) {
+            console.log("no column or no data at all");
+            return this;
+        }
         var config = {
             destroy: true,
             lengthChange: false,
