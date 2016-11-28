@@ -1,5 +1,5 @@
-import MenuView from "views/menu";
-import MainView from "views/main";
+import MenuView from "./views/menu";
+import MainView from "./views/main";
 
 var Router = Backbone.Router.extend({
     routes: {

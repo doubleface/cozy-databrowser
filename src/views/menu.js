@@ -1,4 +1,4 @@
-import Collection from "models/menu";
+import Collection from "../models/menu";
 
 export default Backbone.View.extend({
     el: "aside",

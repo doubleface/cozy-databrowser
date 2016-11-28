@@ -1,4 +1,4 @@
-import app from "application";
+import app from "./application";
 
 window.app = app;
 
