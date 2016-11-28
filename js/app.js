@@ -46,7 +46,7 @@
 
 	"use strict";
 	
-	var _application = __webpack_require__(1);
+	var _application = __webpack_require__(5);
 	
 	var _application2 = _interopRequireDefault(_application);
 	
@@ -59,7 +59,11 @@
 	});
 
 /***/ },
-/* 1 */
+/* 1 */,
+/* 2 */,
+/* 3 */,
+/* 4 */,
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -68,11 +72,11 @@
 	    value: true
 	});
 	
-	var _menu = __webpack_require__(4);
+	var _menu = __webpack_require__(8);
 	
 	var _menu2 = _interopRequireDefault(_menu);
 	
-	var _main = __webpack_require__(3);
+	var _main = __webpack_require__(7);
 	
 	var _main2 = _interopRequireDefault(_main);
 	
@@ -115,7 +119,7 @@
 	exports.default = app;
 
 /***/ },
-/* 2 */
+/* 6 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -140,7 +144,7 @@
 	});
 
 /***/ },
-/* 3 */
+/* 7 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -214,7 +218,7 @@
 	});
 
 /***/ },
-/* 4 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -223,7 +227,7 @@
 	    value: true
 	});
 	
-	var _menu = __webpack_require__(2);
+	var _menu = __webpack_require__(6);
 	
 	var _menu2 = _interopRequireDefault(_menu);
 	

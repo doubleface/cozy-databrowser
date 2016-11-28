@@ -11,10 +11,13 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const optimize = process.env.OPTIMIZE === 'true'
 
 module.exports = {
-    entry: './src/initialize.js',
+    entry: {
+        app: './src/initialize.js',
+        vendor: "./vendor/vendor.js"
+    },
     output: {
         path: path.join('.', 'js'),
-        filename: 'app.js'
+        filename: "[name].js"
     },
     resolve: {
         extensions: ['', '.js']
