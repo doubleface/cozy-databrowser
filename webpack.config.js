@@ -16,7 +16,7 @@ module.exports = {
         vendor: "./vendor/vendor.js"
     },
     output: {
-        path: path.join('.', 'js'),
+        path: path.join('.', 'build'),
         filename: "[name].js"
     },
     resolve: {
@@ -25,14 +25,24 @@ module.exports = {
     debug: !optimize,
     devtool: 'source-map',
     module: {
-        loaders: [{
-            test: /\.js$/,
-            exclude: /node_modules/,
-            loader: 'babel-loader',
-            query: {
-              presets: ['es2015']
+        loaders: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: 'babel-loader',
+                query: {
+                  presets: ['es2015']
+                }
+            },
+            {
+                test: /\.css/,
+                loader: 'style-loader!css-loader'
+            },
+            {
+                test: /\.styl/,
+                loader: ExtractTextPlugin.extract('style', 'css!stylus')
             }
-        }]
+        ]
     },
     plugins: [
         new ExtractTextPlugin(optimize? 'app.[hash].css' : 'app.css'),
