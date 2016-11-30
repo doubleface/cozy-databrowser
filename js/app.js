@@ -208,11 +208,12 @@
 	        var _this = this;
 	
 	        this.doctype = doctype;
-	        cozysdk.queryView(doctype.toLowerCase(), "all", {}, function (err, data) {
-	            if (err) return console.error(err, "error while fetching doctype");
+	        cozysdk.queryView(doctype.toLowerCase(), "all", {}).then(function (data) {
 	            _this.collection.reset(data.map(function (record) {
 	                return record.value;
 	            }));
+	        }).catch(function (err) {
+	            console.error(err, "error while fetching doctype");
 	        });
 	    }
 	});

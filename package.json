@@ -33,6 +33,7 @@
   },
   "scripts": {
     "start": "node custom-server.js",
-    "build:vendor": "webpack vendor/vendor.js js/vendor.js"
+    "build": "webpack",
+    "build:standalone": "webpack --config webpack.standalone.config.js"
   }
 }
