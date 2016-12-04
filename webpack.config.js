@@ -35,17 +35,17 @@ module.exports = {
                 }
             },
             {
-                test: /\.css/,
-                loader: 'style-loader!css-loader'
+                test: /\.styl/,
+                loader: ExtractTextPlugin.extract('css-loader!stylus-loader')
             },
             {
-                test: /\.styl/,
-                loader: ExtractTextPlugin.extract('style', 'css!stylus')
+                test: /\.css/,
+                loader: ExtractTextPlugin.extract('css-loader')
             }
         ]
     },
     plugins: [
-        new ExtractTextPlugin(optimize? 'app.[hash].css' : 'app.css'),
+        new ExtractTextPlugin('app.css'),
         new webpack.optimize.DedupePlugin(),
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.DefinePlugin({

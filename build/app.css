@@ -586,11 +586,93 @@ input[type=password] {
   opacity: 0;
   transform: scale(0);
 }
+[role=application] {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+[role=application] main,
+[role=application] > aside {
+  display: flex;
+  flex-direction: column;
+}
+[role=application] main,
+[role=application] main > [role=contentinfo] {
+  flex: 1;
+  height: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 @media (min-width: 64rem) {
+  [role=application] [formaction="drawer/toggle"] {
+    display: none !important;
+    visibility: hidden;
+  }
 }
 @media (max-width: 63.9375rem) {
+  [role=application] > aside {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    padding-right: 4.58333em;
+  }
+  [role=application] > aside[aria-expanded=true] + main {
+    transform: translateX(calc(100vw - 4.58333em));
+  }
+  [role=application] main {
+    z-index: 2;
+    position: relative;
+    transform: translateX(0);
+    transition: transform 350ms ease-out;
+  }
 }
 @media (max-width: 50rem) {
+}
+[role=application] > aside {
+  overflow-y: auto;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  padding-left: 1em;
+  padding-right: 1em;
+  background-color: #eaeef2;
+  border-right: 1px solid #c8d5df;
+}
+[role=application] > aside ul {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+[role=application] > aside li {
+  padding: 3px;
+  list-style-type: none;
+}
+[role=application] > aside a {
+  color: #000;
+  text-decoration: none;
+}
+[role=application] > aside a.selected {
+  font-weight: bold;
+}
+[role=application] [role=toolbar] {
+  background-color: #fff;
+  display: flex;
+}
+[role=application] [role=toolbar] [formaction="drawer/toggle"] {
+  padding: 0;
+  flex-basis: 2.25em;
+  display: none;
+}
+[role=application] [role=contentinfo] {
+  background-color: #fff;
+  overflow-x: auto !important;
+}
+@media (max-width: 63.9375rem) {
+  [role=application] [role=toolbar] [formaction="drawer/toggle"] {
+    display: block;
+  }
 }
 
 /*# sourceMappingURL=app.css.map*/
