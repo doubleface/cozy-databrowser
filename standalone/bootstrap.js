@@ -1,3 +1,4 @@
+let counter = 0;
 
 // replace cozysdk with a standalone version
 window.cozysdk.queryView = (type) => {
@@ -5,7 +6,8 @@ window.cozysdk.queryView = (type) => {
         if (type === "doctypes") {
             resolve([{"key":"Access","value":17},{"key":"album","value":3},{"key":"application","value":16},{"key":"bank","value":46},{"key":"bill","value":34},{"key":"Binary","value":5678},{"key":"Bookmark","value":1},{"key":"commit","value":141},{"key":"contact","value":396},{"key":"CozyInstance","value":1},{"key":"Device","value":1},{"key":"event","value":2},{"key":"FavoriteTag","value":2},{"key":"Feed","value":3},{"key":"file","value":144},{"key":"File","value":1874},{"key":"folder","value":12},{"key":"Folder","value":1},{"key":"haste","value":1},{"key":"hastesettings","value":1},{"key":"indexdefinition","value":3},{"key":"konnector","value":48},{"key":"kresusconfig","value":4},{"key":"Mood","value":1},{"key":"Note","value":4},{"key":"phonebill","value":9},{"key":"photo","value":14},{"key":"StackApplication","value":4},{"key":"tag","value":7},{"key":"Task","value":1},{"key":"tasky","value":16},{"key":"Tasky","value":15},{"key":"TodoList","value":1},{"key":"toread","value":191},{"key":"Tree","value":1},{"key":"twittertweet","value":175},{"key":"User","value":1},{"key":"usetracker","value":742},{"key":"UseTracker","value":898},{"key":"WebDAVAccount","value":1},{"key":"ZFParam","value":4}]);
         } else {
-            resolve(contacts());
+            counter++;
+            resolve(counter % 2 === 0 ? contacts() : bankOperations());
         }
     });
 };
@@ -12602,6 +12604,7627 @@ function contacts() {
                 "tag",
                 "coucou"
             ]
+        }
+    }
+    ]
+}
+
+function bankOperations() {
+    return [
+    {
+        "id": "5850ecf900c3d51d36cf7b4f",
+        "key": "5850ecf964edc6919bcb0645",
+        "value": {
+            "_id": "5850ecf9774b976a0557bcfa",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "ca9f9197-baf2-401b-9e45-bf8ffa532560",
+            "date": "2014-05-22T02:52:57 -02:00",
+            "dateImport": "2016-03-05T01:42:25 -01:00",
+            "amount": 438,
+            "raw": "Pariatur adipisicing cillum consequat cillum ipsum adipisicing esse aute id laboris excepteur elit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e3938a5eac57a0f3",
+        "key": "5850ecf9424fff2798b707f7",
+        "value": {
+            "_id": "5850ecf94ca99453e47b234d",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "6c34f6a9-3dfa-4213-b7c9-ede1b90908f6",
+            "date": "2016-10-23T09:46:50 -02:00",
+            "dateImport": "2014-07-23T08:27:49 -02:00",
+            "amount": 108,
+            "raw": "Adipisicing velit nostrud adipisicing amet in.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ed84c53987cb5ed1",
+        "key": "5850ecf9e47be16768db1ec4",
+        "value": {
+            "_id": "5850ecf9c6dd82fb895b2dfc",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "b08dc5a0-32e7-4601-88cd-50b128d8565c",
+            "date": "2015-11-21T10:00:05 -01:00",
+            "dateImport": "2015-08-05T03:35:38 -02:00",
+            "amount": 312,
+            "raw": "Et adipisicing consequat ullamco ipsum nostrud pariatur nostrud proident voluptate reprehenderit pariatur ullamco.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9289da35f375c31d2",
+        "key": "5850ecf9d4d67a21d6990db8",
+        "value": {
+            "_id": "5850ecf9b1bfdcbc8a214d08",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "f03ea974-f7ea-4332-a8be-ba0c27d120cd",
+            "date": "2014-02-18T09:00:46 -01:00",
+            "dateImport": "2016-07-30T09:24:28 -02:00",
+            "amount": 46,
+            "raw": "Eiusmod aute ullamco aliqua esse ut magna.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf99132f6d6160880a9",
+        "key": "5850ecf900c23adaa6c55b6f",
+        "value": {
+            "_id": "5850ecf9641e3795367a7701",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "0c448e53-f029-4ed9-b438-d26e05c131f6",
+            "date": "2014-06-11T06:22:10 -02:00",
+            "dateImport": "2014-02-27T05:32:51 -01:00",
+            "amount": 373,
+            "raw": "Excepteur tempor deserunt exercitation elit sunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90e3e65f67dd23287",
+        "key": "5850ecf93e93b71157fad1cf",
+        "value": {
+            "_id": "5850ecf9de2c07d9267f9493",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "bf2c6e51-682d-4482-a991-72fef82cf827",
+            "date": "2015-07-30T08:21:10 -02:00",
+            "dateImport": "2014-04-19T09:25:40 -02:00",
+            "amount": 385,
+            "raw": "Mollit non anim sit mollit do ad voluptate est commodo velit dolor non.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9de32689347458866",
+        "key": "5850ecf94ba99c9740cd78d0",
+        "value": {
+            "_id": "5850ecf96ad8cea3e41b4f33",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "c7cf84af-f6d1-4051-8257-00eba0f9074a",
+            "date": "2014-08-28T12:33:36 -02:00",
+            "dateImport": "2014-06-01T07:11:28 -02:00",
+            "amount": 430,
+            "raw": "Lorem in et id elit aute enim est ut excepteur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9aee2d1d4c6c97b6a",
+        "key": "5850ecf95f5870d49d54d3ba",
+        "value": {
+            "_id": "5850ecf90ebca956929f3518",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "f76d4868-c87a-45f4-86fe-af97296c86ae",
+            "date": "2014-04-04T06:10:22 -02:00",
+            "dateImport": "2016-06-11T11:23:36 -02:00",
+            "amount": 420,
+            "raw": "Duis ullamco occaecat sint esse incididunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9872ef7cc380e1277",
+        "key": "5850ecf98ab39005ae25b706",
+        "value": {
+            "_id": "5850ecf971eca3db99a386f9",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "29dc34cb-2c7f-40e8-a2da-0afa602f95e0",
+            "date": "2014-06-18T08:01:46 -02:00",
+            "dateImport": "2016-01-25T11:13:44 -01:00",
+            "amount": 248,
+            "raw": "Sit occaecat mollit non nulla sit aliqua nulla sit officia laboris eu dolor anim nulla.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf94d40ff0b3444164e",
+        "key": "5850ecf945e820494c832ca4",
+        "value": {
+            "_id": "5850ecf9ad0ad7dee8d4718c",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "e7ea9015-e9b3-4468-ba65-458e34ccc990",
+            "date": "2014-10-23T03:16:08 -02:00",
+            "dateImport": "2016-01-17T06:42:37 -01:00",
+            "amount": 94,
+            "raw": "Dolor amet eiusmod tempor dolore labore labore ipsum fugiat in adipisicing nisi deserunt aliqua commodo.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96838eb56226d4dfe",
+        "key": "5850ecf99775295e2f9b1c18",
+        "value": {
+            "_id": "5850ecf9b33df9bf4cfe81b6",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "33c5e0e9-8620-45f5-ad35-216a1bea1a0d",
+            "date": "2015-04-19T01:40:58 -02:00",
+            "dateImport": "2015-09-06T01:07:42 -02:00",
+            "amount": 331,
+            "raw": "Consectetur minim ullamco esse duis laboris pariatur do culpa culpa cillum ex ut.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf955ad4424c99a6c76",
+        "key": "5850ecf92598bd3cf4f73d44",
+        "value": {
+            "_id": "5850ecf9034b726c3057d670",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "deb86c1d-69c8-46d3-b766-797c20284aab",
+            "date": "2014-09-22T10:32:09 -02:00",
+            "dateImport": "2016-02-03T09:02:09 -01:00",
+            "amount": 392,
+            "raw": "Aliqua dolor in enim adipisicing veniam esse occaecat ipsum laboris.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90bd5a4b03a97f7ca",
+        "key": "5850ecf9cda6f89d659edbd7",
+        "value": {
+            "_id": "5850ecf9133745581ee395f4",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "a502fd9b-3e79-4771-a105-933960a2e278",
+            "date": "2016-06-05T04:12:38 -02:00",
+            "dateImport": "2016-09-05T06:38:41 -02:00",
+            "amount": 373,
+            "raw": "Ipsum reprehenderit irure officia fugiat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf95825cbea75b10278",
+        "key": "5850ecf98577a25e274c2d63",
+        "value": {
+            "_id": "5850ecf9f73945d6b23b0f0e",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "889a0a40-ffad-49d6-83d4-927008166420",
+            "date": "2014-10-15T06:57:56 -02:00",
+            "dateImport": "2015-04-16T08:21:48 -02:00",
+            "amount": 61,
+            "raw": "Non excepteur enim et aute aliqua id.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9607393364c76daa3",
+        "key": "5850ecf9f3c6bc31a7a4642f",
+        "value": {
+            "_id": "5850ecf9d9377bb8e2107855",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "10b6e924-1480-432e-bb25-04cc0f91708c",
+            "date": "2016-05-12T02:52:55 -02:00",
+            "dateImport": "2014-01-27T09:49:36 -01:00",
+            "amount": 89,
+            "raw": "Commodo elit qui id veniam voluptate aute cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96e803fcfee72a05d",
+        "key": "5850ecf9a0e3bbbc1c0ac99e",
+        "value": {
+            "_id": "5850ecf9e6244fea94b2aac3",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "9637fb90-3ff6-4392-b2ec-1caae2cb9e20",
+            "date": "2016-04-19T04:50:43 -02:00",
+            "dateImport": "2016-05-02T09:30:23 -02:00",
+            "amount": 344,
+            "raw": "Est cillum veniam in pariatur et ut id velit consequat labore elit voluptate laboris do.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf91fedb22a2b5b9d9c",
+        "key": "5850ecf9bf233349d58a1f62",
+        "value": {
+            "_id": "5850ecf9b376e804a00530e0",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "90566e8d-897e-4bb4-aed4-7f94c123bc1b",
+            "date": "2015-09-02T02:22:49 -02:00",
+            "dateImport": "2016-08-09T01:51:38 -02:00",
+            "amount": 370,
+            "raw": "Aute veniam mollit minim officia incididunt eiusmod.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf935b84fa7788dd310",
+        "key": "5850ecf928798f89e8f7462f",
+        "value": {
+            "_id": "5850ecf9c9f17159a89d22da",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "73d88e03-3e1b-4060-ba4e-5e27486898bb",
+            "date": "2014-10-20T06:34:07 -02:00",
+            "dateImport": "2016-02-19T02:31:11 -01:00",
+            "amount": 470,
+            "raw": "Cupidatat amet nulla qui ipsum deserunt non commodo qui laboris magna consectetur deserunt laborum ad.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9729780eec9be1e8d",
+        "key": "5850ecf9b4f72df479f389b8",
+        "value": {
+            "_id": "5850ecf96a65c47b31f2a6f6",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "338d15b6-00ff-4644-b649-b681b4c14867",
+            "date": "2016-08-29T03:13:47 -02:00",
+            "dateImport": "2016-04-23T09:36:45 -02:00",
+            "amount": 61,
+            "raw": "Mollit qui ea consectetur ullamco sit cupidatat cillum esse adipisicing do eiusmod in culpa.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf99f3d167775bc895e",
+        "key": "5850ecf9610addde6494d7fd",
+        "value": {
+            "_id": "5850ecf90748e0442faa3252",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "9ecfc2fd-c3bd-4282-97d4-f90385bd2dee",
+            "date": "2015-09-09T10:29:44 -02:00",
+            "dateImport": "2015-03-14T10:06:46 -01:00",
+            "amount": 242,
+            "raw": "Aute duis cillum voluptate nostrud ea non ea amet eiusmod irure incididunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90a1a2baf3b3fbc54",
+        "key": "5850ecf978188d1e84a06206",
+        "value": {
+            "_id": "5850ecf9467fe6d88c0e9d61",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "12240d1a-70f4-407d-892b-3806df2f8199",
+            "date": "2015-06-08T07:43:06 -02:00",
+            "dateImport": "2014-04-06T06:52:47 -02:00",
+            "amount": 347,
+            "raw": "Eu deserunt esse ut Lorem minim ut excepteur aliqua aliqua veniam.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf92f7b9e1eed300cd0",
+        "key": "5850ecf98a02015894678285",
+        "value": {
+            "_id": "5850ecf9645237d3534a9051",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "4777a3f4-a738-462e-a050-b8c2c5cb940d",
+            "date": "2015-05-27T06:23:42 -02:00",
+            "dateImport": "2015-06-08T03:15:47 -02:00",
+            "amount": 139,
+            "raw": "Esse aliqua ipsum consectetur laboris labore esse dolor incididunt enim et Lorem.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf93b8c82ad3761e1cc",
+        "key": "5850ecf9db51d973d68b662f",
+        "value": {
+            "_id": "5850ecf9006bd7ce7964b0b9",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "a871a776-de14-4820-8f47-3847720c9ec5",
+            "date": "2016-08-11T03:05:57 -02:00",
+            "dateImport": "2015-03-09T04:40:48 -01:00",
+            "amount": 127,
+            "raw": "Eu labore culpa adipisicing laborum laboris magna enim in qui tempor ex cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90859b17319eb46f6",
+        "key": "5850ecf931f6c1879ae1fe4c",
+        "value": {
+            "_id": "5850ecf97126cfe280151578",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "6b4d2896-ac70-4527-8d6d-05ef40213f84",
+            "date": "2014-09-28T12:06:34 -02:00",
+            "dateImport": "2015-02-15T09:51:36 -01:00",
+            "amount": 114,
+            "raw": "Sit dolore commodo culpa id eiusmod adipisicing occaecat exercitation amet.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9a019c82bd615f346",
+        "key": "5850ecf966ee068889d0ec86",
+        "value": {
+            "_id": "5850ecf9c33136c62c112ed0",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "4f098968-9e7e-4386-a2a7-03052c802055",
+            "date": "2015-03-17T02:31:32 -01:00",
+            "dateImport": "2014-05-09T10:30:04 -02:00",
+            "amount": 396,
+            "raw": "Quis duis occaecat non consectetur cupidatat in est ullamco incididunt deserunt occaecat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf920d7a498c9bed1fc",
+        "key": "5850ecf997f3b8c297d48af3",
+        "value": {
+            "_id": "5850ecf9d7eadc782b4522af",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "55cbf3e0-d250-433d-a014-71f73b5d2242",
+            "date": "2016-12-10T10:09:23 -01:00",
+            "dateImport": "2015-07-04T01:36:40 -02:00",
+            "amount": 162,
+            "raw": "Aliqua ut cillum esse do occaecat sunt esse sunt ullamco ex.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9eed6378fd8406c29",
+        "key": "5850ecf9d1d669f3b0b7332e",
+        "value": {
+            "_id": "5850ecf948a1277ae5abeb47",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "88820a9b-cc28-40d9-80c5-a3d95b98a8b8",
+            "date": "2015-04-26T03:47:49 -02:00",
+            "dateImport": "2014-04-13T04:46:20 -02:00",
+            "amount": 221,
+            "raw": "Esse labore ad elit dolor nisi cillum consequat Lorem amet velit voluptate do.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b2925fa41b655bd5",
+        "key": "5850ecf989db052f5be4eb04",
+        "value": {
+            "_id": "5850ecf9ef349b12326de01c",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "fd040c5f-12d8-4176-a2b4-777d8d1c90f7",
+            "date": "2016-04-06T02:15:18 -02:00",
+            "dateImport": "2015-08-07T07:37:27 -02:00",
+            "amount": 93,
+            "raw": "Nulla dolor tempor duis sint ea eu ea.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9909f20dd8f5ae862",
+        "key": "5850ecf92ea2b6bde097706c",
+        "value": {
+            "_id": "5850ecf9f3f7841d2f50c57d",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "8c0ba9de-6d43-4db5-ad88-ae44d54a75c7",
+            "date": "2016-08-09T07:33:33 -02:00",
+            "dateImport": "2015-01-01T11:04:35 -01:00",
+            "amount": 49,
+            "raw": "Ad magna id proident ut aliqua ad ad sint culpa.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d86e0c69a68a99d2",
+        "key": "5850ecf9433520267a1aa7c4",
+        "value": {
+            "_id": "5850ecf9519cc1bf1c109e4b",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "99dbc264-aee4-4f19-9bd4-b1216c9d7d32",
+            "date": "2015-12-26T02:35:45 -01:00",
+            "dateImport": "2014-07-01T06:57:32 -02:00",
+            "amount": 282,
+            "raw": "Et laboris nulla Lorem reprehenderit tempor sunt non occaecat ex dolor occaecat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9df742d9950ca9ec4",
+        "key": "5850ecf9dd97e88c59ae5e61",
+        "value": {
+            "_id": "5850ecf9a40243e215443b32",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "9125460e-ef8c-449a-b54c-5b25c6b05a7e",
+            "date": "2014-05-07T01:57:43 -02:00",
+            "dateImport": "2014-01-25T05:43:16 -01:00",
+            "amount": 294,
+            "raw": "Do enim Lorem fugiat veniam officia.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9bb68a2b06aa674db",
+        "key": "5850ecf919a294d84ee90036",
+        "value": {
+            "_id": "5850ecf9248d50f50df45f54",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "a7d9f9d6-463e-461d-8b59-f713267454eb",
+            "date": "2015-02-17T11:22:33 -01:00",
+            "dateImport": "2014-05-22T06:52:13 -02:00",
+            "amount": 359,
+            "raw": "Voluptate tempor fugiat in do exercitation cillum consequat fugiat tempor consequat laboris consectetur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f4281324d662f1dc",
+        "key": "5850ecf9f8c74c9f2ffffe1b",
+        "value": {
+            "_id": "5850ecf9481ed103f51e5fe1",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "9de409ad-e111-48ae-943e-c9b388e5ce4c",
+            "date": "2016-11-01T05:43:41 -01:00",
+            "dateImport": "2014-11-19T02:08:46 -01:00",
+            "amount": 122,
+            "raw": "Aliqua reprehenderit consectetur nostrud Lorem.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96a15b86f5aed4851",
+        "key": "5850ecf93432b96e3e16e835",
+        "value": {
+            "_id": "5850ecf91e34c4d3950c5df6",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "09e98866-1a9c-450d-8736-a4f2614687fe",
+            "date": "2014-12-19T01:18:17 -01:00",
+            "dateImport": "2014-03-18T02:56:39 -01:00",
+            "amount": 59,
+            "raw": "Reprehenderit velit enim non irure laboris eiusmod officia quis.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf98d5bef726cc154aa",
+        "key": "5850ecf99bd9a7b152d6ff4e",
+        "value": {
+            "_id": "5850ecf9c4f2efc26c7f47b8",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "072b2187-cbbc-4e77-abd6-6a722d33ef3e",
+            "date": "2015-12-06T09:49:03 -01:00",
+            "dateImport": "2014-03-16T05:10:30 -01:00",
+            "amount": 256,
+            "raw": "Elit cillum proident anim duis eu.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96b53d38ca41c67e4",
+        "key": "5850ecf93d6ebd95c8d26536",
+        "value": {
+            "_id": "5850ecf924ee6cb53bbab865",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "dd824ad0-5a14-40a0-a3b2-97dccc0574b3",
+            "date": "2016-11-19T03:48:52 -01:00",
+            "dateImport": "2015-02-11T04:16:09 -01:00",
+            "amount": 341,
+            "raw": "Qui eu est exercitation mollit eiusmod adipisicing est deserunt eu consectetur sint ea.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf975bbee0e7b3bd174",
+        "key": "5850ecf9c29dba6f10300509",
+        "value": {
+            "_id": "5850ecf94ffbd1ddf63349b5",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "3f48af22-9f78-4d43-a323-f3067e7f7bd4",
+            "date": "2016-07-10T07:40:06 -02:00",
+            "dateImport": "2016-02-03T06:23:04 -01:00",
+            "amount": 218,
+            "raw": "Quis in et dolore elit ea.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ba73b6393602732e",
+        "key": "5850ecf9f59219c6ae999cab",
+        "value": {
+            "_id": "5850ecf97276d6e1dc98e0f5",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "cba7a1bf-c2a3-4421-baa6-cf5717f27691",
+            "date": "2016-06-15T06:14:23 -02:00",
+            "dateImport": "2014-05-15T10:44:12 -02:00",
+            "amount": 467,
+            "raw": "Sunt minim nulla nisi sunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9bd34d16fe2740b0f",
+        "key": "5850ecf95f445fbe8743ec52",
+        "value": {
+            "_id": "5850ecf94f66b599b5c19d7a",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "4193ed42-f712-4f64-b296-d1d8ed2176a8",
+            "date": "2015-08-23T05:18:32 -02:00",
+            "dateImport": "2014-10-20T11:19:24 -02:00",
+            "amount": 310,
+            "raw": "Aute tempor aliquip ut ullamco do do aliquip officia excepteur officia ullamco nostrud.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf999e89f91db841be1",
+        "key": "5850ecf9f96e66a310d15c50",
+        "value": {
+            "_id": "5850ecf942fe2ed1f0c9b107",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "45a4ea05-20bd-4753-8ae0-a9c013498dc5",
+            "date": "2016-01-29T07:47:57 -01:00",
+            "dateImport": "2016-05-18T07:28:44 -02:00",
+            "amount": 265,
+            "raw": "Non sit quis dolor labore voluptate enim laboris commodo.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf991830315f09e7114",
+        "key": "5850ecf9c39e3bb529dd1583",
+        "value": {
+            "_id": "5850ecf9f12f470fbfbf82ac",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "2664792a-c127-4610-b9ce-cc7e41e3a981",
+            "date": "2014-06-09T05:30:30 -02:00",
+            "dateImport": "2014-01-03T08:25:57 -01:00",
+            "amount": 144,
+            "raw": "Minim Lorem ea commodo mollit duis ex minim et in officia incididunt ut.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9a62059273ca3a83a",
+        "key": "5850ecf95a4180b7ad297393",
+        "value": {
+            "_id": "5850ecf96b0e02752e132c2e",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "06d36866-697a-4dfc-9bf1-769c6b3c4c62",
+            "date": "2015-10-11T10:43:51 -02:00",
+            "dateImport": "2014-04-03T07:07:12 -02:00",
+            "amount": 486,
+            "raw": "Velit ex commodo anim aute minim id aute sit eu sint incididunt duis deserunt adipisicing.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf93680cb0405f639d3",
+        "key": "5850ecf96e25d2c94114aa57",
+        "value": {
+            "_id": "5850ecf9fad59b8aa821fb6e",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "c1e620de-eb37-42c9-a027-5c11ad210e34",
+            "date": "2014-11-29T02:16:08 -01:00",
+            "dateImport": "2015-09-05T08:34:12 -02:00",
+            "amount": 500,
+            "raw": "Minim amet consequat velit dolore exercitation voluptate laborum nisi ipsum laborum reprehenderit in adipisicing.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d1d94506b3132c3f",
+        "key": "5850ecf95b8e3bcc1a902c5e",
+        "value": {
+            "_id": "5850ecf977df3df4f2ca18c4",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "79351afb-f5ba-4e9b-883b-4ef2097da920",
+            "date": "2015-03-08T05:31:43 -01:00",
+            "dateImport": "2016-12-03T01:02:59 -01:00",
+            "amount": 289,
+            "raw": "Ut ut ullamco eiusmod nostrud adipisicing.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97735ce3243b8c0f1",
+        "key": "5850ecf9ee777daa32139b9e",
+        "value": {
+            "_id": "5850ecf908b189fdb2d1cad8",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "a206afa2-ef29-4168-b22a-bb6a9a97b1ca",
+            "date": "2014-03-16T08:19:45 -01:00",
+            "dateImport": "2014-03-21T03:17:29 -01:00",
+            "amount": 333,
+            "raw": "Quis aliquip culpa amet cupidatat amet ea minim sunt tempor do eiusmod aliquip.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97aa540fe86eed7f9",
+        "key": "5850ecf981fa7157d5649466",
+        "value": {
+            "_id": "5850ecf916ba6ee6612b3c5b",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "67d5f30f-0f7c-473c-bf19-9882b83dea23",
+            "date": "2014-12-25T01:04:15 -01:00",
+            "dateImport": "2016-08-13T11:48:01 -02:00",
+            "amount": 26,
+            "raw": "Eu officia qui quis labore sunt minim pariatur aliquip reprehenderit cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9c0de956624d4a1b0",
+        "key": "5850ecf9e0e826e4794be0ca",
+        "value": {
+            "_id": "5850ecf95beb2573bbf7387f",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "13f1d8e2-c9df-4b40-8be8-a826e82b3c06",
+            "date": "2016-08-17T03:06:45 -02:00",
+            "dateImport": "2016-11-30T07:04:50 -01:00",
+            "amount": 452,
+            "raw": "Ex anim laborum ut laboris anim commodo velit incididunt officia.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf93790ab1ff0f3e38e",
+        "key": "5850ecf9d915055393ad3803",
+        "value": {
+            "_id": "5850ecf9d83afeeb3a76c2f3",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "6ca24f68-370b-4d61-99c7-b3933132f817",
+            "date": "2015-09-10T07:05:14 -02:00",
+            "dateImport": "2015-01-04T08:28:39 -01:00",
+            "amount": 500,
+            "raw": "Amet ad ipsum quis laboris minim exercitation.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9be3796fab2e48b22",
+        "key": "5850ecf9587c299c2eb1cc84",
+        "value": {
+            "_id": "5850ecf9d6b18a6798725c5e",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "68b68ca2-27e4-455b-926d-4daace0ea5fe",
+            "date": "2015-10-14T05:32:02 -02:00",
+            "dateImport": "2014-08-24T07:31:50 -02:00",
+            "amount": 391,
+            "raw": "Duis ipsum dolore mollit mollit culpa ea ad mollit labore sint.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9157f55a22db61660",
+        "key": "5850ecf90f5cc5aa4069453c",
+        "value": {
+            "_id": "5850ecf95e05f32f3929f979",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "168d960b-e771-46c8-a65c-168e99ab023a",
+            "date": "2016-04-15T11:12:42 -02:00",
+            "dateImport": "2015-01-18T06:22:00 -01:00",
+            "amount": 371,
+            "raw": "Magna officia eu quis dolor ut tempor quis sint sit duis.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf967e29b439bd77885",
+        "key": "5850ecf946be3708b840f4e0",
+        "value": {
+            "_id": "5850ecf9355d514731ae548d",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "aa17aee2-ea3a-4776-923a-1bd78ed0c784",
+            "date": "2014-09-03T10:18:42 -02:00",
+            "dateImport": "2016-05-16T06:11:07 -02:00",
+            "amount": 494,
+            "raw": "Nulla eu ipsum officia ipsum excepteur voluptate elit pariatur id exercitation non quis.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9a275583d852fcaa1",
+        "key": "5850ecf975dac06be6489bff",
+        "value": {
+            "_id": "5850ecf9210f3b139778b4be",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "069dfec2-27b2-4803-9be7-4420f3eaf178",
+            "date": "2014-10-14T04:11:44 -02:00",
+            "dateImport": "2015-08-22T03:01:53 -02:00",
+            "amount": 416,
+            "raw": "Laborum deserunt in id tempor velit ad velit tempor ea.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ddbfde955f50a276",
+        "key": "5850ecf9c641c3a2cc386fe4",
+        "value": {
+            "_id": "5850ecf991dcdafd55bfd63e",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "c534811d-915c-49b2-bcdd-a4df7c53edc8",
+            "date": "2014-03-21T07:48:44 -01:00",
+            "dateImport": "2014-09-28T02:12:37 -02:00",
+            "amount": 336,
+            "raw": "In aute minim proident aliquip reprehenderit enim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ee61123c3eadd4f8",
+        "key": "5850ecf9dd9886d29933701a",
+        "value": {
+            "_id": "5850ecf9d5e7177a05fb984d",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "193f2566-7417-48bc-9ab0-bb1248c84c1d",
+            "date": "2015-12-27T08:10:07 -01:00",
+            "dateImport": "2015-10-29T01:47:14 -01:00",
+            "amount": 192,
+            "raw": "Eu nisi commodo ipsum ipsum cupidatat consequat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf94855b6407a3d8376",
+        "key": "5850ecf94e68a852bb801f3e",
+        "value": {
+            "_id": "5850ecf9d2652884a61cde49",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "b61a5e37-ef10-4cc4-9dc1-69e77c612c84",
+            "date": "2014-12-03T01:34:34 -01:00",
+            "dateImport": "2014-09-19T06:06:47 -02:00",
+            "amount": 324,
+            "raw": "Aute labore voluptate aute ex aute velit consequat laboris sit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf95f9cc43d306ffd65",
+        "key": "5850ecf9125bf34e8568d811",
+        "value": {
+            "_id": "5850ecf9205d83ab2c84cd55",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "289428d7-231a-4332-a4df-6c39f7a78534",
+            "date": "2016-03-20T12:23:50 -01:00",
+            "dateImport": "2015-12-18T11:29:45 -01:00",
+            "amount": 344,
+            "raw": "Est ullamco officia magna minim id quis cupidatat anim et est.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf934b16e7410d51fe5",
+        "key": "5850ecf9de2a4f47d44ae007",
+        "value": {
+            "_id": "5850ecf962f700ffdc4758f2",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "24f3533e-8718-4c8b-b81b-51b95456bfe9",
+            "date": "2015-05-28T11:49:20 -02:00",
+            "dateImport": "2014-02-08T04:12:30 -01:00",
+            "amount": 145,
+            "raw": "Quis quis consequat cillum velit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf924141ef44e72a2ce",
+        "key": "5850ecf990147518fec31482",
+        "value": {
+            "_id": "5850ecf95ce6a7ed7471737e",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "d7f05dfe-7aa7-4d22-bde8-09e5dec93c31",
+            "date": "2015-02-03T11:30:40 -01:00",
+            "dateImport": "2014-06-19T06:46:07 -02:00",
+            "amount": 41,
+            "raw": "Enim elit nostrud velit non do magna deserunt sint nisi fugiat aute est sit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b3a6584ab85941fd",
+        "key": "5850ecf9e3f356d44b317148",
+        "value": {
+            "_id": "5850ecf95fabddfaf1b36463",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "bca77466-6b2b-4aa8-b981-f0a1cc83fc22",
+            "date": "2015-08-25T06:13:25 -02:00",
+            "dateImport": "2016-10-11T03:04:47 -02:00",
+            "amount": 275,
+            "raw": "Est eiusmod reprehenderit ut sint esse aliquip esse exercitation aliqua officia sunt proident.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9dbb1cd741adc55e3",
+        "key": "5850ecf9c3d9a51836648ba8",
+        "value": {
+            "_id": "5850ecf95db76c66e284d384",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "69745227-c97e-4f31-a8d4-e73952fd59ea",
+            "date": "2016-05-31T05:13:31 -02:00",
+            "dateImport": "2016-06-25T06:58:12 -02:00",
+            "amount": 322,
+            "raw": "Do in est consequat labore officia enim ad occaecat eiusmod amet enim cillum nisi.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf908eb2f9b8bd450ae",
+        "key": "5850ecf964ebc689271bb3b1",
+        "value": {
+            "_id": "5850ecf90c6721b02ef3956c",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "84d4bd39-12d7-4b1b-9944-2cc7ca2904b1",
+            "date": "2016-10-05T09:53:32 -02:00",
+            "dateImport": "2016-09-04T07:38:21 -02:00",
+            "amount": 392,
+            "raw": "Elit proident eiusmod minim irure excepteur ea ad voluptate dolore magna mollit mollit eu adipisicing.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf918692884508fe09b",
+        "key": "5850ecf9ba1c1b15e01622ee",
+        "value": {
+            "_id": "5850ecf901a58678304ca53b",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "a9f9c728-4df2-486e-8dcb-52cd81641145",
+            "date": "2015-06-30T09:14:09 -02:00",
+            "dateImport": "2016-08-15T04:50:30 -02:00",
+            "amount": 348,
+            "raw": "Labore adipisicing consectetur ullamco cupidatat exercitation laborum ullamco culpa anim laboris tempor non culpa.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90fa126313f45b26a",
+        "key": "5850ecf935d4b664d243e823",
+        "value": {
+            "_id": "5850ecf9f2db7dccb8e4660a",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "08290859-607d-4db0-ba30-6f11e839d006",
+            "date": "2014-03-02T07:44:01 -01:00",
+            "dateImport": "2016-01-13T05:29:33 -01:00",
+            "amount": 178,
+            "raw": "Id esse sit tempor voluptate tempor in ex et minim et ullamco elit dolor nostrud.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf93a9c468d9d27cc91",
+        "key": "5850ecf922e2c0d70e230b0d",
+        "value": {
+            "_id": "5850ecf97b20c9f720e0a286",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "b80f04b4-08f9-4639-bd89-640e8972ee76",
+            "date": "2015-01-01T01:59:03 -01:00",
+            "dateImport": "2015-09-09T07:42:36 -02:00",
+            "amount": 274,
+            "raw": "Proident deserunt velit proident veniam sint veniam consectetur sint elit velit minim cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf99e0fb278844522a4",
+        "key": "5850ecf9f592e2ab130ce0a5",
+        "value": {
+            "_id": "5850ecf9d7a3ca1ada561a1d",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "40a2e0f5-6999-49ef-a858-14505937d96d",
+            "date": "2014-12-01T04:53:03 -01:00",
+            "dateImport": "2015-12-16T12:19:25 -01:00",
+            "amount": 77,
+            "raw": "Velit dolore amet sit minim excepteur reprehenderit minim exercitation commodo.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9478f06fb62d23ac0",
+        "key": "5850ecf9d9d9000f049fa2c1",
+        "value": {
+            "_id": "5850ecf9a294bedab9a3318f",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "02c4ad8d-610e-46af-9320-5799350642c3",
+            "date": "2015-09-17T10:48:10 -02:00",
+            "dateImport": "2016-10-15T12:23:46 -02:00",
+            "amount": 492,
+            "raw": "Et do sint non veniam ullamco veniam culpa pariatur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf967814a012ee51fba",
+        "key": "5850ecf9cdd7b7cb00289838",
+        "value": {
+            "_id": "5850ecf96ee6f5fdc0926f8a",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "b65affa1-5ece-4acb-b0cd-3aac8d9bf634",
+            "date": "2016-09-08T05:32:30 -02:00",
+            "dateImport": "2014-04-09T09:16:29 -02:00",
+            "amount": 352,
+            "raw": "Eu veniam qui voluptate id enim minim ea ea eiusmod fugiat quis incididunt do.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f85f05cd122415b9",
+        "key": "5850ecf940911052b2288c29",
+        "value": {
+            "_id": "5850ecf928b9f394a94bd0d9",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "6eda0c6b-fd1e-4f10-88c5-f8a09673b5bb",
+            "date": "2014-02-11T03:28:52 -01:00",
+            "dateImport": "2015-04-04T10:09:41 -02:00",
+            "amount": 444,
+            "raw": "Minim aute cillum elit labore adipisicing enim ea duis eiusmod eiusmod culpa est amet sunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf98589859fc414903a",
+        "key": "5850ecf9798b7368283ea19e",
+        "value": {
+            "_id": "5850ecf954715a267c7cff56",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "7df783e3-5132-4787-82ba-0320f2cd0296",
+            "date": "2016-09-16T06:25:24 -02:00",
+            "dateImport": "2016-06-18T05:35:19 -02:00",
+            "amount": 369,
+            "raw": "Nulla cillum ipsum pariatur est qui magna nostrud consequat qui velit eu consectetur in amet.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ec6264a5f41a493b",
+        "key": "5850ecf9bc85f26ae83e9b3a",
+        "value": {
+            "_id": "5850ecf995b16966c5afc924",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "5fa3a9b9-0f51-44cf-92e9-c73c21613f01",
+            "date": "2015-03-09T05:28:42 -01:00",
+            "dateImport": "2016-04-26T02:33:30 -02:00",
+            "amount": 250,
+            "raw": "Do nisi eiusmod adipisicing ipsum pariatur ut eu.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf94a8023286cd6c3ce",
+        "key": "5850ecf986d1c7476db469fe",
+        "value": {
+            "_id": "5850ecf9d05b8760113c4c7d",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "9c4aa60c-9c7a-41bb-b79d-40157fcdd5e1",
+            "date": "2015-03-02T09:07:06 -01:00",
+            "dateImport": "2016-09-22T12:14:21 -02:00",
+            "amount": 106,
+            "raw": "Tempor dolor reprehenderit culpa laborum incididunt amet reprehenderit excepteur dolor cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96f795241c5e8039b",
+        "key": "5850ecf9249a1ebab50a65c3",
+        "value": {
+            "_id": "5850ecf9244715909975c299",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "c1a435fb-284e-471c-b140-b53a13478414",
+            "date": "2014-10-10T10:19:55 -02:00",
+            "dateImport": "2014-06-25T09:22:44 -02:00",
+            "amount": 435,
+            "raw": "Officia nisi commodo id aliquip non quis incididunt cillum ad fugiat ex labore qui qui.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf98d68121ced5e3067",
+        "key": "5850ecf9c1118a9ff1fbb4a7",
+        "value": {
+            "_id": "5850ecf92fa9612eae549652",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "67e93ab3-dbb2-4f42-b19c-16ef71065a9e",
+            "date": "2016-03-16T03:31:04 -01:00",
+            "dateImport": "2015-07-08T03:34:26 -02:00",
+            "amount": 207,
+            "raw": "Dolor tempor ex in duis.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf95c5c7b111326e1d9",
+        "key": "5850ecf95bb3fddfaf077985",
+        "value": {
+            "_id": "5850ecf9ed949915a29b0432",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "2bdabacf-dd4a-4d25-82ef-b45edd02e93d",
+            "date": "2015-03-01T02:58:32 -01:00",
+            "dateImport": "2014-04-12T05:53:34 -02:00",
+            "amount": 217,
+            "raw": "Nulla cillum Lorem exercitation excepteur nulla aute sunt culpa labore velit adipisicing.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9c755331975fa76f9",
+        "key": "5850ecf94127f1dba64bc522",
+        "value": {
+            "_id": "5850ecf97e41a6a5f7a8c0f4",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "2d5c0047-8e47-4c12-9c6c-e5f66499c264",
+            "date": "2015-01-08T06:34:08 -01:00",
+            "dateImport": "2016-09-12T02:52:19 -02:00",
+            "amount": 424,
+            "raw": "Occaecat cillum nisi Lorem aliqua occaecat dolore proident nisi et laboris do deserunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9343404fd7015ce30",
+        "key": "5850ecf906c96a581f924b30",
+        "value": {
+            "_id": "5850ecf916be4acf2a0b56b9",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "77a58fb3-577f-42ad-9669-dd16f4acd983",
+            "date": "2016-05-01T07:29:34 -02:00",
+            "dateImport": "2015-06-15T11:26:00 -02:00",
+            "amount": 191,
+            "raw": "Aliqua eu magna id elit aute.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b21bbfb109f5726a",
+        "key": "5850ecf9b90e2647a9a2cb45",
+        "value": {
+            "_id": "5850ecf9211d567c3a7a5c4c",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "b30dd7fb-ef64-4c5b-85af-69a9e66d59f3",
+            "date": "2016-06-06T11:52:24 -02:00",
+            "dateImport": "2016-09-02T06:01:05 -02:00",
+            "amount": 307,
+            "raw": "Mollit ea enim culpa esse commodo magna aliqua fugiat aliquip duis officia ad culpa aute.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf91e4a4a9ef4bf7d6c",
+        "key": "5850ecf9cb597835683b4ff4",
+        "value": {
+            "_id": "5850ecf92f4512710c99519b",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "228dc0ab-fcd6-43c7-8799-befa6135cb3f",
+            "date": "2014-11-04T05:24:14 -01:00",
+            "dateImport": "2014-01-25T08:57:44 -01:00",
+            "amount": 93,
+            "raw": "Esse voluptate adipisicing reprehenderit in do labore proident ad in commodo nostrud.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9867a9749dcb7d9f4",
+        "key": "5850ecf93b4d6e688db4ff17",
+        "value": {
+            "_id": "5850ecf9c2b4749ed05c09a0",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "2349b42a-4b1d-4728-af26-413693888678",
+            "date": "2015-09-10T05:19:00 -02:00",
+            "dateImport": "2015-05-23T08:29:40 -02:00",
+            "amount": 252,
+            "raw": "Magna incididunt ex exercitation fugiat sunt excepteur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf946d274e0e05c7985",
+        "key": "5850ecf90168e1c7789d49f0",
+        "value": {
+            "_id": "5850ecf97a8701f13aeb8b99",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "ab6fa07a-f8d7-4113-9f40-514ffee7b10a",
+            "date": "2016-07-17T07:01:57 -02:00",
+            "dateImport": "2014-05-28T08:20:42 -02:00",
+            "amount": 109,
+            "raw": "Veniam mollit elit amet irure.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b18d08a0438e69e9",
+        "key": "5850ecf998084a12311e2320",
+        "value": {
+            "_id": "5850ecf9fbb6f53ce39ad417",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "b31e98bc-02ec-4f61-a2b0-99f500278870",
+            "date": "2015-05-11T09:19:08 -02:00",
+            "dateImport": "2016-03-17T02:37:55 -01:00",
+            "amount": 231,
+            "raw": "Incididunt nisi eiusmod aute consectetur nostrud enim nulla minim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf91abfebdae941b542",
+        "key": "5850ecf981da63d063c8d448",
+        "value": {
+            "_id": "5850ecf9219c8a23285b7e6f",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "2d2ebfd6-8807-4f28-8260-617da6a30686",
+            "date": "2014-02-18T08:34:55 -01:00",
+            "dateImport": "2016-08-26T06:19:45 -02:00",
+            "amount": 270,
+            "raw": "Occaecat consectetur est ipsum quis dolore sit nostrud incididunt labore dolore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97f212d185bb02196",
+        "key": "5850ecf988ecadf09522381d",
+        "value": {
+            "_id": "5850ecf9aa3ee8235053195c",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "2c033f3f-751a-4e4c-b505-ddeeb6050afb",
+            "date": "2015-04-13T10:13:02 -02:00",
+            "dateImport": "2014-05-31T02:21:30 -02:00",
+            "amount": 36,
+            "raw": "Dolor nulla sit non consequat commodo enim dolore duis aliquip.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9abca6fada802382a",
+        "key": "5850ecf93991a44e07df9283",
+        "value": {
+            "_id": "5850ecf9b120074934331c0e",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "079c9abe-4bff-4265-9799-4cc8ff786a4e",
+            "date": "2016-01-07T08:32:21 -01:00",
+            "dateImport": "2016-08-16T08:53:15 -02:00",
+            "amount": 466,
+            "raw": "Aute non veniam mollit non velit eiusmod sunt cupidatat exercitation est id labore officia.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9c20780695e8df5d9",
+        "key": "5850ecf91863d2fbebc9f0a7",
+        "value": {
+            "_id": "5850ecf921ea1d883c0ef907",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "fbb7ad49-5281-4978-b1a3-4ea2e371c04b",
+            "date": "2016-04-23T03:43:43 -02:00",
+            "dateImport": "2014-11-29T12:35:04 -01:00",
+            "amount": 308,
+            "raw": "Veniam deserunt sit irure duis amet sunt esse dolor labore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf911050704dee7f757",
+        "key": "5850ecf9bb7d64baefbe1b69",
+        "value": {
+            "_id": "5850ecf9c70ddc49c52c3823",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "20102687-769b-4d1c-b73a-530233d5cd66",
+            "date": "2014-08-10T01:51:13 -02:00",
+            "dateImport": "2016-12-10T11:57:06 -01:00",
+            "amount": 64,
+            "raw": "Id veniam veniam labore consectetur sit anim consectetur non nostrud dolor deserunt pariatur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90fca16f94a20777d",
+        "key": "5850ecf931602a60d0e82e2b",
+        "value": {
+            "_id": "5850ecf9fb65b9841eb05092",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "b2973e77-0152-413d-8e88-f2b5a44f1d11",
+            "date": "2016-02-17T01:17:08 -01:00",
+            "dateImport": "2016-02-29T06:51:00 -01:00",
+            "amount": 210,
+            "raw": "Sit ipsum magna nostrud eu et cupidatat deserunt ad quis officia velit in Lorem aute.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf93e8161cd39a8491e",
+        "key": "5850ecf93fa2bf463fec1eec",
+        "value": {
+            "_id": "5850ecf9f53cc147b2b32f0d",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "8bdd13bc-fcef-4a3b-9dff-46e84e33e006",
+            "date": "2015-07-05T03:07:47 -02:00",
+            "dateImport": "2015-08-04T11:50:25 -02:00",
+            "amount": 339,
+            "raw": "Adipisicing veniam ut exercitation deserunt nostrud enim in cupidatat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9395bb8331977d85c",
+        "key": "5850ecf95040bebfb840fa28",
+        "value": {
+            "_id": "5850ecf9e1ddb1bb3542f443",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "f0a9fe28-1d14-4e22-ab07-1debfd16eff2",
+            "date": "2015-06-13T02:43:15 -02:00",
+            "dateImport": "2015-11-15T09:51:11 -01:00",
+            "amount": 470,
+            "raw": "Laborum quis pariatur dolor ullamco occaecat ea in sit deserunt voluptate consequat eiusmod veniam ipsum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9c97d5a2a0d81e1bc",
+        "key": "5850ecf9fb5516913712e7f9",
+        "value": {
+            "_id": "5850ecf9f88eb28c36927d0c",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "bbc87110-98a6-4307-94aa-02d3e5703afa",
+            "date": "2014-10-31T04:07:00 -01:00",
+            "dateImport": "2016-02-23T03:32:09 -01:00",
+            "amount": 289,
+            "raw": "Lorem elit sit dolor tempor eiusmod culpa fugiat ut excepteur Lorem cillum id ea sint.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f87e5d4bf4305da6",
+        "key": "5850ecf96f7c36ebc7b30aa5",
+        "value": {
+            "_id": "5850ecf90648edac78ee22dc",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "b7d899c9-4a7c-44bc-a491-8a5fd97bf446",
+            "date": "2015-07-26T03:05:03 -02:00",
+            "dateImport": "2015-02-10T02:50:13 -01:00",
+            "amount": 283,
+            "raw": "Est est nisi id non sunt eu commodo labore proident nostrud sint reprehenderit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96b1e5d33d704dfae",
+        "key": "5850ecf9d657b4da3553ac1d",
+        "value": {
+            "_id": "5850ecf9b87f190baac4a3ec",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "664242ec-57ee-4d9d-9b82-41f7caff2608",
+            "date": "2016-01-01T05:51:47 -01:00",
+            "dateImport": "2014-06-25T10:11:55 -02:00",
+            "amount": 376,
+            "raw": "Nostrud ad reprehenderit incididunt tempor anim cupidatat fugiat eiusmod ex irure dolore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf91f8c9185221ac16a",
+        "key": "5850ecf9063f6948836b7f91",
+        "value": {
+            "_id": "5850ecf92c3c156618223f91",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "beba98a3-7b18-456b-91e2-836625040a5c",
+            "date": "2014-06-21T12:34:49 -02:00",
+            "dateImport": "2016-07-27T02:32:35 -02:00",
+            "amount": 423,
+            "raw": "Non commodo anim esse reprehenderit esse velit est non.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f2bbb3113c6f9319",
+        "key": "5850ecf99ec1592e72f65f6c",
+        "value": {
+            "_id": "5850ecf945a05fca1d7de764",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "9c3f0fca-7204-490c-af70-d93a212ff859",
+            "date": "2015-11-03T12:38:01 -01:00",
+            "dateImport": "2014-04-14T07:12:51 -02:00",
+            "amount": 366,
+            "raw": "Nulla reprehenderit tempor in non.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf972473fc48c5780ed",
+        "key": "5850ecf95d5c0f3acb9cdd66",
+        "value": {
+            "_id": "5850ecf9f6664202d9daf6bd",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "abb39c9c-b584-4283-a87e-410e9c679a03",
+            "date": "2014-08-07T05:26:17 -02:00",
+            "dateImport": "2015-03-10T08:18:54 -01:00",
+            "amount": 223,
+            "raw": "Cillum magna ad eu laborum eu.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d69ab093228064f6",
+        "key": "5850ecf9b7a798f63aa5f489",
+        "value": {
+            "_id": "5850ecf94fc830100a0c6ae1",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "482a6e27-af64-4661-ab87-8a8d27a2c4fd",
+            "date": "2014-02-23T03:24:14 -01:00",
+            "dateImport": "2014-10-28T10:50:02 -01:00",
+            "amount": 407,
+            "raw": "Veniam voluptate labore ea aliquip ullamco exercitation voluptate sit dolore veniam et labore commodo officia.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9842a28055eab67dc",
+        "key": "5850ecf9bb2a14d42ab283e0",
+        "value": {
+            "_id": "5850ecf923827ddd76d89ad8",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "c7a02d9d-03b8-4a6d-a4a4-7152e075d297",
+            "date": "2016-09-24T06:11:13 -02:00",
+            "dateImport": "2014-01-20T08:26:32 -01:00",
+            "amount": 128,
+            "raw": "Duis ex et do eu non consequat nisi.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf91390de5b0eda1926",
+        "key": "5850ecf9d2f09752febffc08",
+        "value": {
+            "_id": "5850ecf9737a97e61930463d",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "483dba17-0419-46de-8bf0-949d23bf130e",
+            "date": "2014-07-07T06:30:15 -02:00",
+            "dateImport": "2014-12-24T12:13:07 -01:00",
+            "amount": 166,
+            "raw": "Id tempor laboris amet anim do dolore labore nostrud cillum anim cillum ut deserunt pariatur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9108fb75063dff81b",
+        "key": "5850ecf9c3c4520f3486f550",
+        "value": {
+            "_id": "5850ecf97d935815e48e3b2f",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "87872b8e-2058-4d1a-9a7e-4b1d47407b46",
+            "date": "2016-04-03T02:40:56 -02:00",
+            "dateImport": "2014-05-27T11:08:03 -02:00",
+            "amount": 405,
+            "raw": "Excepteur anim nostrud aliqua dolor.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf909dbe2949d12eb72",
+        "key": "5850ecf9e9ec9e2b2d356245",
+        "value": {
+            "_id": "5850ecf9a69c12b7692131d2",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "457e07fb-d3fc-4a25-add1-96160d8d2984",
+            "date": "2016-07-08T07:51:52 -02:00",
+            "dateImport": "2015-12-01T01:23:11 -01:00",
+            "amount": 274,
+            "raw": "Excepteur nulla duis minim excepteur commodo dolore quis enim aute.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf95472858b076efb45",
+        "key": "5850ecf9b0852f104b29010e",
+        "value": {
+            "_id": "5850ecf99ebaf011c616df6b",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "90f5bdc0-edac-4f03-8740-48c022a517af",
+            "date": "2014-04-17T06:09:34 -02:00",
+            "dateImport": "2015-10-17T07:42:29 -02:00",
+            "amount": 108,
+            "raw": "Ut ea duis ut sunt nostrud culpa veniam esse sit veniam.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf937200c77f6b543a2",
+        "key": "5850ecf9624e4bde02150c36",
+        "value": {
+            "_id": "5850ecf982b37b0a205be8e5",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "c235dfed-388e-4aa3-aa47-983a40f67fdc",
+            "date": "2014-06-06T06:31:33 -02:00",
+            "dateImport": "2014-05-31T07:01:36 -02:00",
+            "amount": 53,
+            "raw": "Fugiat ipsum ullamco laborum incididunt fugiat elit ex sit aute cillum nostrud est occaecat nulla.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf94ff7fb5b508dcacd",
+        "key": "5850ecf9123de5c3982fc7e1",
+        "value": {
+            "_id": "5850ecf9759ae9542a6bfe42",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "604a8c63-8cff-446f-a12b-2fedac693a42",
+            "date": "2015-01-24T12:19:00 -01:00",
+            "dateImport": "2016-11-02T09:48:43 -01:00",
+            "amount": 467,
+            "raw": "Exercitation minim nostrud labore dolore reprehenderit amet laboris aliquip.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9c6f9629fac53fec1",
+        "key": "5850ecf961f0e8900aad8789",
+        "value": {
+            "_id": "5850ecf9894560e06377c703",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "6c2a2be6-f11e-433d-8ff4-260e88791fd5",
+            "date": "2016-08-28T04:14:19 -02:00",
+            "dateImport": "2014-05-16T08:47:49 -02:00",
+            "amount": 105,
+            "raw": "Laboris cupidatat nostrud amet occaecat duis occaecat magna ex.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf91ce6d6a65c819343",
+        "key": "5850ecf9e93484bbb79543a9",
+        "value": {
+            "_id": "5850ecf94726aecb4c7af850",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "6c92ffc0-3d74-4408-84ae-eb8e0e3b3b31",
+            "date": "2015-07-03T01:46:47 -02:00",
+            "dateImport": "2016-02-26T03:14:38 -01:00",
+            "amount": 436,
+            "raw": "Et do irure do fugiat enim irure irure est.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ff609bc696da4548",
+        "key": "5850ecf92ba443fef2ed92de",
+        "value": {
+            "_id": "5850ecf9b7b76e3ed5dad27a",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "88ebf3dc-a06e-4869-95b8-422a47587b29",
+            "date": "2015-06-28T10:31:24 -02:00",
+            "dateImport": "2015-11-23T11:13:57 -01:00",
+            "amount": 322,
+            "raw": "Labore laborum nulla eiusmod esse.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9869b60ba8d349648",
+        "key": "5850ecf9ad91488d3b2fc291",
+        "value": {
+            "_id": "5850ecf9a8e601a9c3823d82",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "3b21d207-1cc3-48a0-bf3b-69e929f8ca99",
+            "date": "2015-08-18T09:00:33 -02:00",
+            "dateImport": "2015-04-19T02:12:29 -02:00",
+            "amount": 394,
+            "raw": "Laboris tempor dolore voluptate commodo deserunt cupidatat magna esse.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b98e0abed2c81fa2",
+        "key": "5850ecf96d24051c2c7b92a6",
+        "value": {
+            "_id": "5850ecf9bd86ea6738a5029d",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "dbe562eb-c2bb-4b87-9d2e-71b0db49e48e",
+            "date": "2014-12-23T07:07:45 -01:00",
+            "dateImport": "2015-01-14T05:59:46 -01:00",
+            "amount": 385,
+            "raw": "Incididunt anim id labore culpa elit nisi anim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9fa8a5e49fb340626",
+        "key": "5850ecf93a4d9ea2271247fb",
+        "value": {
+            "_id": "5850ecf99b875aafdf91de2f",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "41808e2c-32dc-453b-8306-4c6d81a299f5",
+            "date": "2015-12-26T10:32:37 -01:00",
+            "dateImport": "2014-09-14T10:59:25 -02:00",
+            "amount": 452,
+            "raw": "Dolore laboris est veniam proident nulla sint anim amet aliqua laboris nostrud eu.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9cc5d659abab6736c",
+        "key": "5850ecf9a8596293904ea538",
+        "value": {
+            "_id": "5850ecf9ecea20938b8bdf74",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "51d97d0d-84d0-4ae6-aff3-afcbc86d0c1a",
+            "date": "2015-12-25T08:14:49 -01:00",
+            "dateImport": "2014-05-09T05:32:36 -02:00",
+            "amount": 197,
+            "raw": "Elit mollit labore commodo enim exercitation ex.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f05be9193459e4a9",
+        "key": "5850ecf9ab1e7d819a6f40dd",
+        "value": {
+            "_id": "5850ecf9cb5c49f91a2b9351",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "e433bc15-e27f-493d-8f56-1cb7b35c2817",
+            "date": "2014-11-18T05:06:19 -01:00",
+            "dateImport": "2016-07-12T01:08:31 -02:00",
+            "amount": 146,
+            "raw": "Irure ipsum ullamco minim do irure esse commodo officia est ea.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf98dfc993026374936",
+        "key": "5850ecf9d29db62147d7022a",
+        "value": {
+            "_id": "5850ecf925d996267d7b8d28",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "5b36ecc2-3579-44a3-929c-f8493f3218f1",
+            "date": "2016-05-11T04:06:17 -02:00",
+            "dateImport": "2014-09-01T03:23:51 -02:00",
+            "amount": 148,
+            "raw": "Culpa laborum labore voluptate mollit quis dolor excepteur aliquip ut esse incididunt non laboris.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9bdcd06a528bea7f1",
+        "key": "5850ecf9a6481b51d7a1331c",
+        "value": {
+            "_id": "5850ecf9242015d041b9c80f",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "5a687603-4fc1-4724-8a5c-ad68f48c805e",
+            "date": "2015-06-13T10:03:50 -02:00",
+            "dateImport": "2016-03-08T12:44:19 -01:00",
+            "amount": 291,
+            "raw": "Eiusmod eiusmod duis magna fugiat officia elit sunt commodo aliquip nisi.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9462337788b4ea230",
+        "key": "5850ecf9b98f5c9b51f3c52c",
+        "value": {
+            "_id": "5850ecf9842dbfd5aff08a18",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "0477dc7d-6d13-42f1-9758-82d0b38a6029",
+            "date": "2015-07-26T11:13:40 -02:00",
+            "dateImport": "2016-01-09T08:04:17 -01:00",
+            "amount": 77,
+            "raw": "Cupidatat enim occaecat incididunt mollit aliquip veniam.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9070d5a83418db7fb",
+        "key": "5850ecf92703961b5b13a5fe",
+        "value": {
+            "_id": "5850ecf9ed6c44c51167fb6b",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "ba865241-003c-47df-ad29-e31dc4f1b3c9",
+            "date": "2015-07-24T11:48:30 -02:00",
+            "dateImport": "2015-09-19T06:36:45 -02:00",
+            "amount": 226,
+            "raw": "In dolore laborum sit enim irure sunt eiusmod.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ffa1b2e332d64894",
+        "key": "5850ecf900a28c82932ebeef",
+        "value": {
+            "_id": "5850ecf9c880b26f5325717b",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "b592400f-f76b-4a13-8822-848c7d59655d",
+            "date": "2014-06-01T10:15:12 -02:00",
+            "dateImport": "2015-05-27T11:15:21 -02:00",
+            "amount": 266,
+            "raw": "Ea officia voluptate nisi aute nisi dolor enim esse anim est irure.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97bb33c7f9aba6e78",
+        "key": "5850ecf9c0536a094b0c2bf0",
+        "value": {
+            "_id": "5850ecf99e13f5b655efe272",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "4d0a0bf4-814c-4541-9338-502af37a64dd",
+            "date": "2014-03-04T12:02:55 -01:00",
+            "dateImport": "2015-10-27T10:59:39 -01:00",
+            "amount": 488,
+            "raw": "Sunt sunt culpa nisi culpa velit enim consequat id.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf901f52770b750a8a8",
+        "key": "5850ecf98cf681be67fe58cc",
+        "value": {
+            "_id": "5850ecf973a22499627dadac",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "a75912c9-6991-40e8-a27b-5334db17a58c",
+            "date": "2016-04-30T07:08:19 -02:00",
+            "dateImport": "2015-12-23T01:34:16 -01:00",
+            "amount": 354,
+            "raw": "Consectetur laboris adipisicing cupidatat veniam labore exercitation nisi duis reprehenderit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96bfb1d1e54e7b07c",
+        "key": "5850ecf9425c3e36943d641c",
+        "value": {
+            "_id": "5850ecf9238e5d7e98ebd555",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "af1359e6-46b7-4461-9359-4e5db29ad9e3",
+            "date": "2015-08-05T08:02:16 -02:00",
+            "dateImport": "2014-07-13T11:10:32 -02:00",
+            "amount": 253,
+            "raw": "Mollit proident anim irure aliqua laborum exercitation quis pariatur tempor non.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9dcbef9bc862d7eee",
+        "key": "5850ecf9eba6e3a9798896d1",
+        "value": {
+            "_id": "5850ecf9043a8e9fb79f999e",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "bbdddf87-3c5c-405c-98ef-623390913385",
+            "date": "2014-02-18T08:42:16 -01:00",
+            "dateImport": "2015-09-25T02:12:19 -02:00",
+            "amount": 467,
+            "raw": "Ea et esse sint laboris sit in eiusmod.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf996760fcb1d72ffab",
+        "key": "5850ecf9c07d70b7bf04618e",
+        "value": {
+            "_id": "5850ecf94c05accf39da7bdd",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "4cd9958d-1874-4d98-876b-da31dc57be11",
+            "date": "2015-04-13T12:40:08 -02:00",
+            "dateImport": "2015-05-12T03:21:42 -02:00",
+            "amount": 60,
+            "raw": "Nisi culpa ut nisi officia tempor mollit duis ullamco.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9c91b3320e06d704d",
+        "key": "5850ecf9b3434d61c41f936a",
+        "value": {
+            "_id": "5850ecf9acbcc4749872a6bf",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "59651e5a-570d-44e8-ad21-4368d059c6fa",
+            "date": "2014-12-08T05:18:58 -01:00",
+            "dateImport": "2015-12-07T01:32:38 -01:00",
+            "amount": 236,
+            "raw": "Ullamco veniam pariatur incididunt quis ea quis ipsum sunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d2342c4615ece2b8",
+        "key": "5850ecf9181df791cbaee8f1",
+        "value": {
+            "_id": "5850ecf999cf4eb8aaddedf4",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "f64d4436-0221-439e-bda0-15fa4f76c7e7",
+            "date": "2015-10-22T05:58:57 -02:00",
+            "dateImport": "2016-09-25T05:57:20 -02:00",
+            "amount": 118,
+            "raw": "Reprehenderit quis ullamco nisi ea minim cillum do.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf91658f2c604e39fbb",
+        "key": "5850ecf9b0b38e3b6ceda0df",
+        "value": {
+            "_id": "5850ecf96edf768e4185e0f6",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "b43afb1c-4d59-461d-90da-8112d5380681",
+            "date": "2015-11-30T03:47:20 -01:00",
+            "dateImport": "2016-10-15T05:19:36 -02:00",
+            "amount": 189,
+            "raw": "Pariatur Lorem do sunt officia reprehenderit dolor sint veniam.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ec368ff4ca544fcf",
+        "key": "5850ecf93cd53a37b8a6385a",
+        "value": {
+            "_id": "5850ecf9f78e462c1fd772d6",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "e71df67a-6d2a-4090-998e-4e0f3b0ba939",
+            "date": "2014-01-24T10:35:27 -01:00",
+            "dateImport": "2015-05-24T08:00:26 -02:00",
+            "amount": 355,
+            "raw": "Ipsum non fugiat dolore eu eiusmod tempor.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9020fa9d49c9d5701",
+        "key": "5850ecf99e5b124debd69570",
+        "value": {
+            "_id": "5850ecf916d93fe1f033a294",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "307d8dc5-8d09-4f61-8773-27eb93bb275f",
+            "date": "2014-07-06T10:12:25 -02:00",
+            "dateImport": "2015-12-14T04:35:11 -01:00",
+            "amount": 454,
+            "raw": "Aliqua ea deserunt sunt id voluptate magna.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b35cc711906db59a",
+        "key": "5850ecf9463499a81755731c",
+        "value": {
+            "_id": "5850ecf952ad87fb9a26610a",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "9a526a62-67e0-4018-aeef-b3abf31aebdc",
+            "date": "2016-02-15T04:49:25 -01:00",
+            "dateImport": "2014-10-21T09:10:31 -02:00",
+            "amount": 327,
+            "raw": "Laborum occaecat aute laborum enim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97b79c15dfcea575e",
+        "key": "5850ecf98b59cafc25afcafd",
+        "value": {
+            "_id": "5850ecf90b2d81b73d5fbe52",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "7432fee9-40a2-4ceb-8440-645a5df7a757",
+            "date": "2014-12-15T03:09:17 -01:00",
+            "dateImport": "2016-08-20T01:59:51 -02:00",
+            "amount": 205,
+            "raw": "Voluptate consequat consectetur velit incididunt dolore anim excepteur in laboris ipsum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ab718dba9ab67e1d",
+        "key": "5850ecf9399da79459f4eb30",
+        "value": {
+            "_id": "5850ecf9da24b6de919dc78a",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "268f6d08-7f14-487a-8e89-cf8067614c11",
+            "date": "2016-09-09T11:18:25 -02:00",
+            "dateImport": "2014-04-24T10:24:16 -02:00",
+            "amount": 247,
+            "raw": "Commodo laborum do irure consectetur esse velit aliquip sint irure.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f0c9ef8edc1fc90d",
+        "key": "5850ecf970dbbf5f8b70afac",
+        "value": {
+            "_id": "5850ecf9fb32ba2c886d0dee",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "12ec8b13-b748-4c21-a515-26aac4021e05",
+            "date": "2014-01-22T05:47:46 -01:00",
+            "dateImport": "2015-05-06T12:17:36 -02:00",
+            "amount": 244,
+            "raw": "Velit velit excepteur fugiat amet adipisicing reprehenderit sit cupidatat consequat eiusmod velit proident mollit laborum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ec85e86aba68bc61",
+        "key": "5850ecf9d8a4f34e4228345d",
+        "value": {
+            "_id": "5850ecf9b1e604c80dc47d6c",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "46cb8a07-0045-4d31-b559-ceb6c7361a83",
+            "date": "2016-08-22T05:08:58 -02:00",
+            "dateImport": "2014-03-14T09:39:49 -01:00",
+            "amount": 105,
+            "raw": "Eu deserunt pariatur excepteur eiusmod veniam nisi.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9af22ef75095ed7fe",
+        "key": "5850ecf9184b86e77a42ce07",
+        "value": {
+            "_id": "5850ecf91da7122fbad372c4",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "f883b884-02a5-4d5d-8497-1f807f65d5fe",
+            "date": "2014-04-22T11:31:47 -02:00",
+            "dateImport": "2015-11-04T05:35:40 -01:00",
+            "amount": 442,
+            "raw": "Ipsum nostrud exercitation dolor proident ea esse est labore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f70ea7aa82c5b6b3",
+        "key": "5850ecf91b09ec916820500c",
+        "value": {
+            "_id": "5850ecf9e7501b7a5e83d665",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "d74519b6-7ff3-4a75-bd3c-e718f6f44be4",
+            "date": "2016-01-23T04:22:11 -01:00",
+            "dateImport": "2015-06-03T08:48:46 -02:00",
+            "amount": 433,
+            "raw": "Elit minim velit nostrud dolor aliquip.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf98b11c42d9c3dec4d",
+        "key": "5850ecf98d76e6c473a7c8e7",
+        "value": {
+            "_id": "5850ecf9d8529aa7eb358dfa",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "5f0e8cc8-5c04-4e3c-8de9-c7fb54eb4188",
+            "date": "2015-06-06T01:38:17 -02:00",
+            "dateImport": "2014-07-13T12:14:11 -02:00",
+            "amount": 179,
+            "raw": "Ad nulla consectetur eu adipisicing esse elit ullamco nulla laborum in.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97de6090623ec7949",
+        "key": "5850ecf9718c7eb5217adfad",
+        "value": {
+            "_id": "5850ecf93051add28dca62f3",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "bc639650-b247-4221-99b0-7f0221bfe9df",
+            "date": "2016-12-01T07:35:48 -01:00",
+            "dateImport": "2014-09-25T03:35:18 -02:00",
+            "amount": 320,
+            "raw": "Pariatur nostrud consectetur deserunt velit eiusmod cupidatat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf91e28974651a1071a",
+        "key": "5850ecf9f5f698cb4554fe22",
+        "value": {
+            "_id": "5850ecf9a48937f875e11014",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "c8e9f407-f9f3-4b8a-8482-c6672a909eae",
+            "date": "2015-12-22T09:39:37 -01:00",
+            "dateImport": "2014-05-26T12:40:42 -02:00",
+            "amount": 324,
+            "raw": "Reprehenderit id commodo nostrud nulla qui eiusmod do incididunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90555a40c93d5fbd9",
+        "key": "5850ecf9040aa42a872a49b3",
+        "value": {
+            "_id": "5850ecf92045b2d998b6e2a1",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "0ae0b587-3ca1-4af6-8fe4-081c8ff4edb6",
+            "date": "2014-11-12T12:37:55 -01:00",
+            "dateImport": "2015-01-18T03:29:08 -01:00",
+            "amount": 467,
+            "raw": "Commodo voluptate sit eiusmod quis minim deserunt nisi labore irure veniam deserunt laborum aliqua.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9de0de4d89c07d0f5",
+        "key": "5850ecf9e88d01c1e5075239",
+        "value": {
+            "_id": "5850ecf9345e066f4c0bf7c7",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "acf66bfb-6309-4441-bab4-b992d7348086",
+            "date": "2015-05-07T10:51:24 -02:00",
+            "dateImport": "2015-04-12T03:43:35 -02:00",
+            "amount": 156,
+            "raw": "Do dolore occaecat sunt est enim labore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf91c1409baf0d0c13a",
+        "key": "5850ecf9892570164fc266bc",
+        "value": {
+            "_id": "5850ecf9225644eff6217881",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "c28babe9-c048-4ba2-9814-e430ece56ad6",
+            "date": "2015-06-01T03:15:03 -02:00",
+            "dateImport": "2015-09-29T11:49:27 -02:00",
+            "amount": 458,
+            "raw": "Est labore eiusmod proident cillum magna cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9318331ea3a1d74ba",
+        "key": "5850ecf93e13aeb2e1d4069e",
+        "value": {
+            "_id": "5850ecf9c96b8d12d8dfb9d5",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "7e88e35c-b9c1-4d91-ad71-fb35ede62ac2",
+            "date": "2016-07-02T08:16:44 -02:00",
+            "dateImport": "2014-08-13T06:45:22 -02:00",
+            "amount": 454,
+            "raw": "Sit proident officia esse deserunt aliquip proident ad.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e3682e29a1dad2b3",
+        "key": "5850ecf95937ce8275c6d3be",
+        "value": {
+            "_id": "5850ecf936f506495adba0ae",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "a6d8aa04-99ac-4b84-bdde-e8baec10ec2b",
+            "date": "2015-05-17T12:59:17 -02:00",
+            "dateImport": "2014-09-22T06:04:10 -02:00",
+            "amount": 95,
+            "raw": "Sunt reprehenderit reprehenderit nisi officia consequat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9cbcce48b24c52950",
+        "key": "5850ecf981a2ae83e023916e",
+        "value": {
+            "_id": "5850ecf9253082898a8fb071",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "bf928f58-7a3c-4849-a67e-e9df6976b03d",
+            "date": "2016-02-07T08:05:21 -01:00",
+            "dateImport": "2014-04-30T05:59:57 -02:00",
+            "amount": 393,
+            "raw": "Irure occaecat ex voluptate est esse aliquip.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9302208c65a3517c1",
+        "key": "5850ecf9ce35712ed0b85a9d",
+        "value": {
+            "_id": "5850ecf964947221a9b8a9c2",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "ab6b1bec-bd29-4e7b-90d2-43170e65c9bf",
+            "date": "2014-07-06T07:13:31 -02:00",
+            "dateImport": "2016-07-25T04:55:37 -02:00",
+            "amount": 55,
+            "raw": "Do do nostrud adipisicing Lorem elit aliqua qui tempor fugiat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9317317571c071757",
+        "key": "5850ecf925f5469e6d5a10f2",
+        "value": {
+            "_id": "5850ecf9bbe334338201825a",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "60bc2b24-0b3d-4376-943e-915778d111d7",
+            "date": "2015-09-12T02:00:37 -02:00",
+            "dateImport": "2014-04-30T01:16:55 -02:00",
+            "amount": 189,
+            "raw": "Incididunt elit Lorem reprehenderit ullamco.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9c9ca34530181fd4b",
+        "key": "5850ecf9384bc226b8bb9c7f",
+        "value": {
+            "_id": "5850ecf9d2bb7673da17fb5b",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "8b25bb35-220a-4043-b54a-cdd0db139f9c",
+            "date": "2014-02-15T07:05:31 -01:00",
+            "dateImport": "2014-08-12T01:42:55 -02:00",
+            "amount": 188,
+            "raw": "Consectetur tempor ad nisi amet in qui minim dolore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf920b6ad7c050b4e58",
+        "key": "5850ecf94aff169256f60858",
+        "value": {
+            "_id": "5850ecf99a28138b76e2714f",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "1e3c2fa6-b595-4499-a7fb-71f0836ca481",
+            "date": "2016-01-31T04:55:09 -01:00",
+            "dateImport": "2014-12-16T04:44:28 -01:00",
+            "amount": 336,
+            "raw": "Exercitation anim amet est irure commodo culpa.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9acb5bfce8a6641de",
+        "key": "5850ecf9ef89bafb5a17794c",
+        "value": {
+            "_id": "5850ecf97a18c05371810915",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "ab8a15c6-1e7f-48b3-8629-2c2f8dbeb855",
+            "date": "2014-08-11T07:29:01 -02:00",
+            "dateImport": "2016-03-18T01:48:31 -01:00",
+            "amount": 410,
+            "raw": "Anim est aute proident est duis minim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9dd2533c3c4bae11c",
+        "key": "5850ecf9741890e1815a754c",
+        "value": {
+            "_id": "5850ecf9d5c3c15bf4b26b8e",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "d787ea7f-493a-4bc2-827c-4106aad4919b",
+            "date": "2015-11-21T02:17:19 -01:00",
+            "dateImport": "2014-03-13T01:33:30 -01:00",
+            "amount": 34,
+            "raw": "Minim et ex eiusmod nulla voluptate est non commodo nisi in id et ad.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9be921cbc3eca3f37",
+        "key": "5850ecf916a18e50292a65d6",
+        "value": {
+            "_id": "5850ecf9a342d0f37f07ec67",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "76685f71-95cf-45f1-aba5-f3aecffd6293",
+            "date": "2014-08-21T07:36:46 -02:00",
+            "dateImport": "2014-01-05T08:31:50 -01:00",
+            "amount": 249,
+            "raw": "Quis eiusmod commodo aute tempor labore dolor in sint veniam sunt duis voluptate.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf94516b9531a8259d3",
+        "key": "5850ecf9cc66200e200ec1a8",
+        "value": {
+            "_id": "5850ecf945e0dcb55c5cf30c",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "dc7c78c3-2492-45b0-838e-69f66aaf54b7",
+            "date": "2016-03-12T11:36:35 -01:00",
+            "dateImport": "2016-09-25T10:07:02 -02:00",
+            "amount": 488,
+            "raw": "Ullamco consequat minim quis non ullamco Lorem duis magna ipsum minim sunt laborum incididunt excepteur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf926b14e131c901a49",
+        "key": "5850ecf900e1d7c939f6de82",
+        "value": {
+            "_id": "5850ecf9893021dc67037402",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "39ae0727-b0d4-4c5f-861c-6a03ed3398c2",
+            "date": "2014-11-20T07:35:34 -01:00",
+            "dateImport": "2015-07-10T04:35:05 -02:00",
+            "amount": 330,
+            "raw": "In cupidatat aliqua qui irure consectetur aute.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b73646c23c3dda44",
+        "key": "5850ecf99548c550cf4c97d8",
+        "value": {
+            "_id": "5850ecf916f53b4a8d0d8bc1",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "78e5b8d9-ff5a-4ef5-bbd1-42d0931ed363",
+            "date": "2015-11-28T03:51:35 -01:00",
+            "dateImport": "2015-02-17T05:24:13 -01:00",
+            "amount": 98,
+            "raw": "Exercitation duis cillum Lorem dolor consequat ad id nisi cillum aute ex deserunt dolor in.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf968ed6198b4769e8b",
+        "key": "5850ecf9d684b1da8061b1b9",
+        "value": {
+            "_id": "5850ecf9dc496d52d21b6fe1",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "9d0bf308-ba67-46ff-af39-ba1b9eb79a6b",
+            "date": "2014-07-22T12:38:34 -02:00",
+            "dateImport": "2015-09-20T10:26:41 -02:00",
+            "amount": 119,
+            "raw": "Exercitation mollit fugiat reprehenderit excepteur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9346996b09abbd36f",
+        "key": "5850ecf9f162a90a03a46c97",
+        "value": {
+            "_id": "5850ecf92a616ff0120a1595",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "f4e45a94-674c-4c51-8136-76a8cc2112af",
+            "date": "2016-02-08T07:51:06 -01:00",
+            "dateImport": "2014-11-17T08:29:29 -01:00",
+            "amount": 235,
+            "raw": "Magna dolore qui enim tempor cillum eiusmod labore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96bd2725e31cefe4b",
+        "key": "5850ecf9ce8978a82a36a1a4",
+        "value": {
+            "_id": "5850ecf9bd272bb76eeebb2b",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "8986c35c-8e95-4146-9706-e4f388685dc9",
+            "date": "2014-01-25T12:17:16 -01:00",
+            "dateImport": "2016-02-15T10:35:37 -01:00",
+            "amount": 325,
+            "raw": "Non ut ut commodo dolor consequat duis esse excepteur velit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9a5318e4ab1ebbdf9",
+        "key": "5850ecf9e5f4b9e83ccd7851",
+        "value": {
+            "_id": "5850ecf9e0e008f0a5163bc2",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "51a8c74c-d11c-474d-861b-17a4c4ae309c",
+            "date": "2016-04-25T03:32:59 -02:00",
+            "dateImport": "2015-04-28T07:03:24 -02:00",
+            "amount": 246,
+            "raw": "Sit enim eiusmod commodo sit aliqua quis proident qui aliqua nulla cillum minim officia mollit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9728eedb483136352",
+        "key": "5850ecf9c95ff318c7fa45ec",
+        "value": {
+            "_id": "5850ecf905acc8370e69f616",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "cf8a279b-293b-413f-95b9-b6584ec69dcf",
+            "date": "2014-01-18T09:02:50 -01:00",
+            "dateImport": "2014-11-30T08:34:40 -01:00",
+            "amount": 125,
+            "raw": "Pariatur ut id non minim ut veniam consectetur consequat occaecat eiusmod duis tempor dolor.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9eef3ca49d04f5c2f",
+        "key": "5850ecf9c1167273264b070e",
+        "value": {
+            "_id": "5850ecf907edbb47f9b9cfff",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "256baf70-a0b6-4a1b-a33f-970979ea6508",
+            "date": "2014-04-07T03:24:58 -02:00",
+            "dateImport": "2015-07-31T01:10:09 -02:00",
+            "amount": 495,
+            "raw": "Aliqua ad sint magna voluptate esse sint in veniam mollit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf98ce2058f11528cd8",
+        "key": "5850ecf919df96fc4abbad91",
+        "value": {
+            "_id": "5850ecf95ccdb799897a9b10",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "64a37a08-fccc-4184-9ce7-b2bde70c7824",
+            "date": "2016-10-09T08:24:32 -02:00",
+            "dateImport": "2014-06-19T01:05:22 -02:00",
+            "amount": 66,
+            "raw": "Tempor velit nostrud non eu ex velit dolor commodo id eu dolor dolore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97d371e78ce2a1c92",
+        "key": "5850ecf934e4a02a1227bd63",
+        "value": {
+            "_id": "5850ecf917e18c50dbdb594a",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "ec7ccbed-8976-4e2d-b200-a4771fd3958b",
+            "date": "2014-03-03T03:15:46 -01:00",
+            "dateImport": "2016-11-21T11:01:58 -01:00",
+            "amount": 38,
+            "raw": "Lorem fugiat aliquip sunt deserunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9019a88d96c383026",
+        "key": "5850ecf923d6271dee9218cd",
+        "value": {
+            "_id": "5850ecf9a8f21049af9df55a",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "85f39578-092d-4e2f-8f3b-d2a6ec88b72b",
+            "date": "2014-04-17T01:35:40 -02:00",
+            "dateImport": "2014-10-02T07:15:11 -02:00",
+            "amount": 303,
+            "raw": "Eu ex sunt sunt occaecat dolore quis.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf975a736b2370f76bf",
+        "key": "5850ecf988542b98aae61ffa",
+        "value": {
+            "_id": "5850ecf97f8b22f7aa2b3b39",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "347c5c88-e88b-4b14-98be-0116b89dce4b",
+            "date": "2014-09-21T06:08:37 -02:00",
+            "dateImport": "2014-10-23T10:21:04 -02:00",
+            "amount": 229,
+            "raw": "Laborum sit Lorem in enim do nisi pariatur sint elit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf946f6657c94fd71a4",
+        "key": "5850ecf9ee6a38edc07f09bc",
+        "value": {
+            "_id": "5850ecf914dacb20b3dda2d0",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "838ffbd3-d1f6-4244-9676-6ab4a310b2c5",
+            "date": "2014-09-22T12:24:12 -02:00",
+            "dateImport": "2016-04-11T03:59:59 -02:00",
+            "amount": 166,
+            "raw": "Dolor aliqua excepteur et ipsum nostrud qui nostrud sunt in voluptate culpa irure ullamco officia.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf911299d9b654c7414",
+        "key": "5850ecf9de719df466db400b",
+        "value": {
+            "_id": "5850ecf95b0f9c8f2ad9689e",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "991643f9-a8ba-41eb-88ad-88be0833c2d9",
+            "date": "2016-04-05T12:37:25 -02:00",
+            "dateImport": "2016-11-22T05:59:08 -01:00",
+            "amount": 214,
+            "raw": "Sunt dolor voluptate et voluptate.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf950fbbb3931992167",
+        "key": "5850ecf9e06dc6fc8ea6b30a",
+        "value": {
+            "_id": "5850ecf91a7518bc1bef61e2",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "4eee367c-a610-4ed9-8e16-91942c688f5b",
+            "date": "2014-11-23T06:58:52 -01:00",
+            "dateImport": "2015-08-17T08:40:37 -02:00",
+            "amount": 86,
+            "raw": "Ipsum aute minim eu laboris incididunt nostrud voluptate adipisicing in aliqua Lorem laboris anim occaecat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9628414cbc55027ff",
+        "key": "5850ecf97110db59c5bc9cf0",
+        "value": {
+            "_id": "5850ecf973fab1e021628ffe",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "5e3503b5-36a8-449f-8f29-9daaad6f4586",
+            "date": "2015-04-08T08:40:00 -02:00",
+            "dateImport": "2015-04-27T12:03:53 -02:00",
+            "amount": 294,
+            "raw": "Irure voluptate elit qui do eu magna occaecat velit ad.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b023bf58a3874fa7",
+        "key": "5850ecf9e24f28d9fe819634",
+        "value": {
+            "_id": "5850ecf91979dfc8722cd46e",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "13896d79-9605-4a14-a016-67b366000c63",
+            "date": "2014-07-21T03:34:19 -02:00",
+            "dateImport": "2016-09-06T02:09:58 -02:00",
+            "amount": 177,
+            "raw": "Mollit consequat veniam non ipsum esse nisi adipisicing irure elit ex ea commodo magna.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf99f63aeab5352565f",
+        "key": "5850ecf97a1cdd8a427aaa7f",
+        "value": {
+            "_id": "5850ecf9944bf8bb11f02aa3",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "28b79399-d5a2-40f9-bd4f-e328c6bf8a56",
+            "date": "2016-10-31T10:18:39 -01:00",
+            "dateImport": "2016-06-14T06:32:44 -02:00",
+            "amount": 491,
+            "raw": "Esse excepteur irure irure commodo occaecat consectetur veniam eu.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9434a7af28e2bada9",
+        "key": "5850ecf9a4425c162117f137",
+        "value": {
+            "_id": "5850ecf920902ada0e6981fc",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "f8a05a75-8c67-45aa-ac56-531d86f60f76",
+            "date": "2014-02-11T03:56:19 -01:00",
+            "dateImport": "2016-07-06T03:49:09 -02:00",
+            "amount": 476,
+            "raw": "Consequat amet reprehenderit mollit proident irure Lorem.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf912d4327b1dcaec5a",
+        "key": "5850ecf96a3f1db4a23aa22f",
+        "value": {
+            "_id": "5850ecf9f40b8e8417ed0f47",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "afe4ab6a-534c-45a5-b04a-72e74e009a6c",
+            "date": "2014-10-05T09:08:16 -02:00",
+            "dateImport": "2015-08-25T06:56:07 -02:00",
+            "amount": 200,
+            "raw": "Ex ullamco laboris duis adipisicing et voluptate mollit velit enim aliquip.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9385f9b9edc5fe9d5",
+        "key": "5850ecf9affaf02b83b7d336",
+        "value": {
+            "_id": "5850ecf9bf01bc44eec2eb4b",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "e33aa2aa-99ac-41b0-bf70-60f007789e8d",
+            "date": "2015-03-03T08:14:28 -01:00",
+            "dateImport": "2014-12-26T06:24:43 -01:00",
+            "amount": 244,
+            "raw": "Labore commodo voluptate ad fugiat cupidatat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9863fa0a6ce663b4f",
+        "key": "5850ecf9fbc9ed6fcfd39b18",
+        "value": {
+            "_id": "5850ecf9a287b0ef8a7ad79a",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "e808472a-637a-4d19-8b70-ca57d48b2ea7",
+            "date": "2016-09-02T04:03:05 -02:00",
+            "dateImport": "2014-03-06T01:12:20 -01:00",
+            "amount": 79,
+            "raw": "Consequat Lorem labore duis ut consectetur irure consequat aute aute veniam ipsum eiusmod ea.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9019d3bcc9ab6503a",
+        "key": "5850ecf9d27cbdf1b6dd5637",
+        "value": {
+            "_id": "5850ecf9ec7f2efbc1209331",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "dc029a40-e284-4b76-a0ee-1511d282ae31",
+            "date": "2016-09-23T08:03:24 -02:00",
+            "dateImport": "2016-03-24T10:58:47 -01:00",
+            "amount": 115,
+            "raw": "Aute veniam ullamco incididunt ut.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9c1b83ac37cbccf05",
+        "key": "5850ecf919723dbe27d12a0b",
+        "value": {
+            "_id": "5850ecf94ae7012a7215e863",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "45409cf7-2979-43fe-a05c-f8db513acab3",
+            "date": "2015-06-16T02:20:43 -02:00",
+            "dateImport": "2015-10-06T03:59:08 -02:00",
+            "amount": 456,
+            "raw": "Do pariatur anim eu est aliqua.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf94ffc417f59e880e1",
+        "key": "5850ecf9319103e6eb155b28",
+        "value": {
+            "_id": "5850ecf9de017be747b8c68c",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "3ccf8c21-2587-47ca-b744-8bbffd5f92f0",
+            "date": "2014-07-27T03:48:05 -02:00",
+            "dateImport": "2015-08-06T07:13:51 -02:00",
+            "amount": 314,
+            "raw": "Id ea incididunt laborum nulla consequat nulla incididunt laborum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf955ea36d69fea0bef",
+        "key": "5850ecf95aeee739b9e3e25a",
+        "value": {
+            "_id": "5850ecf929f1f7837bdd883a",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "01444acd-4b0b-48b6-af89-12de07803b5e",
+            "date": "2015-02-18T03:57:57 -01:00",
+            "dateImport": "2015-06-09T02:37:51 -02:00",
+            "amount": 323,
+            "raw": "Eiusmod reprehenderit cupidatat exercitation et nostrud.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90d392f0694384f69",
+        "key": "5850ecf9119ee973ab2c19a4",
+        "value": {
+            "_id": "5850ecf96e9e0e8440f84886",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "6cb9ea77-cd29-4e3d-acab-81742c82e36d",
+            "date": "2016-08-05T06:36:37 -02:00",
+            "dateImport": "2016-09-15T05:46:18 -02:00",
+            "amount": 187,
+            "raw": "Sit laborum quis dolore id ea duis duis sunt ipsum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b0ec3afc9a25073a",
+        "key": "5850ecf926581c69a234d344",
+        "value": {
+            "_id": "5850ecf98fcff92d7e024170",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "b25c5cf4-5b13-4e2c-b574-d03d8d78ce38",
+            "date": "2015-01-30T03:34:51 -01:00",
+            "dateImport": "2015-06-09T11:15:54 -02:00",
+            "amount": 446,
+            "raw": "Do do nisi pariatur minim enim deserunt magna elit cillum enim irure enim id duis.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90124fb64433ce5aa",
+        "key": "5850ecf9fe0427b24ec9ef99",
+        "value": {
+            "_id": "5850ecf9edd4b7a462df8aa6",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "7d5a54b7-bd51-484a-a0b2-965ff7f33c32",
+            "date": "2015-09-27T11:39:48 -02:00",
+            "dateImport": "2015-12-08T08:11:07 -01:00",
+            "amount": 200,
+            "raw": "Duis consequat adipisicing cupidatat ea eiusmod.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf998b23da0bd9413ac",
+        "key": "5850ecf9fce65c0de79d19f9",
+        "value": {
+            "_id": "5850ecf9c7eea841e23ac622",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "e4a1b79f-f285-4d70-9e6a-e7551913314c",
+            "date": "2016-05-11T06:32:05 -02:00",
+            "dateImport": "2015-11-02T02:12:53 -01:00",
+            "amount": 338,
+            "raw": "Nisi aliqua exercitation incididunt sint tempor deserunt dolor sunt ex.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf91070122e9725fca6",
+        "key": "5850ecf97df0a2f181a26763",
+        "value": {
+            "_id": "5850ecf9111d5cc58d1b54f1",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "5aef22ae-e820-4b35-9f1a-8bedb88f37c9",
+            "date": "2016-01-25T01:37:41 -01:00",
+            "dateImport": "2016-07-18T05:45:42 -02:00",
+            "amount": 71,
+            "raw": "Officia adipisicing ut aute incididunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90a8e888287208cc9",
+        "key": "5850ecf97d7f5e1fccda8f9d",
+        "value": {
+            "_id": "5850ecf9bef332eac653b80a",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "425f1e1f-14ad-44c7-ae19-0d868fcd0dd9",
+            "date": "2016-04-08T04:41:06 -02:00",
+            "dateImport": "2014-08-23T02:26:38 -02:00",
+            "amount": 154,
+            "raw": "Eu magna non laborum occaecat proident eiusmod eiusmod adipisicing deserunt quis cupidatat ut eiusmod.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9a56d7eb6da9673e1",
+        "key": "5850ecf94e50cb283eb05bac",
+        "value": {
+            "_id": "5850ecf9cf6b1145b988df7d",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "f58b99fa-c32e-44e3-9e2d-99a646cd6875",
+            "date": "2014-08-29T07:29:13 -02:00",
+            "dateImport": "2015-07-15T03:02:27 -02:00",
+            "amount": 420,
+            "raw": "Esse commodo esse Lorem aliquip pariatur amet nisi deserunt non consequat nostrud eiusmod.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf95b8159837b2adb50",
+        "key": "5850ecf94b0e81c7a38e14c7",
+        "value": {
+            "_id": "5850ecf9010a0f572aa602b8",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "50effc24-4b5a-4b35-b80f-c8eca64ff228",
+            "date": "2015-06-28T06:39:37 -02:00",
+            "dateImport": "2014-08-14T02:06:23 -02:00",
+            "amount": 388,
+            "raw": "Id mollit pariatur ipsum anim ut id et magna magna deserunt fugiat elit tempor cupidatat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf98daf75158efb16e7",
+        "key": "5850ecf98f3ab84c95147dd8",
+        "value": {
+            "_id": "5850ecf9bade27644707e112",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "dd4caed5-85d0-421d-96ca-a86bddbd3c34",
+            "date": "2016-11-23T02:19:07 -01:00",
+            "dateImport": "2014-12-06T04:10:09 -01:00",
+            "amount": 153,
+            "raw": "Exercitation qui amet id do mollit et sit consectetur irure sint eu labore et.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf94b3b6a1aa13d0812",
+        "key": "5850ecf9589ba706cfb0a52b",
+        "value": {
+            "_id": "5850ecf938e1c69f569ff12c",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "790aad97-d1b9-4d90-8a89-3c0604c862b8",
+            "date": "2015-01-28T01:46:47 -01:00",
+            "dateImport": "2015-06-05T04:40:29 -02:00",
+            "amount": 128,
+            "raw": "Cupidatat irure ullamco ullamco id irure excepteur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf907321ec4d13cfeb9",
+        "key": "5850ecf99783f2c4098bc6f1",
+        "value": {
+            "_id": "5850ecf991328d28e888ff06",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "56cc0b99-d662-42fe-af98-2e148882a56b",
+            "date": "2014-12-28T03:12:22 -01:00",
+            "dateImport": "2015-11-23T06:08:37 -01:00",
+            "amount": 173,
+            "raw": "Tempor ad incididunt ullamco proident ipsum occaecat eu consequat esse fugiat veniam aute in.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97fbe31af2fc43838",
+        "key": "5850ecf961cd8e59b1049771",
+        "value": {
+            "_id": "5850ecf9ee685f4bd5aa9d30",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "781bee98-ca47-4016-82ae-39930e028873",
+            "date": "2015-08-20T07:12:57 -02:00",
+            "dateImport": "2015-03-14T12:46:34 -01:00",
+            "amount": 212,
+            "raw": "Cillum consectetur incididunt aute sit aliqua nostrud qui aute consequat et consectetur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97f3389ff20810826",
+        "key": "5850ecf9374f64e7852dffb9",
+        "value": {
+            "_id": "5850ecf991f2e5e32763423c",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "7ffd9027-4b30-48a1-be43-1b6543773385",
+            "date": "2016-07-15T02:47:04 -02:00",
+            "dateImport": "2014-02-22T04:48:30 -01:00",
+            "amount": 448,
+            "raw": "Incididunt non proident consequat laborum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ec4dcfd72bf76a38",
+        "key": "5850ecf9818d66175b222784",
+        "value": {
+            "_id": "5850ecf9f79f7f802a5fde7c",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "32852685-b8fc-475b-b67d-65cda7c2216a",
+            "date": "2016-09-28T02:32:37 -02:00",
+            "dateImport": "2014-11-26T10:40:21 -01:00",
+            "amount": 44,
+            "raw": "Qui magna non qui est eiusmod dolor officia pariatur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b7e9db5301d661d8",
+        "key": "5850ecf9bc4255247c6f0d8a",
+        "value": {
+            "_id": "5850ecf9550a57360d1feb3c",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "4ab267a5-0a61-4102-971c-7656daff4ffd",
+            "date": "2014-05-25T11:31:50 -02:00",
+            "dateImport": "2014-08-29T11:39:57 -02:00",
+            "amount": 401,
+            "raw": "Nisi commodo eiusmod commodo laboris.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf987ea8f49773b8c2b",
+        "key": "5850ecf912df13e5928575de",
+        "value": {
+            "_id": "5850ecf9f65e47c2c08b0362",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "b77b0cc7-e0f5-4cf6-b52e-e6cbdcb4781f",
+            "date": "2015-08-12T03:03:08 -02:00",
+            "dateImport": "2016-10-20T11:10:14 -02:00",
+            "amount": 63,
+            "raw": "Mollit duis pariatur mollit esse aliquip sint ad eu ea.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf94e78a58611e2215d",
+        "key": "5850ecf918c7d951b1fb9bd5",
+        "value": {
+            "_id": "5850ecf9bc0a410e93132c0d",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "0d8553d0-c41e-47ee-ba8b-9d539d17cd80",
+            "date": "2014-02-11T01:04:18 -01:00",
+            "dateImport": "2014-11-05T07:08:27 -01:00",
+            "amount": 384,
+            "raw": "Adipisicing laborum elit duis cillum cupidatat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9714d20c5571e3720",
+        "key": "5850ecf9c7a589cc555980d5",
+        "value": {
+            "_id": "5850ecf973d911ee84d91755",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "fef58bd0-7b28-40f0-b755-bc7f265ea60e",
+            "date": "2016-11-27T10:33:04 -01:00",
+            "dateImport": "2015-03-31T11:36:12 -02:00",
+            "amount": 40,
+            "raw": "Nostrud ut proident pariatur exercitation adipisicing eiusmod pariatur aute.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf973296015fd513f69",
+        "key": "5850ecf9022129a483aaf822",
+        "value": {
+            "_id": "5850ecf953d2d4b4ac1ddc95",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "2cabf8ac-8340-4688-8152-bbdd30fb9cb6",
+            "date": "2016-11-23T10:59:14 -01:00",
+            "dateImport": "2015-04-15T05:48:41 -02:00",
+            "amount": 305,
+            "raw": "Cupidatat occaecat magna Lorem anim laborum culpa excepteur ut sint commodo ipsum velit aliqua.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f077bd197e855719",
+        "key": "5850ecf942cb641686656327",
+        "value": {
+            "_id": "5850ecf9b67f3fc05fbd2549",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "c27273cf-420e-4196-825e-681ad73abc36",
+            "date": "2016-11-21T07:21:20 -01:00",
+            "dateImport": "2016-05-14T10:54:48 -02:00",
+            "amount": 122,
+            "raw": "Adipisicing magna cupidatat deserunt commodo cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9cc4ebee41025dce1",
+        "key": "5850ecf9a9293763f76a8a83",
+        "value": {
+            "_id": "5850ecf9794771a36834c496",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "516260f0-67ea-4486-ab61-a3fd97787622",
+            "date": "2014-11-26T04:26:47 -01:00",
+            "dateImport": "2015-03-23T02:20:33 -01:00",
+            "amount": 80,
+            "raw": "Non consequat non est aute ipsum culpa laboris amet irure non.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9fc03cab686fbaf10",
+        "key": "5850ecf9cf622957ebb956b8",
+        "value": {
+            "_id": "5850ecf9cd8ac131101a4e32",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "bfa09da1-2752-4f77-a247-0b2ec10562cf",
+            "date": "2016-12-04T06:11:20 -01:00",
+            "dateImport": "2014-10-25T12:58:28 -02:00",
+            "amount": 325,
+            "raw": "Lorem velit non velit cillum culpa minim est non incididunt aliquip ut.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96fa56f1066cd1f4d",
+        "key": "5850ecf90120e3fe19510662",
+        "value": {
+            "_id": "5850ecf952a39472b5bf2da3",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "34558f45-1ac0-4739-b917-402da3b3353d",
+            "date": "2016-02-14T05:18:56 -01:00",
+            "dateImport": "2014-09-09T12:01:04 -02:00",
+            "amount": 258,
+            "raw": "Fugiat officia exercitation velit nulla ex Lorem do qui enim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf95c842375e595f8d3",
+        "key": "5850ecf9ee91ffb9e71124db",
+        "value": {
+            "_id": "5850ecf95a6985972969316a",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "529fdaed-4486-4520-964f-809104967568",
+            "date": "2016-08-26T08:17:55 -02:00",
+            "dateImport": "2016-09-27T05:08:22 -02:00",
+            "amount": 470,
+            "raw": "Incididunt ex eu minim magna do enim aliquip excepteur excepteur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f226c7b75c84d62c",
+        "key": "5850ecf994e8caabb2529b2b",
+        "value": {
+            "_id": "5850ecf9ead734175a379057",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "fcd4287e-b0a5-4dbb-9828-370619676ea2",
+            "date": "2014-06-12T06:47:01 -02:00",
+            "dateImport": "2014-09-29T12:28:36 -02:00",
+            "amount": 469,
+            "raw": "Nulla ex ullamco elit velit enim esse.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e3be9ad0ee824a84",
+        "key": "5850ecf9f93877758bf1fd08",
+        "value": {
+            "_id": "5850ecf92b7b30fa2348f753",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "24d81039-2ac7-454a-918d-c7f2a83d7509",
+            "date": "2015-06-09T08:56:21 -02:00",
+            "dateImport": "2016-03-23T12:04:23 -01:00",
+            "amount": 24,
+            "raw": "Et cillum ad nisi laboris quis exercitation do culpa id esse occaecat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90ec15cab30010086",
+        "key": "5850ecf92dc41a56f56bf67a",
+        "value": {
+            "_id": "5850ecf9bb8df0d7b145ad04",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "89d8df28-5635-49d8-8e58-eb2146a5a0f1",
+            "date": "2014-07-18T04:11:59 -02:00",
+            "dateImport": "2015-02-05T06:59:06 -01:00",
+            "amount": 290,
+            "raw": "Ullamco voluptate nulla id dolore sint ex anim ut tempor tempor.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf93268c196577551fe",
+        "key": "5850ecf997277607d459e9fb",
+        "value": {
+            "_id": "5850ecf949260563abaef7aa",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "e96175c2-dcbb-40d0-9a08-f308046cd523",
+            "date": "2016-04-25T06:10:58 -02:00",
+            "dateImport": "2015-12-17T12:20:21 -01:00",
+            "amount": 74,
+            "raw": "Eu esse deserunt duis ea nisi laboris minim aliqua ut magna reprehenderit et.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e5732be86ebc1d07",
+        "key": "5850ecf9b72eb61e4baeaf96",
+        "value": {
+            "_id": "5850ecf9b08f35144957aae8",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "984fbbed-6fa4-409a-80d7-32e2003699bf",
+            "date": "2014-01-19T05:31:33 -01:00",
+            "dateImport": "2016-11-27T01:44:06 -01:00",
+            "amount": 117,
+            "raw": "Sint sunt nisi eiusmod velit in ad nulla eiusmod sunt adipisicing minim do consequat laboris.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf95108584a4983f77a",
+        "key": "5850ecf9b99ba9ff379cc183",
+        "value": {
+            "_id": "5850ecf935ed3882a85e51ac",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "82810a5c-dbf7-4191-a37b-597ba7102942",
+            "date": "2014-10-25T12:02:42 -02:00",
+            "dateImport": "2014-04-16T08:18:07 -02:00",
+            "amount": 318,
+            "raw": "Sunt incididunt nisi qui dolore exercitation cupidatat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf981a449c54771c3ed",
+        "key": "5850ecf943e7dbb7f20e7915",
+        "value": {
+            "_id": "5850ecf976b1cd242cea7f69",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "af6a664c-637c-4682-913d-4c0d43dc5a4b",
+            "date": "2015-03-30T07:38:49 -02:00",
+            "dateImport": "2016-02-27T05:54:36 -01:00",
+            "amount": 140,
+            "raw": "Do cupidatat deserunt quis tempor fugiat id consequat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf986e9f2e3655440f9",
+        "key": "5850ecf924afc5f01ca225d7",
+        "value": {
+            "_id": "5850ecf9f4ad38233508f680",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "fe583e5a-1782-4932-8c92-4e49c1c6803f",
+            "date": "2014-10-10T02:44:40 -02:00",
+            "dateImport": "2014-05-17T10:23:37 -02:00",
+            "amount": 389,
+            "raw": "Cillum enim dolore id dolor enim consectetur irure aliqua commodo culpa nisi reprehenderit reprehenderit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9dd0c0d60de6fd4a5",
+        "key": "5850ecf9f35864a37b9c1aed",
+        "value": {
+            "_id": "5850ecf9e3bfc7042157fd2c",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "cb3cfefd-0ec7-4b91-9967-7d85cb934117",
+            "date": "2016-12-03T03:49:30 -01:00",
+            "dateImport": "2015-07-30T09:47:46 -02:00",
+            "amount": 141,
+            "raw": "Ea reprehenderit sit sit esse qui quis.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e2f84be83556677a",
+        "key": "5850ecf967acfe79af786b5b",
+        "value": {
+            "_id": "5850ecf9c0823431de6f05df",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "c5ee8115-303c-4de2-a2ea-c5750995b07a",
+            "date": "2016-01-03T04:05:45 -01:00",
+            "dateImport": "2015-09-29T01:56:23 -02:00",
+            "amount": 212,
+            "raw": "Et elit do sint amet adipisicing esse sit eu deserunt ex labore aliquip anim cupidatat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf992404a5cc5d62052",
+        "key": "5850ecf9df3128c68684e2f5",
+        "value": {
+            "_id": "5850ecf9afde4abb90b5a362",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "af45e821-968e-4422-a568-5cc10d3a1e63",
+            "date": "2015-10-10T03:06:37 -02:00",
+            "dateImport": "2015-01-25T05:11:20 -01:00",
+            "amount": 218,
+            "raw": "Aliqua ex eu anim id voluptate voluptate aliqua tempor qui ad ex sunt eu in.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf99714ec9550f2c0d8",
+        "key": "5850ecf903abc1f41a8608f6",
+        "value": {
+            "_id": "5850ecf9289d0924ce4bce39",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "d9ccee54-e52b-4320-af62-f0ec2a98c1e4",
+            "date": "2016-10-04T12:19:21 -02:00",
+            "dateImport": "2014-03-05T02:40:53 -01:00",
+            "amount": 404,
+            "raw": "Deserunt sunt duis ullamco irure sit duis anim incididunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9916b4bc6910af645",
+        "key": "5850ecf9dcc663746dce5b2a",
+        "value": {
+            "_id": "5850ecf9f90148be21f70fdc",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "90f674e3-292a-4f48-b564-a5ed9c58d055",
+            "date": "2014-04-12T08:07:47 -02:00",
+            "dateImport": "2015-03-15T02:58:21 -01:00",
+            "amount": 305,
+            "raw": "Reprehenderit minim incididunt commodo Lorem ad incididunt consequat nulla non ullamco cupidatat consequat do anim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97eb8f3e947e68201",
+        "key": "5850ecf9b9d897a11885bb75",
+        "value": {
+            "_id": "5850ecf94ce23a07667a8833",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "6ddf97aa-b5fe-456e-832c-9b7d9a24aa57",
+            "date": "2014-02-15T02:35:43 -01:00",
+            "dateImport": "2016-01-25T09:17:35 -01:00",
+            "amount": 197,
+            "raw": "Anim dolor adipisicing quis sint velit laboris id cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e39c475938986c31",
+        "key": "5850ecf9890f027fc4009eb6",
+        "value": {
+            "_id": "5850ecf90b7cebcf3842ec09",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "1c12fe76-4ccf-489c-9394-a88b7aff4117",
+            "date": "2015-04-09T12:35:50 -02:00",
+            "dateImport": "2014-06-18T08:13:33 -02:00",
+            "amount": 235,
+            "raw": "Labore aute laboris occaecat elit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d15dc71d03a16a1a",
+        "key": "5850ecf9572acb06e26d40cb",
+        "value": {
+            "_id": "5850ecf9082ad48fb6043606",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "4cdde0fe-33ab-4be4-a2fe-e5c6892fc229",
+            "date": "2014-10-08T11:14:43 -02:00",
+            "dateImport": "2015-07-30T07:14:05 -02:00",
+            "amount": 117,
+            "raw": "Sit velit consequat ipsum laboris est elit sit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf95405b39f883a6a48",
+        "key": "5850ecf93bf34ce9bbc73610",
+        "value": {
+            "_id": "5850ecf9a29d7654e3fd76ca",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "90ec79b1-aaee-44af-997a-c2fbee722607",
+            "date": "2014-06-24T09:01:29 -02:00",
+            "dateImport": "2015-11-26T05:11:55 -01:00",
+            "amount": 331,
+            "raw": "Culpa eu commodo cupidatat Lorem pariatur aute.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e9385441b5cc4c45",
+        "key": "5850ecf92d722b668ea89c86",
+        "value": {
+            "_id": "5850ecf90176d80265d5f354",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "3ecb7dca-1963-4505-8490-141d3c515882",
+            "date": "2014-03-24T07:30:18 -01:00",
+            "dateImport": "2016-02-16T03:32:34 -01:00",
+            "amount": 495,
+            "raw": "Voluptate reprehenderit sit quis laboris laboris velit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9dcf3dbe6112f297c",
+        "key": "5850ecf91f6544f73eb33916",
+        "value": {
+            "_id": "5850ecf9f60e6bb87a337593",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "283d015e-a0ea-4b47-8aef-dbac7a02b13e",
+            "date": "2014-07-28T02:48:17 -02:00",
+            "dateImport": "2014-03-02T11:45:20 -01:00",
+            "amount": 406,
+            "raw": "Eu officia irure tempor in consequat cillum deserunt veniam quis et esse occaecat ea ad.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf94046bd50dac00f14",
+        "key": "5850ecf9a052eafb677dedb1",
+        "value": {
+            "_id": "5850ecf9755f8292322680cc",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "96486cb9-b4cf-442d-89a2-46446a8d543c",
+            "date": "2014-04-23T08:02:17 -02:00",
+            "dateImport": "2016-06-17T08:30:48 -02:00",
+            "amount": 300,
+            "raw": "Aute tempor minim velit do nisi fugiat proident exercitation consequat labore consectetur in nisi.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9501dd933f149b00c",
+        "key": "5850ecf9869ac9be9a36d233",
+        "value": {
+            "_id": "5850ecf9d03db115c459d4b0",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "9e3d02f9-c268-484e-95f9-f06c32628906",
+            "date": "2014-06-08T07:44:58 -02:00",
+            "dateImport": "2015-07-02T10:50:19 -02:00",
+            "amount": 498,
+            "raw": "Amet aliquip sit labore enim ea.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf904502c42cadcdba1",
+        "key": "5850ecf9c66f5ea397e717a1",
+        "value": {
+            "_id": "5850ecf974a88db2628d2ea8",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "04c1f013-ef53-4513-8204-66440407ba08",
+            "date": "2016-07-03T08:09:58 -02:00",
+            "dateImport": "2014-12-29T10:20:40 -01:00",
+            "amount": 356,
+            "raw": "Nostrud eu quis laboris nostrud aliquip sint ipsum aliquip ullamco proident labore ex est.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9c6a345be9b8bc931",
+        "key": "5850ecf9409224a40d351302",
+        "value": {
+            "_id": "5850ecf963be2890deb4a3d6",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "81e45be2-e7f0-4dae-b2e5-b2d6d2b2a87c",
+            "date": "2016-03-05T01:15:34 -01:00",
+            "dateImport": "2016-08-30T07:05:54 -02:00",
+            "amount": 57,
+            "raw": "Do amet qui est minim sint ad mollit velit tempor qui sint quis.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ed17e87d397551e7",
+        "key": "5850ecf94f3a7f001c827429",
+        "value": {
+            "_id": "5850ecf9f04a1b0679422e4a",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "55d3fb6a-b3fa-4fa1-8b43-653b6de946df",
+            "date": "2015-07-12T04:21:19 -02:00",
+            "dateImport": "2016-05-12T10:14:50 -02:00",
+            "amount": 117,
+            "raw": "Lorem labore Lorem ea eiusmod minim aliqua.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96278f6c5d2793805",
+        "key": "5850ecf9b29bb5cf5458ba12",
+        "value": {
+            "_id": "5850ecf9c9f026aefd055386",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "3c66bfb7-68ce-4b6a-af95-59ebbef7d4de",
+            "date": "2014-04-25T03:04:25 -02:00",
+            "dateImport": "2015-02-06T11:43:13 -01:00",
+            "amount": 97,
+            "raw": "Ad laboris deserunt excepteur ipsum nisi commodo laboris deserunt aute veniam laboris exercitation.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9dc107e664cc4e3e8",
+        "key": "5850ecf9dd8ed31611c78d3b",
+        "value": {
+            "_id": "5850ecf97a48181c72e75868",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "738ec244-cd90-42d7-bac3-3b125759aa3c",
+            "date": "2014-06-30T12:50:55 -02:00",
+            "dateImport": "2015-10-29T12:31:27 -01:00",
+            "amount": 274,
+            "raw": "Cillum do Lorem duis mollit officia aute.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d6c06d91cf768070",
+        "key": "5850ecf962aac7a3fd8d94b4",
+        "value": {
+            "_id": "5850ecf92b538c7ee78ff285",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "89f2354a-a2df-4a95-bc44-cb26d4f1bd92",
+            "date": "2015-07-16T07:35:00 -02:00",
+            "dateImport": "2015-09-27T08:47:44 -02:00",
+            "amount": 171,
+            "raw": "Non exercitation incididunt duis veniam deserunt commodo eu duis nisi dolore ut aute voluptate irure.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9643d594236177b14",
+        "key": "5850ecf990f578a369b685a2",
+        "value": {
+            "_id": "5850ecf96460d255b89aefb9",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "df2a673f-eab5-4eea-8f4a-4d2f5e77e9dc",
+            "date": "2015-12-11T02:45:20 -01:00",
+            "dateImport": "2016-09-19T12:41:10 -02:00",
+            "amount": 71,
+            "raw": "Qui ad Lorem cillum culpa aliqua ad nostrud sit eu occaecat elit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9816767a58d875ea0",
+        "key": "5850ecf98a447434158c1788",
+        "value": {
+            "_id": "5850ecf93c0596321a8412b4",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "26e140b3-40c4-4f4d-b3fc-aed6f1394f51",
+            "date": "2016-06-01T09:15:42 -02:00",
+            "dateImport": "2015-01-31T03:51:03 -01:00",
+            "amount": 89,
+            "raw": "Veniam aliquip ad nostrud deserunt excepteur sit ullamco labore excepteur nulla non.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf976b8794b37ab0114",
+        "key": "5850ecf955ab90e7c57e46c1",
+        "value": {
+            "_id": "5850ecf99f7ac2df6329fbaf",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "2cd8cec7-9720-499b-823c-db3de7525ed5",
+            "date": "2014-07-09T01:32:53 -02:00",
+            "dateImport": "2015-12-18T02:55:42 -01:00",
+            "amount": 67,
+            "raw": "Eiusmod est ea eiusmod cillum id voluptate sunt eiusmod aute.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9fd78d2536c81d2d9",
+        "key": "5850ecf90aad926faad964bc",
+        "value": {
+            "_id": "5850ecf90cda54def2c93689",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "ab4b7892-49d7-4032-9777-93dabf421228",
+            "date": "2014-05-14T09:57:36 -02:00",
+            "dateImport": "2015-01-24T01:32:57 -01:00",
+            "amount": 109,
+            "raw": "Laboris consequat ipsum sint eu cillum tempor dolor anim culpa incididunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf916e3a47176474367",
+        "key": "5850ecf9cebee67ca09304df",
+        "value": {
+            "_id": "5850ecf93b823cc2a0be187d",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "f7696ea2-99b7-4b36-a07a-086369008924",
+            "date": "2014-08-23T08:46:56 -02:00",
+            "dateImport": "2014-01-11T08:29:09 -01:00",
+            "amount": 281,
+            "raw": "Minim esse adipisicing id magna pariatur mollit est dolor.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9fbb8bd39699c38dd",
+        "key": "5850ecf949b8ca2a59c350bc",
+        "value": {
+            "_id": "5850ecf9c66b5e1c71360ab7",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "81cc72cb-a46e-4760-bda6-4c0237d45aa2",
+            "date": "2016-03-03T06:28:28 -01:00",
+            "dateImport": "2014-09-07T04:18:30 -02:00",
+            "amount": 344,
+            "raw": "Id sunt minim culpa cillum excepteur nostrud pariatur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96f45460231ba8d75",
+        "key": "5850ecf93a5572550d55189f",
+        "value": {
+            "_id": "5850ecf937557e7271720f9f",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "80650f44-9bd0-4d9d-a5a7-fc0b6f57be42",
+            "date": "2014-07-03T08:52:00 -02:00",
+            "dateImport": "2015-11-22T11:44:16 -01:00",
+            "amount": 127,
+            "raw": "Quis anim enim eu officia do sint incididunt dolore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf920de5681bd0db2ff",
+        "key": "5850ecf9728b4129975878b8",
+        "value": {
+            "_id": "5850ecf9dfe9817f7e4dedb8",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "ccb1c68f-b652-4000-8288-758a324a3d4a",
+            "date": "2014-07-12T03:09:19 -02:00",
+            "dateImport": "2016-06-14T02:06:00 -02:00",
+            "amount": 211,
+            "raw": "Culpa esse commodo mollit reprehenderit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf99ed08ba64ffc2423",
+        "key": "5850ecf9c23aab4158387e50",
+        "value": {
+            "_id": "5850ecf91060275a8abb3c10",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "f458f12f-dec9-42ac-bee2-a367b87ff86a",
+            "date": "2014-09-26T04:08:49 -02:00",
+            "dateImport": "2016-06-16T06:46:10 -02:00",
+            "amount": 115,
+            "raw": "Adipisicing enim exercitation nulla occaecat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9884583a98c9108ac",
+        "key": "5850ecf975843c370d580ad2",
+        "value": {
+            "_id": "5850ecf92b5a771148bbad27",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "2e71b8c0-a67b-4c43-bb9c-a4402073690d",
+            "date": "2014-07-23T11:46:35 -02:00",
+            "dateImport": "2014-08-26T12:46:46 -02:00",
+            "amount": 202,
+            "raw": "Occaecat nulla consectetur Lorem occaecat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf95b1b402f5168f695",
+        "key": "5850ecf903a1c79e58e83579",
+        "value": {
+            "_id": "5850ecf970a4721d6d346d67",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "d4225632-4dc7-452c-a836-fa1c8218bc5c",
+            "date": "2015-07-07T08:53:12 -02:00",
+            "dateImport": "2016-02-24T06:03:29 -01:00",
+            "amount": 298,
+            "raw": "Officia laborum veniam aliqua occaecat eiusmod cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf940a7411ad2fdb21b",
+        "key": "5850ecf970439ec125f5a1dc",
+        "value": {
+            "_id": "5850ecf941211e9e7d0963d2",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "a54549f9-ec2a-4c4b-9518-c68633bd8d69",
+            "date": "2014-12-24T08:15:27 -01:00",
+            "dateImport": "2015-01-26T09:19:03 -01:00",
+            "amount": 439,
+            "raw": "Ut laboris nisi dolore veniam ad laborum labore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97c46f7b537f3127e",
+        "key": "5850ecf9a9e1f82ed1784bbd",
+        "value": {
+            "_id": "5850ecf9dc9dedd16dd4f20f",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "2daae79e-cdc3-4f12-a761-dbd79b8043a2",
+            "date": "2015-11-22T11:24:55 -01:00",
+            "dateImport": "2015-11-23T02:31:45 -01:00",
+            "amount": 183,
+            "raw": "Esse nulla nostrud exercitation laboris sint sint quis deserunt sint elit fugiat irure adipisicing.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d715624bf7970f7e",
+        "key": "5850ecf9f6437154f293b8d4",
+        "value": {
+            "_id": "5850ecf9fe9e9685af04638e",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "f6c23b25-76b3-4ce4-8ae2-464ed2f83838",
+            "date": "2015-05-23T10:39:18 -02:00",
+            "dateImport": "2016-10-31T03:53:19 -01:00",
+            "amount": 221,
+            "raw": "Magna quis aliqua labore anim dolor tempor ad aliquip velit ad est commodo aute.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf982e2ae314acaffdc",
+        "key": "5850ecf96a0139d04f86f60f",
+        "value": {
+            "_id": "5850ecf9dd2f821075160716",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "aa955fe3-08b6-4846-be49-eb9a67322e9e",
+            "date": "2015-12-20T04:36:37 -01:00",
+            "dateImport": "2014-05-02T06:11:58 -02:00",
+            "amount": 358,
+            "raw": "Aliqua ullamco magna elit quis sit anim duis eiusmod.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9fb85122966609c34",
+        "key": "5850ecf96e339df62e8f8b04",
+        "value": {
+            "_id": "5850ecf9949164d626dc6dc5",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "d889e1ea-298d-48a7-aa20-796f8622e998",
+            "date": "2016-09-23T11:34:12 -02:00",
+            "dateImport": "2016-01-14T05:47:13 -01:00",
+            "amount": 403,
+            "raw": "Magna ea ut sit et ullamco.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf942b1fd906af169c4",
+        "key": "5850ecf920b331bbb47acf17",
+        "value": {
+            "_id": "5850ecf9e999214d5d840982",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "4c0291ab-ac48-4652-8cb3-6333acbc7be0",
+            "date": "2014-09-08T01:04:32 -02:00",
+            "dateImport": "2014-04-04T07:45:09 -02:00",
+            "amount": 66,
+            "raw": "Excepteur ea et ad fugiat et ut consectetur incididunt nisi.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf967e52be0f85e975b",
+        "key": "5850ecf97875e760b8ba75d9",
+        "value": {
+            "_id": "5850ecf92e7baa6a7c8c7590",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "c510ac6a-2ded-4d30-964d-2db890aa0333",
+            "date": "2015-08-24T09:06:28 -02:00",
+            "dateImport": "2014-02-21T04:38:37 -01:00",
+            "amount": 405,
+            "raw": "Qui incididunt sunt sit excepteur consectetur anim mollit occaecat do ipsum voluptate aute enim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97ac1f51707978957",
+        "key": "5850ecf99926ff70cd4203fd",
+        "value": {
+            "_id": "5850ecf9805fb8672637a09b",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "481e85ea-c676-4870-990e-fd52f90f3231",
+            "date": "2015-06-27T07:04:22 -02:00",
+            "dateImport": "2015-04-10T11:47:06 -02:00",
+            "amount": 106,
+            "raw": "Sint esse labore id enim do ut magna.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf91edf33a0b66aba4b",
+        "key": "5850ecf9ed93b65bd340db39",
+        "value": {
+            "_id": "5850ecf92e231da475eef366",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "5c850fb1-a675-463f-b28d-0a05cf5b749d",
+            "date": "2015-07-04T06:03:30 -02:00",
+            "dateImport": "2015-08-11T03:21:32 -02:00",
+            "amount": 321,
+            "raw": "Nulla labore enim ipsum sit mollit anim est culpa amet veniam do labore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9010f4392ee44e96e",
+        "key": "5850ecf9ccd7c7d5e135f64f",
+        "value": {
+            "_id": "5850ecf9bf3dd29cb8562d22",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "bcdb6002-9038-4471-87b0-e8cd27f49423",
+            "date": "2014-05-19T09:28:19 -02:00",
+            "dateImport": "2016-11-18T07:34:37 -01:00",
+            "amount": 279,
+            "raw": "Deserunt qui Lorem cupidatat incididunt ut magna cupidatat aliquip aute consectetur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ac6aedea73595fd6",
+        "key": "5850ecf9483198fe3ce5d5fc",
+        "value": {
+            "_id": "5850ecf9872a78c935d64ace",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "2fe10bdd-d4d9-4807-a4e9-419ba6a62723",
+            "date": "2014-08-02T10:00:03 -02:00",
+            "dateImport": "2014-01-05T04:01:42 -01:00",
+            "amount": 154,
+            "raw": "Minim aute dolor ut est aute commodo aliqua exercitation ea aliqua amet ex.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90b157778bb714f24",
+        "key": "5850ecf9973658715c785f23",
+        "value": {
+            "_id": "5850ecf96e5fac36b561fc67",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "2e2d09b3-4331-40b6-a6b3-f31a76a4a8c1",
+            "date": "2015-06-22T07:57:38 -02:00",
+            "dateImport": "2016-11-14T09:20:30 -01:00",
+            "amount": 318,
+            "raw": "Exercitation irure dolor duis fugiat voluptate id nostrud.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf98cb69c6054a116ae",
+        "key": "5850ecf910417c5454ddc084",
+        "value": {
+            "_id": "5850ecf92cc61290e02f936d",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "5630692d-b178-48a6-9c27-bc22dc650010",
+            "date": "2016-04-12T02:53:20 -02:00",
+            "dateImport": "2014-03-26T11:32:35 -01:00",
+            "amount": 469,
+            "raw": "Consectetur nulla aliquip Lorem ullamco nostrud cupidatat velit enim in eu minim et ea.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf93c8287a7464c2f83",
+        "key": "5850ecf9142b5eaf1cc6988c",
+        "value": {
+            "_id": "5850ecf9ed905cc6bf672138",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "56837dd6-69f9-40da-bcc8-2b7cb327688f",
+            "date": "2015-05-17T12:23:59 -02:00",
+            "dateImport": "2015-04-13T10:11:22 -02:00",
+            "amount": 170,
+            "raw": "Incididunt proident pariatur Lorem mollit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9a603e58574bdadf9",
+        "key": "5850ecf9e477d9b450ee89a3",
+        "value": {
+            "_id": "5850ecf9762d8ba7574ea326",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "e4393139-5eda-4169-9658-f169505687e2",
+            "date": "2015-11-28T01:16:49 -01:00",
+            "dateImport": "2014-01-12T11:44:23 -01:00",
+            "amount": 68,
+            "raw": "Nisi magna qui Lorem qui non officia do ullamco cupidatat aliqua exercitation ipsum ea.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9a764150f51212e18",
+        "key": "5850ecf9f369cab9f563c68a",
+        "value": {
+            "_id": "5850ecf90348452e06a4b807",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "76a5f557-bb29-4d41-ac7d-f0e81d837a5c",
+            "date": "2015-02-08T07:32:05 -01:00",
+            "dateImport": "2016-08-24T09:53:05 -02:00",
+            "amount": 414,
+            "raw": "Occaecat non sint laborum aliqua ut mollit voluptate cillum eu.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf926fa3e0b73a9e2d4",
+        "key": "5850ecf918b4ea41a3f7eafe",
+        "value": {
+            "_id": "5850ecf9990c23be99217301",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "61b80f4f-9e64-406b-aa5d-0bfecc4fadbb",
+            "date": "2016-01-30T07:34:07 -01:00",
+            "dateImport": "2016-10-30T12:07:10 -01:00",
+            "amount": 122,
+            "raw": "Eu nisi mollit amet dolor et cupidatat laborum nisi elit excepteur nostrud.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b4105fd4c451bb72",
+        "key": "5850ecf991ff683bba950be2",
+        "value": {
+            "_id": "5850ecf9ce823b8fefede06e",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "b9291ea4-2cdb-4499-b2ea-2a91d3d4d72d",
+            "date": "2016-12-13T11:46:04 -01:00",
+            "dateImport": "2014-12-29T12:25:42 -01:00",
+            "amount": 245,
+            "raw": "Dolor laboris proident quis fugiat laborum ut voluptate Lorem laboris culpa cupidatat pariatur mollit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b0873c40067c2c36",
+        "key": "5850ecf9503b2eb7e7f08e8b",
+        "value": {
+            "_id": "5850ecf92309d4ab11451e31",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "31fbface-3343-4cb6-8097-e45f837e56dd",
+            "date": "2016-09-21T07:27:19 -02:00",
+            "dateImport": "2016-05-12T03:24:46 -02:00",
+            "amount": 146,
+            "raw": "Occaecat id velit aute qui Lorem dolor commodo cupidatat amet eu amet et cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90632f0fcfa2be098",
+        "key": "5850ecf9c2c49a7f9a155149",
+        "value": {
+            "_id": "5850ecf9d3f7aa097bed1789",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "fee23ee9-038d-4bf1-9083-64bccee14303",
+            "date": "2014-09-06T12:05:35 -02:00",
+            "dateImport": "2014-01-15T07:47:26 -01:00",
+            "amount": 206,
+            "raw": "Qui incididunt eu dolor adipisicing.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9dd2f5b2fb59214fd",
+        "key": "5850ecf98df82cfdb6a6c64b",
+        "value": {
+            "_id": "5850ecf927f5606a49a068b4",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "1322d8db-0e42-46e9-b2a4-226b61aba120",
+            "date": "2014-10-15T04:34:50 -02:00",
+            "dateImport": "2015-10-11T03:10:23 -02:00",
+            "amount": 126,
+            "raw": "Ea adipisicing proident veniam quis dolor duis eu adipisicing.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f34a3f8a4b4b3d66",
+        "key": "5850ecf9df674658ea3b883f",
+        "value": {
+            "_id": "5850ecf98bd27e1271531a8f",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "4934f572-6efe-4ff1-9eda-bb3011b3a305",
+            "date": "2015-04-20T11:07:50 -02:00",
+            "dateImport": "2014-03-01T06:27:07 -01:00",
+            "amount": 219,
+            "raw": "Ex veniam adipisicing cupidatat amet sint sunt laborum dolor consequat enim dolore sit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9297a5df90c88be76",
+        "key": "5850ecf9b922e5b315d801a5",
+        "value": {
+            "_id": "5850ecf9d8d43258faaf9967",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "561ab38e-4b0e-484a-a775-2167d51fe6d8",
+            "date": "2014-04-09T04:00:38 -02:00",
+            "dateImport": "2014-02-20T06:42:06 -01:00",
+            "amount": 130,
+            "raw": "Deserunt nisi do consequat et duis duis incididunt ut sint consectetur quis ut ullamco cupidatat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97ee885c33ff768bc",
+        "key": "5850ecf913dfc9c994647c51",
+        "value": {
+            "_id": "5850ecf9bda29b204b313923",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "36a3e2b7-b50c-4326-8a27-65607cd7977e",
+            "date": "2016-04-16T05:07:42 -02:00",
+            "dateImport": "2014-07-26T03:36:05 -02:00",
+            "amount": 473,
+            "raw": "Consequat Lorem velit eu reprehenderit mollit nulla labore in dolor minim sit consectetur ullamco.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d190bf992ccab63a",
+        "key": "5850ecf9f916a104a8df0087",
+        "value": {
+            "_id": "5850ecf916ca78f060dd804a",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "13eddb0c-6bae-4054-91d4-1ffce2d0be29",
+            "date": "2016-11-17T11:59:23 -01:00",
+            "dateImport": "2015-04-28T01:16:55 -02:00",
+            "amount": 485,
+            "raw": "Sit sint dolor aute sint est ad incididunt mollit dolore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e8f3a48df8ee6fc4",
+        "key": "5850ecf9bb3449bc79c4f9fd",
+        "value": {
+            "_id": "5850ecf97dc65ba87bfd8693",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "6a11b0c0-7a5a-40bb-9833-76654a4e8f72",
+            "date": "2016-09-10T12:34:48 -02:00",
+            "dateImport": "2016-03-03T02:02:16 -01:00",
+            "amount": 215,
+            "raw": "In in qui excepteur ipsum elit id do voluptate dolore quis in proident sint elit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf92ddde72281baecae",
+        "key": "5850ecf9f35908f0218dbdce",
+        "value": {
+            "_id": "5850ecf90b89dbcbe414ed65",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "27c5d0b7-3131-47d6-a38e-a39678a3d612",
+            "date": "2014-11-17T10:51:50 -01:00",
+            "dateImport": "2016-02-17T10:33:09 -01:00",
+            "amount": 428,
+            "raw": "Aliquip occaecat mollit reprehenderit elit laboris ut nulla fugiat commodo mollit nisi mollit eiusmod.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9bcb53f811dce8ed3",
+        "key": "5850ecf9ef8f03b6b658bd0c",
+        "value": {
+            "_id": "5850ecf97e0931daa4509543",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "eeef8758-3da5-48ac-b569-a78004d7d369",
+            "date": "2015-09-02T05:37:41 -02:00",
+            "dateImport": "2015-12-18T01:57:24 -01:00",
+            "amount": 152,
+            "raw": "Mollit cillum anim fugiat tempor anim eiusmod dolore dolor laboris aliquip.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9bec0cdc0d3f004f8",
+        "key": "5850ecf91a0aba97bb34dd89",
+        "value": {
+            "_id": "5850ecf9ce3f2d0ac853ccda",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "4635c5cc-1ba1-48d5-9bf9-022feebe7f45",
+            "date": "2016-01-19T11:41:56 -01:00",
+            "dateImport": "2014-09-25T10:45:25 -02:00",
+            "amount": 290,
+            "raw": "Non magna commodo aliquip elit proident proident do ut voluptate culpa.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf93ce67aec44e6e674",
+        "key": "5850ecf94d09772505a0c452",
+        "value": {
+            "_id": "5850ecf9e45a802bb2c6f351",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "ad30b484-f052-4756-85a8-0a547a40b413",
+            "date": "2014-02-24T10:21:54 -01:00",
+            "dateImport": "2015-03-09T11:12:15 -01:00",
+            "amount": 427,
+            "raw": "Non non sint ut cillum dolore irure laboris proident aute id culpa nostrud.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b51f72485e47931a",
+        "key": "5850ecf9890d9bd8d5468ba2",
+        "value": {
+            "_id": "5850ecf9c0e2a8036a8612bb",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "71a8562a-d367-4885-92b0-60b6e68865ad",
+            "date": "2014-02-07T12:44:25 -01:00",
+            "dateImport": "2016-09-16T06:57:00 -02:00",
+            "amount": 54,
+            "raw": "Commodo eu est elit commodo magna amet aliquip.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9426a97bf7bbf351e",
+        "key": "5850ecf9db3705f855e6bacc",
+        "value": {
+            "_id": "5850ecf9704185d6d0495be2",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "10533033-a64c-4ba9-b534-b4f77eed456e",
+            "date": "2015-07-21T03:38:45 -02:00",
+            "dateImport": "2016-01-18T06:30:52 -01:00",
+            "amount": 282,
+            "raw": "Consectetur id deserunt fugiat labore nisi qui et nisi officia cupidatat laborum ad culpa consequat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ab3b4a59988d9ae5",
+        "key": "5850ecf9a64e4caa99c8a758",
+        "value": {
+            "_id": "5850ecf972bb9a266beac21a",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "8aa4efc2-28f5-4912-a2f1-4195064d0762",
+            "date": "2015-05-20T03:37:30 -02:00",
+            "dateImport": "2015-01-19T08:56:10 -01:00",
+            "amount": 227,
+            "raw": "Minim eiusmod officia qui excepteur laborum nostrud ipsum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf95b72ba1d420919c6",
+        "key": "5850ecf9406a2431d66c4ba3",
+        "value": {
+            "_id": "5850ecf98641cc49211d2ece",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "4489ec22-2737-4b71-b61b-ec12603ebd5c",
+            "date": "2016-06-20T01:18:18 -02:00",
+            "dateImport": "2015-07-26T12:33:53 -02:00",
+            "amount": 34,
+            "raw": "Anim nisi amet minim proident incididunt nostrud.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d5a58e870d290d06",
+        "key": "5850ecf99f88b805d1d788ea",
+        "value": {
+            "_id": "5850ecf9140b4ce826e40d04",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "4be3e10a-8c3f-4efa-bfbb-1c665478bc27",
+            "date": "2014-07-19T05:05:18 -02:00",
+            "dateImport": "2016-08-13T04:47:17 -02:00",
+            "amount": 391,
+            "raw": "Dolor eiusmod dolore culpa mollit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f2f029f9ac04c743",
+        "key": "5850ecf9931910c553e74abf",
+        "value": {
+            "_id": "5850ecf9389a5fb73c841470",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "ac3f29c5-8245-4db9-b93c-723944e546a2",
+            "date": "2014-02-02T02:19:10 -01:00",
+            "dateImport": "2016-07-05T10:19:24 -02:00",
+            "amount": 414,
+            "raw": "Et do laborum occaecat commodo fugiat nisi laborum aute.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf997184e1ebaebc834",
+        "key": "5850ecf973f92f47a0aeba8a",
+        "value": {
+            "_id": "5850ecf905e5b85de08c0d4b",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "6fa5f768-fba1-40b9-8169-a4db98d03e2a",
+            "date": "2016-01-10T05:13:48 -01:00",
+            "dateImport": "2014-08-03T09:09:40 -02:00",
+            "amount": 448,
+            "raw": "Excepteur consectetur aliqua fugiat ipsum ipsum incididunt laborum incididunt amet dolore laboris.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ac55252c47a9dc57",
+        "key": "5850ecf9d4ce13167442c824",
+        "value": {
+            "_id": "5850ecf973b0764fe8fd16f6",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "f7341336-a239-4289-b55a-a2a0211a64bd",
+            "date": "2014-05-09T03:31:33 -02:00",
+            "dateImport": "2015-02-11T04:08:06 -01:00",
+            "amount": 220,
+            "raw": "Tempor et magna cupidatat cupidatat dolore eu ullamco.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96a9f24c7f273d35f",
+        "key": "5850ecf95d2366af7179f3e9",
+        "value": {
+            "_id": "5850ecf934d232f9bebacbfb",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "df8ebd2b-6031-4417-b76c-2666944b0f7e",
+            "date": "2014-08-03T12:01:23 -02:00",
+            "dateImport": "2014-10-22T03:27:13 -02:00",
+            "amount": 51,
+            "raw": "Aliqua cillum in ipsum laboris ea eiusmod.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9967dee02cd266048",
+        "key": "5850ecf9025f714d8cc64b27",
+        "value": {
+            "_id": "5850ecf9d803c0a01bd03c96",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "d4ef9ce5-951f-46bb-925b-45b0b628decb",
+            "date": "2016-02-15T05:08:57 -01:00",
+            "dateImport": "2016-03-06T04:30:30 -01:00",
+            "amount": 303,
+            "raw": "Cillum fugiat in nostrud labore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ff810fa48b4d4af6",
+        "key": "5850ecf94acdbc4f2baf1e0e",
+        "value": {
+            "_id": "5850ecf97dcedeb30239b506",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "68203322-bfc0-4fd6-b287-a685bc02a533",
+            "date": "2016-04-04T11:14:31 -02:00",
+            "dateImport": "2014-04-06T09:56:04 -02:00",
+            "amount": 267,
+            "raw": "Ut esse minim ullamco elit id minim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d9223717f3d63905",
+        "key": "5850ecf9e3b64b00e19b4d5d",
+        "value": {
+            "_id": "5850ecf9910aabc66bf970f8",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "83c7ec7f-e815-42a6-b0fa-f4e34a296b9f",
+            "date": "2015-07-15T05:28:47 -02:00",
+            "dateImport": "2016-02-17T12:23:09 -01:00",
+            "amount": 83,
+            "raw": "Ullamco officia aliqua quis aliquip.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9dd4e2a91f31baaeb",
+        "key": "5850ecf945cdff45bfe39a60",
+        "value": {
+            "_id": "5850ecf9618bbb8f7028a788",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "1c3c7f77-e7ba-4db9-8d91-e31d8af88133",
+            "date": "2014-10-14T05:29:11 -02:00",
+            "dateImport": "2016-05-20T05:14:01 -02:00",
+            "amount": 30,
+            "raw": "Nisi irure cillum exercitation tempor pariatur tempor aliquip veniam nostrud non voluptate duis.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf93a03cb2036dba375",
+        "key": "5850ecf9b5d5e404aa89a04e",
+        "value": {
+            "_id": "5850ecf92e971bfa02feddfd",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "3c141db0-83bd-4de9-876f-fec2165fc35b",
+            "date": "2016-07-11T05:42:13 -02:00",
+            "dateImport": "2015-07-23T09:57:02 -02:00",
+            "amount": 62,
+            "raw": "Id officia reprehenderit non ea et commodo aliqua.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9187bac484cc6128d",
+        "key": "5850ecf9044236218a66f02b",
+        "value": {
+            "_id": "5850ecf9171446f19a3ad595",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "544e1c7b-bcf1-4e37-8496-1da6672acd24",
+            "date": "2016-05-18T02:06:57 -02:00",
+            "dateImport": "2015-10-09T05:30:57 -02:00",
+            "amount": 89,
+            "raw": "Enim anim et ad irure in.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f47f1f3f2cf2fb11",
+        "key": "5850ecf93b47ea4e8d99a285",
+        "value": {
+            "_id": "5850ecf9ea546d97786b0786",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "e1addd1f-14bc-4eff-a0f5-773234139373",
+            "date": "2014-07-01T02:06:34 -02:00",
+            "dateImport": "2016-10-17T10:53:24 -02:00",
+            "amount": 141,
+            "raw": "Ut eiusmod sunt velit adipisicing dolore duis culpa enim dolor commodo labore amet esse eiusmod.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf978df4d7202a86ac7",
+        "key": "5850ecf9f9ebd136ea2922fd",
+        "value": {
+            "_id": "5850ecf9f442c28d0f07374c",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "d3461a36-bfd7-4027-beea-40c8f1630841",
+            "date": "2014-10-22T03:06:11 -02:00",
+            "dateImport": "2015-04-17T05:17:35 -02:00",
+            "amount": 416,
+            "raw": "Non minim proident ex culpa nisi laboris ad duis culpa nulla culpa.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96739ed647f1ae392",
+        "key": "5850ecf9d27ebe44e52df04a",
+        "value": {
+            "_id": "5850ecf9f8ba33c2e9de9037",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "899f2d1c-a93c-4d7e-b056-68211f7bb0cc",
+            "date": "2016-09-11T09:34:09 -02:00",
+            "dateImport": "2016-06-14T07:18:13 -02:00",
+            "amount": 201,
+            "raw": "Magna elit cillum sunt cillum labore magna deserunt occaecat consectetur minim non.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9139e07885c8abf97",
+        "key": "5850ecf9243a067fde52470f",
+        "value": {
+            "_id": "5850ecf94f73342d71763d12",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "b8250f59-838e-4875-99f1-cc34ffa94c2d",
+            "date": "2015-03-09T11:12:09 -01:00",
+            "dateImport": "2016-03-16T06:05:29 -01:00",
+            "amount": 227,
+            "raw": "Reprehenderit velit cillum enim laborum sint.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96103e153529c52a0",
+        "key": "5850ecf9e13f18a634783fab",
+        "value": {
+            "_id": "5850ecf99a5457fa915b9558",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "e1b949ad-0709-460c-a68b-a8c75fb04914",
+            "date": "2015-11-03T05:42:05 -01:00",
+            "dateImport": "2015-05-04T12:34:25 -02:00",
+            "amount": 486,
+            "raw": "Nisi qui ea culpa voluptate eu do.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf962dc0bdc87d22e7d",
+        "key": "5850ecf9b5162c5bdd0d652b",
+        "value": {
+            "_id": "5850ecf95db82161a061bce3",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "501b441b-9a04-43c4-b33c-7222f9e31ec2",
+            "date": "2016-03-22T03:39:40 -01:00",
+            "dateImport": "2014-03-25T08:18:33 -01:00",
+            "amount": 32,
+            "raw": "Amet amet incididunt esse occaecat anim nulla cupidatat occaecat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90f541caa749a31c7",
+        "key": "5850ecf97639b55d4397bd73",
+        "value": {
+            "_id": "5850ecf95211a89376c37e07",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "7c6dd6a2-f21b-49b1-b4ef-bb3b508f00e4",
+            "date": "2014-02-25T11:38:13 -01:00",
+            "dateImport": "2015-07-26T11:41:45 -02:00",
+            "amount": 379,
+            "raw": "Cupidatat ipsum nisi elit anim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e05fa166db2c7b4c",
+        "key": "5850ecf936d9162957dba13d",
+        "value": {
+            "_id": "5850ecf9410642082acc4693",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "24072992-e18d-425c-b420-d2a14e42d946",
+            "date": "2014-01-26T05:48:09 -01:00",
+            "dateImport": "2016-07-05T06:56:04 -02:00",
+            "amount": 39,
+            "raw": "Veniam quis velit duis excepteur commodo nisi Lorem sint laboris adipisicing ea consequat nulla.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90a955fa022bdcdae",
+        "key": "5850ecf94060c6c4dbe41785",
+        "value": {
+            "_id": "5850ecf9e5f09a36404b71d7",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "922436d1-282c-4b78-bceb-e52d5c029dc3",
+            "date": "2016-04-25T05:16:51 -02:00",
+            "dateImport": "2014-03-26T09:09:56 -01:00",
+            "amount": 58,
+            "raw": "Cupidatat culpa magna aliquip esse esse reprehenderit excepteur nisi ad amet commodo esse occaecat nostrud.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9c3ff65dd59396dce",
+        "key": "5850ecf9146569de4f5b63d5",
+        "value": {
+            "_id": "5850ecf9353bf84833a1f0dc",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "c8ca1716-6929-455b-b99d-279ae3c8f6ab",
+            "date": "2015-12-28T09:19:23 -01:00",
+            "dateImport": "2015-02-07T02:54:34 -01:00",
+            "amount": 484,
+            "raw": "Duis esse ex aliqua laborum pariatur eiusmod qui minim nisi est ullamco nulla laborum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90ab7e4656bf9930f",
+        "key": "5850ecf95740dcefa1730f22",
+        "value": {
+            "_id": "5850ecf97e2b80cec63d317c",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "ee4a0887-0841-4e58-adb4-19d856241275",
+            "date": "2015-12-24T01:42:11 -01:00",
+            "dateImport": "2016-07-21T02:13:02 -02:00",
+            "amount": 274,
+            "raw": "Adipisicing laborum dolore in aliqua pariatur sit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f3a31f626a583598",
+        "key": "5850ecf96b0550361f945dbf",
+        "value": {
+            "_id": "5850ecf932fbee40f3bf5d58",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "045231b5-412f-4585-9274-2b81270cbbd6",
+            "date": "2014-02-25T12:33:37 -01:00",
+            "dateImport": "2015-07-13T10:14:14 -02:00",
+            "amount": 453,
+            "raw": "Lorem voluptate incididunt labore laborum dolore voluptate qui cupidatat adipisicing aliquip culpa anim exercitation officia.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf952cac7c935412132",
+        "key": "5850ecf9573f9db004e25ec2",
+        "value": {
+            "_id": "5850ecf957286ce4d4b86e6a",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "d701601d-cd3a-416f-bbc8-dd27faf7e33b",
+            "date": "2016-06-15T01:47:07 -02:00",
+            "dateImport": "2015-02-07T02:16:46 -01:00",
+            "amount": 127,
+            "raw": "Esse ex ipsum qui nostrud et nisi ut ut eu laboris amet qui.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9c4d1fe2f0e07b097",
+        "key": "5850ecf997cf771bd7f29c8c",
+        "value": {
+            "_id": "5850ecf93bb35b51c00d8c1e",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "097f7dbe-474c-45c5-99c6-307e37f9f653",
+            "date": "2015-08-14T01:38:11 -02:00",
+            "dateImport": "2015-08-28T04:29:52 -02:00",
+            "amount": 131,
+            "raw": "Ex minim quis qui tempor consectetur consectetur Lorem sunt consectetur in aliqua cupidatat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf942ce88097f110daf",
+        "key": "5850ecf913600b4f26121f03",
+        "value": {
+            "_id": "5850ecf9b75af0dad3b8ce38",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "c6785f9d-bcdb-462c-934f-4d166e3cfd25",
+            "date": "2015-08-20T02:51:03 -02:00",
+            "dateImport": "2014-12-30T11:16:23 -01:00",
+            "amount": 423,
+            "raw": "Nisi proident id laboris sunt aliquip aute sunt ipsum aute esse cillum incididunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ed49c0c3cf7d3107",
+        "key": "5850ecf9a7a495c7646a2970",
+        "value": {
+            "_id": "5850ecf99c354ca5a6e59859",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "8e6a4fdd-6eb1-46e5-a9ef-b637057b232e",
+            "date": "2016-09-15T08:01:26 -02:00",
+            "dateImport": "2014-01-16T04:00:24 -01:00",
+            "amount": 293,
+            "raw": "Lorem et tempor occaecat magna cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9fa1c8d50c1eae187",
+        "key": "5850ecf93366e40fc9a4d2a9",
+        "value": {
+            "_id": "5850ecf9bb0747fa87c1ece7",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "3ad96a74-14af-4018-94d8-ee0d38ffd31d",
+            "date": "2016-03-01T09:19:47 -01:00",
+            "dateImport": "2014-12-20T05:28:45 -01:00",
+            "amount": 114,
+            "raw": "Qui ea nulla non voluptate.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9a360dfe40400b65f",
+        "key": "5850ecf9b4f4dfe96bac1c95",
+        "value": {
+            "_id": "5850ecf98a228d88355ff63c",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "3c852349-4a03-40ad-bb6c-a26d82dde3fb",
+            "date": "2016-08-02T01:24:23 -02:00",
+            "dateImport": "2015-11-20T12:49:28 -01:00",
+            "amount": 37,
+            "raw": "Cillum non ea elit occaecat do dolor.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9c418e0adc1f1447b",
+        "key": "5850ecf9f1ca778a65a82f9b",
+        "value": {
+            "_id": "5850ecf9ad1baa4683068143",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "5a5f3bc6-96ed-4b76-a43f-c08c8c3c63cd",
+            "date": "2016-01-31T11:52:06 -01:00",
+            "dateImport": "2016-10-08T07:36:47 -02:00",
+            "amount": 117,
+            "raw": "Sit eu aliqua consequat exercitation ad dolor nostrud ad excepteur consectetur exercitation ea Lorem est.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf925a400c34c28869c",
+        "key": "5850ecf99c6f011e1c00f670",
+        "value": {
+            "_id": "5850ecf9cc6e2344b7038858",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "01cc0af7-8ba0-49d0-9dfa-35dc63353d2b",
+            "date": "2015-03-01T01:06:33 -01:00",
+            "dateImport": "2014-01-14T11:03:42 -01:00",
+            "amount": 144,
+            "raw": "Occaecat aliqua reprehenderit amet nulla eu cupidatat ullamco laboris ipsum ipsum Lorem Lorem.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9a33acbc4503fca9e",
+        "key": "5850ecf96c6af4b436160a7b",
+        "value": {
+            "_id": "5850ecf9c7e7ada785cfbc0b",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "5524a3b1-c44d-405e-a789-3c148eceb162",
+            "date": "2014-08-12T08:18:55 -02:00",
+            "dateImport": "2016-04-28T01:50:49 -02:00",
+            "amount": 205,
+            "raw": "Ad est pariatur aliquip laborum proident commodo eiusmod aute tempor do.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9fb9e5e9c043fd869",
+        "key": "5850ecf9cc11230a916fba6e",
+        "value": {
+            "_id": "5850ecf9d2752e763d1c0b7f",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "b39d14ab-ec05-42d2-b748-8a073c113e60",
+            "date": "2014-12-17T01:19:13 -01:00",
+            "dateImport": "2014-12-19T08:59:47 -01:00",
+            "amount": 369,
+            "raw": "Culpa sit do elit velit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d7331135ae93a3cb",
+        "key": "5850ecf9110c4e8082b17352",
+        "value": {
+            "_id": "5850ecf932afcfaa6bb757c8",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "b40749a4-de5b-49b0-8574-d650e68139b8",
+            "date": "2016-05-02T08:29:27 -02:00",
+            "dateImport": "2016-10-22T05:55:50 -02:00",
+            "amount": 153,
+            "raw": "Adipisicing sint cillum commodo et.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9dbc92c568dc2df4d",
+        "key": "5850ecf9cfd4e064768ec153",
+        "value": {
+            "_id": "5850ecf9bc57797e5157d91c",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "43ad1b02-1b21-4862-b541-93428aae779c",
+            "date": "2016-10-01T02:42:33 -02:00",
+            "dateImport": "2016-02-06T01:22:51 -01:00",
+            "amount": 447,
+            "raw": "Eu amet commodo tempor adipisicing do dolore sunt ea quis elit ut et qui elit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9c038373f452dd79c",
+        "key": "5850ecf9043fb933d7c0e049",
+        "value": {
+            "_id": "5850ecf9fde575dc239daf36",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "0c928813-aa2a-4e53-b520-d448e7738032",
+            "date": "2015-03-23T02:00:56 -01:00",
+            "dateImport": "2015-06-07T12:02:03 -02:00",
+            "amount": 161,
+            "raw": "Enim cillum dolore dolor ipsum in.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d4f851dc7cbe738f",
+        "key": "5850ecf9ca06b317086ee1dc",
+        "value": {
+            "_id": "5850ecf965950893aaead8af",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "e5c2f1f8-6dc6-4e89-adae-01a18f2ef2fd",
+            "date": "2016-05-31T08:12:58 -02:00",
+            "dateImport": "2014-12-06T08:30:20 -01:00",
+            "amount": 210,
+            "raw": "Esse id et culpa dolor mollit eu consequat nisi nulla anim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90da072a2a7306538",
+        "key": "5850ecf99f8c34ecb58d07c0",
+        "value": {
+            "_id": "5850ecf9645f4d28e0be8a92",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "9e9a3bc8-0e1c-4141-9515-df9e9016755b",
+            "date": "2014-05-16T06:18:12 -02:00",
+            "dateImport": "2014-10-10T08:19:15 -02:00",
+            "amount": 91,
+            "raw": "Mollit minim anim mollit consectetur amet minim incididunt dolor commodo minim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf928e0da51d1595818",
+        "key": "5850ecf9b637c10c2452dc12",
+        "value": {
+            "_id": "5850ecf92bf1954f4d7c3789",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "abb0f704-c1e5-44a7-8298-e6f1fe5667b8",
+            "date": "2016-11-07T07:50:55 -01:00",
+            "dateImport": "2015-09-02T04:55:29 -02:00",
+            "amount": 218,
+            "raw": "Elit magna nostrud in qui quis incididunt aute amet officia.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9da20a46763b274c2",
+        "key": "5850ecf9becb22368d235b5e",
+        "value": {
+            "_id": "5850ecf9cafd6f539e148269",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "bf9bdf0b-1501-4ed0-872b-2d040892abb2",
+            "date": "2014-07-30T02:54:39 -02:00",
+            "dateImport": "2016-08-12T04:44:13 -02:00",
+            "amount": 352,
+            "raw": "Adipisicing adipisicing amet exercitation aliqua non.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf979c954c2f592223a",
+        "key": "5850ecf9463d2a7438ed513f",
+        "value": {
+            "_id": "5850ecf9d6bbb314bcf31780",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "a312a92f-de94-4b4f-b241-d5d65cbd4422",
+            "date": "2016-05-31T05:51:06 -02:00",
+            "dateImport": "2016-12-06T11:22:22 -01:00",
+            "amount": 377,
+            "raw": "Lorem veniam aliquip nulla deserunt voluptate laboris irure.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9763e21687cd3e83d",
+        "key": "5850ecf96aa7f0b47bc25dc8",
+        "value": {
+            "_id": "5850ecf9ac77df68d811da56",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "546ae397-3047-4361-a2eb-e378ec5e8370",
+            "date": "2014-06-08T12:41:44 -02:00",
+            "dateImport": "2016-09-16T07:00:48 -02:00",
+            "amount": 484,
+            "raw": "Ullamco id fugiat velit nostrud officia anim aute enim labore laboris.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9a0328e7de423e1ae",
+        "key": "5850ecf95ecc189fe5276683",
+        "value": {
+            "_id": "5850ecf910672582b89b4352",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "854774f9-8440-4135-aea4-22181e5253cb",
+            "date": "2014-12-05T06:52:43 -01:00",
+            "dateImport": "2014-10-06T05:21:54 -02:00",
+            "amount": 457,
+            "raw": "Commodo do voluptate nulla cupidatat anim ut.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf92a1141a83600c2d9",
+        "key": "5850ecf9fd611a53361c5e57",
+        "value": {
+            "_id": "5850ecf90e7de5f2a89b78f4",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "fd426141-931c-43ee-a751-5fc5d292f838",
+            "date": "2014-10-15T12:05:19 -02:00",
+            "dateImport": "2015-08-20T05:04:14 -02:00",
+            "amount": 206,
+            "raw": "Et adipisicing amet nostrud voluptate eu non ea fugiat eiusmod nulla.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9c1f811b5559d1133",
+        "key": "5850ecf920951ef1603379ef",
+        "value": {
+            "_id": "5850ecf985bca68d2739036e",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "0ee3f6d2-a313-4404-94ab-de3d22dc9661",
+            "date": "2014-08-13T08:39:04 -02:00",
+            "dateImport": "2015-01-15T04:50:35 -01:00",
+            "amount": 223,
+            "raw": "Mollit esse do in minim veniam veniam non aute amet ut id.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf970c310b7ad7f993c",
+        "key": "5850ecf922bd6fb728241dc4",
+        "value": {
+            "_id": "5850ecf96b241c54520928c1",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "6bf67300-b082-4ef8-9854-07c8536d7544",
+            "date": "2015-12-03T01:18:51 -01:00",
+            "dateImport": "2016-10-01T06:02:51 -02:00",
+            "amount": 420,
+            "raw": "Tempor tempor laborum culpa dolore eiusmod nisi excepteur mollit excepteur incididunt esse Lorem.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ebefaf11a406a9ac",
+        "key": "5850ecf9f23acc3cf4af2f71",
+        "value": {
+            "_id": "5850ecf9c6f1c408e473e54e",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "0a32eeec-975a-4f00-a7cf-3439772675c9",
+            "date": "2014-10-11T05:24:21 -02:00",
+            "dateImport": "2014-04-06T12:50:38 -02:00",
+            "amount": 115,
+            "raw": "Quis sit deserunt cillum occaecat labore magna commodo sit officia quis cillum cupidatat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f778813f165aea2f",
+        "key": "5850ecf912bb5524eaed35c2",
+        "value": {
+            "_id": "5850ecf9bf7e86d1e5613bab",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "9e70bb89-5bff-4d17-b5c8-b5e2fba125a0",
+            "date": "2016-03-04T07:55:34 -01:00",
+            "dateImport": "2016-03-22T08:20:25 -01:00",
+            "amount": 269,
+            "raw": "Commodo culpa et commodo nulla ad fugiat sint.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf942a34d23fd3408e5",
+        "key": "5850ecf98ddd3319ee6d5f5b",
+        "value": {
+            "_id": "5850ecf94798cfdb426b7cf9",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "1e24c775-e3fb-4164-8bcd-08b901b5c936",
+            "date": "2015-10-19T07:18:32 -02:00",
+            "dateImport": "2015-04-28T01:18:32 -02:00",
+            "amount": 103,
+            "raw": "Voluptate proident elit fugiat excepteur consequat dolor ex qui sit est.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ae7a3201314fe469",
+        "key": "5850ecf97df3756239dfd01d",
+        "value": {
+            "_id": "5850ecf9892440384f079377",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "0e71b9ee-b4cd-47a1-becd-f8cb8b437bbf",
+            "date": "2014-03-26T09:09:05 -01:00",
+            "dateImport": "2015-03-29T11:55:08 -02:00",
+            "amount": 291,
+            "raw": "Cillum nulla qui occaecat aliqua pariatur adipisicing.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf92a91b8eaf727e158",
+        "key": "5850ecf9009bd439e1357247",
+        "value": {
+            "_id": "5850ecf9056d614185eb9db8",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "a75a442f-3363-4586-9c45-e382a19fa0e9",
+            "date": "2016-11-26T08:58:53 -01:00",
+            "dateImport": "2016-09-23T03:43:47 -02:00",
+            "amount": 361,
+            "raw": "Culpa magna dolor fugiat elit anim labore adipisicing quis.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf915497efffa29ddc6",
+        "key": "5850ecf9881af585ef951903",
+        "value": {
+            "_id": "5850ecf903a0e1b8d9717e2e",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "72119fee-0422-461a-b9eb-e21e16a92f52",
+            "date": "2016-12-13T08:19:11 -01:00",
+            "dateImport": "2015-08-30T08:42:18 -02:00",
+            "amount": 136,
+            "raw": "Amet commodo velit sint enim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e52d72c4f678e1db",
+        "key": "5850ecf96acdba2ef351234a",
+        "value": {
+            "_id": "5850ecf99f85cbf23634f5f9",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "2badb3e9-8717-42f9-a0a7-abb80bec4c29",
+            "date": "2015-05-02T10:05:21 -02:00",
+            "dateImport": "2014-11-11T10:58:16 -01:00",
+            "amount": 334,
+            "raw": "Velit occaecat mollit duis sunt voluptate ad.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9aa7210439f3a8e47",
+        "key": "5850ecf907978462e097dfd0",
+        "value": {
+            "_id": "5850ecf94c9d80b1fc4f9a74",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "5b4bf9a1-f64b-421b-a149-8e66b1356035",
+            "date": "2015-08-07T07:28:06 -02:00",
+            "dateImport": "2014-05-14T10:55:03 -02:00",
+            "amount": 474,
+            "raw": "Consectetur Lorem eiusmod occaecat aliqua quis enim do quis aliquip proident cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf92417efd35fd0e554",
+        "key": "5850ecf953bda71762ff9be6",
+        "value": {
+            "_id": "5850ecf99dc91e2b896992c2",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "c5f2e945-68b1-46d4-81ae-48409e4c271f",
+            "date": "2015-11-07T04:57:51 -01:00",
+            "dateImport": "2016-08-31T02:30:23 -02:00",
+            "amount": 84,
+            "raw": "Nisi mollit sunt anim ad Lorem enim cupidatat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b3fcf730acc8cadd",
+        "key": "5850ecf97c03677cf2556330",
+        "value": {
+            "_id": "5850ecf93bceea1b0c2a864b",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "23767164-d738-4132-aca5-0c05d007bfb9",
+            "date": "2014-12-27T03:27:37 -01:00",
+            "dateImport": "2015-03-13T02:06:30 -01:00",
+            "amount": 392,
+            "raw": "Qui qui eu duis ut duis culpa.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90d71607a3cd17d31",
+        "key": "5850ecf92d40ce91329725a3",
+        "value": {
+            "_id": "5850ecf9a3a0935c15351a06",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "93af3173-5102-4ad3-af1b-8724d1e37d5d",
+            "date": "2015-03-17T09:10:44 -01:00",
+            "dateImport": "2015-01-18T06:19:50 -01:00",
+            "amount": 237,
+            "raw": "Laboris anim do labore minim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf991b202ada4d083db",
+        "key": "5850ecf9810d38770ecbef01",
+        "value": {
+            "_id": "5850ecf9b4c1d770ea57f3d7",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "b9cfbf9e-1e98-45b6-9465-a4ce0d160cc2",
+            "date": "2015-06-12T07:05:04 -02:00",
+            "dateImport": "2015-12-08T05:51:40 -01:00",
+            "amount": 254,
+            "raw": "Exercitation nostrud fugiat deserunt ex deserunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e968a11e72113e48",
+        "key": "5850ecf9171b737c9382a3a8",
+        "value": {
+            "_id": "5850ecf966afe37769ab1750",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "da0c402b-d4ec-437c-86a2-ffda1218b9ed",
+            "date": "2016-03-14T07:59:49 -01:00",
+            "dateImport": "2014-12-20T12:43:00 -01:00",
+            "amount": 446,
+            "raw": "Voluptate deserunt aliquip nisi elit ex culpa reprehenderit duis sunt aliqua fugiat mollit commodo anim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf92a3ce6f66a615d08",
+        "key": "5850ecf9a452f9a9ec900d23",
+        "value": {
+            "_id": "5850ecf99e6906a297b5642b",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "a0b2bc90-dd75-4e55-8b2a-e4fec5eafa4a",
+            "date": "2016-02-29T12:05:47 -01:00",
+            "dateImport": "2014-03-26T10:49:50 -01:00",
+            "amount": 324,
+            "raw": "Elit tempor minim amet voluptate velit eu aliqua sint.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9bdb6d27ba1a0f936",
+        "key": "5850ecf927f33a3c419b0d2d",
+        "value": {
+            "_id": "5850ecf9438757539c9c7680",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "e3eaa903-4f49-4df1-9bd1-4755e4dc0212",
+            "date": "2014-11-04T01:24:11 -01:00",
+            "dateImport": "2014-05-31T06:00:56 -02:00",
+            "amount": 382,
+            "raw": "Est anim ea enim mollit labore commodo voluptate sunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf911e0b3b38f676303",
+        "key": "5850ecf93c2342aba0a13793",
+        "value": {
+            "_id": "5850ecf9dd130a20b7d46ac4",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "3d9aa8bc-ce44-45cc-ac72-671721680de5",
+            "date": "2016-05-27T09:17:59 -02:00",
+            "dateImport": "2016-06-19T03:09:07 -02:00",
+            "amount": 457,
+            "raw": "Irure ex dolor nisi ex nulla consectetur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf911f4a34ecc05bf00",
+        "key": "5850ecf9a5f326ca5de06bf1",
+        "value": {
+            "_id": "5850ecf99f2d3c6b5ef65d7f",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "5aac3bea-6667-4651-8875-e9fd37045d98",
+            "date": "2016-12-06T09:12:24 -01:00",
+            "dateImport": "2016-01-08T02:37:53 -01:00",
+            "amount": 465,
+            "raw": "Sit enim id ut eiusmod cupidatat officia id sint quis.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9c3593f61076aa4ef",
+        "key": "5850ecf9b4a05fe64d964686",
+        "value": {
+            "_id": "5850ecf969f12671cc1e067b",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "1378b2dd-3e9e-4e73-8f62-233febc9f97e",
+            "date": "2016-11-11T10:20:57 -01:00",
+            "dateImport": "2016-11-19T09:17:47 -01:00",
+            "amount": 334,
+            "raw": "Cillum voluptate sunt aliquip consectetur aute nisi magna cillum consectetur sit laborum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf93bee8de3b877f207",
+        "key": "5850ecf95304cd5854fc024b",
+        "value": {
+            "_id": "5850ecf925c8ca55d82e076e",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "0ff7f0b5-8112-4737-8380-b81b7676e4f7",
+            "date": "2014-10-03T12:33:46 -02:00",
+            "dateImport": "2014-01-25T12:28:48 -01:00",
+            "amount": 165,
+            "raw": "Dolor aute magna non dolore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9788d67bf4f1e9ba6",
+        "key": "5850ecf93c7fbecda75f7947",
+        "value": {
+            "_id": "5850ecf98cfe0c0cb2b92605",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "a653c68a-4031-4e4a-9cc7-925aaaa11ee8",
+            "date": "2014-12-30T01:14:23 -01:00",
+            "dateImport": "2015-10-13T03:18:49 -02:00",
+            "amount": 392,
+            "raw": "Reprehenderit velit qui elit nisi ex ad Lorem duis amet duis ad.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf91157a28227d28a45",
+        "key": "5850ecf9df56a4deb0a7610e",
+        "value": {
+            "_id": "5850ecf9a3951774eaf522cb",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "c2fa5fd6-e079-4f6f-ab4f-9e30f6918cb2",
+            "date": "2016-07-19T07:15:30 -02:00",
+            "dateImport": "2014-12-31T11:00:13 -01:00",
+            "amount": 207,
+            "raw": "Tempor consectetur adipisicing fugiat enim aute aliquip pariatur eu minim qui.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d99719433f548247",
+        "key": "5850ecf9a4013997ee918bdf",
+        "value": {
+            "_id": "5850ecf95ee1e8e732388a2f",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "c8a7f3be-30ab-47ad-a5c6-1b45b228efca",
+            "date": "2014-05-18T10:49:19 -02:00",
+            "dateImport": "2014-08-11T11:09:59 -02:00",
+            "amount": 266,
+            "raw": "Ad ullamco minim ad labore aliqua excepteur nisi ut incididunt voluptate do.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97a212014ede6247c",
+        "key": "5850ecf9ce0a4626b857922d",
+        "value": {
+            "_id": "5850ecf92a90ec9c82be35d0",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "3b3bb9bb-c910-40dd-8246-c0ff2e458f36",
+            "date": "2016-07-20T01:31:01 -02:00",
+            "dateImport": "2016-10-19T06:54:27 -02:00",
+            "amount": 468,
+            "raw": "Cillum id eiusmod laboris eiusmod dolor occaecat velit consectetur dolore sit laborum consectetur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf949c28f7127ad3624",
+        "key": "5850ecf920ba244f7fe0c97f",
+        "value": {
+            "_id": "5850ecf96ca904f318899d47",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "ba0b8dcb-9d36-4298-bb4b-6a650359c3ed",
+            "date": "2014-10-31T11:03:00 -01:00",
+            "dateImport": "2015-02-22T10:52:41 -01:00",
+            "amount": 403,
+            "raw": "Tempor voluptate deserunt elit tempor cupidatat proident ullamco ullamco labore do adipisicing duis nulla labore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf92f964238fe903d33",
+        "key": "5850ecf9dc37d6637b7b852c",
+        "value": {
+            "_id": "5850ecf96a694031ee05fd05",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "b0006b6d-03ce-47bd-a274-0c91e3aa67df",
+            "date": "2016-11-27T07:35:12 -01:00",
+            "dateImport": "2015-05-13T07:50:21 -02:00",
+            "amount": 487,
+            "raw": "Occaecat culpa reprehenderit tempor ut.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf930301db632023977",
+        "key": "5850ecf9c7acf0ea177bd669",
+        "value": {
+            "_id": "5850ecf95e131537e51bc88b",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "3093c46b-ae40-4648-ba70-ebc6e52fb031",
+            "date": "2015-03-10T11:47:21 -01:00",
+            "dateImport": "2015-03-21T05:44:14 -01:00",
+            "amount": 355,
+            "raw": "Laborum cupidatat sit eu cupidatat enim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf94ca19fedfba22d63",
+        "key": "5850ecf931d35016ce3bf4b6",
+        "value": {
+            "_id": "5850ecf9f06a859a76d2a943",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "fef5f743-21e8-4988-81ad-a471b8d6192f",
+            "date": "2015-06-08T10:02:48 -02:00",
+            "dateImport": "2015-06-02T03:29:36 -02:00",
+            "amount": 65,
+            "raw": "Eu aliquip adipisicing ipsum consectetur laborum cupidatat in.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e74de2d969c6d3f0",
+        "key": "5850ecf9dd8df8b9d3091c59",
+        "value": {
+            "_id": "5850ecf912bf895cb923e247",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "52c74378-f4c1-427f-8e16-a7de46ffddb4",
+            "date": "2015-12-18T08:32:43 -01:00",
+            "dateImport": "2014-01-15T07:01:55 -01:00",
+            "amount": 395,
+            "raw": "Enim quis laborum ullamco esse pariatur nulla esse id esse pariatur occaecat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9267dfe7288871656",
+        "key": "5850ecf991d503c63578dc0a",
+        "value": {
+            "_id": "5850ecf9c4b2c4d63ed51acc",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "fe389097-7772-49ec-8b5b-c6dfd58d9c04",
+            "date": "2014-11-21T08:48:12 -01:00",
+            "dateImport": "2015-04-24T04:16:23 -02:00",
+            "amount": 500,
+            "raw": "Sit nostrud officia velit cupidatat incididunt ullamco ex amet dolore consectetur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e7a3c603cdac5373",
+        "key": "5850ecf9dc58c57b2ddda713",
+        "value": {
+            "_id": "5850ecf98c24f01838b03f1f",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "645de1b7-c443-45fa-b93c-3e9b59da968f",
+            "date": "2014-05-05T10:48:31 -02:00",
+            "dateImport": "2016-09-13T12:37:41 -02:00",
+            "amount": 249,
+            "raw": "Nisi officia incididunt sit occaecat occaecat aliquip laboris ea.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9a0328d6456393172",
+        "key": "5850ecf9d037982f0d4e352b",
+        "value": {
+            "_id": "5850ecf9a5c01c69f1ef88f1",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "5bcb7ada-2830-4f38-8438-fe1be3c513ca",
+            "date": "2016-09-30T01:29:42 -02:00",
+            "dateImport": "2015-02-02T12:12:29 -01:00",
+            "amount": 317,
+            "raw": "Ad nostrud reprehenderit sint magna in voluptate irure consectetur aliquip cupidatat amet cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b77a3a0708a55a53",
+        "key": "5850ecf931f89dff5eed0029",
+        "value": {
+            "_id": "5850ecf9bd56afe83c56877a",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "b5bbbe2c-6ac9-4740-a8f6-ea9374505a26",
+            "date": "2015-06-25T08:17:41 -02:00",
+            "dateImport": "2014-02-22T02:56:52 -01:00",
+            "amount": 83,
+            "raw": "Do deserunt ex ex fugiat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf946dd0a80f4eea376",
+        "key": "5850ecf9b529b25a62f87dfe",
+        "value": {
+            "_id": "5850ecf9f5dd9ce62e7a3da2",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "d4815046-3909-478b-aaed-2058c78ed6f4",
+            "date": "2015-12-05T05:53:27 -01:00",
+            "dateImport": "2014-10-05T04:21:07 -02:00",
+            "amount": 79,
+            "raw": "Tempor quis aliqua ex fugiat do.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf947077c0760cf9dce",
+        "key": "5850ecf9bce1211300004462",
+        "value": {
+            "_id": "5850ecf9da32f7bbb1919e5e",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "5bcaacf3-2349-4523-bf7b-82214efa81c9",
+            "date": "2014-03-11T09:55:54 -01:00",
+            "dateImport": "2015-05-23T02:07:30 -02:00",
+            "amount": 479,
+            "raw": "Sunt ea ex ipsum esse consectetur commodo adipisicing anim cupidatat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9720462c6cebeb8d5",
+        "key": "5850ecf90b4afa1b1d1fbb6f",
+        "value": {
+            "_id": "5850ecf9b02efae7d916ea7a",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "2ffbedef-5450-42ee-9312-85169c913d3d",
+            "date": "2016-10-17T10:52:09 -02:00",
+            "dateImport": "2015-04-27T03:41:28 -02:00",
+            "amount": 233,
+            "raw": "Do consequat id quis eiusmod adipisicing mollit anim tempor ex aute incididunt dolor nisi eu.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf93e8042fe09201eb3",
+        "key": "5850ecf99b41bd77a11cc341",
+        "value": {
+            "_id": "5850ecf9f3d08ab26db7f246",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "1d9b41cd-8060-447b-80d8-c614c41c1002",
+            "date": "2016-08-13T12:52:53 -02:00",
+            "dateImport": "2016-11-04T08:01:05 -01:00",
+            "amount": 155,
+            "raw": "Id officia minim qui culpa est enim adipisicing quis proident esse duis anim magna.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf98077f90994528136",
+        "key": "5850ecf969d84dae8f979883",
+        "value": {
+            "_id": "5850ecf94aeb2e53056d6ceb",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "34a100ac-d4e0-4ff6-bd16-a818e739a0fe",
+            "date": "2015-10-18T02:13:04 -02:00",
+            "dateImport": "2016-06-30T09:34:38 -02:00",
+            "amount": 345,
+            "raw": "Consectetur dolor sint quis voluptate minim et velit eiusmod excepteur incididunt excepteur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ae9cedc12e8aaa9e",
+        "key": "5850ecf944064e9693989bbf",
+        "value": {
+            "_id": "5850ecf9f7521dee166cd4e6",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "a20b2605-a0b7-472e-b377-4f28eb87c97c",
+            "date": "2014-08-22T02:44:53 -02:00",
+            "dateImport": "2014-09-26T03:01:14 -02:00",
+            "amount": 389,
+            "raw": "Ullamco sint fugiat irure aliqua tempor esse laborum excepteur commodo velit nostrud tempor mollit sunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9558be5b7e696c66c",
+        "key": "5850ecf91bcfa344d1e69fd4",
+        "value": {
+            "_id": "5850ecf9e3e484200a741433",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "6a98373c-8826-4b95-94af-5c95a620c0af",
+            "date": "2016-05-22T08:06:11 -02:00",
+            "dateImport": "2014-03-29T04:55:10 -01:00",
+            "amount": 131,
+            "raw": "Sint et aliquip ea enim ad commodo mollit minim nisi officia magna fugiat duis.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf98893cdcda5a59b66",
+        "key": "5850ecf9ac915bdae058bb92",
+        "value": {
+            "_id": "5850ecf97361347572a9b073",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "985a16b7-55eb-49d6-b593-ee5a6a9dd634",
+            "date": "2016-08-18T01:48:10 -02:00",
+            "dateImport": "2015-04-16T02:54:29 -02:00",
+            "amount": 393,
+            "raw": "Adipisicing nostrud sit id excepteur minim ex adipisicing anim voluptate eiusmod sunt excepteur excepteur tempor.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b6e6796df86346d0",
+        "key": "5850ecf92ded2bac885ca3ab",
+        "value": {
+            "_id": "5850ecf9ef843b692137ed82",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "78b2fc4f-a3b6-459d-9b91-e1ac52401a90",
+            "date": "2015-02-24T08:57:45 -01:00",
+            "dateImport": "2014-12-11T10:53:07 -01:00",
+            "amount": 435,
+            "raw": "Aliquip sit enim eu Lorem ea amet reprehenderit dolore anim in ex.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97ec9852f989d81d1",
+        "key": "5850ecf9a5a2a2db3dd8b289",
+        "value": {
+            "_id": "5850ecf9cb1ccb73a350f0e8",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "65e4c669-8e5b-4470-9842-94d50a74f3ac",
+            "date": "2014-02-16T02:19:33 -01:00",
+            "dateImport": "2014-08-16T05:00:37 -02:00",
+            "amount": 174,
+            "raw": "Culpa ullamco velit nisi incididunt mollit enim duis ad dolor enim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9022f4eeb6b437acb",
+        "key": "5850ecf9ccf92437deea81be",
+        "value": {
+            "_id": "5850ecf92e4cf0e84cf13721",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "8ce60ad7-846a-4530-9e0a-b7c73f265a0f",
+            "date": "2014-04-24T10:38:59 -02:00",
+            "dateImport": "2016-01-24T08:06:56 -01:00",
+            "amount": 169,
+            "raw": "Aliqua pariatur adipisicing non do.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b6099cbd953028cc",
+        "key": "5850ecf9aa8229330b55741f",
+        "value": {
+            "_id": "5850ecf9f11c27ceb38f66e6",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "e6593167-320a-47f3-a275-a8f381dd6d8e",
+            "date": "2014-07-18T05:56:25 -02:00",
+            "dateImport": "2016-03-25T09:05:00 -01:00",
+            "amount": 46,
+            "raw": "Cillum proident cupidatat excepteur elit pariatur non aliqua sit duis laboris ea.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9894a62c7744eaccf",
+        "key": "5850ecf9c967e9c3bbbd627a",
+        "value": {
+            "_id": "5850ecf9585f32f576322a30",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "f2b3a611-02af-4ddb-858b-d681bb1fdb58",
+            "date": "2014-11-09T01:27:45 -01:00",
+            "dateImport": "2016-03-29T11:23:41 -02:00",
+            "amount": 134,
+            "raw": "Ea qui veniam sunt non laborum qui proident deserunt ullamco.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e053d2aa7de317c5",
+        "key": "5850ecf9b4d7c17ef5e8eaeb",
+        "value": {
+            "_id": "5850ecf99857788fab54d0c9",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "2398bd31-89e8-4524-abaf-8a56cea3560c",
+            "date": "2016-06-14T07:40:50 -02:00",
+            "dateImport": "2015-03-03T04:32:25 -01:00",
+            "amount": 43,
+            "raw": "Culpa proident aute sint amet incididunt laboris esse ut reprehenderit nulla elit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf933ac055963c24d5d",
+        "key": "5850ecf90bd7edbff9e7cb9f",
+        "value": {
+            "_id": "5850ecf91a4cacc5b476cb5b",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "3218bef6-6bbd-4359-8b3e-b50d98a3594f",
+            "date": "2014-08-28T11:06:16 -02:00",
+            "dateImport": "2016-01-26T08:58:28 -01:00",
+            "amount": 147,
+            "raw": "Excepteur non irure ipsum velit eiusmod adipisicing magna veniam mollit tempor fugiat ullamco.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf940f4aa35a074a44d",
+        "key": "5850ecf9a48b11dd6d16f878",
+        "value": {
+            "_id": "5850ecf9db60bbab14cb8b93",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "c167657f-35db-47f7-8430-f228fed8c0ed",
+            "date": "2014-03-29T01:55:37 -01:00",
+            "dateImport": "2014-07-24T10:11:08 -02:00",
+            "amount": 90,
+            "raw": "Irure tempor irure ad laboris exercitation est pariatur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9a2e33a61d0e474aa",
+        "key": "5850ecf928ab9127e3a29669",
+        "value": {
+            "_id": "5850ecf9e216a7ac9b01929e",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "9d3053fa-9f2c-46b1-8b78-6fec3b645edd",
+            "date": "2016-02-26T12:32:28 -01:00",
+            "dateImport": "2014-08-27T05:27:57 -02:00",
+            "amount": 254,
+            "raw": "Culpa nostrud excepteur minim irure dolore quis laboris amet Lorem sint occaecat ipsum id ipsum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf91b5a95fd626ea5f4",
+        "key": "5850ecf95ff204aea06e7096",
+        "value": {
+            "_id": "5850ecf95a333828f20715dd",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "effe44f9-2999-476d-b9a6-b24e3d0cbfad",
+            "date": "2015-10-08T03:32:00 -02:00",
+            "dateImport": "2015-05-23T11:24:14 -02:00",
+            "amount": 252,
+            "raw": "Enim irure ex laboris commodo consequat reprehenderit ullamco.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9936a29e9e115a132",
+        "key": "5850ecf91c2b44511a61cff4",
+        "value": {
+            "_id": "5850ecf917f8477435e7b772",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "39d8f5f3-26fe-4e0e-83fa-634c31ae391a",
+            "date": "2014-02-17T03:33:28 -01:00",
+            "dateImport": "2015-11-03T08:04:37 -01:00",
+            "amount": 159,
+            "raw": "Magna cupidatat ad aliquip adipisicing occaecat sunt duis dolore Lorem occaecat sint anim sint.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf95ec4bcd0987de2f7",
+        "key": "5850ecf902fd9479345c4ae1",
+        "value": {
+            "_id": "5850ecf989db6eb8cdf6f066",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "c85abdd2-8c0e-41ff-b4f2-c319972b3686",
+            "date": "2014-07-28T12:09:39 -02:00",
+            "dateImport": "2016-12-08T09:28:19 -01:00",
+            "amount": 55,
+            "raw": "Laborum labore dolor nisi do non veniam esse officia est fugiat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf92dfca8d0bb3cb904",
+        "key": "5850ecf908a790e69f4d110e",
+        "value": {
+            "_id": "5850ecf95c8c219b81c5b6f7",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "476c12f1-b971-4321-adfe-ed4d3587954f",
+            "date": "2015-11-21T02:22:00 -01:00",
+            "dateImport": "2015-04-17T12:48:00 -02:00",
+            "amount": 415,
+            "raw": "Esse fugiat sint magna magna dolore ea commodo cupidatat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf94389d18b03f53bda",
+        "key": "5850ecf96ad19384f07dc3c0",
+        "value": {
+            "_id": "5850ecf91ea09e1d6774e0cd",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "04a0e494-59a1-4196-b96c-bc431116b48e",
+            "date": "2016-04-01T10:12:09 -02:00",
+            "dateImport": "2015-08-23T02:27:17 -02:00",
+            "amount": 365,
+            "raw": "Ipsum cillum nulla in excepteur incididunt pariatur veniam laborum ad deserunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf954d149d35671baee",
+        "key": "5850ecf9958a3a18523227fc",
+        "value": {
+            "_id": "5850ecf999028de461123e08",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "2d5af3c4-294e-42ee-bb46-bef5636b1eaa",
+            "date": "2015-11-04T07:55:00 -01:00",
+            "dateImport": "2014-03-14T03:57:34 -01:00",
+            "amount": 382,
+            "raw": "Fugiat sunt et duis non duis laborum est incididunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf99c2793972dea3703",
+        "key": "5850ecf9580276fda5946be6",
+        "value": {
+            "_id": "5850ecf9be7fb8234455c621",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "a22691ab-6e19-4a7e-b059-df90dce6099b",
+            "date": "2016-02-14T01:48:30 -01:00",
+            "dateImport": "2016-08-10T04:52:49 -02:00",
+            "amount": 287,
+            "raw": "Aute excepteur aute ad et est sunt tempor non nostrud ipsum aliquip mollit ipsum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9cf14453a042c236f",
+        "key": "5850ecf92189a08c539e4df8",
+        "value": {
+            "_id": "5850ecf987333227f9665769",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "1ef40fa9-3b10-487c-8d11-72ae40804282",
+            "date": "2015-03-01T12:32:36 -01:00",
+            "dateImport": "2015-01-13T11:51:01 -01:00",
+            "amount": 170,
+            "raw": "Ea veniam veniam ullamco laboris.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e476513ca8f560a4",
+        "key": "5850ecf96ff7cf99cf6bbfe2",
+        "value": {
+            "_id": "5850ecf9970f1ec47a260847",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "b5b9b230-e6a8-421b-b3e5-37f968975a7c",
+            "date": "2015-10-21T12:12:39 -02:00",
+            "dateImport": "2015-12-27T03:32:36 -01:00",
+            "amount": 226,
+            "raw": "Excepteur esse commodo non est laborum velit aliquip proident aute.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97cf396c31b658321",
+        "key": "5850ecf9ad45fc884e6a30d3",
+        "value": {
+            "_id": "5850ecf9a59c4676baf77d64",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "34182b15-b0b6-4977-9e5d-cb9ab80430cc",
+            "date": "2015-03-25T01:06:22 -01:00",
+            "dateImport": "2016-11-13T11:38:08 -01:00",
+            "amount": 50,
+            "raw": "Incididunt nisi do minim elit quis in duis cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf93ce9a4b242ce0c26",
+        "key": "5850ecf931b4120cd7a9c4cf",
+        "value": {
+            "_id": "5850ecf9c139b868f2c8c157",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "c7ffcd98-7227-44b8-a0b2-d8dfaa86a428",
+            "date": "2015-02-10T05:05:41 -01:00",
+            "dateImport": "2015-01-31T04:06:47 -01:00",
+            "amount": 479,
+            "raw": "Magna id dolor tempor ex id non.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9076bb81783b6fc67",
+        "key": "5850ecf91b06164103ae7054",
+        "value": {
+            "_id": "5850ecf95e615b57c1596d09",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "07cc095a-de87-4d4e-b488-3a5c20d7e59f",
+            "date": "2015-04-23T12:43:19 -02:00",
+            "dateImport": "2016-01-13T12:46:47 -01:00",
+            "amount": 454,
+            "raw": "Laborum aute sunt sint ipsum cillum consequat consequat aliquip Lorem ea elit fugiat mollit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ed7a4cd26ff5a05a",
+        "key": "5850ecf9e1b07cae87a01d35",
+        "value": {
+            "_id": "5850ecf99c71de868f592e72",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "f959fc6d-9903-4a54-b225-0103b870009b",
+            "date": "2014-04-27T11:12:14 -02:00",
+            "dateImport": "2016-05-02T04:59:07 -02:00",
+            "amount": 369,
+            "raw": "Nisi sunt in est excepteur esse fugiat mollit fugiat aute mollit tempor ipsum voluptate minim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf94d8b740f2e9d3309",
+        "key": "5850ecf92827cc9d872b67cb",
+        "value": {
+            "_id": "5850ecf9e9ba94d6409b8cfa",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "bbf5e265-f09a-4c44-ac65-6d438a4edb07",
+            "date": "2014-05-24T05:43:43 -02:00",
+            "dateImport": "2016-10-17T01:09:27 -02:00",
+            "amount": 476,
+            "raw": "Qui dolore magna cupidatat eu velit ut commodo dolor nisi.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96ced698be7ac109a",
+        "key": "5850ecf99b7bff5f305f6ea2",
+        "value": {
+            "_id": "5850ecf92fde1a126c1e9724",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "0f9fe99a-efdd-41b3-aeae-9e2d90cf5600",
+            "date": "2014-07-31T12:52:51 -02:00",
+            "dateImport": "2014-11-04T11:49:47 -01:00",
+            "amount": 83,
+            "raw": "Exercitation Lorem nostrud aliquip officia exercitation ut nulla laboris id quis cupidatat enim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d1b734a526b33ae6",
+        "key": "5850ecf9b0dbf9363d56e83e",
+        "value": {
+            "_id": "5850ecf95b45eb5adcf602e6",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "a14aecb0-620b-4fad-98a7-845c638384a3",
+            "date": "2014-12-03T08:12:53 -01:00",
+            "dateImport": "2015-10-12T03:47:40 -02:00",
+            "amount": 252,
+            "raw": "Consectetur ad laborum dolore minim proident dolor pariatur dolor.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf944201a49153cfe8b",
+        "key": "5850ecf9c5fb212c6b232f5d",
+        "value": {
+            "_id": "5850ecf9314d5c336be36f10",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "278975b7-e6b8-48bf-97cb-260c0334dbfc",
+            "date": "2014-09-25T07:32:08 -02:00",
+            "dateImport": "2016-11-28T08:49:59 -01:00",
+            "amount": 233,
+            "raw": "Consectetur irure aute enim id in reprehenderit consectetur elit magna irure.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf914d509e500e3083f",
+        "key": "5850ecf973fca54efc185173",
+        "value": {
+            "_id": "5850ecf939c191f1229c8814",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "1b1ad3e2-e482-4155-beea-2912b563a9b2",
+            "date": "2015-05-08T08:05:39 -02:00",
+            "dateImport": "2014-11-11T01:11:58 -01:00",
+            "amount": 259,
+            "raw": "Esse non esse laboris aute consectetur ut qui dolore dolore velit ut.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf95a8a4c45eb1b65fd",
+        "key": "5850ecf97ba7b4324f23048b",
+        "value": {
+            "_id": "5850ecf9f050714161ece7f9",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "25cc3e28-eff0-4ff9-ac24-b865f81f51d6",
+            "date": "2015-09-27T10:53:09 -02:00",
+            "dateImport": "2014-08-02T03:09:21 -02:00",
+            "amount": 204,
+            "raw": "Sunt quis elit consectetur qui adipisicing cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf95d48e363fcda770e",
+        "key": "5850ecf9c16118a7f1fa495b",
+        "value": {
+            "_id": "5850ecf98729b9df8c22fefa",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "c3195905-aa47-42c0-b516-019257ff25c8",
+            "date": "2014-10-13T03:47:14 -02:00",
+            "dateImport": "2014-10-26T02:34:42 -01:00",
+            "amount": 132,
+            "raw": "Reprehenderit laboris ipsum culpa culpa consequat nostrud esse proident ullamco ut sit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf92232a7015e096a8e",
+        "key": "5850ecf9902bb28616a78faf",
+        "value": {
+            "_id": "5850ecf9afe191048c59d97e",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "0091c6ae-38c5-48f3-b07e-952891f9cdec",
+            "date": "2015-11-28T08:08:43 -01:00",
+            "dateImport": "2014-02-27T12:12:54 -01:00",
+            "amount": 363,
+            "raw": "Nostrud cillum velit pariatur reprehenderit excepteur aliquip fugiat dolore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9079d858cc5b39826",
+        "key": "5850ecf9f522711cf93aebe5",
+        "value": {
+            "_id": "5850ecf97d92fd0976fa7195",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "8961d1e9-53a7-4854-9204-f74afde7018e",
+            "date": "2014-09-12T12:38:26 -02:00",
+            "dateImport": "2015-04-24T08:40:40 -02:00",
+            "amount": 391,
+            "raw": "Proident elit pariatur fugiat consequat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf920b009c02cfc9549",
+        "key": "5850ecf976e65229e42c9cfc",
+        "value": {
+            "_id": "5850ecf9206e2c6cc91d923f",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "799e1b18-2aa7-4150-9844-4d4cf3a11b7b",
+            "date": "2015-09-08T01:04:39 -02:00",
+            "dateImport": "2014-05-01T04:40:38 -02:00",
+            "amount": 386,
+            "raw": "Ipsum ut consequat aliqua ad non exercitation ipsum ipsum do ipsum anim velit reprehenderit commodo.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf95775734af2eb6446",
+        "key": "5850ecf9d68fbf70dbd7da8a",
+        "value": {
+            "_id": "5850ecf9355d435d016ba179",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "9bc6a9f3-fb0f-4513-9be1-b84e14cc8f70",
+            "date": "2015-12-06T11:37:31 -01:00",
+            "dateImport": "2015-07-06T09:47:21 -02:00",
+            "amount": 53,
+            "raw": "Quis consectetur aute amet culpa mollit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf98e3f1648c82fa3b4",
+        "key": "5850ecf9476b9a5eb61ab32e",
+        "value": {
+            "_id": "5850ecf95257ad746e186c73",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "5d78d2f8-cca4-4b6d-9d0c-23005c8796cb",
+            "date": "2016-06-24T12:26:14 -02:00",
+            "dateImport": "2016-05-23T05:37:20 -02:00",
+            "amount": 144,
+            "raw": "Sunt ea eiusmod dolor nisi reprehenderit dolore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf981f545327eac4e4e",
+        "key": "5850ecf9a8fae6901a4d921b",
+        "value": {
+            "_id": "5850ecf9628aed307fa59293",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "e35b8164-7ab4-49ec-b78f-a8c5aa26566f",
+            "date": "2015-07-24T10:37:44 -02:00",
+            "dateImport": "2016-09-02T01:07:10 -02:00",
+            "amount": 423,
+            "raw": "Culpa fugiat aliqua ullamco fugiat ipsum reprehenderit culpa cupidatat dolor in mollit do.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9a5d09e0c40a61176",
+        "key": "5850ecf9129c7cfe0d977047",
+        "value": {
+            "_id": "5850ecf9e36713c562f3f387",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "bb7bee0c-df8c-40bb-b62f-a384eafb8b8f",
+            "date": "2014-07-04T09:20:50 -02:00",
+            "dateImport": "2016-10-16T06:11:12 -02:00",
+            "amount": 256,
+            "raw": "Nostrud pariatur mollit eu esse nisi elit ut id commodo consectetur elit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9238e04a57651fe93",
+        "key": "5850ecf958160dd9a3407cfd",
+        "value": {
+            "_id": "5850ecf9386e32a71a3c239e",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "0c955833-fbb0-4c6e-90c0-dadf56b2bb5a",
+            "date": "2016-07-28T01:18:52 -02:00",
+            "dateImport": "2016-03-24T04:22:15 -01:00",
+            "amount": 346,
+            "raw": "Nisi sint sit ad proident laborum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf971f320f5b28aaef2",
+        "key": "5850ecf9b34440983d72ba4a",
+        "value": {
+            "_id": "5850ecf99ab47445105a1d58",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "baa0e2ca-97f2-4f8c-a6eb-7d853ffa6d42",
+            "date": "2016-03-20T08:14:03 -01:00",
+            "dateImport": "2016-08-16T12:26:28 -02:00",
+            "amount": 286,
+            "raw": "Pariatur deserunt eiusmod quis quis qui ut cillum anim ipsum enim voluptate aliquip cupidatat.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf934f773093ef313a2",
+        "key": "5850ecf99bc3f9ccc760fc49",
+        "value": {
+            "_id": "5850ecf920d2a6234ddd1ffa",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "24597244-941a-4e48-b13a-e78d8ea76a17",
+            "date": "2016-03-24T11:29:54 -01:00",
+            "dateImport": "2016-04-09T11:19:00 -02:00",
+            "amount": 92,
+            "raw": "Consectetur aliquip dolore dolor deserunt labore nostrud anim nostrud culpa pariatur fugiat veniam.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf99742b0d635894164",
+        "key": "5850ecf955485c13e9816fec",
+        "value": {
+            "_id": "5850ecf9f77cf2fe659ee5b6",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "0855050c-bb5f-441d-8aac-a6cfaba63b37",
+            "date": "2014-11-15T02:00:50 -01:00",
+            "dateImport": "2014-04-12T08:03:19 -02:00",
+            "amount": 375,
+            "raw": "Dolor amet aliquip fugiat aliquip cillum anim id deserunt ad minim ullamco elit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9eb6cc35b1a81eaec",
+        "key": "5850ecf9bbaaa9836ce01917",
+        "value": {
+            "_id": "5850ecf9a86f6bc74f66b136",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "490feeb4-6c55-487d-810a-ff486662449b",
+            "date": "2015-04-10T07:15:11 -02:00",
+            "dateImport": "2015-12-16T01:08:05 -01:00",
+            "amount": 96,
+            "raw": "Commodo consectetur reprehenderit dolor sunt tempor excepteur eu mollit dolore cillum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f77dc832873fa56b",
+        "key": "5850ecf9fc8eae25fce9e701",
+        "value": {
+            "_id": "5850ecf9f695d6853845b526",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "1f99a6c0-d94f-4d5e-bdbd-101a9acdd762",
+            "date": "2016-01-13T11:15:52 -01:00",
+            "dateImport": "2016-08-03T05:55:44 -02:00",
+            "amount": 440,
+            "raw": "Cillum sint mollit ad id velit sunt ullamco duis aute.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e0f485aff56b87e0",
+        "key": "5850ecf9188e4682be1f2bb2",
+        "value": {
+            "_id": "5850ecf97022c0a80d8b46b9",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "a328f35a-96f1-40ae-b372-d20fa90668a8",
+            "date": "2014-11-23T03:36:01 -01:00",
+            "dateImport": "2015-01-02T06:24:54 -01:00",
+            "amount": 344,
+            "raw": "Pariatur mollit aliquip Lorem ipsum cupidatat sit pariatur consequat pariatur id eiusmod esse mollit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf934ca0294402c617b",
+        "key": "5850ecf9efc9860f1f9fc887",
+        "value": {
+            "_id": "5850ecf90c2c6f42c916cbed",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "8d44be6b-8679-4b9c-95cd-ffadc2f12d7c",
+            "date": "2014-05-18T11:20:23 -02:00",
+            "dateImport": "2015-10-13T05:28:30 -02:00",
+            "amount": 492,
+            "raw": "Duis dolor ut qui cupidatat officia sunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf986c4ed3cd690a228",
+        "key": "5850ecf94f1e30957dbd6b9d",
+        "value": {
+            "_id": "5850ecf9a795ebe38f2e7683",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "c0a7d6ff-79b0-4f8a-b607-baf4a7d19176",
+            "date": "2016-09-22T01:05:59 -02:00",
+            "dateImport": "2014-04-05T08:46:27 -02:00",
+            "amount": 297,
+            "raw": "Qui in veniam enim quis proident.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9025e83052d28f0e2",
+        "key": "5850ecf9d615ebe605c5d25b",
+        "value": {
+            "_id": "5850ecf94161a51aa0808f36",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "e5fcc100-9f1c-4606-9701-557de828f905",
+            "date": "2014-04-11T05:49:19 -02:00",
+            "dateImport": "2015-09-16T08:17:53 -02:00",
+            "amount": 499,
+            "raw": "Duis dolore officia ullamco veniam est ullamco.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf91c8ee6acd25b4187",
+        "key": "5850ecf911a75dfbfd8f0565",
+        "value": {
+            "_id": "5850ecf95b5b9d119d5bdf63",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "2fb7bde8-a38d-4e65-a2a9-8b6e13fc458a",
+            "date": "2016-07-07T08:32:40 -02:00",
+            "dateImport": "2016-09-27T06:57:58 -02:00",
+            "amount": 378,
+            "raw": "Cillum nostrud elit ex enim velit aliqua.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf925a1ebdd627b09c9",
+        "key": "5850ecf987cea2d11e585a0a",
+        "value": {
+            "_id": "5850ecf9e29de7fbe6002fb6",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "9b74d04a-159e-439c-90dc-e25bf9d518a6",
+            "date": "2015-01-09T01:51:58 -01:00",
+            "dateImport": "2016-04-14T10:13:53 -02:00",
+            "amount": 128,
+            "raw": "Aute adipisicing dolore esse nisi consectetur sint nulla.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96ab24372e35f0886",
+        "key": "5850ecf967314ee5443e862f",
+        "value": {
+            "_id": "5850ecf99c70579f165adc1c",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "32125078-1a1b-470b-a7ac-e00602c41db8",
+            "date": "2014-02-06T03:37:09 -01:00",
+            "dateImport": "2014-09-23T08:13:58 -02:00",
+            "amount": 195,
+            "raw": "Eiusmod commodo Lorem dolor sunt exercitation anim est consequat Lorem sunt amet.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf901c5f2ed62a784c1",
+        "key": "5850ecf946cf3a27756fc196",
+        "value": {
+            "_id": "5850ecf932879f12ad2a4053",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "13205a59-5569-43eb-8582-632d7825cc12",
+            "date": "2014-02-04T01:47:10 -01:00",
+            "dateImport": "2014-09-13T07:06:45 -02:00",
+            "amount": 216,
+            "raw": "In anim deserunt duis et ex elit irure id laboris aliquip adipisicing adipisicing.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf93f1834e10ae89870",
+        "key": "5850ecf911c9f36841ee3833",
+        "value": {
+            "_id": "5850ecf9d8d52dd0f94b2ca3",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "03bef50b-e209-458f-8212-a27b0065e886",
+            "date": "2014-05-25T11:04:17 -02:00",
+            "dateImport": "2015-02-14T05:50:13 -01:00",
+            "amount": 33,
+            "raw": "Cupidatat fugiat esse deserunt cillum qui incididunt enim laborum anim officia aliqua.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ad35b64e21d3c4a3",
+        "key": "5850ecf950af392d26f49a55",
+        "value": {
+            "_id": "5850ecf9dd6f227b5d5c05bc",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "8a02ccc1-6875-4c1c-b69f-f1b5b1239725",
+            "date": "2015-06-09T08:30:36 -02:00",
+            "dateImport": "2016-10-23T04:03:02 -02:00",
+            "amount": 59,
+            "raw": "Nulla exercitation consequat ex culpa aliquip veniam cupidatat elit consequat do.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ad928d836518a4fc",
+        "key": "5850ecf98b766bd12a3fe277",
+        "value": {
+            "_id": "5850ecf9d0c05ba0aea08ca7",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "14fb4ced-7744-47ab-b836-465bbccbac96",
+            "date": "2014-01-19T08:12:42 -01:00",
+            "dateImport": "2014-06-20T03:37:47 -02:00",
+            "amount": 148,
+            "raw": "Dolor veniam aute tempor id fugiat voluptate veniam eiusmod aliquip exercitation.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d8239e82104d892a",
+        "key": "5850ecf90d1a88edcf5b2ebb",
+        "value": {
+            "_id": "5850ecf94eef52a8d879d9f8",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "437282ca-6ead-45d6-8ca7-92386d91068b",
+            "date": "2016-08-05T06:20:00 -02:00",
+            "dateImport": "2014-09-20T03:54:38 -02:00",
+            "amount": 499,
+            "raw": "Officia consequat nisi amet anim veniam ut eiusmod ad tempor cupidatat ea quis.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf97215e7b4ddb84ad7",
+        "key": "5850ecf992869f8dd7c0f3da",
+        "value": {
+            "_id": "5850ecf9aaab127efdfe9ff2",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "99de1ad8-e7a2-43a9-9b84-25b60894d36b",
+            "date": "2016-02-24T11:58:02 -01:00",
+            "dateImport": "2014-11-15T07:51:38 -01:00",
+            "amount": 357,
+            "raw": "Consectetur mollit minim dolore velit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf93b0dd44c3110bbcf",
+        "key": "5850ecf969a15a45077133dd",
+        "value": {
+            "_id": "5850ecf90578b3583f1100fb",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "2b75cfdf-e09a-45f3-8857-ef007e9f9025",
+            "date": "2015-04-10T02:48:39 -02:00",
+            "dateImport": "2016-05-16T04:51:06 -02:00",
+            "amount": 281,
+            "raw": "Adipisicing dolore magna nostrud ut ipsum fugiat sunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9a47d7b84e70f8a24",
+        "key": "5850ecf9337b2a24755fd200",
+        "value": {
+            "_id": "5850ecf96ea3bdd2a00cdb4b",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "f4bca383-01a7-428c-9e93-7ef1afd3c5c9",
+            "date": "2014-01-09T01:50:55 -01:00",
+            "dateImport": "2014-08-11T01:32:30 -02:00",
+            "amount": 247,
+            "raw": "Commodo enim eu in magna ad in labore qui.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96d4a96a88a8984b0",
+        "key": "5850ecf9fd60fb3d042d08c0",
+        "value": {
+            "_id": "5850ecf9103e4812f43e0452",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "85005696-35bb-4b65-8220-7d5618253b2b",
+            "date": "2015-01-16T04:53:20 -01:00",
+            "dateImport": "2014-01-27T08:28:05 -01:00",
+            "amount": 483,
+            "raw": "Adipisicing anim mollit ea nisi.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9faea500bdb67aee7",
+        "key": "5850ecf924857738fa8ba6f8",
+        "value": {
+            "_id": "5850ecf9681f31fb85ca9676",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Virement",
+            "categoryId": "92e973ad-910f-4813-855d-b71f5ebafb8a",
+            "date": "2014-06-05T03:15:55 -02:00",
+            "dateImport": "2014-12-17T07:40:34 -01:00",
+            "amount": 43,
+            "raw": "Esse Lorem do minim amet voluptate.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90ed297565acf5917",
+        "key": "5850ecf99686f750bc6aa9da",
+        "value": {
+            "_id": "5850ecf93b1e94e6a1d6d1fa",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "dfc6cb7a-5aa6-46aa-9e32-4e675017f964",
+            "date": "2014-11-16T05:43:39 -01:00",
+            "dateImport": "2014-11-30T05:24:48 -01:00",
+            "amount": 479,
+            "raw": "Lorem aliqua sint nostrud eu labore eu do ad sunt deserunt laborum eiusmod.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9a50d2c89ecace404",
+        "key": "5850ecf9ebabed0d6b25361d",
+        "value": {
+            "_id": "5850ecf99cee919a5ab2e10b",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "df778a64-afa8-4d13-9f8d-b7196acd3837",
+            "date": "2014-09-13T08:46:46 -02:00",
+            "dateImport": "2016-08-21T09:00:06 -02:00",
+            "amount": 22,
+            "raw": "Proident magna et excepteur ex nulla dolore cupidatat adipisicing nulla tempor labore.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf90c6791c1f2a47cf3",
+        "key": "5850ecf9010af52cdc77a813",
+        "value": {
+            "_id": "5850ecf9d982460ba666bc60",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "1b0e271e-7ec2-4183-ba3c-b65fb2bbab86",
+            "date": "2014-11-14T06:36:23 -01:00",
+            "dateImport": "2014-05-24T12:31:28 -02:00",
+            "amount": 263,
+            "raw": "Lorem laboris mollit ea dolor deserunt dolor mollit ea.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9eb8c4f74a100261e",
+        "key": "5850ecf9dccf22e22ba48648",
+        "value": {
+            "_id": "5850ecf99cc537bd23db1dad",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "ea9d9fc4-e679-465c-aef4-ce3495ce32f7",
+            "date": "2014-07-24T01:22:58 -02:00",
+            "dateImport": "2016-03-28T05:25:41 -02:00",
+            "amount": 135,
+            "raw": "Anim eiusmod enim culpa cillum consequat deserunt duis occaecat velit ad.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96fb784063d24bdab",
+        "key": "5850ecf999a6a5bc5d9d1157",
+        "value": {
+            "_id": "5850ecf953551903c8465986",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "c596e7d2-442c-4f21-b9cb-1c74b9843c4a",
+            "date": "2016-05-29T02:23:27 -02:00",
+            "dateImport": "2015-11-04T07:48:01 -01:00",
+            "amount": 385,
+            "raw": "Anim ut id reprehenderit sit nisi pariatur do aliquip fugiat proident.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ceba7aec6aecba2d",
+        "key": "5850ecf9840127adf5bf1a9d",
+        "value": {
+            "_id": "5850ecf972e1994bfaddc3b5",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "90277f18-6180-4aeb-be6a-f62e9c740c96",
+            "date": "2014-03-06T11:25:43 -01:00",
+            "dateImport": "2015-04-03T05:12:16 -02:00",
+            "amount": 330,
+            "raw": "Quis pariatur excepteur magna dolore deserunt.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9010dc7fdef583f52",
+        "key": "5850ecf9653ddbd2fef98207",
+        "value": {
+            "_id": "5850ecf96e6859b86bcea967",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "a9057107-efd5-4b12-8d89-e6ab2cd188c6",
+            "date": "2015-01-23T11:17:32 -01:00",
+            "dateImport": "2015-11-28T04:07:29 -01:00",
+            "amount": 151,
+            "raw": "Non eu adipisicing reprehenderit do officia cupidatat irure sunt exercitation.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9e42b9c4827f45546",
+        "key": "5850ecf908a5c13a051e04b1",
+        "value": {
+            "_id": "5850ecf92c476c5f9d49ccd9",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "b97cf4a8-3871-477b-9da1-b03c1d118c72",
+            "date": "2014-12-25T07:40:47 -01:00",
+            "dateImport": "2016-08-03T03:02:01 -02:00",
+            "amount": 122,
+            "raw": "Commodo nisi aliqua tempor cillum exercitation exercitation ipsum ut.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf98367c4c8b247bc98",
+        "key": "5850ecf900b76c91260e31bd",
+        "value": {
+            "_id": "5850ecf99dca8e302d60f40a",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "bf33cc07-acf6-46e7-b3d2-a02f6d3c3c7c",
+            "date": "2015-03-24T09:32:29 -01:00",
+            "dateImport": "2015-12-11T06:40:28 -01:00",
+            "amount": 297,
+            "raw": "Commodo laborum incididunt ut qui proident laboris in tempor do anim aute sint.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9dd6c9211084ac0fc",
+        "key": "5850ecf92359333dc9c3e0f9",
+        "value": {
+            "_id": "5850ecf92d67d2ae29b101fe",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "9a8c2b9c-49af-4f10-a8ed-30271eb878e4",
+            "date": "2016-10-01T09:05:51 -02:00",
+            "dateImport": "2014-10-22T09:47:48 -02:00",
+            "amount": 218,
+            "raw": "Excepteur reprehenderit officia proident est commodo nulla.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf992fa6933b69b1854",
+        "key": "5850ecf90ff4764e87edc08e",
+        "value": {
+            "_id": "5850ecf982e67e83d22829b8",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "c42a68fb-a09b-4d38-972a-7b01a14dd5b9",
+            "date": "2016-08-28T04:22:16 -02:00",
+            "dateImport": "2015-05-15T04:35:56 -02:00",
+            "amount": 170,
+            "raw": "Eiusmod quis labore aliquip ut deserunt enim eu laborum.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf96fd8804dc4829f41",
+        "key": "5850ecf961b0ca972c4b6003",
+        "value": {
+            "_id": "5850ecf9ff7519b4d7b5606c",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "7fb89d1f-9c48-4217-9689-568e91c558d3",
+            "date": "2015-12-05T04:40:49 -01:00",
+            "dateImport": "2016-11-17T10:16:14 -01:00",
+            "amount": 118,
+            "raw": "Quis duis fugiat duis elit cillum eu excepteur.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf994f5788d09df8b10",
+        "key": "5850ecf9e5115205fdd290c4",
+        "value": {
+            "_id": "5850ecf932cac58f329ba1c7",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Virement",
+            "categoryId": "bf8ba26a-5264-44b1-b0bd-77ca1463dc26",
+            "date": "2015-04-26T08:20:31 -02:00",
+            "dateImport": "2014-03-13T06:07:14 -01:00",
+            "amount": 212,
+            "raw": "Aute Lorem magna enim sit nulla nulla eu esse eiusmod esse non magna.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d8a13505fd9ab9c8",
+        "key": "5850ecf987ef02c9df4e9762",
+        "value": {
+            "_id": "5850ecf99c512d1be5b8fdbc",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "4b12abca-d7d1-47fa-acb0-df9732e10c22",
+            "date": "2015-02-20T06:37:35 -01:00",
+            "dateImport": "2016-07-17T02:17:42 -02:00",
+            "amount": 152,
+            "raw": "Sint id enim ea tempor non anim voluptate.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf985251a4f18515b45",
+        "key": "5850ecf9ee8b5e6dc118eecc",
+        "value": {
+            "_id": "5850ecf97ef010f2eecb0488",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "f143b4af-d1f9-4cd8-b4b1-c60f1b7f8362",
+            "date": "2016-02-17T12:35:47 -01:00",
+            "dateImport": "2014-05-29T01:18:20 -02:00",
+            "amount": 92,
+            "raw": "Minim reprehenderit magna anim sit culpa eiusmod labore nisi.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf92d4b5c04266a19b3",
+        "key": "5850ecf91f6a5ce3d4b113ce",
+        "value": {
+            "_id": "5850ecf980f32261440658d1",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "6ef8967a-9538-453e-8775-86f84e81df2d",
+            "date": "2016-03-16T01:37:35 -01:00",
+            "dateImport": "2016-02-11T09:25:17 -01:00",
+            "amount": 122,
+            "raw": "Nulla est ut anim cupidatat consectetur sint culpa.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9906e346a6dced368",
+        "key": "5850ecf9a67413f28369a5a3",
+        "value": {
+            "_id": "5850ecf9e7edfaeea03e66d4",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "8fccd274-cdb4-451f-a3fc-61c11b6e0792",
+            "date": "2014-12-17T03:39:59 -01:00",
+            "dateImport": "2016-10-28T10:44:00 -02:00",
+            "amount": 145,
+            "raw": "Excepteur eiusmod anim cupidatat nulla culpa.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b370f07759778eac",
+        "key": "5850ecf9e1c62512ed7219d1",
+        "value": {
+            "_id": "5850ecf9a08ed9c1931e195d",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "2266de5e-2239-4bc9-b9e2-28b0a278df20",
+            "date": "2016-05-12T02:06:48 -02:00",
+            "dateImport": "2015-07-10T08:45:38 -02:00",
+            "amount": 425,
+            "raw": "Nostrud laboris labore tempor fugiat amet.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ea5d6b4abb782949",
+        "key": "5850ecf9a7f52e0923c00ee9",
+        "value": {
+            "_id": "5850ecf9ed9fd94164081b37",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "74a0392f-c42f-4c30-b26b-3a11b4555a40",
+            "date": "2016-03-12T05:34:30 -01:00",
+            "dateImport": "2015-08-23T02:34:09 -02:00",
+            "amount": 162,
+            "raw": "Minim laborum sint cupidatat Lorem mollit pariatur eiusmod.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9b883b29309c40500",
+        "key": "5850ecf97ea24a54d93dc89d",
+        "value": {
+            "_id": "5850ecf956f05fa46c4b3a08",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "671e4b8b-c72d-4e1c-8d9e-da082db66cfe",
+            "date": "2016-07-26T02:57:32 -02:00",
+            "dateImport": "2015-11-19T10:03:21 -01:00",
+            "amount": 51,
+            "raw": "Nostrud aute nulla in ad culpa quis proident exercitation exercitation culpa reprehenderit irure.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9d50fcc9b20893ca2",
+        "key": "5850ecf934798e78069cb34e",
+        "value": {
+            "_id": "5850ecf9eacfecaf1f6ad128",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Reglement",
+            "categoryId": "b4395f10-992c-4c0b-9cda-30419544ae53",
+            "date": "2016-01-08T05:21:36 -01:00",
+            "dateImport": "2015-03-05T01:45:58 -01:00",
+            "amount": 112,
+            "raw": "Nostrud aliqua non ex sint laboris.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f37694d0956cc573",
+        "key": "5850ecf926cb422e11958ca3",
+        "value": {
+            "_id": "5850ecf920d01e0a667b4fbd",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Reglement",
+            "categoryId": "34082038-48ff-44c8-9afe-6285a0f05970",
+            "date": "2014-06-02T01:14:11 -02:00",
+            "dateImport": "2015-11-12T10:51:16 -01:00",
+            "amount": 490,
+            "raw": "Laborum dolor sunt do occaecat sunt amet occaecat irure in ad laboris tempor mollit non.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9068bb59639eea603",
+        "key": "5850ecf92545b86d15e4ce1f",
+        "value": {
+            "_id": "5850ecf96cd9a3c866145400",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Remise de cheque",
+            "categoryId": "884c9dac-b522-4b0a-896c-5cfa17178263",
+            "date": "2015-02-21T10:53:03 -01:00",
+            "dateImport": "2016-10-20T07:54:56 -02:00",
+            "amount": 493,
+            "raw": "Eiusmod in mollit irure eiusmod excepteur non ad fugiat in qui amet anim aliqua.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9f3512cfb3ee3e671",
+        "key": "5850ecf977da27684c05cc6e",
+        "value": {
+            "_id": "5850ecf986130b72583953d5",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "ffa84766-1ed7-483f-b4b6-97a2328b7100",
+            "date": "2016-02-16T04:16:56 -01:00",
+            "dateImport": "2015-10-07T01:18:04 -02:00",
+            "amount": 451,
+            "raw": "Quis non elit proident enim elit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf91d9988c616bead42",
+        "key": "5850ecf97658021e800e93ea",
+        "value": {
+            "_id": "5850ecf9826df86b8253dd65",
+            "bankAccount": 60284134305,
+            "type": "type.transfert",
+            "title": "Remise de cheque",
+            "categoryId": "cf3709c4-a8f3-4641-add6-9532000fe77f",
+            "date": "2015-07-17T02:05:12 -02:00",
+            "dateImport": "2016-10-30T10:56:50 -01:00",
+            "amount": 147,
+            "raw": "Sunt et sunt nulla ullamco amet aliqua elit.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf982b7f6638e917aad",
+        "key": "5850ecf9ce88fc6919379730",
+        "value": {
+            "_id": "5850ecf9f10e382fc8ad553f",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "bdb9387d-d5ae-4a8d-a770-2e6dd274bd0e",
+            "date": "2016-01-10T11:33:34 -01:00",
+            "dateImport": "2015-12-15T07:14:03 -01:00",
+            "amount": 392,
+            "raw": "Sunt commodo consectetur eu voluptate eiusmod mollit dolor incididunt enim.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf99afdf877bf891a86",
+        "key": "5850ecf916ae1de3e1e412f9",
+        "value": {
+            "_id": "5850ecf9e6b1b53bcbfdcf1d",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Remise de cheque",
+            "categoryId": "3dc81887-64de-4e19-8bec-4c0c85decc20",
+            "date": "2015-01-10T10:04:31 -01:00",
+            "dateImport": "2016-03-13T04:33:20 -01:00",
+            "amount": 470,
+            "raw": "Mollit quis magna et aliqua.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9ef46ef4b59c5068d",
+        "key": "5850ecf9fb8cf995d5dc63ff",
+        "value": {
+            "_id": "5850ecf9e55cebeff2ae61c2",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "1e70f904-aa37-4e92-b24d-8acb0eda5e30",
+            "date": "2016-08-16T10:43:16 -02:00",
+            "dateImport": "2016-01-18T12:34:55 -01:00",
+            "amount": 138,
+            "raw": "Ut Lorem labore non do commodo elit Lorem aliquip pariatur aliqua do.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf92b8193758fb09963",
+        "key": "5850ecf9acec33045a0730b7",
+        "value": {
+            "_id": "5850ecf9fc978e1d7887e643",
+            "bankAccount": 60284134305,
+            "type": "type.unknown",
+            "title": "Reglement",
+            "categoryId": "9f2cde3e-9839-47f4-a82a-c2d347ce92ae",
+            "date": "2016-10-12T06:41:46 -02:00",
+            "dateImport": "2016-06-03T01:03:10 -02:00",
+            "amount": 190,
+            "raw": "Aliquip laborum ea aliquip pariatur voluptate do.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf98e532cf6e6815145",
+        "key": "5850ecf9d7246e1434a8e7b4",
+        "value": {
+            "_id": "5850ecf92c421dc383dbf247",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "a044bfbf-8374-4b8b-9e31-25bfb70a3bed",
+            "date": "2015-03-22T07:52:31 -01:00",
+            "dateImport": "2014-06-13T04:23:27 -02:00",
+            "amount": 75,
+            "raw": "Nulla Lorem veniam do exercitation adipisicing dolor elit dolor qui ullamco et dolor nisi.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
+        }
+    },
+    {
+        "id": "5850ecf9fe552a4d4f702b3b",
+        "key": "5850ecf92394350c8b03d09f",
+        "value": {
+            "_id": "5850ecf91b24675f3bfdd2b8",
+            "bankAccount": 60284134305,
+            "type": "type.deposit",
+            "title": "Virement",
+            "categoryId": "f6cdce89-0d9d-454c-b0ba-89cc799abeb5",
+            "date": "2014-08-17T09:33:47 -02:00",
+            "dateImport": "2014-12-19T06:51:11 -01:00",
+            "amount": 281,
+            "raw": "Ad quis do consequat proident eiusmod exercitation sunt commodo dolore qui officia eu incididunt officia.",
+            "revision": "Wed Dec 14 2016 07:55:53 GMT+0100",
+            "docType": "BankOperation"
         }
     }
     ]
