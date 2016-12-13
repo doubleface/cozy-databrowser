@@ -9,6 +9,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 // use the `OPTIMIZE` env to switch from dev to production build
 const optimize = process.env.OPTIMIZE === 'true'
+const imgPath = 'img/[name].[ext]';
 
 module.exports = {
     entry: {
@@ -41,6 +42,10 @@ module.exports = {
             {
                 test: /\.css/,
                 loader: ExtractTextPlugin.extract('css-loader')
+            },
+            {
+                test: /\.(png|gif|jpe?g|svg)$/i,
+                loader: 'file?name=' + imgPath
             }
         ]
     },

@@ -40,7 +40,30 @@
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ([
+/******/ ((function(modules) {
+	// Check all modules for deduplicated modules
+	for(var i in modules) {
+		if(Object.prototype.hasOwnProperty.call(modules, i)) {
+			switch(typeof modules[i]) {
+			case "function": break;
+			case "object":
+				// Module can be created from a template
+				modules[i] = (function(_m) {
+					var args = _m.slice(1), fn = modules[_m[0]];
+					return function (a,b,c) {
+						fn.apply(this, [a,b,c].concat(args));
+					};
+				}(modules[i]));
+				break;
+			default:
+				// Module is a copy of another module
+				modules[i] = modules[modules[i]];
+				break;
+			}
+		}
+	}
+	return modules;
+}([
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -50,7 +73,7 @@
 	
 	var _application2 = _interopRequireDefault(_application);
 	
-	__webpack_require__(13);
+	__webpack_require__(17);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -234,6 +257,14 @@
 	
 	var _menu2 = _interopRequireDefault(_menu);
 	
+	__webpack_require__(14);
+	
+	__webpack_require__(13);
+	
+	__webpack_require__(15);
+	
+	__webpack_require__(16);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	exports.default = Backbone.View.extend({
@@ -276,6 +307,14 @@
 
 	// removed by extract-text-webpack-plugin
 
-/***/ }
-/******/ ]);
+/***/ },
+/* 14 */
+13,
+/* 15 */
+13,
+/* 16 */
+13,
+/* 17 */
+13
+/******/ ])));
 //# sourceMappingURL=app.js.map
