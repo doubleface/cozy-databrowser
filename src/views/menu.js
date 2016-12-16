@@ -19,7 +19,7 @@ export default Backbone.View.extend({
             var json = model.toJSON();
             json.sclass = json.key === this.selected ? "selected" : "";
             json.label = json.key[0].toUpperCase() + json.key.substr(1);
-            json.url = json.key[0].toLowerCase() + json.key.substr(1);
+            json.url = json.key.toLowerCase();
             html+= this.itemTemplate(json);
         }, this);
         html+= "</ul>";
