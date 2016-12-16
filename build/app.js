@@ -73,7 +73,7 @@
 	
 	var _application2 = _interopRequireDefault(_application);
 	
-	__webpack_require__(17);
+	__webpack_require__(15);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -257,13 +257,11 @@
 	
 	var _menu2 = _interopRequireDefault(_menu);
 	
-	__webpack_require__(14);
-	
 	__webpack_require__(13);
 	
-	__webpack_require__(15);
+	__webpack_require__(12);
 	
-	__webpack_require__(16);
+	__webpack_require__(14);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -285,7 +283,7 @@
 	            var json = model.toJSON();
 	            json.sclass = json.key === _this.selected ? "selected" : "";
 	            json.label = json.key[0].toUpperCase() + json.key.substr(1);
-	            json.url = json.key[0].toLowerCase() + json.key.substr(1);
+	            json.url = json.key.toLowerCase();
 	            html += _this.itemTemplate(json);
 	        }, this);
 	        html += "</ul>";
@@ -303,20 +301,17 @@
 /* 9 */,
 /* 10 */,
 /* 11 */,
-/* 12 */,
-/* 13 */
+/* 12 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
+/* 13 */
+12,
 /* 14 */
-13,
+12,
 /* 15 */
-13,
-/* 16 */
-13,
-/* 17 */
-13
+12
 /******/ ])));
 //# sourceMappingURL=app.js.map

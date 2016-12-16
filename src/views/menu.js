@@ -1,7 +1,6 @@
 import Collection from "../models/menu";
 import "../../node_modules/datatables.net-dt/css/jquery.dataTables.css";
 import "../../node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css";
-import "../../node_modules/datatables.net-responsive-dt/css/responsive.dataTables.css";
 import "../../node_modules/datatables.net-scroller-dt/css/scroller.dataTables.css";
 
 export default Backbone.View.extend({
