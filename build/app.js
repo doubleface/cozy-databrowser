@@ -276,7 +276,7 @@
 	        });
 	    },
 	
-	    itemTemplate: _.template('<li><a class="<%= sclass %>" href="#doctype/<%= key %>"><%= key %> (<%= value %>)</a></li>'),
+	    itemTemplate: _.template('<li><a class="<%= sclass %>" href="#doctype/<%= url %>"><%= label %> (<%= value %>)</a></li>'),
 	    render: function render() {
 	        var _this = this;
 	
@@ -284,6 +284,8 @@
 	        this.collection.forEach(function (model) {
 	            var json = model.toJSON();
 	            json.sclass = json.key === _this.selected ? "selected" : "";
+	            json.label = json.key[0].toUpperCase() + json.key.substr(1);
+	            json.url = json.key[0].toLowerCase() + json.key.substr(1);
 	            html += _this.itemTemplate(json);
 	        }, this);
 	        html += "</ul>";
