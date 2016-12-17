@@ -40,9 +40,7 @@ export default Backbone.View.extend({
             destroy: true,
             lengthChange: false,
             dom: '<"thead"Bfi>t',
-            buttons: [
-                'colvis'
-            ],
+            buttons: ["colvis", "copyHtml5", "csvHtml5"],
             scrollX: "100%",
             scrollY: "calc(100vh - 7em)",
             deferRender: true,
