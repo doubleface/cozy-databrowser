@@ -1444,5 +1444,8 @@ input[type=password] {
     display: block;
   }
 }
+div.DTS div.dataTables_scrollBody {
+  background: #fff;
+}
 
 /*# sourceMappingURL=app.css.map*/
