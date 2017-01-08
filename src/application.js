@@ -13,22 +13,27 @@ var Router = Backbone.Router.extend({
 
 var app = {
     initialize() {
-        this.views = {
-            menu: new MenuView(),
-            main: new MainView()
-        };
-        this.views.menu.$el.appendTo("#container");
-        this.views.main.$el.appendTo("#container");
-        this.router = new Router({
-            app: this
-        });
-        this.router.app = this;
-        Backbone.history.start();
+        window.cozysdk.client.put("request/doctypes/getsums/", {
+            "reduce":"function (keys, values, rereduce) {return sum(values);}",
+            "map":"function (doc) { if (doc.docType) emit(doc.docType, 1); }"
+        }, () => {
+            this.views = {
+                menu: new MenuView(),
+                main: new MainView()
+            };
+            this.views.menu.$el.appendTo("#container");
+            this.views.main.$el.appendTo("#container");
+            this.router = new Router({
+                app: this
+            });
+            this.router.app = this;
+            Backbone.history.start();
 
-        $("[formaction='drawer/toggle']").on("click", () => {
-            const $aside = $("aside")
-            const isExpanded = $aside.attr("aria-expanded") === "true" ? "false" : "true";
-            $aside.attr("aria-expanded", isExpanded);
+            $("[formaction='drawer/toggle']").on("click", () => {
+                const $aside = $("aside")
+                const isExpanded = $aside.attr("aria-expanded") === "true" ? "false" : "true";
+                $aside.attr("aria-expanded", isExpanded);
+            });
         });
     }
 }
