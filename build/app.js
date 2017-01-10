@@ -131,6 +131,10 @@
 	            };
 	            _this.views.menu.$el.appendTo("#container");
 	            _this.views.main.$el.appendTo("#container");
+	
+	            _this.views.main.on("remove:item", function () {
+	                _this.views.menu.refresh();
+	            });
 	            _this.router = new Router({
 	                app: _this
 	            });
@@ -205,13 +209,15 @@
 	        this.listenTo(this.collection, "reset", this.render);
 	    },
 	    onRemoveAction: function onRemoveAction(e) {
+	        var _this = this;
+	
 	        var datatable = this.$("#databrowser").DataTable();
 	        var tr = $(e.target).closest("tr")[0];
 	        var datatable_tr = datatable.row(tr);
 	        var id = datatable_tr.data()._id;
-	        console.log(this.doctype, "doctype");
 	        window.cozysdk.destroy(this.doctype, id).then(function () {
 	            datatable_tr.remove().draw();
+	            _this.trigger("remove:item");
 	        }).catch(function (err) {
 	            console.error(err, "could not destroy document");
 	        });
@@ -257,11 +263,11 @@
 	        return this;
 	    },
 	    setDoctype: function setDoctype(doctype) {
-	        var _this = this;
+	        var _this2 = this;
 	
 	        this.doctype = doctype;
 	        cozysdk.queryView(doctype.toLowerCase(), "all", {}).then(function (data) {
-	            _this.collection.reset(data.map(function (record) {
+	            _this2.collection.reset(data.map(function (record) {
 	                return record.value;
 	            }));
 	        }).catch(function (err) {
@@ -296,12 +302,15 @@
 	    el: "aside",
 	    collection: new _menu2.default(),
 	    initialize: function initialize() {
+	        this.refresh();
+	    },
+	
+	    itemTemplate: _.template('<li><a class="<%= sclass %>" href="#doctype/<%= url %>"><%= label %> (<%= value %>)</a></li>'),
+	    refresh: function refresh() {
 	        this.collection.fetch().then(this.render.bind(this)).catch(function (err) {
 	            return console.error(err, "error while fetching menu collection");
 	        });
 	    },
-	
-	    itemTemplate: _.template('<li><a class="<%= sclass %>" href="#doctype/<%= url %>"><%= label %> (<%= value %>)</a></li>'),
 	    render: function render() {
 	        var _this = this;
 	

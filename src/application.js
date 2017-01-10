@@ -23,6 +23,10 @@ var app = {
             };
             this.views.menu.$el.appendTo("#container");
             this.views.main.$el.appendTo("#container");
+
+            this.views.main.on("remove:item", () => {
+                this.views.menu.refresh();
+            });
             this.router = new Router({
                 app: this
             });

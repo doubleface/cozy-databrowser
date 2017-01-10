@@ -7,11 +7,14 @@ export default Backbone.View.extend({
     el: "aside",
     collection: new Collection(),
     initialize() {
+        this.refresh();
+    },
+    itemTemplate: _.template('<li><a class="<%= sclass %>" href="#doctype/<%= url %>"><%= label %> (<%= value %>)</a></li>'),
+    refresh() {
         this.collection.fetch()
         .then(this.render.bind(this))
         .catch(err => console.error(err, "error while fetching menu collection"));
     },
-    itemTemplate: _.template('<li><a class="<%= sclass %>" href="#doctype/<%= url %>"><%= label %> (<%= value %>)</a></li>'),
     render() {
         var html = "<ul>";
         this.collection.forEach((model) => {
