@@ -197,9 +197,24 @@
 	
 	exports.default = Backbone.View.extend({
 	    el: "[role='contentinfo']",
+	    events: {
+	        "click .remove_action": "onRemoveAction"
+	    },
 	    collection: new Backbone.Collection(),
 	    initialize: function initialize() {
 	        this.listenTo(this.collection, "reset", this.render);
+	    },
+	    onRemoveAction: function onRemoveAction(e) {
+	        var datatable = this.$("#databrowser").DataTable();
+	        var tr = $(e.target).closest("tr")[0];
+	        var datatable_tr = datatable.row(tr);
+	        var id = datatable_tr.data()._id;
+	        console.log(this.doctype, "doctype");
+	        window.cozysdk.destroy(this.doctype, id).then(function () {
+	            datatable_tr.remove();
+	        }).catch(function (err) {
+	            console.error(err, "could not destroy document");
+	        });
 	    },
 	    getCols: function getCols(json) {
 	        var result = [];
@@ -211,10 +226,15 @@
 	                defaultContent: ""
 	            });
 	        }
+	        result.unshift({
+	            title: "Action",
+	            data: null,
+	            defaultContent: '<a class="remove_action" href="#">Remove</a>'
+	        });
 	        return result;
 	    },
 	    render: function render() {
-	        this.$el.html('<table></table>');
+	        this.$el.html('<table id="databrowser"></table>');
 	        var json = this.collection.toJSON();
 	        var columns = this.getCols(json);
 	        if (columns === false) {
@@ -233,7 +253,7 @@
 	            data: json,
 	            columns: this.getCols(json)
 	        };
-	        this.$("table").DataTable(config);
+	        this.$("#databrowser").DataTable(config);
 	        return this;
 	    },
 	    setDoctype: function setDoctype(doctype) {
