@@ -27,7 +27,7 @@ export default Backbone.View.extend({
         console.log(this.doctype, "doctype");
         window.cozysdk.destroy(this.doctype, id)
         .then(() => {
-            datatable_tr.remove();
+            datatable_tr.remove().draw();
         })
         .catch(err => {
             console.error(err, "could not destroy document");

@@ -211,7 +211,7 @@
 	        var id = datatable_tr.data()._id;
 	        console.log(this.doctype, "doctype");
 	        window.cozysdk.destroy(this.doctype, id).then(function () {
-	            datatable_tr.remove();
+	            datatable_tr.remove().draw();
 	        }).catch(function (err) {
 	            console.error(err, "could not destroy document");
 	        });
