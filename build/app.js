@@ -211,16 +211,21 @@
 	    onRemoveAction: function onRemoveAction(e) {
 	        var _this = this;
 	
-	        var datatable = this.$("#databrowser").DataTable();
-	        var tr = $(e.target).closest("tr")[0];
-	        var datatable_tr = datatable.row(tr);
-	        var id = datatable_tr.data()._id;
-	        window.cozysdk.destroy(this.doctype, id).then(function () {
-	            datatable_tr.remove().draw();
-	            _this.trigger("remove:item");
-	        }).catch(function (err) {
-	            console.error(err, "could not destroy document");
-	        });
+	        var result = confirm("Are you sure you want to remove this row");
+	        if (result) {
+	            (function () {
+	                var datatable = _this.$("#databrowser").DataTable();
+	                var tr = $(e.target).closest("tr")[0];
+	                var datatable_tr = datatable.row(tr);
+	                var id = datatable_tr.data()._id;
+	                window.cozysdk.destroy(_this.doctype, id).then(function () {
+	                    datatable_tr.remove().draw();
+	                    _this.trigger("remove:item");
+	                }).catch(function (err) {
+	                    console.error(err, "could not destroy document");
+	                });
+	            })();
+	        }
 	    },
 	    getCols: function getCols(json) {
 	        var result = [];

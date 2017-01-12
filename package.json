@@ -26,8 +26,10 @@
     "express": "^4.13.4",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
+    "http-server": "^0.9.0",
     "jquery": "^2.2.0",
     "morgan": "^1.7.0",
+    "npm-run-all": "^4.0.0",
     "style-loader": "^0.13.1",
     "stylus": "^0.54.5",
     "stylus-loader": "^2.4.0",
@@ -35,8 +37,10 @@
     "webpack": "^1.13.3"
   },
   "scripts": {
-    "start": "node custom-server.js",
+    "serve": "hs ..",
+    "start": "run-p watch:* serve",
     "build": "webpack",
-    "build:standalone": "webpack --config webpack.standalone.config.js"
+    "build:standalone": "webpack --config webpack.standalone.config.js",
+    "watch:standalone": "npm run build:standalone -- --watch"
   }
 }

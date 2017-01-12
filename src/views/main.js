@@ -20,18 +20,21 @@ export default Backbone.View.extend({
         this.listenTo(this.collection, "reset", this.render);
     },
     onRemoveAction(e) {
-        const datatable = this.$("#databrowser").DataTable();
-        const tr = $(e.target).closest("tr")[0];
-        const datatable_tr = datatable.row(tr)
-        const id = datatable_tr.data()._id;
-        window.cozysdk.destroy(this.doctype, id)
-        .then(() => {
-            datatable_tr.remove().draw();
-            this.trigger("remove:item");
-        })
-        .catch(err => {
-            console.error(err, "could not destroy document");
-        });
+        let result = confirm("Are you sure you want to remove this row");
+        if (result) {
+            const datatable = this.$("#databrowser").DataTable();
+            const tr = $(e.target).closest("tr")[0];
+            const datatable_tr = datatable.row(tr)
+            const id = datatable_tr.data()._id;
+            window.cozysdk.destroy(this.doctype, id)
+            .then(() => {
+                datatable_tr.remove().draw();
+                this.trigger("remove:item");
+            })
+            .catch(err => {
+                console.error(err, "could not destroy document");
+            });
+        }
     },
     getCols(json) {
         var result = [];
