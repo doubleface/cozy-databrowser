@@ -1447,5 +1447,9 @@ input[type=password] {
 div.DTS div.dataTables_scrollBody {
   background: #fff;
 }
+.remove_action {
+  display: block;
+  text-align: center;
+}
 
 /*# sourceMappingURL=app.css.map*/

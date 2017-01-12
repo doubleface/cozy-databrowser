@@ -235,7 +235,7 @@
 	        result.unshift({
 	            title: "Action",
 	            data: null,
-	            defaultContent: '<a class="remove_action" href="#">Remove</a>'
+	            defaultContent: '<a class="remove_action" href="#" title="Remove">&#128465;</a>'
 	        });
 	        return result;
 	    },
