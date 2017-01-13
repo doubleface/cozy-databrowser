@@ -202,25 +202,38 @@
 	exports.default = Backbone.View.extend({
 	    el: "[role='contentinfo']",
 	    events: {
-	        "click .remove_action": "onRemoveAction"
+	        "click .remove_action": "onRemoveAction",
+	        "click .remove-all": "onRemoveAllAction"
 	    },
 	    collection: new Backbone.Collection(),
 	    initialize: function initialize() {
 	        this.listenTo(this.collection, "reset", this.render);
 	    },
-	    onRemoveAction: function onRemoveAction(e) {
+	    onRemoveAllAction: function onRemoveAllAction() {
 	        var _this = this;
 	
-	        var result = confirm("Are you sure you want to remove this row");
+	        var result = confirm("Are you sure you want to remove ALL the rows?");
+	        if (result) {
+	            window.cozysdk.destroyByView(this.doctype.toLowerCase(), "all").then(function () {
+	                _this.trigger("remove:item");
+	            }).catch(function (err) {
+	                console.error(err, "could not destroy the documents");
+	            });
+	        }
+	    },
+	    onRemoveAction: function onRemoveAction(e) {
+	        var _this2 = this;
+	
+	        var result = confirm("Are you sure you want to remove this row?");
 	        if (result) {
 	            (function () {
-	                var datatable = _this.$("#databrowser").DataTable();
+	                var datatable = _this2.$("#databrowser").DataTable();
 	                var tr = $(e.target).closest("tr")[0];
 	                var datatable_tr = datatable.row(tr);
 	                var id = datatable_tr.data()._id;
-	                window.cozysdk.destroy(_this.doctype, id).then(function () {
+	                window.cozysdk.destroy(_this2.doctype, id).then(function () {
 	                    datatable_tr.remove().draw();
-	                    _this.trigger("remove:item");
+	                    _this2.trigger("remove:item");
 	                }).catch(function (err) {
 	                    console.error(err, "could not destroy document");
 	                });
@@ -237,7 +250,7 @@
 	                defaultContent: ""
 	            });
 	        }
-	        result.unshift({
+	        result.push({
 	            title: "Action",
 	            data: null,
 	            defaultContent: '<a class="remove_action" href="#" title="Remove">&#128465;</a>'
@@ -255,7 +268,7 @@
 	        var config = {
 	            destroy: true,
 	            lengthChange: false,
-	            dom: '<"thead"Bfi>t',
+	            dom: '<"thead"Bfi<"remove-all-action">>t',
 	            buttons: ["colvis", "copyHtml5", "csvHtml5"],
 	            scrollX: "100%",
 	            scrollY: "calc(100vh - 7em)",
@@ -265,14 +278,19 @@
 	            columns: this.getCols(json)
 	        };
 	        this.$("#databrowser").DataTable(config);
+	        this.renderRemoveAll();
 	        return this;
 	    },
+	    renderRemoveAll: function renderRemoveAll() {
+	        var title = "Remove all";
+	        this.$(".remove-all-action").html('<a class="dt-button remove-all">\n                <span>' + title + '</span>\n        </a>');
+	    },
 	    setDoctype: function setDoctype(doctype) {
-	        var _this2 = this;
+	        var _this3 = this;
 	
 	        this.doctype = doctype;
 	        cozysdk.queryView(doctype.toLowerCase(), "all", {}).then(function (data) {
-	            _this2.collection.reset(data.map(function (record) {
+	            _this3.collection.reset(data.map(function (record) {
 	                return record.value;
 	            }));
 	        }).catch(function (err) {

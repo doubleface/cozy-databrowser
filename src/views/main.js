@@ -13,14 +13,27 @@ function attrToString(attr) {
 export default Backbone.View.extend({
     el: "[role='contentinfo']",
     events: {
-        "click .remove_action": "onRemoveAction"
+        "click .remove_action": "onRemoveAction",
+        "click .remove-all": "onRemoveAllAction",
     },
     collection: new Backbone.Collection(),
     initialize() {
         this.listenTo(this.collection, "reset", this.render);
     },
+    onRemoveAllAction() {
+        let result = confirm("Are you sure you want to remove ALL the rows?");
+        if (result) {
+            window.cozysdk.destroyByView(this.doctype.toLowerCase(), "all")
+            .then(() => {
+                this.trigger("remove:item");
+            })
+            .catch(err => {
+                console.error(err, "could not destroy the documents");
+            });
+        }
+    },
     onRemoveAction(e) {
-        let result = confirm("Are you sure you want to remove this row");
+        let result = confirm("Are you sure you want to remove this row?");
         if (result) {
             const datatable = this.$("#databrowser").DataTable();
             const tr = $(e.target).closest("tr")[0];
@@ -46,7 +59,7 @@ export default Backbone.View.extend({
                 defaultContent: ""
             });
         }
-        result.unshift({
+        result.push({
             title: "Action",
             data: null,
             defaultContent: '<a class="remove_action" href="#" title="Remove">&#128465;</a>'
@@ -64,7 +77,7 @@ export default Backbone.View.extend({
         var config = {
             destroy: true,
             lengthChange: false,
-            dom: '<"thead"Bfi>t',
+            dom: '<"thead"Bfi<"remove-all-action">>t',
             buttons: ["colvis", "copyHtml5", "csvHtml5"],
             scrollX: "100%",
             scrollY: "calc(100vh - 7em)",
@@ -74,7 +87,14 @@ export default Backbone.View.extend({
             columns: this.getCols(json)
         };
         this.$("#databrowser").DataTable(config);
+        this.renderRemoveAll();
         return this;
+    },
+    renderRemoveAll() {
+        let title = "Remove all";
+        this.$(".remove-all-action").html(`<a class="dt-button remove-all">
+                <span>${title}</span>
+        </a>`);
     },
     setDoctype(doctype){
         this.doctype = doctype;
