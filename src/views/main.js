@@ -55,6 +55,7 @@ export default Backbone.View.extend({
         for (var i in json[0]) {
             result.push({
                 title: i,
+                name: i.toLowerCase(),
                 data: i,
                 defaultContent: ""
             });
@@ -86,7 +87,10 @@ export default Backbone.View.extend({
             data: json,
             columns: this.getCols(json)
         };
-        this.$("#databrowser").DataTable(config);
+        let dt = this.$("#databrowser").DataTable(config);
+        dt.column("_id:name").visible(false);
+        dt.column("doctype:name").visible(false);
+        dt.column("password:name").visible(false);
         this.renderRemoveAll();
         return this;
     },
