@@ -170,11 +170,21 @@
 	
 	        return new Promise(function (resolve, reject) {
 	            window.cozysdk.queryView("doctypes", "getsums", { group: true }).then(function (result) {
-	                _this.reset(result);
+	                _this.reset(_this.mergeDoubles(result));
 	                resolve(result);
 	            }).catch(function (err) {
 	                reject(err);
 	            });
+	        });
+	    },
+	    mergeDoubles: function mergeDoubles(collection) {
+	        var map = collection.reduce(function (memo, item) {
+	            var label = item.key.toLowerCase();
+	            if (memo[label]) memo[label] += item.value;else memo[label] = item.value;
+	            return memo;
+	        }, {});
+	        return Object.keys(map).map(function (key) {
+	            return { key: key, value: map[key] };
 	        });
 	    }
 	});
