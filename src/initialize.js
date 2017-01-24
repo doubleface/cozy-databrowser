@@ -1,5 +1,5 @@
 import app from "./application";
-import "../app.styl";
+import "./styles/app.styl";
 
 window.app = app;
 
