@@ -25,6 +25,8 @@ export default Backbone.View.extend({
         if (result) {
             window.cozysdk.destroyByView(this.doctype.toLowerCase(), "all")
             .then(() => {
+                const datatable = this.$("#databrowser").DataTable();
+                datatable.rows().remove().draw();
                 this.trigger("remove:item");
             })
             .catch(err => {
@@ -37,7 +39,7 @@ export default Backbone.View.extend({
         if (result) {
             const datatable = this.$("#databrowser").DataTable();
             const tr = $(e.target).closest("tr")[0];
-            const datatable_tr = datatable.row(tr)
+            const datatable_tr = datatable.row(tr);
             const id = datatable_tr.data()._id;
             window.cozysdk.destroy(this.doctype, id)
             .then(() => {

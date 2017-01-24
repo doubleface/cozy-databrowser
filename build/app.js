@@ -225,6 +225,8 @@
 	        var result = confirm("Are you sure you want to remove ALL the rows?");
 	        if (result) {
 	            window.cozysdk.destroyByView(this.doctype.toLowerCase(), "all").then(function () {
+	                var datatable = _this.$("#databrowser").DataTable();
+	                datatable.rows().remove().draw();
 	                _this.trigger("remove:item");
 	            }).catch(function (err) {
 	                console.error(err, "could not destroy the documents");
