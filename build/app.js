@@ -236,6 +236,7 @@
 	    onRemoveAction: function onRemoveAction(e) {
 	        var _this2 = this;
 	
+	        e.preventDefault();
 	        var result = confirm("Are you sure you want to remove this row?");
 	        if (result) {
 	            (function () {
@@ -266,7 +267,7 @@
 	        result.push({
 	            title: "Action",
 	            data: null,
-	            defaultContent: '<a class="remove_action" href="#" title="Remove">&#128465;</a>'
+	            defaultContent: '<a class="remove_action" title="Remove"><i class="fa fa-trash"></i></a>'
 	        });
 	        return result;
 	    },
@@ -299,7 +300,7 @@
 	    },
 	    renderRemoveAll: function renderRemoveAll() {
 	        var title = "Remove all";
-	        this.$(".remove-all-action").html('<a class="dt-button remove-all">\n                <span>' + title + '</span>\n        </a>');
+	        this.$(".remove-all-action").html('<a class="dt-button remove-all">\n                <span><i class="fa fa-trash"></i> ' + title + '</span>\n        </a>');
 	    },
 	    setDoctype: function setDoctype(doctype) {
 	        var _this3 = this;

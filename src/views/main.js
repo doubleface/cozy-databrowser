@@ -35,6 +35,7 @@ export default Backbone.View.extend({
         }
     },
     onRemoveAction(e) {
+        e.preventDefault();
         let result = confirm("Are you sure you want to remove this row?");
         if (result) {
             const datatable = this.$("#databrowser").DataTable();
@@ -65,7 +66,7 @@ export default Backbone.View.extend({
         result.push({
             title: "Action",
             data: null,
-            defaultContent: '<a class="remove_action" href="#" title="Remove">&#128465;</a>'
+            defaultContent: '<a class="remove_action" title="Remove"><i class="fa fa-trash"></i></a>'
         });
         return result;
     },
@@ -99,7 +100,7 @@ export default Backbone.View.extend({
     renderRemoveAll() {
         let title = "Remove all";
         this.$(".remove-all-action").html(`<a class="dt-button remove-all">
-                <span>${title}</span>
+                <span><i class="fa fa-trash"></i> ${title}</span>
         </a>`);
     },
     setDoctype(doctype){

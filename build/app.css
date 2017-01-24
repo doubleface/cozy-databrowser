@@ -1450,6 +1450,7 @@ div.DTS div.dataTables_scrollBody {
 .remove_action {
   display: block;
   text-align: center;
+  cursor: pointer;
 }
 .remove-all-action {
   float: right;
