@@ -347,20 +347,27 @@
 	
 	    itemTemplate: _.template('<li><a class="<%= sclass %>" href="#doctype/<%= url %>"><%= label %> (<%= value %>)</a></li>'),
 	    refresh: function refresh() {
+	        var _this = this;
+	
+	        this.displayLoader();
 	        this.collection.fetch().then(this.render.bind(this)).catch(function (err) {
-	            return console.error(err, "error while fetching menu collection");
+	            console.error(err, "error while fetching menu collection");
+	            _this.$el.empty();
 	        });
 	    },
+	    displayLoader: function displayLoader() {
+	        this.$el.html("<i class=\"fa fa-spinner fa-pulse fa-3x fa-fw\"></i>");
+	    },
 	    render: function render() {
-	        var _this = this;
+	        var _this2 = this;
 	
 	        var html = "<ul>";
 	        this.collection.forEach(function (model) {
 	            var json = model.toJSON();
-	            json.sclass = json.key === _this.selected ? "selected" : "";
+	            json.sclass = json.key === _this2.selected ? "selected" : "";
 	            json.label = json.key[0].toUpperCase() + json.key.substr(1);
 	            json.url = json.key.toLowerCase();
-	            html += _this.itemTemplate(json);
+	            html += _this2.itemTemplate(json);
 	        }, this);
 	        html += "</ul>";
 	        this.$el.empty().html(html);

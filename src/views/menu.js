@@ -11,9 +11,16 @@ export default Backbone.View.extend({
     },
     itemTemplate: _.template('<li><a class="<%= sclass %>" href="#doctype/<%= url %>"><%= label %> (<%= value %>)</a></li>'),
     refresh() {
+        this.displayLoader();
         this.collection.fetch()
         .then(this.render.bind(this))
-        .catch(err => console.error(err, "error while fetching menu collection"));
+        .catch(err => {
+            console.error(err, "error while fetching menu collection");
+            this.$el.empty();
+        });
+    },
+    displayLoader() {
+        this.$el.html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>`);
     },
     render() {
         var html = "<ul>";
