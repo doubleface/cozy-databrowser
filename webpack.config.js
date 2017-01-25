@@ -1,14 +1,13 @@
-'use strict'
+'use strict';
 
-const path = require('path')
-const fs   = require('fs')
+const path = require('path');
 
-const webpack = require('webpack')
+const webpack = require('webpack');
 
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 // use the `OPTIMIZE` env to switch from dev to production build
-const optimize = process.env.OPTIMIZE === 'true'
+const optimize = process.env.OPTIMIZE === 'true';
 const imgPath = 'img/[name].[ext]';
 
 module.exports = {
@@ -41,11 +40,15 @@ module.exports = {
             },
             {
                 test: /\.css/,
-                loader: ExtractTextPlugin.extract('css-loader')
+                loader: ExtractTextPlugin.extract("style", "css")
             },
             {
                 test: /\.(png|gif|jpe?g|svg)$/i,
                 loader: 'file?name=' + imgPath
+            },
+            {
+                test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
+                loader: 'url'
             }
         ]
     },
