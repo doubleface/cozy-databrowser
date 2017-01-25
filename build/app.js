@@ -302,10 +302,14 @@
 	        var title = "Remove all";
 	        this.$(".remove-all-action").html('<a class="dt-button remove-all">\n                <span><i class="fa fa-trash"></i> ' + title + '</span>\n        </a>');
 	    },
+	    displayLoader: function displayLoader() {
+	        this.$el.html('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>');
+	    },
 	    setDoctype: function setDoctype(doctype) {
 	        var _this3 = this;
 	
 	        this.doctype = doctype;
+	        this.displayLoader();
 	        cozysdk.queryView(doctype.toLowerCase(), "all", {}).then(function (data) {
 	            _this3.collection.reset(data.map(function (record) {
 	                return record.value;

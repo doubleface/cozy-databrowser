@@ -103,8 +103,12 @@ export default Backbone.View.extend({
                 <span><i class="fa fa-trash"></i> ${title}</span>
         </a>`);
     },
+    displayLoader() {
+        this.$el.html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>`);
+    },
     setDoctype(doctype){
         this.doctype = doctype;
+        this.displayLoader();
         cozysdk.queryView(doctype.toLowerCase(), "all", {})
         .then(data => {
             this.collection.reset(data.map(record => record.value));
