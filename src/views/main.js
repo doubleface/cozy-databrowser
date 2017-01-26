@@ -88,7 +88,11 @@ export default Backbone.View.extend({
             deferRender: true,
             scroller: true,
             data: json,
-            columns: this.getCols(json)
+            columns: this.getCols(json),
+            columnDefs: [ {
+                targets: '_all',
+                render: this.renderCell
+            }]
         };
         let dt = this.$("#databrowser").DataTable(config);
         dt.column("_id:name").visible(false);
@@ -96,6 +100,13 @@ export default Backbone.View.extend({
         dt.column("password:name").visible(false);
         this.renderRemoveAll();
         return this;
+    },
+    renderCell(data, type, full, meta) {
+        if (type === 'display' && typeof data === 'object') {
+            return JSON.stringify(data, null, 2);
+        } else {
+            return data;
+        }
     },
     renderRemoveAll() {
         let title = "Remove all";
