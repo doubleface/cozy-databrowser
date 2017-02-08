@@ -13,10 +13,11 @@ var Router = Backbone.Router.extend({
 
 var app = {
     initialize() {
-        window.cozysdk.client.put("request/doctypes/getsums/", {
+        window.cozy.fetchJSON("PUT", "/request/doctypes/getsums/", {
             "reduce":"function (keys, values, rereduce) {return sum(values);}",
             "map":"function (doc) { if (doc.docType) emit(doc.docType, 1); }"
-        }, () => {
+        })
+        .then(() => {
             this.views = {
                 menu: new MenuView(),
                 main: new MainView()

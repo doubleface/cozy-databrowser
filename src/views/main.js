@@ -23,6 +23,7 @@ export default Backbone.View.extend({
     onRemoveAllAction() {
         let result = confirm("Are you sure you want to remove ALL the rows?");
         if (result) {
+            window.cozy.delete(this.doctype.toLowerCase());
             window.cozysdk.destroyByView(this.doctype.toLowerCase(), "all")
             .then(() => {
                 const datatable = this.$("#databrowser").DataTable();
@@ -109,9 +110,10 @@ export default Backbone.View.extend({
     setDoctype(doctype){
         this.doctype = doctype;
         this.displayLoader();
-        cozysdk.queryView(doctype.toLowerCase(), "all", {})
+        cozy.defineIndex(doctype.toLowerCase(), ["_id"])
+        .then(index => cozy.query(index, {selector: {"_id": {"$gt": 0}}}))
         .then(data => {
-            this.collection.reset(data.map(record => record.value));
+            this.collection.reset(data);
         })
         .catch(err => {
             console.error(err, "error while fetching doctype");

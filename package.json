@@ -43,5 +43,8 @@
     "build": "webpack",
     "build:standalone": "webpack --config webpack.standalone.config.js",
     "watch:standalone": "npm run build:standalone -- --watch"
+  },
+  "dependencies": {
+    "font-awesome": "^4.7.0"
   }
 }

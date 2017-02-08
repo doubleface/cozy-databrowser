@@ -80,6 +80,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	window.app = _application2.default;
+	window.cozy = new Cozy({});
 	
 	$(function () {
 	  return _application2.default.initialize();
@@ -123,10 +124,10 @@
 	    initialize: function initialize() {
 	        var _this = this;
 	
-	        window.cozysdk.client.put("request/doctypes/getsums/", {
+	        window.cozy.fetchJSON("PUT", "/request/doctypes/getsums/", {
 	            "reduce": "function (keys, values, rereduce) {return sum(values);}",
 	            "map": "function (doc) { if (doc.docType) emit(doc.docType, 1); }"
-	        }, function () {
+	        }).then(function () {
 	            _this.views = {
 	                menu: new _menu2.default(),
 	                main: new _main2.default()
@@ -171,7 +172,7 @@
 	        var _this = this;
 	
 	        return new Promise(function (resolve, reject) {
-	            window.cozysdk.queryView("doctypes", "getsums", { group: true }).then(function (result) {
+	            window.cozy.fetchJSON("POST", "/request/doctypes/getsums/", { group: true }).then(function (result) {
 	                _this.reset(_this.mergeDoubles(result));
 	                resolve(result);
 	            }).catch(function (err) {
@@ -312,10 +313,10 @@
 	
 	        this.doctype = doctype;
 	        this.displayLoader();
-	        cozysdk.queryView(doctype.toLowerCase(), "all", {}).then(function (data) {
-	            _this3.collection.reset(data.map(function (record) {
-	                return record.value;
-	            }));
+	        cozy.defineIndex(doctype.toLowerCase(), ["_id"]).then(function (index) {
+	            return cozy.query(index, { selector: { "_id": { "$gt": 0 } } });
+	        }).then(function (data) {
+	            _this3.collection.reset(data);
 	        }).catch(function (err) {
 	            console.error(err, "error while fetching doctype");
 	        });
