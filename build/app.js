@@ -227,7 +227,7 @@
 	
 	        var result = confirm("Are you sure you want to remove ALL the rows?");
 	        if (result) {
-	            window.cozysdk.destroyByView(this.doctype.toLowerCase(), "all").then(function () {
+	            window.cozy.fetchJSON("PUT", '/request/' + this.doctype.toLowerCase() + '/all/destroy').then(function () {
 	                var datatable = _this.$("#databrowser").DataTable();
 	                datatable.rows().remove().draw();
 	                _this.trigger("remove:item");
@@ -247,7 +247,7 @@
 	                var tr = $(e.target).closest("tr")[0];
 	                var datatable_tr = datatable.row(tr);
 	                var id = datatable_tr.data()._id;
-	                window.cozysdk.destroy(_this2.doctype, id).then(function () {
+	                window.cozy.fetchJSON("DELETE", '/data/' + id).then(function () {
 	                    datatable_tr.remove().draw();
 	                    _this2.trigger("remove:item");
 	                }).catch(function (err) {

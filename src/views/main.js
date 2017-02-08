@@ -23,8 +23,7 @@ export default Backbone.View.extend({
     onRemoveAllAction() {
         let result = confirm("Are you sure you want to remove ALL the rows?");
         if (result) {
-            window.cozy.delete(this.doctype.toLowerCase());
-            window.cozysdk.destroyByView(this.doctype.toLowerCase(), "all")
+            window.cozy.fetchJSON("PUT", `/request/${this.doctype.toLowerCase()}/all/destroy`)
             .then(() => {
                 const datatable = this.$("#databrowser").DataTable();
                 datatable.rows().remove().draw();
@@ -43,7 +42,7 @@ export default Backbone.View.extend({
             const tr = $(e.target).closest("tr")[0];
             const datatable_tr = datatable.row(tr);
             const id = datatable_tr.data()._id;
-            window.cozysdk.destroy(this.doctype, id)
+            window.cozy.fetchJSON("DELETE", `/data/${id}`)
             .then(() => {
                 datatable_tr.remove().draw();
                 this.trigger("remove:item");
