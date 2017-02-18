@@ -20,7 +20,7 @@ export default Backbone.View.extend({
         });
     },
     displayLoader() {
-        this.$el.html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>`);
+        this.$el.html(`<img class="spinner" src="images/spinner.gif">`);
     },
     render() {
         var html = "<ul>";

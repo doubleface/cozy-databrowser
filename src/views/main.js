@@ -66,7 +66,7 @@ export default Backbone.View.extend({
         result.push({
             title: "Action",
             data: null,
-            defaultContent: '<a class="remove_action" title="Remove"><i class="fa fa-trash"></i></a>'
+            defaultContent: '<a class="remove_action" title="Remove"><img src="images/trash.svg"></a>'
         });
         return result;
     },
@@ -100,11 +100,11 @@ export default Backbone.View.extend({
     renderRemoveAll() {
         let title = "Remove all";
         this.$(".remove-all-action").html(`<a class="dt-button remove-all">
-                <span><i class="fa fa-trash"></i> ${title}</span>
+                <span><img src="images/trash.svg"> ${title}</span>
         </a>`);
     },
     displayLoader() {
-        this.$el.html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>`);
+        this.$el.html(`<img class="spinner" src="images/spinner.gif">`);
     },
     setDoctype(doctype){
         this.doctype = doctype;

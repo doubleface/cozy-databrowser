@@ -1,41 +1,41 @@
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-/******/
+
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-/******/
+
 /******/ 		// Check if module is in cache
 /******/ 		if(installedModules[moduleId])
 /******/ 			return installedModules[moduleId].exports;
-/******/
+
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			exports: {},
 /******/ 			id: moduleId,
 /******/ 			loaded: false
 /******/ 		};
-/******/
+
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
+
 /******/ 		// Flag the module as loaded
 /******/ 		module.loaded = true;
-/******/
+
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/
-/******/
+
+
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-/******/
+
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-/******/
+
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-/******/
+
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
 /******/ })
@@ -68,20 +68,18 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	
+
 	var _application = __webpack_require__(5);
-	
+
 	var _application2 = _interopRequireDefault(_application);
-	
-	__webpack_require__(17);
-	
+
 	__webpack_require__(16);
-	
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
+
 	window.app = _application2.default;
 	window.cozy = new Cozy({});
-	
+
 	$(function () {
 	  return _application2.default.initialize();
 	});
@@ -95,21 +93,21 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	
+
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	
+
 	var _menu = __webpack_require__(8);
-	
+
 	var _menu2 = _interopRequireDefault(_menu);
-	
+
 	var _main = __webpack_require__(7);
-	
+
 	var _main2 = _interopRequireDefault(_main);
-	
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
+
 	var Router = Backbone.Router.extend({
 	    routes: {
 	        "doctype/:doctype": "onDoctype"
@@ -119,11 +117,11 @@
 	        this.app.views.menu.select(doctype);
 	    }
 	});
-	
+
 	var app = {
 	    initialize: function initialize() {
 	        var _this = this;
-	
+
 	        window.cozy.fetchJSON("PUT", "/request/doctypes/getsums/", {
 	            "reduce": "function (keys, values, rereduce) {return sum(values);}",
 	            "map": "function (doc) { if (doc.docType) emit(doc.docType, 1); }"
@@ -134,7 +132,7 @@
 	            };
 	            _this.views.menu.$el.appendTo("#container");
 	            _this.views.main.$el.appendTo("#container");
-	
+
 	            _this.views.main.on("remove:item", function () {
 	                _this.views.menu.refresh();
 	            });
@@ -143,7 +141,7 @@
 	            });
 	            _this.router.app = _this;
 	            Backbone.history.start();
-	
+
 	            $("[formaction='drawer/toggle']").on("click", function () {
 	                var $aside = $("aside");
 	                var isExpanded = $aside.attr("aria-expanded") === "true" ? "false" : "true";
@@ -152,9 +150,9 @@
 	        });
 	    }
 	};
-	
+
 	var router = new Router();
-	
+
 	exports.default = app;
 
 /***/ },
@@ -162,7 +160,7 @@
 /***/ function(module, exports) {
 
 	"use strict";
-	
+
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
@@ -170,7 +168,7 @@
 	    model: Backbone.Model,
 	    fetch: function fetch() {
 	        var _this = this;
-	
+
 	        return new Promise(function (resolve, reject) {
 	            window.cozy.fetchJSON("POST", "/request/doctypes/getsums/", { group: true }).then(function (result) {
 	                _this.reset(_this.mergeDoubles(result));
@@ -197,7 +195,7 @@
 /***/ function(module, exports) {
 
 	'use strict';
-	
+
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
@@ -211,7 +209,7 @@
 	        return result;
 	    }
 	}
-	
+
 	exports.default = Backbone.View.extend({
 	    el: "[role='contentinfo']",
 	    events: {
@@ -224,7 +222,7 @@
 	    },
 	    onRemoveAllAction: function onRemoveAllAction() {
 	        var _this = this;
-	
+
 	        var result = confirm("Are you sure you want to remove ALL the rows?");
 	        if (result) {
 	            window.cozy.fetchJSON("PUT", '/request/' + this.doctype.toLowerCase() + '/all/destroy').then(function () {
@@ -238,7 +236,7 @@
 	    },
 	    onRemoveAction: function onRemoveAction(e) {
 	        var _this2 = this;
-	
+
 	        e.preventDefault();
 	        var result = confirm("Are you sure you want to remove this row?");
 	        if (result) {
@@ -270,7 +268,7 @@
 	        result.push({
 	            title: "Action",
 	            data: null,
-	            defaultContent: '<a class="remove_action" title="Remove"><i class="fa fa-trash"></i></a>'
+	            defaultContent: '<a class="remove_action" title="Remove"><img src="images/trash.svg"></a>'
 	        });
 	        return result;
 	    },
@@ -303,14 +301,14 @@
 	    },
 	    renderRemoveAll: function renderRemoveAll() {
 	        var title = "Remove all";
-	        this.$(".remove-all-action").html('<a class="dt-button remove-all">\n                <span><i class="fa fa-trash"></i> ' + title + '</span>\n        </a>');
+	        this.$(".remove-all-action").html('<a class="dt-button remove-all">\n                <span><img src="images/trash.svg"> ' + title + '</span>\n        </a>');
 	    },
 	    displayLoader: function displayLoader() {
-	        this.$el.html('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>');
+	        this.$el.html('<img class="spinner" src="images/spinner.gif">');
 	    },
 	    setDoctype: function setDoctype(doctype) {
 	        var _this3 = this;
-	
+
 	        this.doctype = doctype;
 	        this.displayLoader();
 	        cozy.defineIndex(doctype.toLowerCase(), ["_id"]).then(function (index) {
@@ -328,34 +326,34 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	
+
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	
+
 	var _menu = __webpack_require__(6);
-	
+
 	var _menu2 = _interopRequireDefault(_menu);
-	
+
 	__webpack_require__(14);
-	
+
 	__webpack_require__(13);
-	
+
 	__webpack_require__(15);
-	
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
+
 	exports.default = Backbone.View.extend({
 	    el: "aside",
 	    collection: new _menu2.default(),
 	    initialize: function initialize() {
 	        this.refresh();
 	    },
-	
+
 	    itemTemplate: _.template('<li><a class="<%= sclass %>" href="#doctype/<%= url %>"><%= label %> (<%= value %>)</a></li>'),
 	    refresh: function refresh() {
 	        var _this = this;
-	
+
 	        this.displayLoader();
 	        this.collection.fetch().then(this.render.bind(this)).catch(function (err) {
 	            console.error(err, "error while fetching menu collection");
@@ -363,11 +361,11 @@
 	        });
 	    },
 	    displayLoader: function displayLoader() {
-	        this.$el.html("<i class=\"fa fa-spinner fa-pulse fa-3x fa-fw\"></i>");
+	        this.$el.html("<img class=\"spinner\" src=\"images/spinner.gif\">");
 	    },
 	    render: function render() {
 	        var _this2 = this;
-	
+
 	        var html = "<ul>";
 	        this.collection.forEach(function (model) {
 	            var json = model.toJSON();
@@ -403,8 +401,5 @@
 /* 15 */
 13,
 /* 16 */
-13,
-/* 17 */
 13
 /******/ ])));
-//# sourceMappingURL=app.js.map
