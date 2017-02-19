@@ -1422,6 +1422,12 @@ input[type=password] {
 [role=application] > aside a {
   color: #000;
   text-decoration: none;
+  display: inline-block;
+  width: 100%;
+  outline: 0;
+}
+[role=application] > aside a:hover {
+  background-color: #c8d5df;
 }
 [role=application] > aside a.selected {
   font-weight: bold;
@@ -1469,3 +1475,5 @@ div.DTS div.dataTables_scrollBody {
 .spinner {
   width: 60px;
 }
+
+/*# sourceMappingURL=app.css.map*/
