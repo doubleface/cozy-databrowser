@@ -1,5 +1,7 @@
+import _ from "underscore";
+
 function attrToString(attr) {
-    if (!_(attr).isObject()) return attr;
+    if (!_(attr).isObject()) return _.escape(attr);
     else {
         let result = '<ul>';
         for (let i in attr) {
@@ -88,7 +90,11 @@ export default Backbone.View.extend({
             deferRender: true,
             scroller: true,
             data: json,
-            columns: this.getCols(json)
+            columns: columns,
+            columnDefs: [{
+                targets: columns.map((val, key) => key).filter(key => key !== (columns.length - 1)), // no filter for the Action column
+                render: attrToString
+            }]
         };
         let dt = this.$("#databrowser").DataTable(config);
         dt.column("_id:name").visible(false);
